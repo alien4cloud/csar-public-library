@@ -16,8 +16,19 @@ Here are the rules concerning csars naming nomenclature and version management.
 The pattern is:
 
 ```
-DOMAIN_NAME.PRODUCT_DOMAIN.nodes|relationships|capabilities|artifacts|datatypes[.PLATFORM][.ARTIFACT_IMPLEM].NAME
+DOMAIN_NAME.PRODUCT_DOMAIN.TYPE[.PLATFORM][.ARTIFACT_IMPLEM].NAME
 ```
+
+with 
+
+```
+TYPE=nodes|relationships|capabilities|artifacts|datatypes
+```
+
+And with:
+
+- package name in lower case
+- NAME in upper camel case
 
 For example:
 
