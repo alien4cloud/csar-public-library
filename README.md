@@ -13,7 +13,11 @@ Here are the rules concerning csars naming nomenclature and version management.
 
 ### Type naming nomenclature.
 
+The pattern is:
+
+```
 DOMAIN_NAME.PRODUCT_DOMAIN.nodes|relationships|capabilities|artifacts|datatypes[.PLATFORM][.ARTIFACT_IMPLEM].NAME
+```
 
 For example:
 
@@ -33,3 +37,15 @@ Example:
 - component_version
 
 ### The tosca.nodes.Root component_version property must be used to specify software version.
+
+Example: 
+
+- For JDK version 7u51 
+
+```
+component_version:
+  type: version
+  default: 7.0.51
+  constraints:
+    - valid_values: [ "7.0.51" ]
+```
