@@ -32,13 +32,13 @@ And with:
 
 For example:
 
-- org.alien4cloud.java.nodes.JDK
-- org.alien4cloud.java.relationships.JavaSoftwareHostedOnJDK
-- org.alien4cloud.java.nodes.linux.bash.JDK
+- org.ystia.java.nodes.JDK
+- org.ystia.java.relationships.JavaSoftwareHostedOnJDK
+- org.ystia.java.nodes.linux.bash.JDK
 
 When it's need, the major version of a software component can be added to it's name (for example when your type can not manager several versions):
 
-- org.alien4cloud.java.nodes.JDK7
+- org.ystia.java.nodes.JDK7
 
 ### Type properties are named using snake case.
 

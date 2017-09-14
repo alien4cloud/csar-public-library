@@ -1,0 +1,21 @@
+tosca_definitions_version: alien_dsl_1_4_0
+
+metadata:
+  template_name: org.ystia.common
+  template_version: 1.4.0-SNAPSHOT
+  template_author: Bull
+
+description: common part of all ystia components
+
+imports:
+  - tosca-normative-types:1.0.0-ALIEN14
+
+node_types:
+  org.ystia.nodes.Component:
+    derived_from: tosca.nodes.SoftwareComponent
+    abstract: true
+    description: Abstract ystia software component
+    artifacts:
+      - utils_scripts:
+          type: tosca.artifacts.File
+          file: utils_scripts
