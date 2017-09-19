@@ -1,0 +1,45 @@
+tosca_definitions_version: alien_dsl_1_4_0
+
+metadata:
+  template_name: org.ystia.elasticsearch.pub
+  template_version: 1.0-SNAPSHOT
+  template_author: Bull
+
+description: Public interface types for Elasticsearch support.
+
+imports:
+  - tosca-normative-types:1.0.0-ALIEN14
+  - org.ystia.common:1.0-SNAPSHOT
+  - org.ystia.consul.pub:1.0-SNAPSHOT
+  - org.ystia.java.pub:1.0-SNAPSHOT
+
+node_types:
+  org.ystia.elasticsearch.pub.nodes.Elasticsearch:
+    derived_from: org.ystia.consul.pub.ConsulUser
+    description: Installation of Elasticsearch from Elastic Stack
+    tags:
+      icon: /images/elasticsearch.png
+    requirements:
+      - java:
+          capability: org.ystia.java.pub.capabilities.JavaHosting
+          relationship: org.ystia.java.pub.relationships.HostedOnJavaRuntime
+          occurrences: [1, 1]
+    capabilities:
+      search_resource: org.ystia.elasticsearch.pub.capabilities.SearchEndpoint
+
+relationship_types:
+  org.ystia.elasticsearch.pub.relationships.ConnectsToFilessystem:
+    derived_from: tosca.relationships.ConnectsTo
+    description: >
+      Connects Elasticsearch to Block Storage File System
+    valid_target_types: [ tosca.capabilities.Node ]
+
+capability_types:
+  org.ystia.elasticsearch.pub.capabilities.SearchEndpoint:
+    derived_from: tosca.capabilities.Endpoint
+
+artifact_types:
+  org.ystia.elasticsearch.pub.artifacts.elasticsearchConfig:
+    derived_from: tosca.artifacts.Root
+    description: A elasticsearch configuration file (.yml file)
+    file_ext: [yml]
