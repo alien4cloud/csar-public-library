@@ -1,0 +1,87 @@
+tosca_definitions_version: alien_dsl_1_4_0
+
+metadata:
+  template_name: org.ystia.consul.linux.sh
+  template_version: 1.0-SNAPSHOT
+  template_author: Bull
+
+description: Consul agent and server
+
+imports:
+  - tosca-normative-types:1.0.0-ALIEN14
+  - org.ystia.common:1.0-SNAPSHOT
+  - org.ystia.consul.pub:1.0-SNAPSHOT
+
+node_types:
+  org.ystia.consul.linux.sh.nodes.Consul:
+    derived_from: org.ystia.nodes.Component
+    description: Installation of a Consul Server or Agent for linux
+    tags:
+      icon: /images/consul-icon.png
+    properties:
+      install_dnsmasq:
+        type: boolean
+        description: >
+          By default, a dnsmask is installed as a DNS proxy.
+          It is sometimes needed to remove it if another DNS is already installed (bind for example)
+        default: true
+      installation_directory:
+        type: string
+        description: Installation path of consul
+        default: ~/consul
+      component_version:
+        type: version
+        description: the Consul version installed.
+        default: 0.5.2
+        constraints:
+          - equal: 0.5.2
+    capabilities:
+      agent:
+        type: org.ystia.consul.pub.capabilities.ConsulAgent
+      server:
+        type: org.ystia.consul.pub.capabilities.ConsulServer
+    requirements:
+      - server_endpoint:
+          capability: org.ystia.consul.pub.capabilities.ConsulServer
+          relationship: org.ystia.consul.linux.sh.relationships.ConnectsConsulAgentToServer
+          occurrences: [0,1]
+    interfaces:
+      Standard:
+        create:
+          inputs:
+            INSTALL_DNSMASQ: { get_property: [SELF, install_dnsmasq] }
+            INSTALL_DIR: { get_property: [SELF, installation_directory] }
+            IP_ADDRESS: { get_attribute: [SELF, ip_address] }
+          implementation: scripts/consul_install.sh
+        configure:
+          inputs:
+            INSTALL_DIR: { get_property: [SELF, installation_directory] }
+            IP_ADDRESS: { get_attribute: [SELF, ip_address] }
+          implementation: scripts/consul_configure.sh
+        start:
+          inputs:
+            INSTALL_DIR: { get_property: [SELF, installation_directory] }
+          implementation: scripts/consul_start.sh
+        stop:
+          inputs:
+            INSTALL_DIR: { get_property: [SELF, installation_directory] }
+          implementation: scripts/consul_stop.sh
+    artifacts:
+      - scripts:
+          type: tosca.artifacts.File
+          file: scripts
+
+relationship_types:
+  org.ystia.consul.linux.sh.relationships.ConnectsConsulAgentToServer:
+    derived_from: org.ystia.consul.pub.relationships.ConnectsConsulAgentToServer
+    interfaces:
+      Configure:
+        pre_configure_source:
+          inputs:
+            SERVER_IP: { get_attribute: [TARGET, ip_address] }
+            INSTALL_DIR: { get_property: [SOURCE, installation_directory] }
+          implementation: scripts/consul_agent_to_server.sh
+    artifacts:
+      - scripts:
+          type: tosca.artifacts.File
+          file: scripts

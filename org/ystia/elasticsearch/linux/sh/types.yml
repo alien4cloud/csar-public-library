@@ -1,0 +1,145 @@
+tosca_definitions_version: alien_dsl_1_4_0
+
+metadata:
+  template_name: org.ystia.elasticsearch.linux.sh
+  template_version: 1.0-SNAPSHOT
+  template_author: Bull
+
+description: Elasticsearch implementation
+
+imports:
+  - tosca-normative-types:1.0.0-ALIEN14
+  - org.ystia.common:1.0-SNAPSHOT
+  - org.ystia.elasticsearch.pub:1.0-SNAPSHOT
+  - org.ystia.consul.pub:1.0-SNAPSHOT
+
+node_types:
+  org.ystia.elasticsearch.linux.sh.nodes.Elasticsearch:
+    derived_from: org.ystia.consul.pub.ConsulUser
+    description: Installation of a Elasticsearch module for linux
+    tags:
+      icon: /images/elasticsearch-icon.jpg
+    properties:
+      component_version:
+        type: version
+        description: The installed Elasticsearch version
+        default: 5.1.1
+        constraints:
+          - equal: 5.1.1
+      repository:
+        type: string
+        description: >
+          This property give the opportunity to specify an alternative
+          download repository for this component artifacts.  It is your
+          responsibility to provide an accessible download url and to store
+          required artifacts on it.  You should specify only the base
+          repository url. Artifacts names will be appended to it, so this
+          property could be shared among several components using the
+          inputs feature.
+        required: false
+        default:
+        constraints:
+          - pattern: ^(http|https|ftp)://.+/.*$
+      curator_repository_url:
+        type: string
+        default: "${es.curator.repo.url}"
+        description: >
+          The yum repository to install the package elasticsearch-curator.
+          If you do not specify any value, it's set as '${es.curator.repo.url.default}'.
+        required: false
+        constraints:
+          - pattern: ^(http|https|ftp)://.+/.*$
+      curator_repository_key_url:
+        type: string
+        default: "${es.curator.key.url}"
+        description: >
+          This property give the opportunity to specify an alternative
+          URL to download public key used to install Elastic curator.
+          If you do not specify any value, it's set as '${es.curator.key.url.default}'.
+        required: false
+        constraints:
+          - pattern: ^(http|https|ftp)://.+/.*$
+      heap_size:
+        type: string
+        default: "2G"
+        description:
+          This property allows to set the heap memory size that is allocated to Elasticsearch java process,
+          It allocates the same value to both initial and maximum values (ie -Xms and -Xmx java options).
+        constraints:
+          - pattern: "[1-9][0-9]*[kKmMgG]"
+      cluster_name:
+        type: string
+        default: starlings
+        description: >
+          Cluster name identifies your cluster for auto-discovery. If
+          you're running multiple clusters on the same network, make sure
+          you're using unique names.
+      number_of_shards:
+        type: integer
+        default: 5
+        required: false
+        description: Set the number of shards (splits) of an index (5 by default)
+        constraints:
+          - greater_than: 0
+      number_of_replicas:
+        type: integer
+        default: 1
+        required: false
+        description: Set the number of replicas (additional copies) of an index (1 by default)
+        constraints:
+          - greater_or_equal: 0
+      nb_close_older_than:
+        type: integer
+        required: false
+        description: >
+          Choose the number to match with "unit_close_older_than" to
+          close the indices older than "nb_close_older_than"
+          "unit_close_older_than" (Default: do nothing)
+        constraints:
+          - greater_or_equal: 1
+      unit_close_older_than:
+        type: string
+        required: false
+        description: >
+          Choose the Unit to match with "nb_close_older_than" to close the
+          indices older than "nb_close_older_than" "unit_close_older_than"
+          (Default: do nothing)
+        constraints:
+          - valid_values: [days,months,years]
+      nb_delete_older_than:
+        type: integer
+        required: false
+        description: >
+          Choose the number to match with "unit_delete_older_than" to
+          delete the indices older than "nb_delete_older_than"
+          "unit_delete_older_than" (Default: do nothing)
+        constraints:
+          - greater_or_equal: 1
+      unit_delete_older_than:
+        type: string
+        required: false
+        description: >
+          Choose the Unit to match with "nb_delete_older_than" to delete
+          the indices older than "nb_delete_older_than"
+          "unit_delete_older_than" (Default: do nothing)
+        constraints:
+          - valid_values: [days,months,years]
+    requirements:
+      - filesystem_endpoint:
+          capability: tosca.capabilities.Node
+          relationship: org.ystia.elasticsearch.linux.sh.relationships.ConnectsToFilessystem
+          occurrences: [0,1]
+
+relationship_types:
+  org.ystia.elasticsearch.linux.sh.relationships.ConnectsToFilessystem:
+    derived_from: org.ystia.elasticsearch.pub.relationships.ConnectsToFilessystem
+    interfaces:
+      Configure:
+          post_configure_source:
+            implementation: scripts/elasticsearch-to-filesystem.sh
+            inputs:
+              path_fs: { get_property: [ TARGET,location ] }
+    artifacts:
+      - scripts:
+          file: scripts
+          type: tosca.artifacts.File

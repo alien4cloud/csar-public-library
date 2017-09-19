@@ -1,0 +1,14 @@
+tosca_definitions_version: alien_dsl_1_4_0
+
+metadata:
+  template_name: org.ystia.mapr.linux.sh
+  template_version: 1.0-SNAPSHOT
+  template_author: Bull
+
+description:
+
+imports:
+  - tosca-normative-types:1.0.0-ALIEN14
+  - org.ystia.common:1.0-SNAPSHOT
+
+node_types:

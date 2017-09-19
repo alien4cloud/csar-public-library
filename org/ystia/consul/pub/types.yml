@@ -1,0 +1,43 @@
+tosca_definitions_version: alien_dsl_1_4_0
+
+metadata:
+  template_name: org.ystia.consul.pub
+  template_version: 1.0-SNAPSHOT
+  template_author: Bull
+
+description: Public interface types for Consul support.
+
+imports:
+  - tosca-normative-types:1.0.0-ALIEN14
+  - org.ystia.common:1.0-SNAPSHOT
+
+nodes_types:
+  org.ystia.consul.pub.nodes.ConsulUser:
+    derived_from: org.ystia.nodes.Component
+    description: Ystia component using Consul agent
+    requirements:
+      - consul:
+          capability: org.ystia.consul.pub.capabilities.ConsulAgent
+          relationship: org.ystia.consul.pub.relationships.ConnectsToConsulAgent
+          occurrences: [0,1]
+    artifacts:
+      - consul_utils:
+          type: tosca.artifacts.File
+          file: consul_utils
+
+relationship_types:
+  org.ystia.consul.pub.relationships.ConnectsToConsulAgent:
+    derived_from: tosca.relationships.ConnectsTo
+    description: Relationship use to describe that the SoftwareComponent is connected to a Consul Agent
+    valid_target_types: [ org.ystia.consul.pub.capabilities.ConsulAgent ]
+  org.ystia.consul.pub.relationships.ConnectsConsulAgentToServer:
+    derived_from: tosca.relationships.ConnectsTo
+    description: >
+      Connects a Consul agent to a Consul server
+    valid_target_types: [ org.ystia.consul.pub.capabilities.ConsulServer ]
+
+capability_types:
+  org.ystia.consul.pub.capabilities.ConsulAgent:
+    derived_from: tosca.capabilities.Root
+  org.ystia.consul.pub.capabilities.ConsulServer:
+    derived_from: tosca.capabilities.Root

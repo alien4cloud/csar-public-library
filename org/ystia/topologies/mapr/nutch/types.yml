@@ -1,0 +1,17 @@
+tosca_definitions_version: alien_dsl_1_4_0
+
+metadata:
+  template_name: org.ystia.topologies.mapr_nutch
+  template_version: 1.0-SNAPSHOT
+  template_author: Bull
+
+description:
+
+imports:
+  - tosca-normative-types:1.0.0-ALIEN14
+
+topology_template:
+  inputs:
+  node_templates:
+    Nutch:
+      type: org.ystia.nutch.linux.sh.nodes.Nutch

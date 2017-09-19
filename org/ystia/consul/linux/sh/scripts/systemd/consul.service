@@ -1,0 +1,13 @@
+[Unit]
+Description=Unit file for managing Consul within Starlings
+
+[Service]
+Environment="GOMAXPROCS={{GOMAXPROCS}}"
+ExecStart={{CONSUL_HOME}}/consul agent -pid-file={{CONSUL_HOME}}/work/consul.pid -config-dir={{CONSUL_HOME}}/config
+ExecStop={{CONSUL_HOME}}/consul leave
+# Avoid a failure status after stop consul
+SuccessExitStatus=0 1
+User={{USER}}
+
+[Install]
+WantedBy=multi-user.target

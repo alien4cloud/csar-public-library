@@ -1,0 +1,23 @@
+tosca_definitions_version: alien_dsl_1_4_0
+
+metadata:
+  template_name: org.ystia.haproxy.linux.sh
+  template_version: 1.0-SNAPSHOT
+  template_author: Bull
+
+description: The HAProxy component
+
+imports:
+  - tosca-normative-types:1.0.0-ALIEN14
+  - org.ystia.common:1.0-SNAPSHOT
+  - org.ystia.haproxy.pub:1.0-SNAPSHOT
+
+node_types:
+  org.ystia.haproxy.linux.sh.nodes.HAProxy:
+    derived_from: org.ystia.nodes.Component
+    description: Install, configure and start a HAProxy
+    tags:
+      icon: /images/logo.png
+    capabilities:
+      host:
+        type: org.ystia.haproxy.pub.capabilities.Container.HAProxy
