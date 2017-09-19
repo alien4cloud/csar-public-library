@@ -1,0 +1,64 @@
+tosca_definitions_version: alien_dsl_1_4_0
+
+metadata:
+  template_name: org.alien4cloud.monitoring.pub
+  template_version: 1.4.0-SNAPSHOT
+  template_author: alien4cloud
+
+imports:
+  - tosca-normative-types:1.0.0-ALIEN14
+
+node_types:
+
+  org.alien4cloud.monitoring.pub.nodes.MonitoringAgent:
+    derived_from: tosca.nodes.SoftwareComponent
+    abstract: true
+    description: |
+      An agent that collects metrics and store them into a MetricsBackend
+    metadata:
+      icon: /images/metrics.png
+    # requirements:
+    #   - data_endpoint:
+    #       capability: org.alien4cloud.monitoring.pub.capabilities.MetricsDataEndpoint
+    #       relationship: org.alien4cloud.monitoring.pub.relationships.MonitoringAgentConnectToMetricsBackend
+    #       occurrences: [0, 1]
+
+  org.alien4cloud.monitoring.pub.nodes.MetricsBackend:
+    derived_from: tosca.nodes.SoftwareComponent
+    abstract: true
+    description: |
+      Represente a Metrics Database like Graphite
+    metadata:
+      icon: /images/metrics.png
+    capabilities:
+      data_endpoint:
+        type: org.alien4cloud.monitoring.pub.capabilities.MetricsDataEndpoint
+        occurrences: [0, UNBOUNDED]
+
+  # org.alien4cloud.monitoring.pub.nodes.MonitoringService:
+  #   derived_from: org.alien4cloud.monitoring.pub.nodes.MetricsBackend
+  #   # derived_from: tosca.nodes.SoftwareComponent
+  #   abstract: true
+  #   metadata:
+  #     icon: /images/metrics.png
+  #   capabilities:
+  #     data_endpoint:
+  #       type: org.alien4cloud.monitoring.pub.capabilities.GraphiteDataEndpoint
+  #       occurrences: [0, UNBOUNDED]
+  #       description: Data endpoint to collec data.
+  #     http_endpoint:
+  #       type: org.alien4cloud.monitoring.pub.capabilities.GrafanaHttpEndpoint
+  #       occurrences: [0, UNBOUNDED]
+  #       description: Grafana endpoint for dashboard publication.
+
+capability_types:
+  org.alien4cloud.monitoring.pub.capabilities.MetricsDataEndpoint:
+    derived_from: tosca.capabilities.Endpoint
+    description: Store Metrics Streaming
+
+# relationship_types:
+#
+#   org.alien4cloud.monitoring.pub.relationships.MonitoringAgentConnectToMetricsBackend:
+#     derived_from: tosca.relationships.ConnectsTo
+#     abstract: true
+#     valid_target_types: [ org.alien4cloud.monitoring.pub.nodes.MetricsBackend ]

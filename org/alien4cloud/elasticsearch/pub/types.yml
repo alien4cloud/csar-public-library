@@ -1,0 +1,64 @@
+tosca_definitions_version: alien_dsl_1_4_0
+
+metadata:
+  template_name: org.alien4cloud.elasticsearch.pub
+  template_version: 1.4.0-SNAPSHOT
+  template_author: alien4cloud
+
+imports:
+  - tosca-normative-types:1.0.0-ALIEN14
+  - org.alien4cloud.java.pub:1.4.0-SNAPSHOT
+
+node_types:
+
+  org.alien4cloud.elasticsearch.pub.nodes.ElasticSearchService:
+    derived_from: org.alien4cloud.java.pub.nodes.JavaSoftware
+    description: >
+      Elasticsearch is a distributed, RESTful search and analytics engine capable of solving a growing number of use cases.
+      As the heart of the Elastic Stack, it centrally stores your data so you can discover the expected and uncover the unexpected.
+    tags:
+      icon: images/elasticsearch.png
+    capabilities:
+      elasticsearch:
+        type: org.alien4cloud.elasticsearch.pub.capabilities.ElasticSearchTransportAPI
+        occurrences: [ 0, UNBOUNDED ]
+      http:
+        type: org.alien4cloud.elasticsearch.pub.capabilities.ElasticSearchRestAPI
+        occurrences: [ 0, UNBOUNDED ]
+
+
+capability_types:
+
+  org.alien4cloud.elasticsearch.pub.capabilities.ElasticSearchTransportAPI:
+    derived_from: tosca.capabilities.Endpoint
+    description: >
+      Exposed by a ElasticSearch node for internal Transport connection.
+      Read more on transport client at https://www.elastic.co/guide/en/elasticsearch/client/java-api/current/transport-client.html
+    properties:
+      port:
+        type: integer
+        description: The port of the elasticsearch Transport endpoint.
+        required: true
+        default: 9300
+        constraints:
+          - in_range: [ 1, 65535 ]
+      protocol:
+        type: string
+        required: true
+        default: tcp
+  org.alien4cloud.elasticsearch.pub.capabilities.ElasticSearchRestAPI:
+    derived_from: tosca.capabilities.Endpoint
+    description: >
+      The HTTP endpoint exposed by elasticsearch.
+    properties:
+      port:
+        type: integer
+        description: The port of the elasticsearch HTTP endpoint.
+        required: true
+        default: 9200
+        constraints:
+          - in_range: [ 1, 65535 ]
+      protocol:
+        type: string
+        required: true
+        default: http

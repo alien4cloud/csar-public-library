@@ -1,0 +1,34 @@
+tosca_definitions_version: alien_dsl_1_4_0
+
+metadata:
+  template_name: org.alien4cloud.graphite.pub
+  template_version: 1.4.0-SNAPSHOT
+  template_author: alien4cloud
+
+imports:
+  - tosca-normative-types:1.0.0-ALIEN14
+  - org.alien4cloud.monitoring.pub:1.4.0-SNAPSHOT
+
+node_types:
+
+  org.alien4cloud.graphite.pub.nodes.GraphiteService:
+    derived_from: org.alien4cloud.monitoring.pub.nodes.MetricsBackend
+    # derived_from: tosca.nodes.SoftwareComponent
+    abstract: true
+    metadata:
+      icon: /images/graphite.png
+    capabilities:
+      data_endpoint:
+        type: org.alien4cloud.graphite.pub.capabilities.GraphiteDataEndpoint
+        occurrences: [0, UNBOUNDED]
+      http_endpoint:
+        type: org.alien4cloud.graphite.pub.capabilities.GraphiteHttpEndpoint
+        occurrences: [0, UNBOUNDED]
+
+capability_types:
+  org.alien4cloud.graphite.pub.capabilities.GraphiteDataEndpoint:
+    derived_from: org.alien4cloud.monitoring.pub.capabilities.MetricsDataEndpoint
+    description: Store Metrics Streaming in Graphite
+  org.alien4cloud.graphite.pub.capabilities.GraphiteHttpEndpoint:
+    derived_from: tosca.capabilities.Endpoint
+    description: Graphite UI endpoint
