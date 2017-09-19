@@ -19,7 +19,7 @@ The pattern is:
 DOMAIN_NAME.PRODUCT_DOMAIN.TYPE[.PLATFORM][.ARTIFACT_IMPLEM].NAME
 ```
 
-with 
+with
 
 ```
 TYPE=nodes|relationships|capabilities|artifacts|datatypes
@@ -40,18 +40,24 @@ When it's need, the major version of a software component can be added to it's n
 
 - org.ystia.java.nodes.JDK7
 
+### Folder naming nomenclature
+
+The CSAR content must be placed in a folder that respect the archive name path.
+
+For example the `org.ystia.java` archive content should be found in `org/ystia/java` folder.
+
 ### Type properties are named using snake case.
 
-Example: 
+Example:
 
 - java_home
 - component_version
 
 ### The tosca.nodes.Root component_version property must be used to specify software version.
 
-Example: 
+Example:
 
-- For JDK version 7u51 
+- For JDK version 7u51
 
 ```
 component_version:
@@ -60,3 +66,11 @@ component_version:
   constraints:
     - valid_values: [ "7.0.51" ]
 ```
+
+### Public packages
+
+We encourage usage of public package to facilitate reusability and avoid strong coupling of components: when a component offers public capabilities and/or can be exposed as an A4C service, all these public types should be packaged in a public archive.
+
+A public archive is by convention named 'pub' and should only contain capabilities and abstract node or relationship types. They should never embed implementations. A pub package should not import a non-pub package.
+
+For example, the `org.alien4cloud.apache.pub` archive describe an abstract node type for apache and it's capabilities. `org.alien4cloud.apache.linux`_ans and `org.alien4cloud.apache.linux_sh` are two different implementations that inherit from the same abstract type and expose the same public capabilities. They both can be exposed as service and so be matched as their common abstract type.
