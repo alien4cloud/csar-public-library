@@ -9,3 +9,20 @@ description: Public interface types for Mongodb support.
 
 imports:
   - tosca-normative-types:1.0.0-ALIEN14
+
+capability_types:
+  org.ystia.mongodb.pub.capabilities.Endpoint.ConfigToRouter:
+    derived_from: tosca.capabilities.Endpoint
+    description: Router configuration endpoint
+
+  org.ystia.mongodb.pub.capabilities.Endpoint.PrimaryToSecondary:
+    derived_from: tosca.capabilities.Endpoint
+    description: Config Server endpoint
+
+  org.ystia.mongodb.pub.capabilities.Endpoint.RouterToReplicaset:
+    derived_from: tosca.capabilities.Endpoint
+    description: Replica Set Server endpoint
+
+  org.ystia.mongodb.pub.capabilities.Endpoint.MongoDB:
+    derived_from: tosca.capabilities.Endpoint
+    description: Allows component connection to MongoDBsingle or ReplicaMain

@@ -5,11 +5,62 @@ metadata:
   template_version: 1.0-SNAPSHOT
   template_author: Bull
 
-description:
+description: Topology template for MongoDB as a standard Single Server
 
 imports:
   - tosca-normative-types:1.0.0-ALIEN14
+  - org.ystia.mongodb.linux.sh:1.0-SNAPSHOT
 
 topology_template:
   inputs:
+    db_port:
+      type: integer
+      default: 27017
+      constraints:
+        - in_range: [8000,65535]
+    mongo_repo:
+      type: string
+      required: false
+      default: https://repo.mongodb.org/yum/redhat/7/mongodb-org/3.2/x86_64
   node_templates:
+    Network:
+      type: tosca.nodes.Network
+      properties:
+        ip_version: 4
+    MongoDBsingle:
+      type: org.ystia.mongodb.linux.sh.nodes.MongoDBsingle
+      properties:
+        db_port:     { get_input: db_port }
+        mongo_repo:  { get_input: mongo_repo }
+      requirements:
+        - host:
+            node: Single
+            capability: tosca.capabilities.Container
+            relationship: tosca.relationships.HostedOn
+      capabilities:
+        endpoint:
+          properties:
+            protocol: tcp
+            initiator: source
+            secure: false
+            network_name: PRIVATE
+    Single:
+      type: tosca.nodes.Compute
+      requirements:
+        - network:
+            node: Network
+            capability: tosca.capabilities.Connectivity
+            relationship: tosca.relationships.Network
+      capabilities:
+        endpoint:
+          properties:
+            protocol: tcp
+            initiator: source
+            secure: true
+            network_name: PRIVATE
+        scalable:
+          properties:
+            max_instances: 1
+            min_instances: 1
+            default_instances: 1
+

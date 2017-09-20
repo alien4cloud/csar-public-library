@@ -5,10 +5,348 @@ metadata:
   template_version: 1.0-SNAPSHOT
   template_author: Bull
 
-description:
+description: MongoDB Cluster installation
 
 imports:
   - tosca-normative-types:1.0.0-ALIEN14
   - org.ystia.common:1.0-SNAPSHOT
+  - org.ystia.mongodb.pub:1.0-SNAPSHOT
 
 node_types:
+  org.ystia.mongodb.linux.sh.nodes.MongoRouter:
+    derived_from: org.ystia.nodes.Component
+    description: >
+      A node to install Mongodb as a Router using mongos.
+    requirements:
+      - router2config:
+          capability: org.ystia.mongodb.pub.capabilities.Endpoint.ConfigToRouter
+          relationship: org.ystia.mongodb.linux.sh.relationships.ConnectsTo.config_to_router
+          occurrences: [0,unbounded]
+      - router2replicaset:
+          capability: org.ystia.mongodb.pub.capabilities.Endpoint.RouterToReplicaset
+          relationship: org.ystia.mongodb.linux.sh.relationships.ConnectsTo.router_to_replicaset
+          occurrences: [0,unbounded]
+    tags:
+      icon: /images/mongodb.jpg
+    properties:
+      db_port:
+        type: integer
+        default: 27017
+        constraints:
+          - in_range: [8000,65535]
+      mongo_repo:
+        type: string
+        description: >
+          This property give the opportunity to specify an alternative download repository for this component artifact.
+          It is your responsibility to provide an accessible download url and to store required artifacts on it.
+        required: false
+        default: https://repo.mongodb.org/yum/redhat/7/mongodb-org/3.2/x86_64
+    interfaces:
+      Standard:
+        create:
+          inputs:
+            MONGO_REPO: { get_property:  [SELF, mongo_repo] }
+          implementation: scripts/yum-install-mongodb.sh
+        configure:
+          inputs:
+            DB_IP:      { get_attribute: [HOST, ip_address] }
+            DB_PORT:    { get_property:  [SELF, db_port] }
+          implementation: scripts/centos-configure-router.sh
+        start:
+          inputs:
+            DB_IP:      { get_attribute: [HOST, ip_address] }
+            DB_PORT:    { get_property:  [SELF, db_port] }
+          implementation: scripts/start-mongodb-router.sh
+        stop:
+          implementation: scripts/stop-mongodb-router.sh
+    artifacts:
+      - scripts:
+          type: tosca.artifacts.File
+          file: scripts
+      - data:
+          type: tosca.artifacts.File
+          file: data
+
+  org.ystia.mongodb.linux.sh.nodes.MongoConfigServer:
+    derived_from: org.ystia.nodes.Component
+    description: >
+      A node to install Mongodb as a Config Server.
+    capabilities:
+      config2router:
+        type: org.ystia.mongodb.pub.capabilities.Endpoint.ConfigToRouter
+        occurrences: [0,unbounded]
+    tags:
+      icon: /images/mongodb.jpg
+    properties:
+      db_port:
+        type: integer
+        default: 27017
+        constraints:
+          - in_range: [8000,65535]
+      mongo_repo:
+        type: string
+        description: >
+          This property give the opportunity to specify an alternative download repository for this component artifact.
+          It is your responsibility to provide an accessible download url and to store required artifacts on it.
+        required: false
+        default: https://repo.mongodb.org/yum/redhat/7/mongodb-org/3.2/x86_64
+    interfaces:
+      Standard:
+        create:
+          inputs:
+            MONGO_REPO: { get_property:  [SELF, mongo_repo] }
+          implementation: scripts/yum-install-mongodb.sh
+        configure:
+          inputs:
+            DB_IP:      { get_attribute: [HOST, ip_address] }
+          implementation: scripts/centos-configure-configsvr.sh
+        start:
+          inputs:
+            DB_IP:      { get_attribute: [HOST, ip_address] }
+          implementation: scripts/start-mongodb-configsvr.sh
+        stop:
+          implementation: scripts/stop-mongodb-configsvr.sh
+    artifacts:
+      - scripts:
+          type: tosca.artifacts.File
+          file: scripts
+      - data:
+          type: tosca.artifacts.File
+          file: data
+
+  org.ystia.mongodb.linux.sh.nodes.ReplicaMain:
+    derived_from: org.ystia.nodes.Component
+    description: >
+      A node to install Mongodb with a Replica Set configured as Main Node.
+    requirements:
+      - primary2secondary:
+          capability: org.ystia.mongodb.pub.capabilities.Endpoint.PrimaryToSecondary
+          relationship: org.ystia.mongodb.linux.sh.relationships.ConnectsTo.primary_to_secondary
+          occurrences: [0,unbounded]
+    capabilities:
+      router2replicaset:
+        type: org.ystia.mongodb.pub.capabilities.Endpoint.RouterToReplicaset
+        occurrences: [0,unbounded]
+      mongo_endpoint:
+        type: org.ystia.mongodb.pub.capabilities.Endpoint.MongoDB
+        occurrences: [0,unbounded]
+    tags:
+      icon: /images/mongodb.jpg
+    properties:
+      db_port:
+        type: integer
+        default: 27017
+        constraints:
+          - in_range: [8000,65535]
+      mongo_repo:
+        type: string
+        description: >
+          This property give the opportunity to specify an alternative download repository for this component artifact.
+          It is your responsibility to provide an accessible download url and to store required artifacts on it.
+        required: false
+        default: https://repo.mongodb.org/yum/redhat/7/mongodb-org/3.2/x86_64
+      replica_set:
+        type: string
+        description: >
+          This property provides the replica set name.
+        description: Replica Set Name
+        required: true
+        default: "replica1"
+      shard:
+        type: boolean
+        description: To enable the Replica Set to be a Shard or not
+        default: false
+        required: true
+    interfaces:
+      Standard:
+        create:
+          inputs:
+            MONGO_REPO: { get_property:  [SELF, mongo_repo] }
+          implementation: scripts/yum-install-mongodb.sh
+        configure:
+          inputs:
+            DB_IP:       { get_attribute: [HOST, ip_address] }
+            DB_PORT:     { get_property:  [SELF, db_port] }
+            REPLICA_SET: { get_property:  [SELF, replica_set] }
+            SHARD:       { get_property:  [SELF, shard] }
+          implementation: scripts/centos-configure-replica.sh
+        start:
+          inputs:
+            DB_IP:       { get_attribute: [HOST, ip_address] }
+            DB_PORT:     { get_property:  [SELF, db_port] }
+          implementation: scripts/start-mongodb-replicamain.sh
+        stop:
+          implementation: scripts/stop-mongodb-replica.sh
+    artifacts:
+      - scripts:
+          type: tosca.artifacts.File
+          file: scripts
+      - data:
+          type: tosca.artifacts.File
+          file: data
+
+  org.ystia.mongodb.linux.sh.nodes.ReplicaSlave:
+    derived_from: org.ystia.nodes.Component
+    description: >
+      A node to install Mongodb with a Replica Set configured as Main Node.
+    capabilities:
+      primary2secondary:
+        type: org.ystia.mongodb.pub.capabilities.Endpoint.PrimaryToSecondary
+        occurrences: [0,unbounded]
+    tags:
+      icon: /images/mongodb.jpg
+    properties:
+      db_port:
+        type: integer
+        default: 27017
+        constraints:
+          - in_range: [8000,65535]
+      mongo_repo:
+        type: string
+        description: >
+          This property give the opportunity to specify an alternative download repository for this component artifact.
+          It is your responsibility to provide an accessible download url and to store required artifacts on it.
+        required: false
+        default: https://repo.mongodb.org/yum/redhat/7/mongodb-org/3.2/x86_64
+      replica_set:
+        type: string
+        description: >
+          This property provides the replica set name.
+        description: Replica Set Name
+        required: true
+        default: "replica1"
+      shard:
+        type: boolean
+        description: To enable the Replica Set to be a Shard or not
+        default: false
+        required: true
+    interfaces:
+      Standard:
+        create:
+          inputs:
+            MONGO_REPO: { get_property:  [SELF, mongo_repo] }
+          implementation: scripts/yum-install-mongodb.sh
+        configure:
+          inputs:
+            DB_IP:       { get_attribute: [HOST, ip_address] }
+            DB_PORT:     { get_property:  [SELF, db_port] }
+            REPLICA_SET: { get_property:  [SELF, replica_set] }
+            SHARD:       { get_property:  [SELF, shard] }
+          implementation: scripts/centos-configure-replica.sh
+        start:
+          inputs:
+            DB_IP:      { get_attribute: [HOST, ip_address] }
+            DB_PORT:    { get_property:  [SELF, db_port] }
+          implementation: scripts/start-mongodb-replicaslave.sh
+        stop:
+          implementation: scripts/stop-mongodb-replica.sh
+    artifacts:
+      - scripts:
+          type: tosca.artifacts.File
+          file: scripts
+      - data:
+          type: tosca.artifacts.File
+          file: data
+
+  org.ystia.mongodb.linux.sh.nodes.MongoDBsingle:
+    derived_from: org.ystia.nodes.DBMS
+    description: >
+      A node to install Mongodb.
+    capabilities:
+      endpoint: tosca.capabilities.Endpoint.Database
+      mongo_endpoint:
+        type: org.ystia.mongodb.pub.capabilities.Endpoint.MongoDB
+        occurrences: [0,unbounded]
+    tags:
+      icon: /images/mongodb.jpg
+    properties:
+      db_port:
+        type: integer
+        default: 27017
+        constraints:
+          - in_range: [8000,65535]
+      mongo_repo:
+        type: string
+        description: >
+          This property give the opportunity to specify an alternative download repository for this component artifact.
+          It is your responsibility to provide an accessible download url and to store required artifacts on it.
+        required: false
+        default: https://repo.mongodb.org/yum/redhat/7/mongodb-org/3.2/x86_64
+    interfaces:
+      Standard:
+        create:
+          inputs:
+            MONGO_REPO: { get_property:  [SELF, mongo_repo] }
+          implementation: scripts/yum-install-mongodb.sh
+        configure:
+          inputs:
+            DB_IP:      { get_attribute: [HOST, ip_address] }
+            DB_PORT:    { get_property:  [SELF, db_port] }
+          implementation: scripts/centos-configure-single.sh
+        start:
+          inputs:
+            DB_IP:      { get_attribute: [HOST, ip_address] }
+            DB_PORT:    { get_property:  [SELF, db_port] }
+          implementation: scripts/start-mongodb-single.sh
+        stop:
+          implementation: scripts/stop-mongodb-single.sh
+    artifacts:
+      - scripts:
+          type: tosca.artifacts.File
+          file: scripts
+      - data:
+          type: tosca.artifacts.File
+          file: data
+
+relationship_types:
+  org.ystia.mongodb.linux.sh.relationships.ConnectsTo.config_to_router:
+    derived_from: org.ystia.relationships.ConnectsTo
+    description: Config Server to Router
+    valid_target_types: [ org.ystia.mongodb.pub.capabilities.Endpoint.ConfigToRouter ]
+    interfaces:
+      Configure:
+        pre_configure_source:
+          inputs:
+            TARGET_IP:  { get_attribute: [TARGET, ip_address] }
+            SOURCE_IP:  { get_attribute: [SOURCE, ip_address] }
+          implementation: scripts/config_to_router.sh
+    artifacts:
+      - scripts:
+          type: tosca.artifacts.File
+          file: scripts
+
+  org.ystia.mongodb.linux.sh.relationships.ConnectsTo.primary_to_secondary:
+    derived_from: org.ystia.relationships.ConnectsTo
+    description: Config Server to Router
+    valid_target_types: [ org.ystia.mongodb.pub.capabilities.Endpoint.PrimaryToSecondary ]
+    interfaces:
+      Configure:
+        pre_configure_source:
+          inputs:
+            TARGET_IP:   { get_attribute: [TARGET, ip_address] }
+            SOURCE_IP:   { get_attribute: [SOURCE, ip_address] }
+            DB_PORT:     { get_property:  [TARGET, db_port] }
+            REPLICA_SET: { get_property:  [TARGET, replica_set] }
+          implementation: scripts/replica_to_main.sh
+    artifacts:
+      - scripts:
+          type: tosca.artifacts.File
+          file: scripts
+
+  org.ystia.mongodb.linux.sh.relationships.ConnectsTo.router_to_replicaset:
+    derived_from: org.ystia.relationships.ConnectsTo
+    description: Router to Replica Set
+    valid_target_types: [ org.ystia.mongodb.pub.capabilities.Endpoint.RouterToReplicaset ]
+    interfaces:
+      Configure:
+        pre_configure_source:
+          inputs:
+            TARGET_IP:   { get_attribute: [TARGET, ip_address] }
+            SOURCE_IP:   { get_attribute: [SOURCE, ip_address] }
+            DB_PORT:     { get_property:  [TARGET, db_port] }
+            REPLICA_SET: { get_property:  [TARGET, replica_set] }
+          implementation: scripts/router_to_replica.sh
+    artifacts:
+      - scripts:
+          type: tosca.artifacts.File
+          file: scripts

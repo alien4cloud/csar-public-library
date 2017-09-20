@@ -31,3 +31,37 @@ ensure_home_var_is_set () {
         export HOME=$(cat /etc/passwd | grep ":$(id --user):" | awk -F : '{print $6;}')
     fi
 }
+
+# Generate a fd from the file name
+# TODO should be more sofisticated
+getlockfd() {
+    local prefix=${1}
+    local count="120"
+    ((count += ${#prefix}))
+    echo $count
+}
+
+# take a local lock
+# usage: lock name
+lock() {
+    local prefix=${1:-bdcf}
+    local fd=$(getlockfd $prefix)
+
+    # create lock file
+    local lock_file=$lock_dir/$prefix.lock
+    eval "exec ${fd}>${lock_file}"
+
+    # acquire the lock
+    flock -x ${fd}
+}
+
+
+# release a lock previously taken
+# usage: unlock name
+unlock() {
+    local prefix=${1:-bdcf}
+    local fd=$(getlockfd $prefix)
+
+    # drop the lock
+    flock -u ${fd}
+}
