@@ -46,6 +46,10 @@ The CSAR content must be placed in a folder that respect the archive name path.
 
 For example the `org.ystia.java` archive content should be found in `org/ystia/java` folder.
 
+### File naming convention
+
+The base TOSCA file should be named `types.yml` to facilitate massive operations on CSARs. This file must be placed at the root of the CSAR folder.
+
 ### Type properties are named using snake case.
 
 Example:
