@@ -11,9 +11,10 @@ imports:
   - tosca-normative-types:1.0.0-ALIEN14
   - org.ystia.common:1.0-SNAPSHOT
 
-nodes_types:
+node_types:
   org.ystia.consul.pub.nodes.ConsulUser:
     derived_from: org.ystia.nodes.SoftwareComponent
+    abstract: true
     description: Ystia component using Consul agent
     requirements:
       - consul:
