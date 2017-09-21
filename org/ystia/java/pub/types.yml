@@ -10,19 +10,6 @@ description: Public interface types for Java support.
 imports:
   - tosca-normative-types:1.0.0-ALIEN14
 
-node_types:
-  org.ystia.java.pub.nodes.JavaSoftware:
-    abstract: true
-    derived_from: tosca.nodes.Root
-    description: The JavaSoftware node represents a generic software component that can be launch by Java.
-    metadata:
-      icon: images/javabean.png
-    requirements:
-      - java:
-          capability: org.ystia.java.pub.capabilities.JavaHosting
-          relationship: org.ystia.java.pub.relationships.HostedOnJavaRuntime
-          occurrences: [1, 1]
-
 relationship_types:
   org.ystia.java.pub.relationships.HostedOnJavaRuntime:
     derived_from: tosca.relationships.HostedOn

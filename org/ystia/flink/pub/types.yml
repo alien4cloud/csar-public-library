@@ -9,3 +9,7 @@ description: Public interface types for Flink support.
 
 imports:
   - tosca-normative-types:1.0.0-ALIEN14
+
+capability_types:
+  org.ystia.flink.pub.capabilities.JobManager:
+    derived_from: tosca.capabilities.Root

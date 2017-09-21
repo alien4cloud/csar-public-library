@@ -1,0 +1,12 @@
+[Unit]
+Description=Apache Flink JobManager within Starlings
+
+[Service]
+Environment="JAVA_HOME={{JAVA_HOME}}"
+#ExecStart={{FLINK_HOME}}/bin/jobmanager.sh start cluster
+ExecStart={{JAVA_HOME}}/bin/java -Xms{{JOBMANAGER_HEAP}}M -Xmx{{JOBMANAGER_HEAP}}M -Dlog.file={{FLINK_HOME}}/log/flink-jobmanager.log -Dlog4j.configuration=file:{{FLINK_HOME}}/conf/log4j.properties -Dlogback.configurationFile=file:{{FLINK_HOME}}/conf/logback.xml -classpath {{FLINK_HOME}}/lib/flink-dist_2.11-1.1.3.jar:{{FLINK_HOME}}/lib/flink-python_2.11-1.1.3.jar:{{FLINK_HOME}}/lib/log4j-1.2.17.jar:{{FLINK_HOME}}/lib/slf4j-log4j12-1.7.7.jar::: org.apache.flink.runtime.jobmanager.JobManager --configDir {{FLINK_HOME}}/conf --executionMode cluster
+ExecStop={{FLINK_HOME}}/bin/jobmanager.sh stop
+User={{USER}}
+
+[Install]
+WantedBy=multi-user.target
