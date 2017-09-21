@@ -1,0 +1,6 @@
+# Enable to use MySQL 5.6
+[mysql56-community]
+name=MySQL 5.6 Community Server
+baseurl=MYSQL_COMMUNITY_REPO
+enabled=1
+gpgcheck=0

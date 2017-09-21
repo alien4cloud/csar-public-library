@@ -13,7 +13,7 @@ imports:
 
 nodes_types:
   org.ystia.consul.pub.nodes.ConsulUser:
-    derived_from: org.ystia.nodes.Component
+    derived_from: org.ystia.nodes.SoftwareComponent
     description: Ystia component using Consul agent
     requirements:
       - consul:

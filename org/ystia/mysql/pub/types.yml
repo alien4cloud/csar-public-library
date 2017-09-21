@@ -9,3 +9,12 @@ description: Public interface types for MySql support.
 
 imports:
   - tosca-normative-types:1.0.0-ALIEN14
+
+capability_types:
+  org.ystia.mysql.pub.capabilities.Container.MySQLServer:
+    derived_from: tosca.capabilities.Container
+    description: MySQLServer can host MySQLDataBase components
+
+  org.ystia.mysql.pub.capabilities.Endpoint.MySQLDatabase:
+    derived_from: tosca.capabilities.Root
+    description: MySQL endpoint

@@ -14,7 +14,7 @@ imports:
 
 node_types:
   org.ystia.java.linux.sh.nodes.JDK:
-    derived_from: org.ystia.nodes.Component
+    derived_from: org.ystia.nodes.SoftwareComponent
     description: Installation of a Java module for linux
     tags:
       icon: /images/java-icon.png

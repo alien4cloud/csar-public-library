@@ -14,7 +14,7 @@ imports:
 
 node_types:
   org.ystia.consul.linux.sh.nodes.Consul:
-    derived_from: org.ystia.nodes.Component
+    derived_from: org.ystia.nodes.SoftwareComponent
     description: Installation of a Consul Server or Agent for linux
     tags:
       icon: /images/consul-icon.png

@@ -14,7 +14,7 @@ imports:
 
 node_types:
   org.ystia.haproxy.linux.sh.nodes.HAProxy:
-    derived_from: org.ystia.nodes.Component
+    derived_from: org.ystia.nodes.SoftwareComponent
     description: Install, configure and start a HAProxy
     tags:
       icon: /images/logo.png

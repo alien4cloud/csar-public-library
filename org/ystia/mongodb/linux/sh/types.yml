@@ -14,7 +14,7 @@ imports:
 
 node_types:
   org.ystia.mongodb.linux.sh.nodes.MongoRouter:
-    derived_from: org.ystia.nodes.Component
+    derived_from: org.ystia.nodes.SoftwareComponent
     description: >
       A node to install Mongodb as a Router using mongos.
     requirements:
@@ -68,7 +68,7 @@ node_types:
           file: data
 
   org.ystia.mongodb.linux.sh.nodes.MongoConfigServer:
-    derived_from: org.ystia.nodes.Component
+    derived_from: org.ystia.nodes.SoftwareComponent
     description: >
       A node to install Mongodb as a Config Server.
     capabilities:
@@ -115,7 +115,7 @@ node_types:
           file: data
 
   org.ystia.mongodb.linux.sh.nodes.ReplicaMain:
-    derived_from: org.ystia.nodes.Component
+    derived_from: org.ystia.nodes.SoftwareComponent
     description: >
       A node to install Mongodb with a Replica Set configured as Main Node.
     requirements:
@@ -186,7 +186,7 @@ node_types:
           file: data
 
   org.ystia.mongodb.linux.sh.nodes.ReplicaSlave:
-    derived_from: org.ystia.nodes.Component
+    derived_from: org.ystia.nodes.SoftwareComponent
     description: >
       A node to install Mongodb with a Replica Set configured as Main Node.
     capabilities:
