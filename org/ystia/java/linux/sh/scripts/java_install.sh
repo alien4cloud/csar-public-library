@@ -30,7 +30,6 @@ function install_from_url () {
             sudo rm "${STARLINGS_JAVA_HOME}/${java_zip}"
             ;;
     esac
-
 }
 
 function ubuntu_install_openjdk () {
