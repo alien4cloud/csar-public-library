@@ -55,13 +55,15 @@ node_types:
         required: false
         constraints:
           - pattern: ^(http|https|ftp)://.+/.*$
+    attributes:
+      java_home: { get_operation_output: [ SELF, Configure, pre_configure_source, JAVA_HOME ] }
     capabilities:
       jobmanager:
         type: org.ystia.flink.pub.capabilities.JobManager
     requirements:
       - host:
           capability: org.ystia.java.pub.capabilities.JavaHosting
-          relationship: org.ystia.flink.linux.sh.relationships.HostedOnJavaRuntime
+          relationship: org.ystia.java.pub.relationships.HostedOnJavaRuntime
           occurrences: [1,1]
     interfaces:
       Standard:
@@ -75,7 +77,7 @@ node_types:
             IP_ADDRESS: { get_attribute: [SELF, ip_address] }
             JOBMANAGER_PORT: { get_property: [SELF, jobmanager.rpc.port] }
             JOBMANAGER_HEAP: { get_property: [SELF, jobmanager.heap.mb] }
-            JAVA_HOME: { get_operation_output: [SELF, Configure, pre_configure_source, JAVA_HOME] }
+            JAVA_HOME: { get_attribute: [SELF, java_home] }
           implementation: scripts/flink_jm_configure.sh
         start:
           implementation: scripts/flink_jm_start.sh
@@ -142,10 +144,12 @@ node_types:
         required: false
         constraints:
           - pattern: ^(http|https|ftp)://.+/.*$
+    attributes:
+      java_home: { get_operation_output: [ SELF, Configure, pre_configure_source, JAVA_HOME ] }
     requirements:
       - host:
           capability: org.ystia.java.pub.capabilities.JavaHosting
-          relationship: org.ystia.flink.linux.sh.relationships.HostedOnJavaRuntime
+          relationship: org.ystia.java.pub.relationships.HostedOnJavaRuntime
           occurrences: [1,1]
       - jobmanager_endpoint:
           capability: org.ystia.flink.pub.capabilities.JobManager
@@ -166,7 +170,7 @@ node_types:
             TASKMANAGER_SLOTS: { get_property: [SELF, taskmanager.numberOfTaskSlots] }
             PARALLELISM_DEFAULT: { get_property: [SELF, parallelism.default] }
             TASKMANAGER_TMP_DIRS: { get_property: [SELF, taskmanager.tmp.dirs] }
-            JAVA_HOME: { get_operation_output: [SELF, Configure, pre_configure_source, JAVA_HOME] }
+            JAVA_HOME: { get_attribute: [SELF, java_home] }
           implementation: scripts/flink_tm_configure.sh
         start:
           implementation: scripts/flink_tm_start.sh
@@ -178,20 +182,6 @@ node_types:
           type: tosca.artifacts.File
 
 relationship_types:
-  org.ystia.flink.linux.sh.relationships.HostedOnJavaRuntime:
-    derived_from: org.ystia.java.pub.relationships.HostedOnJavaRuntime
-    description: >
-      Flink components are hosted by a java Runtime
-    interfaces:
-      Configure:
-        pre_configure_source:
-          inputs:
-            JAVA_HOME: { get_attribute: [TARGET, java_home] }
-          implementation: scripts/flink_to_java.sh
-    artifacts:
-      - scripts:
-          file: scripts
-          type: tosca.artifacts.File
   org.ystia.flink.linux.sh.relationships.TaskManagerToJobManager:
     derived_from: tosca.relationships.ConnectsTo
     description: >

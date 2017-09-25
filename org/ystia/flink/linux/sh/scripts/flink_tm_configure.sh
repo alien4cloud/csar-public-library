@@ -62,8 +62,6 @@ sed -i "s@# taskmanager.tmp.dirs: /tmp@taskmanager.tmp.dirs: ${TASKMANAGER_TMP_D
 log info "Flink TaskManager configured to connects to JobManager ${FLK_TM_BASE_DNS_SERVICE_NAME}"
 
 # Setup systemd service
-# TODO retrieve_java_home "${HOST}"
-
 sudo cp ${scripts}/systemd/flink-tm.service /etc/systemd/system/flink.service
 
 sudo sed -i -e "s/{{USER}}/${USER}/g" -e "s@{{FLINK_HOME}}@${FLINK_HOME}@g" -e "s@{{JAVA_HOME}}@${JAVA_HOME}@g" -e "s@{{TASKMANAGER_MEM}}@${TASKMANAGER_MEM}@g" /etc/systemd/system/flink.service

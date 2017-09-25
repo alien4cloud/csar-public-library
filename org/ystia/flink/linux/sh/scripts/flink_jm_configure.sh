@@ -53,7 +53,6 @@ sed -i "s@jobmanager.rpc.address: localhost@jobmanager.rpc.address: ${FLK_DNS_SE
 sed -i "s@jobmanager.heap.mb: 256@jobmanager.heap.mb: ${JOBMANAGER_HEAP}@g" "${FLINK_HOME}/conf/flink-conf.yaml"
 
 # Setup systemd service
-# TODO change this with get_output_properties : retrieve_java_home "${HOST}"
 
 sudo cp ${scripts}/systemd/flink-jm.service /etc/systemd/system/flink.service
 

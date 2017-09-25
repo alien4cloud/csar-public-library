@@ -15,6 +15,18 @@ relationship_types:
     derived_from: tosca.relationships.HostedOn
     description: Relationship use to describe that the SoftwareComponent is hosted on java
     valid_target_types: [ org.ystia.java.pub.capabilities.JavaHosting ]
+    attributes:
+      java_home: { get_operation_output: [ SELF, Configure, pre_configure_source, JAVA_HOME ] }
+    interfaces:
+      Configure:
+        pre_configure_source:
+          inputs:
+            JAVA_HOME: { get_attribute: [TARGET, java_home] }
+          implementation: scripts/hosting_on_java.sh
+    artifacts:
+      - scripts:
+          file: scripts
+          type: tosca.artifacts.File
 
 capability_types:
   org.ystia.java.pub.capabilities.JavaHosting:
