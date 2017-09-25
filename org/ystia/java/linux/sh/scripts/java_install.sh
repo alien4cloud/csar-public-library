@@ -4,7 +4,6 @@
 . ${utils_scripts}/utils.sh
 log begin
 ensure_home_var_is_set
-. ${scripts}/java_utils.sh
 
 function install_from_url () {
     STARLINGS_JAVA_HOME=${1}
@@ -144,9 +143,6 @@ case "${os_distribution}" in
         ;;
 esac
 
-
-if [[ ! -z ${STARLINGS_JAVA_HOME} ]]
-then
-    store_java_home "${STARLINGS_JAVA_HOME}" "${NODE}"
-fi
+log info "JAVA_HOME is ${STARLINGS_JAVA_HOME}"
+export STARLINGS_JAVA_HOME
 log end

@@ -6,7 +6,6 @@
 
 source ${utils_scripts}/utils.sh
 source ${consul_utils}/utils.sh
-source ${scripts}/flink-service.properties
 
 log begin
 
@@ -26,11 +25,11 @@ source ${HOME}/.starlings/${NODE}-service.env
 # For first deployments get a new id
 if [[ -z "${INSTANCE_ID}" ]]; then
     log info "No previous instance id. Will use Consul to get a new one"
-    INSTANCE_ID="$(get_new_id service/${FLINK_JM_SERVICE_NAME} retry |tail -1)"
+    INSTANCE_ID="$(get_new_id service/flink-jm retry |tail -1)"
     log info "Instance id is '${INSTANCE_ID}'"
 fi
 
-FLK_BASE_DNS_SERVICE_NAME="${FLINK_JM_SERVICE_NAME}.service.starlings"
+FLK_BASE_DNS_SERVICE_NAME="flink-jm.service.starlings"
 FLK_DNS_SERVICE_NAME="${INSTANCE_ID}.${FLK_BASE_DNS_SERVICE_NAME}"
 
 log info "Flink JobManager IP = ${IP_ADDRESS}"
@@ -38,15 +37,14 @@ log info "Flink JobManager HostName = ${FLK_DNS_SERVICE_NAME}"
 
 cat >> "${STARLINGS_DIR}/${NODE}-service.env" << EOF
 INSTANCE_ID=${INSTANCE_ID}
-FLINK_JM_SERVICE_NAME=${FLINK_JM_SERVICE_NAME}
 FLK_BASE_DNS_SERVICE_NAME=${FLK_BASE_DNS_SERVICE_NAME}
 FLK_DNS_SERVICE_NAME=${FLK_DNS_SERVICE_NAME}
 EOF
 
 register_consul_service=${consul_utils}/register-consul-service.py
 chmod +x ${register_consul_service}
-log info "Register the service in consul: name=${FLINK_JM_SERVICE_NAME}, port=${JOBMANAGER_PORT}, address=${IP_ADDRESS}, tag=${INSTANCE_ID}"
-${register_consul_service} -s ${FLINK_JM_SERVICE_NAME} -p ${JOBMANAGER_PORT} -a ${IP_ADDRESS} -t ${INSTANCE_ID}
+log info "Register the service in consul: name=flink-jm, port=${JOBMANAGER_PORT}, address=${IP_ADDRESS}, tag=${INSTANCE_ID}"
+${register_consul_service} -s flink-jm -p ${JOBMANAGER_PORT} -a ${IP_ADDRESS} -t ${INSTANCE_ID}
 
 # Generate configuration
 
@@ -55,8 +53,7 @@ sed -i "s@jobmanager.rpc.address: localhost@jobmanager.rpc.address: ${FLK_DNS_SE
 sed -i "s@jobmanager.heap.mb: 256@jobmanager.heap.mb: ${JOBMANAGER_HEAP}@g" "${FLINK_HOME}/conf/flink-conf.yaml"
 
 # Setup systemd service
-source ${scripts}/java_utils.sh
-retrieve_java_home "${HOST}"
+# TODO change this with get_output_properties : retrieve_java_home "${HOST}"
 
 sudo cp ${scripts}/systemd/flink-jm.service /etc/systemd/system/flink.service
 

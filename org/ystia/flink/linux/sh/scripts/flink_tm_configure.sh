@@ -6,7 +6,6 @@
 
 source ${utils_scripts}/utils.sh
 source ${consul_utils}/utils.sh
-source ${scripts}/flink-service.properties
 
 log begin
 
@@ -26,12 +25,12 @@ source ${HOME}/.starlings/${NODE}-service.env
 # For first deployments get a new id
 if [[ -z "${INSTANCE_ID}" ]]; then
     log info "No previous instance id. Will use Consul to get a new one"
-    INSTANCE_ID="$(get_new_id service/${FLINK_TM_SERVICE_NAME} retry |tail -1)"
+    INSTANCE_ID="$(get_new_id service/flink-tm retry |tail -1)"
     log info "Instance id is '${INSTANCE_ID}'"
 fi
 
-FLK_TM_BASE_DNS_SERVICE_NAME="${FLINK_TM_SERVICE_NAME}.service.starlings"
-FLK_JM_BASE_DNS_SERVICE_NAME="${FLINK_JM_SERVICE_NAME}.service.starlings"
+FLK_TM_BASE_DNS_SERVICE_NAME="flink-tm.service.starlings"
+FLK_JM_BASE_DNS_SERVICE_NAME="flink-jm.service.starlings"
 FLK_TM_DNS_SERVICE_NAME="${INSTANCE_ID}.${FLK_TM_BASE_DNS_SERVICE_NAME}"
 
 log info "Flink TaskManager IP = ${IP_ADDRESS}"
@@ -39,15 +38,14 @@ log info "Flink TaskManager HostName = ${FLK_TM_DNS_SERVICE_NAME}"
 
 cat >> "${STARLINGS_DIR}/${NODE}-service.env" << EOF
 INSTANCE_ID=${INSTANCE_ID}
-FLINK_TM_SERVICE_NAME=${FLINK_TM_SERVICE_NAME}
 FLK_TM_BASE_DNS_SERVICE_NAME=${FLK_TM_BASE_DNS_SERVICE_NAME}
 FLK_TM_DNS_SERVICE_NAME=${FLK_TM_DNS_SERVICE_NAME}
 EOF
 
 register_consul_service=${consul_utils}/register-consul-service.py
 chmod +x ${register_consul_service}
-log info "Register the service in consul: name=${FLINK_TM_SERVICE_NAME}, port=${TASKMANAGER_PORT}, address=${IP_ADDRESS}, tag=${INSTANCE_ID}"
-${register_consul_service} -s ${FLINK_TM_SERVICE_NAME} -a ${IP_ADDRESS} -t ${INSTANCE_ID}
+log info "Register the service in consul: name=flink-tm, port=${TASKMANAGER_PORT}, address=${IP_ADDRESS}, tag=${INSTANCE_ID}"
+${register_consul_service} -s flink-tm -a ${IP_ADDRESS} -t ${INSTANCE_ID}
 
 #-p ${TASKMANAGER_PORT}
 
@@ -64,8 +62,7 @@ sed -i "s@# taskmanager.tmp.dirs: /tmp@taskmanager.tmp.dirs: ${TASKMANAGER_TMP_D
 log info "Flink TaskManager configured to connects to JobManager ${FLK_TM_BASE_DNS_SERVICE_NAME}"
 
 # Setup systemd service
-source ${scripts}/java_utils.sh
-retrieve_java_home "${HOST}"
+# TODO retrieve_java_home "${HOST}"
 
 sudo cp ${scripts}/systemd/flink-tm.service /etc/systemd/system/flink.service
 

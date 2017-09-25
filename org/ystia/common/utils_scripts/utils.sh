@@ -252,6 +252,53 @@ ensure_home_var_is_set () {
     fi
 }
 
+isServiceInstalled() {
+    [ -e ${STARLINGS_DIR}/.${NODE}-installFlag ]
+}
+
+setServiceInstalled() {
+    touch ${STARLINGS_DIR}/.${NODE}-installFlag
+}
+
+unsetServiceInstalled() {
+    rm -f ${STARLINGS_DIR}/.${NODE}-installFlag
+}
+
+isServiceConfigured() {
+    [ -e ${STARLINGS_DIR}/.${NODE}-configureFlag ]
+}
+
+setServiceConfigured() {
+    touch ${STARLINGS_DIR}/.${NODE}-configureFlag
+}
+
+unsetServiceConfigured() {
+    rm -f ${STARLINGS_DIR}/.${NODE}-configureFlag
+}
+
+isServiceStarted() {
+    [ -e ${STARLINGS_DIR}/.${NODE}-startFlag ]
+}
+
+setServiceStarted() {
+    touch ${STARLINGS_DIR}/.${NODE}-startFlag
+}
+
+unsetServiceStarted() {
+    rm -f ${STARLINGS_DIR}/.${NODE}-startFlag
+}
+
+# Check if a service is already configured before stopped him to avoid error
+# params:
+#   1- name of service to stop
+stop_centos_service() {
+  IS_SERVICE_ACTIVE=`sudo systemctl list-units | grep ${1} ;echo $?`
+  if [[ "${IS_SERVICE_ACTIVE}" != "1" ]]; then
+       echo "sudo systemctl stop firewalld"
+       sudo systemctl stop firewalld
+  fi
+}
+
 # Generate a fd from the file name
 # TODO should be more sofisticated
 getlockfd() {

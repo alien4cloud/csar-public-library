@@ -50,6 +50,8 @@ node_types:
       java_host:
         type: org.ystia.java.pub.capabilities.JavaHosting
         occurrences: [0,unbounded]
+    attributes:
+      java_home: { get_operation_output: [SELF, Standard, create, STARLINGS_JAVA_HOME] }
     interfaces:
       Standard:
         create:
