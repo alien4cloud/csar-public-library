@@ -1,0 +1,6 @@
+[curator-4]
+name=CentOS/RHEL 7 repository for Elasticsearch Curator 4.x packages
+baseurl=%CURATOR_REPO_URL%
+gpgcheck=1
+gpgkey=%CURATOR_REPO_KEY_URL%
+enabled=1

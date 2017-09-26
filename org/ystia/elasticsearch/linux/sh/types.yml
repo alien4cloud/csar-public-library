@@ -15,7 +15,7 @@ imports:
 
 node_types:
   org.ystia.elasticsearch.linux.sh.nodes.Elasticsearch:
-    derived_from: org.ystia.consul.pub.ConsulUser
+    derived_from: org.ystia.consul.pub.nodes.ConsulUser
     description: Installation of a Elasticsearch module for linux
     tags:
       icon: /images/elasticsearch-icon.jpg
@@ -37,25 +37,23 @@ node_types:
           property could be shared among several components using the
           inputs feature.
         required: false
-        default:
+        default: https://artifacts.elastic.co/downloads/elasticsearch
         constraints:
           - pattern: ^(http|https|ftp)://.+/.*$
       curator_repository_url:
         type: string
-        default: "${es.curator.repo.url}"
+        default: http://packages.elastic.co/curator/4/centos/7
         description: >
           The yum repository to install the package elasticsearch-curator.
-          If you do not specify any value, it's set as '${es.curator.repo.url.default}'.
         required: false
         constraints:
           - pattern: ^(http|https|ftp)://.+/.*$
       curator_repository_key_url:
         type: string
-        default: "${es.curator.key.url}"
+        default: http://packages.elastic.co/GPG-KEY-elasticsearch
         description: >
           This property give the opportunity to specify an alternative
           URL to download public key used to install Elastic curator.
-          If you do not specify any value, it's set as '${es.curator.key.url.default}'.
         required: false
         constraints:
           - pattern: ^(http|https|ftp)://.+/.*$
@@ -124,11 +122,86 @@ node_types:
           "unit_delete_older_than" (Default: do nothing)
         constraints:
           - valid_values: [days,months,years]
+    attributes:
+      java_home: { get_operation_output: [ SELF, Configure, pre_configure_source, JAVA_HOME ] }
+    capabilities:
+      search_resource: org.ystia.elasticsearch.pub.capabilities.SearchEndpoint
     requirements:
+      - host:
+          capability: org.ystia.java.pub.capabilities.JavaHosting
+          relationship: org.ystia.java.pub.relationships.HostedOnJavaRuntime
+          occurrences: [1, 1]
       - filesystem_endpoint:
           capability: tosca.capabilities.Node
           relationship: org.ystia.elasticsearch.linux.sh.relationships.ConnectsToFilessystem
           occurrences: [0,1]
+    interfaces:
+      Standard:
+        create:
+          inputs:
+            REPOSITORY: { get_property: [SELF, repository] }
+            ES_VERSION: { get_property: [SELF, component_version] }
+            CURATOR_REPO_URL: { get_property: [SELF, curator_repository_url] }
+            CURATOR_REPO_KEY_URL: { get_property: [SELF, curator_repository_key_url] }
+          implementation: scripts/elasticsearch_install.sh
+        configure:
+          inputs:
+            ES_VERSION: { get_property: [SELF, component_version] }
+            ELASTICSEARCH_HEAP_SIZE: { get_property: [SELF, heap_size] }
+            JAVA_HOME: { get_attribute: [SELF, java_home] }
+            ip_address: { get_attribute: [SELF, ip_address] }
+            cluster_name: { get_property: [ SELF, cluster_name ] }
+            number_of_shards: { get_property: [ SELF, number_of_shards ] }
+            number_of_replicas: { get_property: [ SELF, number_of_replicas ] }
+            nb_close_older_than: { get_property: [ SELF, nb_close_older_than ] }
+            unit_close_older_than: { get_property: [ SELF, unit_close_older_than ] }
+            nb_delete_older_than: { get_property: [ SELF, nb_delete_older_than ] }
+            unit_delete_older_than: { get_property: [ SELF, unit_delete_older_than ] }
+          implementation: scripts/elasticsearch_configure.sh
+        start:
+          inputs:
+            ES_VERSION: { get_property: [SELF, component_version] }
+            JAVA_HOME: { get_attribute: [SELF, java_home] }
+            number_of_replicas: { get_property: [ SELF, number_of_replicas ] }
+            number_of_shards: { get_property: [ SELF, number_of_shards ] }
+          implementation: scripts/elasticsearch_start.sh
+        stop:
+          implementation: scripts/elasticsearch_stop.sh
+      custom:
+        update_replicas:
+          inputs:
+            number_of_shards: { get_property: [ SELF, number_of_shards ] }
+            nb_replicas:
+              type: integer
+              description: Number of replicas for indexes
+              required: true
+            index:
+              type: string
+              description: The name of the index to be updated (specify no value for all indexes)
+              required: false
+            order:
+              type: integer
+              description: Priority of the interpretation of this replicas value for indexes (must be greater than zero)
+              required: true
+              constraints:
+                - greater_than: 0
+          implementation: scripts/elasticsearch_updateReplicas.sh
+    artifacts:
+      - scripts:
+          file: scripts
+          type: tosca.artifacts.File
+      - config_file:
+          file: config/elasticsearch.yml
+          type: org.ystia.elasticsearch.pub.artifacts.elasticsearchConfig
+      - curator_cron_tab:
+          file: config/curator-crontab
+          type: tosca.artifacts.File
+      - curator_action_file:
+          file: config/curator-action.yaml
+          type: tosca.artifacts.File
+      - curator_config_file:
+          file: config/curator.yml
+          type: tosca.artifacts.File
 
 relationship_types:
   org.ystia.elasticsearch.linux.sh.relationships.ConnectsToFilessystem:

@@ -13,20 +13,6 @@ imports:
   - org.ystia.consul.pub:1.0-SNAPSHOT
   - org.ystia.java.pub:1.0-SNAPSHOT
 
-node_types:
-  org.ystia.elasticsearch.pub.nodes.Elasticsearch:
-    derived_from: org.ystia.consul.pub.ConsulUser
-    description: Installation of Elasticsearch from Elastic Stack
-    tags:
-      icon: /images/elasticsearch.png
-    requirements:
-      - java:
-          capability: org.ystia.java.pub.capabilities.JavaHosting
-          relationship: org.ystia.java.pub.relationships.HostedOnJavaRuntime
-          occurrences: [1, 1]
-    capabilities:
-      search_resource: org.ystia.elasticsearch.pub.capabilities.SearchEndpoint
-
 relationship_types:
   org.ystia.elasticsearch.pub.relationships.ConnectsToFilessystem:
     derived_from: tosca.relationships.ConnectsTo

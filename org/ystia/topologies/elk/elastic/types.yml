@@ -1,0 +1,71 @@
+tosca_definitions_version: alien_dsl_1_4_0
+
+metadata:
+  template_name: org.ystia.topologies.elk_elastic
+  template_version: 1.0-SNAPSHOT
+  template_author: Bull
+
+description: Basic topology with Elasticsearch
+
+imports:
+  - tosca-normative-types:1.0.0-ALIEN14
+  - org.ystia.common:1.0-SNAPSHOT
+  - org.ystia.consul.pub:1.0-SNAPSHOT
+  - org.ystia.elasticsearch.pub:1.0-SNAPSHOT
+  - org.ystia.java.linux.sh:1.0-SNAPSHOT
+  - org.ystia.consul.linux.sh:1.0-SNAPSHOT
+  - org.ystia.java.pub:1.0-SNAPSHOT
+  - org.ystia.elasticsearch.linux.sh:1.0-SNAPSHOT
+
+topology_template:
+  node_templates:
+    Network:
+      type: tosca.nodes.Network
+      properties:
+        ip_version: 4
+    Compute:
+      type: tosca.nodes.Compute
+      properties:
+        mem_size: 12GB
+      requirements:
+        - network:
+            node: Network
+            capability: tosca.capabilities.Connectivity
+            relationship: tosca.relationships.Network
+      capabilities:
+        scalable:
+          properties:
+            min_instances: 1
+            max_instances: 1
+            default_instances: 1
+        endpoint:
+          properties:
+            secure: true
+            protocol: tcp
+            network_name: PRIVATE
+            initiator: source
+    Consul:
+      type: org.ystia.consul.linux.sh.nodes.Consul
+      requirements:
+        - host:
+            node: Compute
+            capability: tosca.capabilities.Container
+            relationship: tosca.relationships.HostedOn
+    JDK:
+      type: org.ystia.java.linux.sh.nodes.JDK
+      requirements:
+        - host:
+            node: Compute
+            capability: tosca.capabilities.Container
+            relationship: tosca.relationships.HostedOn
+    Elasticsearch:
+      type: org.ystia.elasticsearch.linux.sh.nodes.Elasticsearch
+      requirements:
+        - host:
+            node: JDK
+            capability: org.ystia.java.pub.capabilities.JavaHosting
+            relationship: org.ystia.java.pub.relationships.HostedOnJavaRuntime
+        - consul:
+            node: Consul
+            capability: org.ystia.consul.pub.capabilities.ConsulAgent
+            relationship: org.ystia.consul.pub.relationships.ConnectsToConsulAgent

@@ -1,0 +1,38 @@
+# Remember, leave a key empty if there is no value.  None will be a string,
+# not a Python "NoneType"
+#
+# Also remember that all examples have 'disable_action' set to True.  If you
+# want to use this action as a template, be sure to set this to False after
+# copying it.
+actions:
+  1:
+    action: close
+    description: "Close selected indices"
+    options:
+      continue_if_exception: False
+      delete_aliases: False
+      disable_action: False
+      ignore_empty_list: True
+      timeout_override: 300
+    filters:
+    - filtertype: age
+      source: name
+      direction: older
+      timestring: '%Y.%m.%d'
+      unit: %CLOSE_UNIT%
+      unit_count: %CLOSE_NB%
+
+  2:
+    action: delete_indices
+    description: "Delete selected indices"
+    options:
+      continue_if_exception: False
+      ignore_empty_list: True
+      timeout_override: 300
+    filters:
+    - filtertype: age
+      source: name
+      direction: older
+      timestring: '%Y.%m.%d'
+      unit: %DELETE_UNIT%
+      unit_count: %DELETE_NB%
