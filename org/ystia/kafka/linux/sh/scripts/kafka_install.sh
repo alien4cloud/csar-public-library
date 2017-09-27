@@ -33,18 +33,6 @@ tar xzf ${installDir}/${zipName} -C ${installDir}
 chmod +x ${KAFKA_HOME}/bin/*
 # TODO cp ${scripts}/patches/zookeeper-3.4.6.jar ${KAFKA_HOME}/libs/zookeeper-3.4.6.jar
 
-# Setup systemd zookeeper service
-sudo cp ${scripts}/systemd/zookeeper.service /etc/systemd/system/zookeeper.service
-sudo sed -i -e "s/%USER%/${USER}/g" -e "s@%KAFKA_HOME%@${KAFKA_HOME}@g" -e "s@%JAVA_HOME%@${JAVA_HOME}@g" -e "s/%ZK_HEAP_SIZE%/${ZK_HEAP_SIZE}/g" /etc/systemd/system/zookeeper.service
-sudo systemctl daemon-reload
-#sudo systemctl enable zookeeper.service
-
-# Setup systemd kafka service
-sudo cp ${scripts}/systemd/kafka.service /etc/systemd/system/kafka.service
-sudo sed -i -e "s/%USER%/${USER}/g" -e "s@%KAFKA_HOME%@${KAFKA_HOME}@g" -e "s@%JAVA_HOME%@${JAVA_HOME}@g" -e "s/%KF_HEAP_SIZE%/${KF_HEAP_SIZE}/g" /etc/systemd/system/kafka.service
-sudo systemctl daemon-reload
-#sudo systemctl enable kafka.service
-
 setServiceInstalled
 
 log end

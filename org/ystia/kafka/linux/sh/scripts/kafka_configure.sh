@@ -16,6 +16,18 @@ if isServiceConfigured; then
     exit 0
 fi
 
+# Setup systemd zookeeper service
+sudo cp ${scripts}/systemd/zookeeper.service /etc/systemd/system/zookeeper.service
+sudo sed -i -e "s/%USER%/${USER}/g" -e "s@%KAFKA_HOME%@${KAFKA_HOME}@g" -e "s@%JAVA_HOME%@${JAVA_HOME}@g" -e "s/%ZK_HEAP_SIZE%/${ZK_HEAP_SIZE}/g" /etc/systemd/system/zookeeper.service
+sudo systemctl daemon-reload
+#sudo systemctl enable zookeeper.service
+
+# Setup systemd kafka service
+sudo cp ${scripts}/systemd/kafka.service /etc/systemd/system/kafka.service
+sudo sed -i -e "s/%USER%/${USER}/g" -e "s@%KAFKA_HOME%@${KAFKA_HOME}@g" -e "s@%JAVA_HOME%@${JAVA_HOME}@g" -e "s/%KF_HEAP_SIZE%/${KF_HEAP_SIZE}/g" /etc/systemd/system/kafka.service
+sudo systemctl daemon-reload
+#sudo systemctl enable kafka.service
+
 DATA_DIR="/tmp"
 if [[ -e "${STARLINGS_DIR}/.${NODE}-volumeFlag" ]]; then
     DATA_DIR=$(cat ${STARLINGS_DIR}/${NODE}-service.env | grep "^DATA_DIR" | cut -d '=' -f 2)

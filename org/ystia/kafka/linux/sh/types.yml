@@ -32,9 +32,6 @@ node_types:
             REPOSITORY: { get_property: [SELF, repository] }
             KAFKA_VERSION: { get_property: [SELF, component_version] }
             SCALA_VERSION: { get_property: [SELF, scala_version] }
-            IP_ADDRESS: { get_attribute: [SELF, ip_address] }
-            KF_HEAP_SIZE: { get_property: [SELF, kf_heap_size] }
-            ZK_HEAP_SIZE: { get_property: [SELF, zk_heap_size] }
           implementation: scripts/kafka_install.sh
         configure:
           inputs:
@@ -42,6 +39,8 @@ node_types:
             LOG_CLEANER_ENABLE: { get_property: [SELF, log_cleaner_enable] }
             JAVA_HOME: { get_attribute: [SELF, java_home] }
             KAFKA_HOME: { get_attribute: [SELF, kafka_home] }
+            KF_HEAP_SIZE: { get_property: [SELF, kf_heap_size] }
+            ZK_HEAP_SIZE: { get_property: [SELF, zk_heap_size] }
           implementation: scripts/kafka_configure.sh
         start:
           inputs:
