@@ -47,7 +47,15 @@ relationship_types:
           file: utils_scripts
   org.ystia.relationships.HostedOn:
     derived_from: tosca.relationships.HostedOn
-    description: Abstract ystia HostedTo relationships
+    description: Abstract ystia HostedOn relationships
+    abstract: true
+    artifacts:
+      - utils_scripts:
+          type: tosca.artifacts.File
+          file: utils_scripts
+  org.ystia.relationships.DependsOn:
+    derived_from: tosca.relationships.DependsOn
+    description: Abstract ystia DependsOn relationships
     abstract: true
     artifacts:
       - utils_scripts:
