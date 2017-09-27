@@ -44,8 +44,6 @@ node_types:
         required: false
         constraints:
           - pattern: ^(http|https|ftp)://.+/.+(zip|tar|tar.gz|tgz|tar.bz2)$
-    attributes:
-      java_home: { get_operation_output: [SELF, Standard, create, STARLINGS_JAVA_HOME] }
     capabilities:
       java_host:
         type: org.ystia.java.pub.capabilities.JavaHosting
@@ -53,7 +51,7 @@ node_types:
 
 relationship_types:
   org.ystia.java.pub.relationships.HostedOnJavaRuntime:
-    derived_from: tosca.relationships.HostedOn
+    derived_from: org.ystia.relationships.HostedOn
     description: Relationship use to describe that the SoftwareComponent is hosted on java
     valid_target_types: [ org.ystia.java.pub.capabilities.JavaHosting ]
     attributes:

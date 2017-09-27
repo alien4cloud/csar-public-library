@@ -16,6 +16,8 @@ node_types:
   org.ystia.java.linux.sh.nodes.Java:
     derived_from: org.ystia.java.pub.nodes.Java
     description: Installation of a Java module for linux
+    attributes:
+      java_home: { get_operation_output: [SELF, Standard, create, STARLINGS_JAVA_HOME] }
     interfaces:
       Standard:
         create:

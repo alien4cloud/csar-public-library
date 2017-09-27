@@ -16,6 +16,10 @@ if isServiceConfigured; then
     exit 0
 fi
 
+# Check JAVA_HOME, KAFKA_HOME, ... are set
+[ -z ${JAVA_HOME} ] && error_exit "JAVA_HOME not set"
+[ -z ${KAFKA_HOME} ] && error_exit "KAFKA_HOME not set"
+
 # Setup systemd zookeeper service
 sudo cp ${scripts}/systemd/zookeeper.service /etc/systemd/system/zookeeper.service
 sudo sed -i -e "s/%USER%/${USER}/g" -e "s@%KAFKA_HOME%@${KAFKA_HOME}@g" -e "s@%JAVA_HOME%@${JAVA_HOME}@g" -e "s/%ZK_HEAP_SIZE%/${ZK_HEAP_SIZE}/g" /etc/systemd/system/zookeeper.service

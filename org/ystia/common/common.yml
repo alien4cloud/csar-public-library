@@ -45,3 +45,11 @@ relationship_types:
       - utils_scripts:
           type: tosca.artifacts.File
           file: utils_scripts
+  org.ystia.relationships.HostedOn:
+    derived_from: tosca.relationships.HostedOn
+    description: Abstract ystia HostedTo relationships
+    abstract: true
+    artifacts:
+      - utils_scripts:
+          type: tosca.artifacts.File
+          file: utils_scripts

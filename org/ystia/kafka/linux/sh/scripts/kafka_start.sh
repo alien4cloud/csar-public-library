@@ -22,6 +22,10 @@ source ${HOME}/.starlings/${NODE}-service.env
 # Ensure that scripts are executable
 chmod +x ${scripts}/*.sh
 
+# Check JAVA_HOME, KAFKA_HOME, ... are set
+[ -z ${JAVA_HOME} ] && error_exit "JAVA_HOME not set"
+[ -z ${KAFKA_HOME} ] && error_exit "KAFKA_HOME not set"
+
 # Now wait for all zookeeper nodes to be pingable using there DNS name in cluster mode
 for zk_node in $(cat ${KAFKA_HOME}/config/zookeeper.properties | egrep "^server\..+=.+:.+:.+$" | sed -e 's/^.*=\([^:]\+\):.*/\1/g'); do
     wait_for_address_to_be_pingable ${zk_node} 2048 || error_exit "Unable to reach ${zk_node} within the delay. Startup canceled."
