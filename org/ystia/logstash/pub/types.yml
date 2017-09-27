@@ -9,3 +9,22 @@ description: Public interface types for Logstash support.
 
 imports:
   - tosca-normative-types:1.0.0-ALIEN14
+  - org.ystia.common:1.0-SNAPSHOT
+  - org.ystia.consul.pub:1.0-SNAPSHOT
+  - org.ystia.java.pub:1.0-SNAPSHOT
+  - org.ystia.kafka.pub:1.0-SNAPSHOT
+
+node_types:
+  org.ystia.logstash.pub.nodes.Logstash:
+    derived_from: org.ystia.consul.pub.nodes.ConsulUser
+    abstract: true
+    description: Main Logstash Component
+    tags:
+      icon: /images/kafka-icon.png
+    properties:
+      component_version:
+        type: version
+        description: Version of the installed Kafka component
+        default: 0.10.1.1
+        constraints:
+          - valid_values: [0.8.2.1, 0.9.0.1, 0.10.1.1, 0.11.0.1]

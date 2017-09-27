@@ -1,0 +1,15 @@
+[Unit]
+Description=Unit file for managing Kafka within Starlings
+
+[Service]
+Environment="JAVA_HOME=%JAVA_HOME%"
+Environment="KAFKA_OPTS=-Djava.security.properties=%KAFKA_HOME%/config/java.security"
+Environment="KAFKA_LOG4J_OPTS=-Dlog4j.configuration=file:%KAFKA_HOME%/config/kafka-log4j.properties"
+Environment="KAFKA_HEAP_OPTS=-Xms%KF_HEAP_SIZE% -Xmx%KF_HEAP_SIZE%"
+ExecStart=%KAFKA_HOME%/bin/kafka-server-start.sh %KAFKA_HOME%/config/server.properties
+# Avoid a failure status after stop kafka (Exit code 143 corresponds to SIGTERM).
+SuccessExitStatus=0 143
+User=%USER%
+
+[Install]
+WantedBy=multi-user.target

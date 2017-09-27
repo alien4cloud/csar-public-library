@@ -49,8 +49,8 @@ topology_template:
             node: Compute
             capability: tosca.capabilities.Container
             relationship: tosca.relationships.HostedOn
-    JDK:
-      type: org.ystia.java.linux.sh.nodes.JDK
+    Java:
+      type: org.ystia.java.linux.sh.nodes.Java
       requirements:
         - host:
             node: Compute
@@ -60,7 +60,7 @@ topology_template:
       type: org.ystia.flink.linux.sh.nodes.JobManager
       requirements:
         - host:
-            node: JDK
+            node: Java
             capability: org.ystia.java.pub.capabilities.JavaHosting
             relationship: org.ystia.java.pub.relationships.HostedOnJavaRuntime
         - consul:
@@ -97,8 +97,8 @@ topology_template:
             node: Compute_2
             capability: tosca.capabilities.Container
             relationship: tosca.relationships.HostedOn
-    JDK_2:
-      type: org.ystia.java.linux.sh.nodes.JDK
+    Java_2:
+      type: org.ystia.java.linux.sh.nodes.Java
       requirements:
         - host:
             node: Compute_2
@@ -112,7 +112,7 @@ topology_template:
             capability: org.ystia.flink.pub.capabilities.JobManager
             relationship: org.ystia.flink.linux.sh.relationships.TaskManagerToJobManager
         - host:
-            node: JDK_2
+            node: Java_2
             capability: org.ystia.java.pub.capabilities.JavaHosting
             relationship: org.ystia.java.pub.relationships.HostedOnJavaRuntime
         - consul:

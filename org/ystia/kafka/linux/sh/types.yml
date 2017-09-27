@@ -5,10 +5,89 @@ metadata:
   template_version: 1.0-SNAPSHOT
   template_author: Bull
 
-description:
+description: Kafka is a distributed, partitioned, replicated commit log service.
 
 imports:
   - tosca-normative-types:1.0.0-ALIEN14
   - org.ystia.common:1.0-SNAPSHOT
+  - org.ystia.consul.pub:1.0-SNAPSHOT
+  - org.ystia.kafka.pub:1.0-SNAPSHOT
 
 node_types:
+  org.ystia.kafka.linux.sh.nodes.Kafka:
+    derived_from: org.ystia.kafka.pub.nodes.Kafka
+    description: Installation of a Kafka module for linux
+    attributes:
+      java_home: { get_operation_output: [ SELF, Configure, pre_configure_source, JAVA_HOME ] }
+      kafka_home: { get_operation_output: [ SELF, Standard, create, KAFKA_HOME ] }
+    requirements:
+      - filesystem_endpoint:
+          capability: tosca.capabilities.Node
+          relationship: org.ystia.kafka.linux.sh.relationships.ConnectsToFilessystem
+          occurrences: [0,1]
+    interfaces:
+      Standard:
+        create:
+          inputs:
+            REPOSITORY: { get_property: [SELF, repository] }
+            KAFKA_VERSION: { get_property: [SELF, component_version] }
+            SCALA_VERSION: { get_property: [SELF, scala_version] }
+            IP_ADDRESS: { get_attribute: [SELF, ip_address] }
+            KF_HEAP_SIZE: { get_property: [SELF, kf_heap_size] }
+            ZK_HEAP_SIZE: { get_property: [SELF, zk_heap_size] }
+          implementation: scripts/kafka_install.sh
+        configure:
+          inputs:
+            IP_ADDRESS: { get_attribute: [SELF, ip_address] }
+            LOG_CLEANER_ENABLE: { get_property: [SELF, log_cleaner_enable] }
+            JAVA_HOME: { get_attribute: [SELF, java_home] }
+            KAFKA_HOME: { get_attribute: [SELF, kafka_home] }
+          implementation: scripts/kafka_configure.sh
+        start:
+          inputs:
+            KAFKA_HOME: { get_attribute: [SELF, kafka_home] }
+            JAVA_HOME: { get_attribute: [SELF, java_home] }
+          implementation:  scripts/kafka_start.sh
+        stop:
+          inputs:
+            KAFKA_HOME: { get_attribute: [SELF, kafka_home] }  
+            JAVA_HOME: { get_attribute: [SELF, java_home] }
+          implementation:  scripts/kafka_stop.sh
+    artifacts:
+      - scripts:
+          file: scripts
+          type: tosca.artifacts.File
+
+  org.ystia.kafka.linux.sh.nodes.KafkaTopic:
+    derived_from: org.ystia.kafka.pub.nodes.KafkaTopic
+    description: Apache Kafka topic implementation for linux sh
+    interfaces:
+      Standard:
+        create:
+          inputs:
+            TOPIC_NAME: { get_property: [SELF, topic_name] }
+            PARTITIONS: { get_property: [SELF, partitions] }
+            REPLICAS: { get_property: [SELF, replicas] }
+            MIN_INSYNC_REPLICAS: { get_property: [SELF, min_insync_replicas] }
+            RETENTION_MINUTES: { get_property: [SELF, retention_minutes] }
+            SEGMENT_BYTES: { get_property: [SELF, segment_bytes] }
+            SEGMENT_MINUTES: { get_property: [SELF, segment_minutes] }
+          implementation: scripts/createKafkaTopic.sh
+    artifacts:
+      - scripts:
+          file: scripts
+          type: tosca.artifacts.File
+
+relationship_types:
+  org.ystia.kafka.linux.sh.relationships.ConnectsToFilessystem:
+    derived_from: org.ystia.kafka.pub.relationships.ConnectsToFilessystem
+    interfaces:
+      Configure:
+          pre_configure_source:
+            inputs:
+              path_fs: { get_property: [ TARGET, location ] }
+            implementation: scripts/kafka-to-volume.sh
+    artifacts:
+      - scripts:
+          file: scripts
+          type: tosca.artifacts.File
