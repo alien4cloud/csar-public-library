@@ -2,14 +2,15 @@ tosca_definitions_version: alien_dsl_1_4_0
 
 metadata:
   template_name: org.alien4cloud.alien4cloud.topologies.a4c_ha
-  template_version: 0.1.0-SNAPSHOT
-  template_author: admin
+  template_version: 1.4.0-SNAPSHOT
+  template_author: alien4cloud
 
 description: >
   Alien4cloud HA topology
   Centos AMI > ami-6daf5e14
   Ubuntu AMI > ami-63529a1a
   security group cfy > sg-7e7df706
+
 
 imports:
   - org.alien4cloud.java.jmx.jolokia:1.4.0-SNAPSHOT
@@ -35,6 +36,9 @@ topology_template:
       type: string
       required: true
       default: "https://edelivery.oracle.com/otn-pub/java/jdk/8u131-b11/d54c1d3a095b4ff2b6607d096fa80163/jdk-8u131-linux-x64.tar.gz"
+  input_artifacts:
+    alien_dist:
+        type: tosca.artifacts.File
   node_templates:
     OracleJDK:
       type: org.alien4cloud.java.jdk.linux.nodes.OracleJDK
@@ -115,6 +119,7 @@ topology_template:
             initiator: source
       artifacts:
         alien_dist:
+          file: { get_input_artifact: alien_dist }
           type: tosca.artifacts.File
     ConsulServer:
       type: org.alien4cloud.consul.nodes.ConsulServer
@@ -276,6 +281,7 @@ topology_template:
           properties:
             architecture: "x86_64"
             type: linux
+            distribution: centos
         scalable:
           properties:
             min_instances: 1
