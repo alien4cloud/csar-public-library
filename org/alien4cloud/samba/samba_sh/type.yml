@@ -1,16 +1,17 @@
 tosca_definitions_version: alien_dsl_1_4_0
 
 metadata:
-  template_name: org.alien4cloud.samba
+  template_name: org.alien4cloud.samba.samba_sh
   template_version: 1.4.0-SNAPSHOT
   template_author: alien4cloud
 
 imports:
   - tosca-normative-types:1.0.0-ALIEN14
+  - org.alien4cloud.samba.pub:1.4.0-SNAPSHOT
 
 node_types:
-    org.alien4cloud.samba.nodes.SambaServer:
-      derived_from: tosca.nodes.SoftwareComponent
+    org.alien4cloud.samba.samba_sh.nodes.SambaServer:
+      derived_from: org.alien4cloud.samba.pub.nodes.SambaServer
       description: >
         Configure a samba server
       tags:
@@ -23,7 +24,7 @@ node_types:
           type: string
           default: "/srv/samba/alien4cloud"
       capabilities:
-        smb_server: org.alien4cloud.samba.capabilities.SambaServer
+        smb_server: org.alien4cloud.samba.pub.capabilities.SambaServer
       interfaces:
         Standard:
           create: scripts/smbServer/install.sh
@@ -42,8 +43,8 @@ node_types:
             file: scripts/commons
             type: tosca.artifacts.File
 
-    org.alien4cloud.samba.nodes.SambaClient:
-      derived_from: tosca.nodes.SoftwareComponent
+    org.alien4cloud.samba.samba_sh.nodes.SambaClient:
+      derived_from: org.alien4cloud.samba.pub.nodes.SambaClient
       description: >
         Configure a samba client
       tags:
@@ -54,8 +55,8 @@ node_types:
           default: "/var/alien4cloud"
       requirements:
         - smb_server:
-            capability: org.alien4cloud.samba.capabilities.SambaServer
-            relationship: org.alien4cloud.samba.relationships.ConnectsToSambaServer
+            capability: org.alien4cloud.samba.pub.capabilities.SambaServer
+            relationship: org.alien4cloud.samba.samba_sh.relationships.ConnectsToSambaServer
       interfaces:
         Standard:
           create: scripts/smbClient/install.sh
@@ -64,18 +65,11 @@ node_types:
             file: scripts/commons
             type: tosca.artifacts.File
 
-
-capability_types:
-
-  org.alien4cloud.samba.capabilities.SambaServer:
-    derived_from: tosca.capabilities.Root
-
-
 relationship_types:
 
-  org.alien4cloud.samba.relationships.ConnectsToSambaServer:
+  org.alien4cloud.samba.samba_sh.relationships.ConnectsToSambaServer:
     derived_from: tosca.relationships.ConnectsTo
-    valid_target_types: [org.alien4cloud.samba.capabilities.SambaServer]
+    valid_target_types: [org.alien4cloud.samba.pub.capabilities.SambaServer]
     properties:
       mount_point:
         type: string

@@ -1,17 +1,18 @@
 tosca_definitions_version: alien_dsl_1_4_0
 
 metadata:
-  template_name: org.alien4cloud.nginx
+  template_name: org.alien4cloud.nginx.nginx_sh
   template_version: 1.4.0-SNAPSHOT
   template_author: alien4cloud
 
 imports:
   - tosca-normative-types:1.0.0-ALIEN14
-  - org.alien4cloud.consul:1.4.0-SNAPSHOT
+  - org.alien4cloud.nginx.pub:1.4.0-SNAPSHOT
+  - org.alien4cloud.consul.consul_sh:1.4.0-SNAPSHOT
 
 node_types:
-  org.alien4cloud.nginx.nodes.Nginx:
-    derived_from: tosca.nodes.SoftwareComponent
+  org.alien4cloud.nginx.nginx_sh.nodes.Nginx:
+    derived_from: org.alien4cloud.nginx.pub.nodes.Nginx
     description: >
       NGINX web server and reverse proxy installation.
     tags:
@@ -65,8 +66,8 @@ node_types:
           file: scripts/commons
           type: tosca.artifacts.File
 
-  org.alien4cloud.nginx.nodes.ConsulTemplate4Nginx:
-    derived_from: tosca.nodes.SoftwareComponent
+  org.alien4cloud.nginx.nginx_sh.nodes.ConsulTemplate4Nginx:
+    derived_from: org.alien4cloud.nginx.pub.nodes.ConsulTemplate4Nginx
     description: |
       Consul-Template is a smart tool that can listen for consul changes,
       use templates to update config files on changes, and call a command. It can be
@@ -75,11 +76,11 @@ node_types:
       icon: /images/consul_template.png
     capabilities:
       consul:
-        type: org.alien4cloud.consul.capabilities.ConsulClient
+        type: org.alien4cloud.consul.pub.capabilities.ConsulClient
     requirements:
       - consul:
-          capability: org.alien4cloud.consul.capabilities.ConsulAgent
-          relationship: org.alien4cloud.consul.relationships.ConnectToConsulAgent
+          capability: org.alien4cloud.consul.pub.capabilities.ConsulAgent
+          relationship: org.alien4cloud.consul.consul_sh.relationships.ConnectToConsulAgent
           occurrences: [ 1, 1 ]
     properties:
       download_url:

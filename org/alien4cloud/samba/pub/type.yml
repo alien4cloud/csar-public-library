@@ -1,0 +1,44 @@
+tosca_definitions_version: alien_dsl_1_4_0
+
+metadata:
+  template_name: org.alien4cloud.samba.pub
+  template_version: 1.4.0-SNAPSHOT
+  template_author: alien4cloud
+
+imports:
+  - tosca-normative-types:1.0.0-ALIEN14
+
+node_types:
+    org.alien4cloud.samba.pub.nodes.SambaServer:
+      derived_from: tosca.nodes.SoftwareComponent
+      description: >
+        Configure a samba server
+      tags:
+        icon: /images/samba.png
+      properties:
+        share_name:
+          type: string
+          default: "ALIEN4CLOUD"
+        share_path:
+          type: string
+          default: "/srv/samba/alien4cloud"
+      capabilities:
+        smb_server: org.alien4cloud.samba.pub.capabilities.SambaServer
+
+
+    org.alien4cloud.samba.pub.nodes.SambaClient:
+      derived_from: tosca.nodes.SoftwareComponent
+      description: >
+        Configure a samba client
+      tags:
+        icon: /images/samba.png
+      properties:
+        mount_point:
+          type: string
+          default: "/var/alien4cloud"
+
+capability_types:
+
+  org.alien4cloud.samba.pub.capabilities.SambaServer:
+    derived_from: tosca.capabilities.Root
+

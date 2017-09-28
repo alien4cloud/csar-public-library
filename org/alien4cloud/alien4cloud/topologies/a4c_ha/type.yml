@@ -14,9 +14,9 @@ description: >
 
 imports:
   - org.alien4cloud.java.jmx.jolokia:1.4.0-SNAPSHOT
-  - org.alien4cloud.samba:1.4.0-SNAPSHOT
+  - org.alien4cloud.samba.samba_sh:1.4.0-SNAPSHOT
   - org.alien4cloud.alien4cloud.pub:1.4.0-SNAPSHOT
-  - org.alien4cloud.nginx:1.4.0-SNAPSHOT
+  - org.alien4cloud.nginx.nginx_sh:1.4.0-SNAPSHOT
   - tosca-normative-types:1.0.0-ALIEN14
   - org.alien4cloud.elasticsearch.pub:1.4.0-SNAPSHOT
   - org.alien4cloud.elasticsearch.ubuntu:1.4.0-SNAPSHOT
@@ -215,7 +215,7 @@ topology_template:
           properties:
             api_port: 8500
     ConsulTemplate4Nginx:
-      type: org.alien4cloud.nginx.nodes.ConsulTemplate4Nginx
+      type: org.alien4cloud.nginx.nginx_sh.nodes.ConsulTemplate4Nginx
       properties:
         download_url: "https://releases.hashicorp.com/consul-template/0.15.0/consul-template_0.15.0_linux_amd64.zip"
         listen_port: 80
@@ -239,7 +239,7 @@ topology_template:
           properties:
             tls_enabled: false
     Nginx:
-      type: org.alien4cloud.nginx.nodes.Nginx
+      type: org.alien4cloud.nginx.nginx_sh.nodes.Nginx
       properties:
         listen_port: 80
         target_protocol: http
@@ -250,7 +250,7 @@ topology_template:
             capability: tosca.capabilities.Container
             relationship: tosca.relationships.HostedOn
     SambaServer:
-      type: org.alien4cloud.samba.nodes.SambaServer
+      type: org.alien4cloud.samba.samba_sh.nodes.SambaServer
       properties:
         share_name: ALIEN4CLOUD
         share_path: "/srv/samba/alien4cloud"
@@ -260,7 +260,7 @@ topology_template:
             capability: tosca.capabilities.Container
             relationship: tosca.relationships.HostedOn
     SambaClient:
-      type: org.alien4cloud.samba.nodes.SambaClient
+      type: org.alien4cloud.samba.samba_sh.nodes.SambaClient
       properties:
         mount_point: { get_input: data_dir }
       requirements:
@@ -270,8 +270,8 @@ topology_template:
             relationship: tosca.relationships.HostedOn
         - smb_server:
             node: SambaServer
-            capability: org.alien4cloud.samba.capabilities.SambaServer
-            relationship: org.alien4cloud.samba.relationships.ConnectsToSambaServer
+            capability: org.alien4cloud.samba.pub.capabilities.SambaServer
+            relationship: org.alien4cloud.samba.samba_sh.relationships.ConnectsToSambaServer
             properties:
               mount_point: { get_input: data_dir }
     SambaCompute:

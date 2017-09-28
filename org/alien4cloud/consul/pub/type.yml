@@ -18,8 +18,8 @@ node_types:
       icon: /images/consul.png
     capabilities:
       consul_agent:
-        type: org.alien4cloud.consul.capabilities.ConsulAgent
-        valid_source_types: [org.alien4cloud.consul.capabilities.ConsulClient]
+        type: org.alien4cloud.consul.pub.capabilities.ConsulAgent
+        valid_source_types: [org.alien4cloud.consul.pub.capabilities.ConsulClient]
     properties:
       download_url:
         description: The URL to download the consul archive.
@@ -50,7 +50,7 @@ node_types:
     #   api_port: { get_operation_output: [ SELF, Standard, start, API_PORT ] }
 
   org.alien4cloud.consul.pub.nodes.ConsulServer:
-    derived_from: org.alien4cloud.consul.nodes.ConsulAgent
+    derived_from: org.alien4cloud.consul.pub.nodes.ConsulAgent
     description: >
       Consul discovery service installation (server node).
     properties:
@@ -63,12 +63,12 @@ node_types:
         default: server
     capabilities:
       consul_server:
-        type: org.alien4cloud.consul.capabilities.ConsulServer
-        valid_source_types: [org.alien4cloud.consul.capabilities.ConsulClient]
+        type: org.alien4cloud.consul.pub.capabilities.ConsulServer
+        valid_source_types: [org.alien4cloud.consul.pub.capabilities.ConsulClient]
 
 
   org.alien4cloud.consul.pub.nodes.ConsulClient:
-    derived_from: org.alien4cloud.consul.nodes.ConsulAgent
+    derived_from: org.alien4cloud.consul.pub.nodes.ConsulAgent
     description: >
       Consul discovery service installation (client node).
     properties:

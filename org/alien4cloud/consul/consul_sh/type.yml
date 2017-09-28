@@ -50,7 +50,7 @@ node_types:
     #   consul_server_address: { get_operation_output: [ SELF, Standard, start, CONSUL_SERVER_ADDRESS ] }
     #   api_port: { get_operation_output: [ SELF, Standard, start, API_PORT ] }
 
-  org.alien4cloud.consul.condul_sh.nodes.ConsulServer:
+  org.alien4cloud.consul.consul_sh.nodes.ConsulServer:
     derived_from: org.alien4cloud.consul.pub.nodes.ConsulAgent
     description: >
       Consul discovery service installation (server node).
