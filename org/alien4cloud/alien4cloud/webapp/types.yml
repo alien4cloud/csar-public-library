@@ -11,6 +11,8 @@ imports:
   - org.alien4cloud.java.jdk.linux:1.4.0-SNAPSHOT
   - org.alien4cloud.elasticsearch.pub:1.4.0-SNAPSHOT
   - org.alien4cloud.java.jmx.jolokia:1.4.0-SNAPSHOT
+  - org.alien4cloud.consul:1.4.0-SNAPSHOT
+  - org.alien4cloud.samba:1.4.0-SNAPSHOT
 
 node_types:
   org.alien4cloud.alien4cloud.webapp.nodes.Alien4Cloud:
@@ -58,8 +60,8 @@ node_types:
         type: string
         required: false
     capabilities:
-      # consul:
-      #   type: org.alien4cloud.consul.capabilities.ConsulClient
+      consul:
+        type: org.alien4cloud.consul.capabilities.ConsulClient
       # elasticsearch:
       #   type: org.alien4cloud.elasticsearch.capabilities.ElasticSearchClient
       # rest:
@@ -90,10 +92,10 @@ node_types:
           capability: org.alien4cloud.elasticsearch.pub.capabilities.ElasticSearchTransportAPI
           relationship: org.alien4cloud.alien4cloud.webapp.relationships.AlienConnectToElasticSearch
           occurrences: [ 0, 1 ]
-      # - consul:
-      #     capability: org.alien4cloud.consul.capabilities.ConsulAgent
-      #     relationship: org.alien4cloud.consul.relationships.ConnectToConsulAgent
-      #     occurrences: [ 0, 1 ]
+      - consul:
+          capability: org.alien4cloud.consul.capabilities.ConsulAgent
+          relationship: org.alien4cloud.consul.relationships.ConnectToConsulAgent
+          occurrences: [ 0, 1 ]
     interfaces:
       Standard:
         create:
