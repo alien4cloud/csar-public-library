@@ -15,6 +15,7 @@ imports:
   - org.ystia.kafka.pub:1.0-SNAPSHOT
   - org.ystia.kafka.linux.sh:1.0-SNAPSHOT
   - org.ystia.java.pub:1.0-SNAPSHOT
+  - org.ystia.java.linux.sh:1.0-SNAPSHOT
 
 topology_template:
   node_templates:
@@ -49,7 +50,7 @@ topology_template:
             capability: tosca.capabilities.Container
             relationship: tosca.relationships.HostedOn
     Java:
-      type: org.ystia.java.pub.nodes.Java
+      type: org.ystia.java.linux.sh.nodes.Java
       requirements:
         - host:
             node: Compute
