@@ -14,6 +14,7 @@ imports:
 node_types:
   org.ystia.java.pub.nodes.Java:
     derived_from: org.ystia.nodes.SoftwareComponent
+    abstract: true
     tags:
       icon: /images/java-icon.png
     properties:

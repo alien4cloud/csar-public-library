@@ -14,6 +14,7 @@ imports:
 node_types:
   org.ystia.mysql.pub.nodes.MySQLServer:
     derived_from: org.ystia.nodes.DBMS
+    abstract: true
     description: Install, configure and start a MySQL Server
     tags:
       icon: /images/mysql_server.jpg
@@ -47,6 +48,7 @@ node_types:
   org.ystia.mysql.pub.nodes.MySQLDatabase:
     derived_from: org.ystia.nodes.Database
     description: Create and configure a new database for MySQL
+    abstract: true
     tags:
       icon: /images/mysql_db.jpg
     properties:
