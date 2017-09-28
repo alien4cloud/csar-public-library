@@ -5,11 +5,101 @@ metadata:
   template_version: 1.0-SNAPSHOT
   template_author: Bull
 
-description:
+description: Topology Template for logstash/elasticsearch with geoname input
 
 imports:
   - tosca-normative-types:1.0.0-ALIEN14
+  - org.ystia.common:1.0-SNAPSHOT
+  - org.ystia.java.pub:1.0-SNAPSHOT
+  - org.ystia.consul.pub:1.0-SNAPSHOT
+  - org.ystia.elasticsearch.pub:1.0-SNAPSHOT
+  - org.ystia.java.linux.sh:1.0-SNAPSHOT
+  - org.ystia.consul.linux.sh:1.0-SNAPSHOT
+  - org.ystia.elasticsearch.linux.sh:1.0-SNAPSHOT
+  - org.ystia.logstash.linux.sh:1.0-SNAPSHOT
 
 topology_template:
-  inputs:
+  
   node_templates:
+
+    # Network
+
+    Network:
+      type: tosca.nodes.Network
+      properties:
+        ip_version: 4
+
+    # VM for Consul Server
+
+    ComputeCL:
+      type: tosca.nodes.Compute
+    ConsulServer:
+      type: org.ystia.consul.linux.sh.nodes.Consul
+      requirements:
+        - host:
+            node: ComputeCL
+
+    # VM for Elasticsearch
+
+    ComputeES:
+      type: tosca.nodes.Compute
+      properties:
+        mem_size: 12GB
+      requirements:
+        - network:
+            node: Network
+            relationship: tosca.relationships.Network
+    ConsulES:
+      type: org.ystia.consul.linux.sh.nodes.Consul
+      requirements:
+        - host:
+            node: ComputeES
+        - server_endpoint:
+            node: ConsulServer
+    JavaES:
+      type: org.ystia.java.linux.sh.nodes.Java
+      requirements:
+        - host:
+            node: ComputeES
+    Elasticsearch:
+      type: org.ystia.elasticsearch.linux.sh.nodes.Elasticsearch
+      requirements:
+        - host:
+            node: JavaES
+        - consul:
+            node: ConsulES
+
+    # VM for Logstash and GeoNames
+
+    ComputeLS:
+      type: tosca.nodes.Compute
+      requirements:
+        - network:
+            node: Network
+            relationship: tosca.relationships.Network
+    ConsulLS:
+      type: org.ystia.consul.linux.sh.nodes.Consul
+      requirements:
+        - host:
+            node: ComputeLS
+        - server_endpoint:
+            node: ConsulServer
+    JavaLS:
+      type: org.ystia.java.linux.sh.nodes.Java
+      requirements:
+        - host:
+            node: ComputeLS
+    Logstash:
+      type: org.ystia.logstash.linux.sh.nodes.Logstash
+      requirements:
+        - host:
+            node: JavaLS
+        - consul:
+            node: ConsulLS
+        - search_endpoint:
+            node: Elasticsearch
+    GeoNames:
+      type: org.ystia.logstash.linux.sh.nodes.GeoNames
+      requirements:
+        - logstash:
+            node: Logstash
