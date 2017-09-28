@@ -23,7 +23,7 @@ imports:
   - org.alien4cloud.java.pub:1.4.0-SNAPSHOT
   - org.alien4cloud.alien4cloud.webapp:1.4.0-SNAPSHOT
   - org.alien4cloud.java.jdk.linux:1.4.0-SNAPSHOT
-  - org.alien4cloud.consul:1.4.0-SNAPSHOT
+  - org.alien4cloud.consul.consul_sh:1.4.0-SNAPSHOT
 
 topology_template:
   inputs:
@@ -52,7 +52,7 @@ topology_template:
             capability: tosca.capabilities.Container
             relationship: tosca.relationships.HostedOn
     ConsulClient:
-      type: org.alien4cloud.consul.nodes.ConsulClient
+      type: org.alien4cloud.consul.consul_sh.nodes.ConsulClient
       properties:
         agent_mode: client
         download_url: "https://releases.hashicorp.com/consul/0.6.4/consul_0.6.4_linux_amd64.zip"
@@ -61,8 +61,8 @@ topology_template:
       requirements:
         - consul_server:
             node: ConsulServer
-            capability: org.alien4cloud.consul.capabilities.ConsulServer
-            relationship: org.alien4cloud.consul.relationships.JoinCluster
+            capability: org.alien4cloud.consul.pub.capabilities.ConsulServer
+            relationship: org.alien4cloud.consul.consul_sh.relationships.JoinCluster
         - host:
             node: AlienCompute
             capability: tosca.capabilities.Container
@@ -80,8 +80,8 @@ topology_template:
       requirements:
         - consul:
             node: ConsulClient
-            capability: org.alien4cloud.consul.capabilities.ConsulAgent
-            relationship: org.alien4cloud.consul.relationships.ConnectToConsulAgent
+            capability: org.alien4cloud.consul.pub.capabilities.ConsulAgent
+            relationship: org.alien4cloud.consul.consul_sh.relationships.ConnectToConsulAgent
         - java:
             node: OracleJDK
             capability: org.alien4cloud.java.pub.capabilities.JDK
@@ -122,7 +122,7 @@ topology_template:
           file: { get_input_artifact: alien_dist }
           type: tosca.artifacts.File
     ConsulServer:
-      type: org.alien4cloud.consul.nodes.ConsulServer
+      type: org.alien4cloud.consul.consul_sh.nodes.ConsulServer
       properties:
         agent_mode: server
         download_url: "https://releases.hashicorp.com/consul/0.6.4/consul_0.6.4_linux_amd64.zip"
@@ -195,7 +195,7 @@ topology_template:
             network_name: PRIVATE
             initiator: source
     ConsulClient_2:
-      type: org.alien4cloud.consul.nodes.ConsulClient
+      type: org.alien4cloud.consul.consul_sh.nodes.ConsulClient
       properties:
         agent_mode: client
         download_url: "https://releases.hashicorp.com/consul/0.6.4/consul_0.6.4_linux_amd64.zip"
@@ -204,8 +204,8 @@ topology_template:
       requirements:
         - consul_server:
             node: ConsulServer
-            capability: org.alien4cloud.consul.capabilities.ConsulServer
-            relationship: org.alien4cloud.consul.relationships.JoinCluster
+            capability: org.alien4cloud.consul.pub.capabilities.ConsulServer
+            relationship: org.alien4cloud.consul.consul_sh.relationships.JoinCluster
         - host:
             node: FrontCompute
             capability: tosca.capabilities.Container
@@ -224,8 +224,8 @@ topology_template:
       requirements:
         - consul:
             node: ConsulClient_2
-            capability: org.alien4cloud.consul.capabilities.ConsulAgent
-            relationship: org.alien4cloud.consul.relationships.ConnectToConsulAgent
+            capability: org.alien4cloud.consul.pub.capabilities.ConsulAgent
+            relationship: org.alien4cloud.consul.consul_sh.relationships.ConnectToConsulAgent
         - host:
             node: FrontCompute
             capability: tosca.capabilities.Container
