@@ -10,5 +10,188 @@ description:
 imports:
   - tosca-normative-types:1.0.0-ALIEN14
   - org.ystia.common:1.0-SNAPSHOT
+  - org.ystia.consul.pub:1.0-SNAPSHOT
+  - org.ystia.java.pub:1.0-SNAPSHOT
+  - org.ystia.elasticsearch.pub:1.0-SNAPSHOT
 
 node_types:
+  org.ystia.kibana.linux.sh.nodes.Kibana:
+    derived_from: org.ystia.consul.pub.nodes.ConsulUser
+    description: Installation of the Kibana module from ELK stack
+    tags:
+      icon: /images/kibana-icon.png
+    attributes:
+      url: { concat: ["http://", get_attribute: [HOST, public_ip_address], ":5601/#/dashboard" ] }
+      java_home: { get_operation_output: [ SELF, Configure, pre_configure_source, JAVA_HOME ] }
+    properties:
+      component_version:
+        type: version
+        description: Version of the installed Kibana component
+        default: 5.1.1
+        constraints:
+          - equal: 5.1.1
+      repository:
+        type: string
+        description: >
+          This property give the opportunity to specify an alternative download repository for this component artifacts.
+          It is your responsibility to provide an accessible download url and to store required artifacts on it.
+          You should specify only the base repository url. Artifacts names will be appended to it, so this property could be shared among
+          several components using the inputs feature.
+        required: false
+        default: "https://artifacts.elastic.co/downloads/kibana"
+        constraints:
+          - pattern: ^(http|https|ftp)://.+/.*$
+      es_heap_size:
+        type: string
+        default: "2G"
+        description: >
+          This property allows to set the heap memory size that is allocated to Elasticsearch client node java process,
+          It allocates the same value to both initial and maximum values (ie -Xms and -Xmx java options).
+        constraints:
+          - pattern: "[1-9][0-9]*[kKmMgG]"
+    capabilities:
+      dashboard_host:
+        type: org.ystia.kibana.linux.sh.capabilities.DashboardHosting
+        occurrences: [0,unbounded]
+    requirements:
+      - host:
+          capability: org.ystia.java.pub.capabilities.JavaHosting
+          relationship: org.ystia.java.pub.relationships.HostedOnJavaRuntime
+          occurrences: [1, 1]
+      - search_endpoint:
+          capability: org.ystia.elasticsearch.pub.capabilities.SearchEndpoint
+          relationship: org.ystia.kibana.linux.sh.relationships.ConnectsKibanaToElasticsearch
+          occurrences: [1,1]
+    interfaces:
+      Standard:
+        create:
+          inputs:
+            KBN_VERSION: { get_property: [SELF, component_version] }
+            REPOSITORY: { get_property: [SELF, repository] }
+          implementation: scripts/kibana_install.sh
+        configure:
+          inputs:
+            KBN_VERSION: { get_property: [SELF, component_version] }
+            JAVA_HOME: { get_attribute: [SELF, java_home] }
+          implementation: scripts/kibana_configure.sh
+        start:
+          inputs:
+            JAVA_HOME: { get_attribute: [SELF, java_home] }
+          implementation: scripts/kibana_start.sh
+        stop:
+          implementation: scripts/kibana_stop.sh
+      custom:
+        importDashboardOnKibana:
+          inputs:
+            url:
+              type: string
+              required: true
+          implementation: scripts/importDashboardOnKibana.sh
+    artifacts:
+      - scripts:
+          file: scripts
+          type: tosca.artifacts.File
+      - plugins:
+          file: plugins
+          type: tosca.artifacts.File
+
+  org.ystia.kibana.linux.sh.nodes.KibanaDashboard:
+    derived_from: tosca.nodes.Root
+    description: The abstract dashboard element hosted on Kibana
+    tags:
+      icon: /images/chart-icon.png
+    requirements:
+      - dashboard_host:
+          capability: org.ystia.kibana.linux.sh.capabilities.DashboardHosting
+          relationship: org.ystia.kibana.linux.sh.relationships.DashboardHostedOnKibana
+          occurrences: [1,1]
+    interfaces:
+      custom:
+        updateDashboardFile:
+          inputs:
+            dashboard_url:
+              type: string
+              description: url of the dashboard to upload to update the current one
+              required: true
+          implementation: scripts/updateDashboardFile.sh
+    artifacts:
+      - scripts:
+          file: scripts
+          type: tosca.artifacts.File
+      - dashboard_file:
+          file: dashboardFiles/kdb_default.json
+          type: org.ystia.kibana.linux.sh.artifacts.Dashboard
+
+  org.ystia.kibana.linux.sh.nodes.BeatsDashboards:
+    derived_from: org.ystia.nodes.Root
+    description: The abstract dashboard element hosted on Kibana
+    tags:
+      icon: /images/chart-icon.png
+    requirements:
+      - dashboard_host:
+          capability: org.ystia.kibana.linux.sh.capabilities.DashboardHosting
+          relationship: org.ystia.kibana.linux.sh.relationships.BeatsDashboardsHostedOnKibana
+          occurrences: [1,1]
+    interfaces:
+      Standard:
+        create: scripts/load-beats-dashboards.sh
+    artifacts:
+      - dashboards_zip:
+          file: dashboardFiles/import_beats-dashboards-5.1.1.zip
+          type: tosca.artifacts.File
+
+relationship_types:
+  org.ystia.kibana.linux.sh.relationships.ConnectsKibanaToElasticsearch:
+    derived_from: org.ystia.relationships.ConnectsTo
+    description: Connects Kibana to Elasticsearch
+    valid_target_types: [ org.ystia.elasticsearch.pub.capabilities.SearchEndpoint ]
+    interfaces:
+      Configure:
+        pre_configure_source:
+          implementation: scripts/kibana_to_elasticsearch_pre_config_source.sh
+          inputs:
+            kibanaIp: { get_attribute: [ SOURCE, ip_address] }
+            elasticsearchIp: { get_attribute: [ TARGET, ip_address] }
+            REPOSITORY: { get_property: [SOURCE, repository] }
+            ELASTICSEARCH_REPOSITORY: { get_property: [TARGET, repository] }
+            ELASTICSEARCH_VERSION: { get_property: [TARGET, component_version] }
+        post_configure_source:
+          implementation: scripts/kibana_to_elasticsearch_post_config_source.sh
+          inputs:
+            cluster_name: { get_property: [ TARGET, cluster_name ] }
+            kibanaIp: { get_attribute: [ SOURCE, ip_address] }
+            elasticsearchIp: { get_attribute: [ TARGET, ip_address] }
+            ELASTICSEARCH_HEAP_SIZE: { get_property: [SOURCE, es_heap_size] }
+            JAVA_HOME: { get_attribute: [SOURCE, java_home] }
+    artifacts:
+      - scripts:
+          file: scripts
+          type: tosca.artifacts.File
+
+  org.ystia.kibana.linux.sh.relationships.DashboardHostedOnKibana:
+    derived_from: org.ystia.relationships.HostedOn
+    description: Relationship that allows to deploy a dashboard on kibana.
+    valid_target_types: [ org.ystia.kibana.linux.sh.capabilities.DashboardHosting ]
+    interfaces:
+      configure:
+        post_configure_source:
+          implementation: scripts/dashboardHostedOnKibana_post_config_source.sh
+    artifacts:
+      - scripts:
+          file: scripts
+          type: tosca.artifacts.File
+
+  org.ystia.kibana.linux.sh.relationships.BeatsDashboardsHostedOnKibana:
+    derived_from: org.ystia.relationships.HostedOn
+    description: Relationship that allows to deploy beats dashboards on Kibana.
+    valid_target_types: [ org.ystia.kibana.linux.sh.capabilities.DashboardHosting ]
+
+capability_types:
+  org.ystia.kibana.linux.sh.capabilities.DashboardHosting:
+    derived_from: tosca.capabilities.Container
+
+artifact_types:
+  org.ystia.kibana.linux.sh.artifacts.Dashboard:
+    derived_from: tosca.artifacts.Root
+    description: A Kibana dashboard file (.json file)
+    file_ext: [json]
