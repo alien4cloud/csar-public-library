@@ -1,0 +1,211 @@
+tosca_definitions_version: alien_dsl_1_4_0
+
+metadata:
+  template_name: org.alien4cloud.consul
+  template_version: 1.4.0-SNAPSHOT
+  template_author: alien4cloud
+
+imports:
+  - tosca-normative-types:1.0.0-ALIEN14
+
+node_types:
+  org.alien4cloud.consul.nodes.ConsulAgent:
+    abstract: true
+    derived_from: tosca.nodes.SoftwareComponent
+    description: >
+      Base Consul discovery service installation.
+    tags:
+      icon: /images/consul.png
+    capabilities:
+      consul_agent: 
+        type: org.alien4cloud.consul.capabilities.ConsulAgent
+        valid_source_types: [org.alien4cloud.consul.capabilities.ConsulClient]
+    properties:
+      download_url:
+        description: The URL to download the consul archive.
+        type: string
+        required: true
+        default: https://releases.hashicorp.com/consul/0.6.4/consul_0.6.4_linux_amd64.zip
+      data_dir:
+        description: The location on the FS where consul will store data.
+        type: string
+        required: true
+        default: /var/consul
+      tls_enabled:
+        description: Defines if the communication with the consul agent will be secured (HTTPS).
+        type: boolean
+        required: true
+        default: false
+      ca_passphrase:
+        description: The provided CA certificate passphrase.
+        type: string
+        required: false
+      encrypt_key:
+        description: The key to encrypt gossip exchanges into consul cluster.
+        type: string
+        required: false
+    # attributes:
+    #   consul_client_address: { get_operation_output: [ SELF, Standard, start, CONSUL_CLIENT_ADDRESS ] }
+    #   consul_server_address: { get_operation_output: [ SELF, Standard, start, CONSUL_SERVER_ADDRESS ] }
+    #   api_port: { get_operation_output: [ SELF, Standard, start, API_PORT ] }
+
+  org.alien4cloud.consul.nodes.ConsulServer:
+    derived_from: org.alien4cloud.consul.nodes.ConsulAgent
+    description: >
+      Consul discovery service installation (server node).
+    properties:
+      agent_mode:
+        description: Indicate the consul agent mode (actually server).
+        type: string
+        constraints:
+          - equal: server
+        required: true
+        default: server
+    capabilities:
+      consul_server: 
+        type: org.alien4cloud.consul.capabilities.ConsulServer
+        valid_source_types: [org.alien4cloud.consul.capabilities.ConsulClient]
+    interfaces:
+      Standard:
+        create:
+          inputs:
+            CONSUL_DATA_DIR: { get_property: [SELF, data_dir] }
+            CONSUL_DOWNLOAD_URL: { get_property: [SELF, download_url] }
+          implementation: scripts/consul/create_consul.sh
+        configure:
+          inputs:
+            CONSUL_AGENT_MODE: { get_property: [SELF, agent_mode] }
+            CONSUL_DATA_DIR: { get_property: [SELF, data_dir] }
+            CONSUL_BIND_ADDRESS: { get_attribute: [HOST, ip_address] }
+            CONSUL_API_PORT: { get_property: [SELF, consul_agent, api_port] }
+            TLS_ENABLED: { get_property: [SELF, tls_enabled] }
+            CA_PASSPHRASE: { get_property: [SELF, ca_passphrase] }
+            ENCRYPT_KEY: { get_property: [SELF, encrypt_key] }
+          implementation: scripts/consul/start_consul_agent.sh
+        start:
+          inputs:
+            CONSUL_ADDRESS: { get_attribute: [HOST, ip_address] }
+          implementation: scripts/consul/join_consul_servers.sh
+    artifacts:
+      - configs: 
+          file: config/consul
+          type: tosca.artifacts.File
+      - ssl: 
+          file: ssl
+          type: tosca.artifacts.File
+      - commons: 
+          file: scripts/commons
+          type: tosca.artifacts.File
+
+  org.alien4cloud.consul.nodes.ConsulClient:
+    derived_from: org.alien4cloud.consul.nodes.ConsulAgent
+    description: >
+      Consul discovery service installation (client node).
+    properties:
+      agent_mode:
+        description: Indicate the consul agent mode (actually client).
+        type: string
+        constraints:
+          - equal: client
+        default: client
+    requirements:
+      - consul_server: 
+          capability: org.alien4cloud.consul.capabilities.ConsulServer
+          relationship: org.alien4cloud.consul.relationships.JoinCluster
+    interfaces:
+      Standard:
+        create:
+          inputs:
+            CONSUL_DATA_DIR: { get_property: [SELF, data_dir] }
+            CONSUL_DOWNLOAD_URL: { get_property: [SELF, download_url] }
+          implementation: scripts/consul/create_consul.sh
+        start:
+          inputs:
+            CONSUL_AGENT_MODE: { get_property: [SELF, agent_mode] }
+            CONSUL_DATA_DIR: { get_property: [SELF, data_dir] }
+            CONSUL_BIND_ADDRESS: { get_attribute: [HOST, ip_address] }
+            CONSUL_API_PORT: { get_property: [SELF, consul_agent, api_port] }
+            TLS_ENABLED: { get_property: [SELF, tls_enabled] }
+            CA_PASSPHRASE: { get_property: [SELF, ca_passphrase] }
+            ENCRYPT_KEY: { get_property: [SELF, encrypt_key] }
+          implementation: scripts/consul/start_consul_agent.sh
+    artifacts:
+      - configs: 
+          file: config/consul
+          type: tosca.artifacts.File
+      - ssl: 
+          file: ssl
+          type: tosca.artifacts.File
+      - commons: 
+          file: scripts/commons
+          type: tosca.artifacts.File
+
+capability_types:
+
+  org.alien4cloud.consul.capabilities.ConsulAgent:
+    derived_from: tosca.capabilities.Root
+    description: >
+      A consul agent (server or client) exposes this capability.
+    properties:
+      api_port:
+        type: integer
+        description: Port for http/https API.
+        required: true
+        default: 8500
+  org.alien4cloud.consul.capabilities.ConsulClient:
+    derived_from: tosca.capabilities.Root
+    description: >
+      The capability to connect to a consul agent using the consul API.
+    properties:
+      tls_enabled:
+        type: boolean
+        description: indicates if the connection will be secured (HTTPS)
+        required: false
+        default: false
+      ca_passphrase:
+        type: string
+        description: the passphrase for the CA certificate
+        required: false
+  org.alien4cloud.consul.capabilities.ConsulServer:
+    derived_from: tosca.capabilities.Root
+    description: >
+      Exposed by a consul server agent.
+
+relationship_types:
+
+  org.alien4cloud.consul.relationships.JoinCluster:
+    derived_from: tosca.relationships.ConnectsTo
+    description: >
+      The relationship between a consul client agent and a consul server agent.
+    valid_target_types: [org.alien4cloud.consul.capabilities.ConsulServer]
+    interfaces:
+      Configure:
+        add_target:
+          inputs:
+            CONSUL_SERVER_ADDRESS: { get_attribute: [TARGET, ip_address] }
+          implementation: scripts/consul/join_consul_cluster.sh
+    artifacts:
+      - commons: 
+          file: scripts/commons
+          type: tosca.artifacts.File
+  org.alien4cloud.consul.relationships.ConnectToConsulAgent:
+    derived_from: tosca.relationships.ConnectsTo
+    valid_target_types: [org.alien4cloud.consul.capabilities.ConsulAgent]
+    interfaces:
+      Configure:
+        pre_configure_source:
+          inputs:
+            # the capabity name is required here, but in fact I can't guess it
+            # TOSCA limitation ?
+            TLS_ENABLED: { get_property: [SOURCE, consul, tls_enabled] }
+            CA_PASSPHRASE: { get_property: [SOURCE, consul, ca_passphrase] }
+            AGENT_IP: { get_attribute: [TARGET, ip_address] }
+            AGENT_API_PORT: { get_property: [TARGET, consul_agent, api_port] }
+          implementation: scripts/ConnectToConsulAgent/pre_configure_source.sh
+    artifacts:
+      - ssl: 
+          file: ssl
+          type: tosca.artifacts.File
+      - commons: 
+          file: scripts/commons
+          type: tosca.artifacts.File

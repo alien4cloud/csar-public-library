@@ -1,0 +1,98 @@
+tosca_definitions_version: alien_dsl_1_4_0
+
+metadata:
+  template_name: org.alien4cloud.samba
+  template_version: 1.4.0-SNAPSHOT
+  template_author: alien4cloud
+
+imports:
+  - tosca-normative-types:1.0.0-ALIEN14
+
+node_types:
+    org.alien4cloud.samba.nodes.SambaServer:
+      derived_from: tosca.nodes.SoftwareComponent
+      description: >
+        Configure a samba server
+      tags:
+        icon: /images/samba.png
+      properties:
+        share_name:
+          type: string
+          default: "ALIEN4CLOUD"
+        share_path:
+          type: string
+          default: "/srv/samba/alien4cloud"
+      capabilities:
+        smb_server: org.alien4cloud.samba.capabilities.SambaServer
+      interfaces:
+        Standard:
+          create: scripts/smbServer/install.sh
+          configure:
+            inputs:
+              SHARE_NAME: { get_property: [SELF, share_name] }
+              SHARE_PATH: { get_property: [SELF, share_path] }
+            implementation: scripts/smbServer/configure.sh
+          start: scripts/smbServer/start.sh
+          stop: scripts/smbServer/stop.sh
+      artifacts:
+        - config:
+            file: config/samba/smb.conf
+            type: tosca.artifacts.File
+        - commons:
+            file: scripts/commons
+            type: tosca.artifacts.File
+
+    org.alien4cloud.samba.nodes.SambaClient:
+      derived_from: tosca.nodes.SoftwareComponent
+      description: >
+        Configure a samba client
+      tags:
+        icon: /images/samba.png
+      properties:
+        mount_point:
+          type: string
+          default: "/var/alien4cloud"
+      requirements:
+        - smb_server:
+            capability: org.alien4cloud.samba.capabilities.SambaServer
+            relationship: org.alien4cloud.samba.relationships.ConnectsToSambaServer
+      interfaces:
+        Standard:
+          create: scripts/smbClient/install.sh
+      artifacts:
+        - commons:
+            file: scripts/commons
+            type: tosca.artifacts.File
+
+
+capability_types:
+
+  org.alien4cloud.samba.capabilities.SambaServer:
+    derived_from: tosca.capabilities.Root
+
+
+relationship_types:
+
+  org.alien4cloud.samba.relationships.ConnectsToSambaServer:
+    derived_from: tosca.relationships.ConnectsTo
+    valid_target_types: [org.alien4cloud.samba.capabilities.SambaServer]
+    properties:
+      mount_point:
+        type: string
+        default: "/var/alien4cloud"
+    interfaces:
+      Configure:
+        add_target:
+          inputs:
+            SAMBA_SERVER_IP: { get_attribute: [TARGET, ip_address] }
+            SHARE_NAME: { get_property: [TARGET, share_name] }
+            MOUNT_POINT: { get_property: [SELF, mount_point] }
+          implementation: scripts/smbClient/add_target.sh
+        remove_target:
+          inputs:
+            MOUNT_POINT: { get_property: [SELF, mount_point] }
+          implementation: scripts/smbClient/remove_target.sh
+    artifacts:
+      - commons:
+          file: scripts/commons
+          type: tosca.artifacts.File
