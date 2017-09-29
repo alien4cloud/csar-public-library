@@ -97,7 +97,7 @@ node_types:
 
   org.ystia.kibana.linux.sh.nodes.KibanaDashboard:
     derived_from: tosca.nodes.Root
-    description: The abstract dashboard element hosted on Kibana
+    description: The dummy dashboard element hosted on Kibana
     tags:
       icon: /images/chart-icon.png
     requirements:
@@ -124,7 +124,7 @@ node_types:
 
   org.ystia.kibana.linux.sh.nodes.BeatsDashboards:
     derived_from: org.ystia.nodes.Root
-    description: The abstract dashboard element hosted on Kibana
+    description: The dashboard element for Beats components hosted on Kibana
     tags:
       icon: /images/chart-icon.png
     requirements:
@@ -170,7 +170,7 @@ relationship_types:
 
   org.ystia.kibana.linux.sh.relationships.DashboardHostedOnKibana:
     derived_from: org.ystia.relationships.HostedOn
-    description: Relationship that allows to deploy a dashboard on kibana.
+    description: Relationship that allows to host a dashboard on kibana.
     valid_target_types: [ org.ystia.kibana.linux.sh.capabilities.DashboardHosting ]
     interfaces:
       configure:
@@ -183,7 +183,7 @@ relationship_types:
 
   org.ystia.kibana.linux.sh.relationships.BeatsDashboardsHostedOnKibana:
     derived_from: org.ystia.relationships.HostedOn
-    description: Relationship that allows to deploy beats dashboards on Kibana.
+    description: Relationship that allows to host dashboards for Beats components on Kibana.
     valid_target_types: [ org.ystia.kibana.linux.sh.capabilities.DashboardHosting ]
 
 capability_types:
