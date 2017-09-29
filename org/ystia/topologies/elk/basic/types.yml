@@ -5,11 +5,139 @@ metadata:
   template_version: 1.0-SNAPSHOT
   template_author: Bull
 
-description:
+description: Topology template to connect Logstash, ElasticSearch and Kibana.
 
 imports:
   - tosca-normative-types:1.0.0-ALIEN14
+  - org.ystia.common:1.0-SNAPSHOT
+  - org.ystia.java.pub:1.0-SNAPSHOT
+  - org.ystia.consul.pub:1.0-SNAPSHOT
+  - org.ystia.elasticsearch.pub:1.0-SNAPSHOT
+  - org.ystia.java.linux.sh:1.0-SNAPSHOT
+  - org.ystia.consul.linux.sh:1.0-SNAPSHOT
+  - org.ystia.elasticsearch.linux.sh:1.0-SNAPSHOT
+  - org.ystia.kibana.linux.sh:1.0-SNAPSHOT
+  - org.ystia.logstash.pub:1.0-SNAPSHOT
+  - org.ystia.logstash.linux.sh:1.0-SNAPSHOT
 
 topology_template:
-  inputs:
+
   node_templates:
+
+    # Network
+
+    Network:
+      type: tosca.nodes.Network
+      properties:
+        ip_version: 4
+
+    # VM for Consul Server
+
+    Compute_CS:
+      type: tosca.nodes.Compute
+    Consul_Server:
+      type: org.ystia.consul.linux.sh.nodes.Consul
+      requirements:
+        - host:
+            node: Compute_CS
+
+    # VM for Elasticsearch
+
+    Compute_ES:
+      type: tosca.nodes.Compute
+      properties:
+        mem_size: 12GB
+      requirements:
+        - network:
+            node: Network
+            relationship: tosca.relationships.Network
+    Consul_ES:
+      type: org.ystia.consul.linux.sh.nodes.Consul
+      requirements:
+        - host:
+            node: Compute_ES
+        - server_endpoint:
+            node: Consul_Server
+    Java_ES:
+      type: org.ystia.java.linux.sh.nodes.Java
+      requirements:
+        - host:
+            node: Compute_ES
+    Elasticsearch:
+      type: org.ystia.elasticsearch.linux.sh.nodes.Elasticsearch
+      requirements:
+        - host:
+            node: Java_ES
+        - consul:
+            node: Consul_ES
+
+    # VM for Kibana
+
+    Compute_KBN:
+      type: tosca.nodes.Compute
+      requirements:
+        - network:
+            node: Network
+            relationship: tosca.relationships.Network
+    Consul_KBN:
+      type: org.ystia.consul.linux.sh.nodes.Consul
+      requirements:
+        - host:
+            node: Compute_KBN
+        - server_endpoint:
+            node: Consul_Server
+    Java_KBN:
+      type: org.ystia.java.linux.sh.nodes.Java
+      requirements:
+        - host:
+            node: Compute_KBN
+    Kibana:
+      type: org.ystia.kibana.linux.sh.nodes.Kibana
+      requirements:
+        - host:
+            node: Java_KBN
+        - consul:
+            node: Consul_KBN
+        - search_endpoint:
+            node: Elasticsearch
+    KibanaDashboard:
+      type: org.ystia.kibana.linux.sh.nodes.KibanaDashboard
+      requirements:
+        - dashboard_host:
+            node: Kibana
+
+    # VM for Logstash
+
+    Compute_LS:
+      type: tosca.nodes.Compute
+      requirements:
+        - network:
+            node: Network
+            relationship: tosca.relationships.Network
+    Consul_LS:
+      type: org.ystia.consul.linux.sh.nodes.Consul
+      requirements:
+        - host:
+            node: Compute_LS
+        - server_endpoint:
+            node: Consul_Server
+    Java_LS:
+      type: org.ystia.java.linux.sh.nodes.Java
+      requirements:
+        - host:
+            node: Compute_LS
+    Logstash:
+      type: org.ystia.logstash.linux.sh.nodes.Logstash
+      requirements:
+        - host:
+            node: Java_LS
+        - consul:
+            node: Consul_LS
+        - search_endpoint:
+            node: Elasticsearch
+
+  # Output property for Kibana URL
+
+  outputs:
+    kibana_url:
+      value: { get_attribute: [ Kibana, url ] }
