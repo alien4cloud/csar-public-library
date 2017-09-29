@@ -1,0 +1,49 @@
+[
+  {
+    "_id" : "5.1.1",
+    "_type" : "config",
+    "_source" : {
+      "buildNum" : 14566,
+      "defaultIndex" : ".kibana"
+    }
+  },
+  {
+    "_id" : ".kibana",
+    "_type" : "index-pattern",
+    "_source" : {
+      "title" : ".kibana",
+      "fields" : "[{\"name\":\"_source\",\"type\":\"_source\",\"count\":0,\"scripted\":false,\"indexed\":false,\"analyzed\":false,\"doc_values\":false,\"searchable\":false,\"aggregatable\":false},{\"name\":\"_id\",\"type\":\"string\",\"count\":0,\"scripted\":false,\"indexed\":false,\"analyzed\":false,\"doc_values\":false,\"searchable\":false,\"aggregatable\":false},{\"name\":\"_type\",\"type\":\"string\",\"count\":0,\"scripted\":false,\"indexed\":false,\"analyzed\":false,\"doc_values\":false,\"searchable\":true,\"aggregatable\":true},{\"name\":\"_index\",\"type\":\"string\",\"count\":0,\"scripted\":false,\"indexed\":false,\"analyzed\":false,\"doc_values\":false,\"searchable\":false,\"aggregatable\":false},{\"name\":\"_score\",\"type\":\"number\",\"count\":0,\"scripted\":false,\"indexed\":false,\"analyzed\":false,\"doc_values\":false,\"searchable\":false,\"aggregatable\":false}]"
+    }
+  },
+  {
+    "_id": "YSTIA_Default_Dashboard",
+    "_type": "dashboard",
+    "_source": {
+      "title": "YSTIA_Default_Dashboard",
+      "hits": 0,
+      "description": "",
+      "panelsJSON": "[{\"col\":1,\"id\":\"Welcome_2_YSTIA\",\"panelIndex\":1,\"row\":1,\"size_x\":6,\"size_y\":3,\"type\":\"visualization\"}]",
+      "optionsJSON": "{\"darkTheme\":false}",
+      "uiStateJSON": "{}",
+      "version": 1,
+      "timeRestore": false,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"filter\":[{\"query\":{\"query_string\":{\"analyze_wildcard\":true,\"query\":\"*\"}}}]}"
+      }
+    }
+  },
+  {
+    "_id": "Welcome_2_YSTIA",
+    "_type": "visualization",
+    "_source": {
+      "title": "Welcome_2_YSTIA",
+      "visState": "{\"title\":\"Welcome_2_YSTIA\",\"type\":\"markdown\",\"params\":{\"markdown\":\"# Welcome to the Kibana Dashboard YSTIA Component.\\n## Happy to have you here !\\n###### This is the default dummy dashboard.\"},\"aggs\":[],\"listeners\":{}}",
+      "uiStateJSON": "{}",
+      "description": "",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"query\":{\"query_string\":{\"query\":\"*\",\"analyze_wildcard\":true}},\"filter\":[]}"
+      }
+    }
+  }
+]

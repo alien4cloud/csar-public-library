@@ -11,6 +11,14 @@ imports:
   - tosca-normative-types:1.0.0-ALIEN14
 
 node_types:
+  org.ystia.nodes.Root:
+    derived_from: tosca.nodes.Root
+    abstract: true
+    description: Abstract ystia root component
+    artifacts:
+      - utils_scripts:
+          type: tosca.artifacts.File
+          file: utils_scripts
   org.ystia.nodes.SoftwareComponent:
     derived_from: tosca.nodes.SoftwareComponent
     abstract: true

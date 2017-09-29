@@ -1,0 +1,15 @@
+[Unit]
+Description=Unit file for managing Kibana within Starlings
+
+# Add dependencies to Elasticsearch client in case of relation Kibana to Elasticsearch
+# After means that it is scheduled after the given dependency but not requires to start the dependency
+#{{UNCOMMENT}}After=elasticsearch.service
+# Requires requires the dependency to be started but doesn't assume a specific scheduled order (means they are started at the same time if not already started)
+#{{UNCOMMENT}}Requires=elasticsearch.service
+
+[Service]
+ExecStart={{KIBANA_HOME}}/bin/kibana
+User={{USER}}
+
+[Install]
+WantedBy=multi-user.target
