@@ -1,7 +1,3 @@
-#
-# Starlings
-# Copyright (C) 2017 Bull S.A.S. - All rights reserved
-#
 
 import argparse
 import json
