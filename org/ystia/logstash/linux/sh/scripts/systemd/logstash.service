@@ -1,0 +1,13 @@
+[Unit]
+Description=Unit file for managing Logstash within Starlings
+
+[Service]
+Environment="JAVA_HOME=%JAVA_HOME%"
+Environment="JAVA_CMD=%JAVA_HOME%/bin/java"
+Environment="LS_JAVA_OPTS=-Djava.security.properties=%LOGSTASH_HOME%/java.security %JAVA_OPTS%"
+Environment="JAVA_OPTS=%JAVA_OPTS%"
+ExecStart=%LOGSTASH_HOME%/bin/logstash -f %LOGSTASH_HOME%/conf %LOGSTASH_CMD_OPTS%
+User=%USER%
+
+[Install]
+WantedBy=multi-user.target

@@ -16,6 +16,7 @@ imports:
   - org.ystia.java.linux.sh:1.0-SNAPSHOT
   - org.ystia.consul.linux.sh:1.0-SNAPSHOT
   - org.ystia.elasticsearch.linux.sh:1.0-SNAPSHOT
+  - org.ystia.logstash.pub:1.0-SNAPSHOT
   - org.ystia.logstash.linux.sh:1.0-SNAPSHOT
 
 topology_template:
@@ -100,6 +101,8 @@ topology_template:
             node: Elasticsearch
     GeoNames:
       type: org.ystia.logstash.linux.sh.nodes.GeoNames
+      properties:
+        filename: cities15000
       requirements:
-        - logstash:
+        - host:
             node: Logstash

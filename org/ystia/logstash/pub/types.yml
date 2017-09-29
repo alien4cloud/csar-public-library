@@ -75,22 +75,49 @@ node_types:
         type: org.ystia.logstash.pub.capabilities.LogstashConnectorHosting
         occurrences: [0,unbounded]
     requirements:
-      - search_endpoint:
-          capability: org.ystia.elasticsearch.pub.capabilities.SearchEndpoint
-          relationship: org.ystia.logstash.pub.relationships.ConnectsLogstashToElasticsearch
-          occurrences: [0,1]
-      - kafka_output:
-          capability: org.ystia.kafka.pub.capabilities.KafkaTopic
-          relationship: org.ystia.logstash.pub.relationships.ConnectsLogstashToKafka
-          occurrences: [0,1]
-      - kafka_input:
-          capability: org.ystia.kafka.pub.capabilities.KafkaTopic
-          relationship: org.ystia.logstash.pub.relationships.ConnectsKafkaToLogstash
-          occurrences: [0,1]
       - host:
           capability: org.ystia.java.pub.capabilities.JavaHosting
           relationship: org.ystia.java.pub.relationships.HostedOnJavaRuntime
           occurrences: [1, 1]
+  org.ystia.logstash.pub.nodes.GeoNames:
+    derived_from: org.ystia.consul.pub.nodes.ConsulUser
+    abstract: true
+    description: GeoNames Component
+    tags:
+      icon: /images/geonames.gif
+    properties:
+      repository:
+        type: string
+        description: >
+          The repository to download the geonames archives.
+          You may want to specify a local directory where you have previously copied the archive files.
+        required: false
+        default: http://download.geonames.org/export/dump/
+        constraints:
+          - pattern: ^(http|https|ftp)://.+/.*$
+      filename:
+        type: string
+        default: allCountries
+        description: >
+          Name of the file containing GeoNames data
+          Choose allCountries to get a complete information (very heavy)
+          You can choose a country code in capitals (US, FR, ...)
+          Or another file like cities15000 or cities5000
+          A .zip suffix will be added to this name.
+        required: true
+      indexname:
+        type: string
+        default: geonames
+        description: >
+          Name of index to store GeoNames data
+        required: true
+    capabilities:
+      geonames_resource: org.ystia.logstash.pub.capabilities.GeonamesEndpoint
+    requirements:
+      - host:
+          capability: org.ystia.logstash.pub.capabilities.LogstashConnectorHosting
+          relationship: org.ystia.logstash.pub.relationships.GeonamesHostedOnLogstash
+          occurrences: [1,1]
 
 capability_types:
   org.ystia.logstash.pub.capabilities.LogstashEndpoint:
@@ -103,11 +130,5 @@ capability_types:
     derived_from: tosca.capabilities.Endpoint
 
 relationship_types:
-  org.ystia.logstash.pub.relationships.ConnectsLogstashToKafka:
-
-  org.ystia.logstash.pub.relationships.ConnectsKafkaToLogstash:
-
-  org.ystia.logstash.pub.relationships.ConnectsLogstashToElasticsearch:
-    derived_from: tosca.relationships.ConnectsTo
-    description: Connects Logstash to ElasticSearch
-    valid_target_types: [ org.ystia.elasticsearch.pub.capabilities.SearchEndpoint ]
+  org.ystia.logstash.pub.relationships.GeonamesHostedOnLogstash:
+    derived_from: tosca.relationships.HostedOn
