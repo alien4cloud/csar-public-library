@@ -16,13 +16,13 @@
     }
   },
   {
-    "_id": "BDCF_Default_Dashboard",
+    "_id": "YSTIA_Default_Dashboard",
     "_type": "dashboard",
     "_source": {
-      "title": "BDCF_Default_Dashboard",
+      "title": "YSTIA_Default_Dashboard",
       "hits": 0,
       "description": "",
-      "panelsJSON": "[{\"col\":1,\"id\":\"Welcome_2_BCDF\",\"panelIndex\":1,\"row\":1,\"size_x\":6,\"size_y\":3,\"type\":\"visualization\"}]",
+      "panelsJSON": "[{\"col\":1,\"id\":\"Welcome_2_YSTIA\",\"panelIndex\":1,\"row\":1,\"size_x\":6,\"size_y\":3,\"type\":\"visualization\"}]",
       "optionsJSON": "{\"darkTheme\":false}",
       "uiStateJSON": "{}",
       "version": 1,
@@ -33,11 +33,11 @@
     }
   },
   {
-    "_id": "Welcome_2_BCDF",
+    "_id": "Welcome_2_YSTIA",
     "_type": "visualization",
     "_source": {
-      "title": "Welcome_2_BCDF",
-      "visState": "{\"title\":\"Welcome_2_BCDF\",\"type\":\"markdown\",\"params\":{\"markdown\":\"# Welcome to the Kibana Dashboard BDCF Component.\\n## Happy to have you here !\\n###### This is the default dummy dashboard.\"},\"aggs\":[],\"listeners\":{}}",
+      "title": "Welcome_2_YSTIA",
+      "visState": "{\"title\":\"Welcome_2_YSTIA\",\"type\":\"markdown\",\"params\":{\"markdown\":\"# Welcome to the Kibana Dashboard YSTIA Component.\\n## Happy to have you here !\\n###### This is the default dummy dashboard.\"},\"aggs\":[],\"listeners\":{}}",
       "uiStateJSON": "{}",
       "description": "",
       "version": 1,
