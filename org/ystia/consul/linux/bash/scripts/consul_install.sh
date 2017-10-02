@@ -45,7 +45,7 @@ EOF
                 echo -e "\nresolv-file=/etc/resolv.dnsmasq.conf\n" | sudo tee -a /etc/dnsmasq.conf > /dev/null 2>&1
                 sudo sed -i -e "/PEERDNS/ s/^/#/g" /etc/sysconfig/network-scripts/ifcfg-eth*
                 echo -e "\nPEERDNS=no\n" | sudo tee -a /etc/sysconfig/network-scripts/ifcfg-eth* > /dev/null 2>&1
-                echo -e "# Generated with starlings to enable dnsmasq\n\nnameserver 127.0.0.1\nsearch node.dc1.starlings\n" | sudo tee /etc/resolv.conf > /dev/null 2>&1
+                echo -e "# Generated with Ystia to enable dnsmasq\n\nnameserver 127.0.0.1\nsearch node.dc1.starlings\n" | sudo tee /etc/resolv.conf > /dev/null 2>&1
                 ;;
         esac
         sudo service dnsmasq restart
@@ -64,7 +64,7 @@ chmod +x ${INSTALL_DIR}/consul
 
 sed -e "s@#INSTALL_DIR#@${INSTALL_DIR}@g" -e "s/#IP#/${IP_ADDRESS}/g"  ${scripts}/config/1_main_conf.json > "${INSTALL_DIR}/config/1_main_conf.json"
 
-echo "CONSUL_HOME=${INSTALL_DIR}" >${YSTIA_DIR}/starlings_consul_env.sh
+echo "CONSUL_HOME=${INSTALL_DIR}" >${YSTIA_DIR}/consul_env.sh
 
 # Setup systemd service
 # Setup GOMAXPROCS to the number of cpu
