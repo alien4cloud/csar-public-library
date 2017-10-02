@@ -123,7 +123,7 @@ node_types:
           type: org.ystia.kibana.linux.bash.artifacts.Dashboard
 
   org.ystia.kibana.linux.bash.nodes.BeatsDashboards:
-    derived_from: org.ystia.nodes.Root
+    derived_from: org.ystia.nodes.TheRoot
     description: The dashboard element for Beats components hosted on Kibana
     tags:
       icon: /images/chart-icon.png
