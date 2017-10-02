@@ -1,5 +1,5 @@
 [Unit]
-Description=Apache Flink JobManager within Starlings
+Description=Apache Flink JobManager within Ystia
 
 [Service]
 Environment="JAVA_HOME={{JAVA_HOME}}"

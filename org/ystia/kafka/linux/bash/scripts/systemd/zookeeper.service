@@ -1,5 +1,5 @@
 [Unit]
-Description=Unit file for managing Zookeeper within Starlings
+Description=Unit file for managing Zookeeper within Ystia
 
 [Service]
 Environment="JAVA_HOME=%JAVA_HOME%"

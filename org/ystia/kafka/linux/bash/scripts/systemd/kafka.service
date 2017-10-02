@@ -1,5 +1,5 @@
 [Unit]
-Description=Unit file for managing Kafka within Starlings
+Description=Unit file for managing Kafka within Ystia
 
 [Service]
 Environment="JAVA_HOME=%JAVA_HOME%"

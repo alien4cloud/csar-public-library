@@ -1,5 +1,5 @@
 [Unit]
-Description=Unit file for managing Kibana within Starlings
+Description=Unit file for managing Kibana within Ystia
 
 # Add dependencies to Elasticsearch client in case of relation Kibana to Elasticsearch
 # After means that it is scheduled after the given dependency but not requires to start the dependency
