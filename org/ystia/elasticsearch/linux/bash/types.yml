@@ -67,7 +67,7 @@ node_types:
           - pattern: "[1-9][0-9]*[kKmMgG]"
       cluster_name:
         type: string
-        default: starlings
+        default: ystia
         description: >
           Cluster name identifies your cluster for auto-discovery. If
           you're running multiple clusters on the same network, make sure
