@@ -9,17 +9,11 @@ ensure_home_var_is_set
 # To set ELASTICSEARCH_HOME
 source ${YSTIA_DIR}/kibana_env.sh
 
-# TODO: comment
-env |sort
-
 log debug "$0: Target: ${TARGET_NODE}/${TARGET_INSTANCE} and Source ${SOURCE_NODE}/${SOURCE_INSTANCE}"
 log debug "$0: kibanaIp=${kibanaIp} and elasticsearchIp=${elasticsearchIp}"
 
 # If Kibana and Elasticsearch are on same host, Elasticsearch client node is not necessary
 [[ "${kibanaIp}" = "${elasticsearchIp}" ]] && log info "$0: Not needed to install an elasticsearch client node for kibana" && exit 0
-
-# TODO: comment
-env |sort
 
 # Configure Elasticsearch as a client node
 ES_SERVICE_NAME="elasticsearch"

@@ -6,9 +6,6 @@ log begin
 
 ensure_home_var_is_set
 
-# TODO: comment
-env |sort
-
 log debug "$0: Target: ${TARGET_NODE}/${TARGET_INSTANCE} and Source ${SOURCE_NODE}/${SOURCE_INSTANCE}"
 log debug "$0: kibanaIp=${kibanaIp} and elasticsearchIp=${elasticsearchIp}"
 
@@ -24,9 +21,6 @@ ES_HASH_DOWNLOAD_PATH="${ES_DOWNLOAD_PATH}.sha1.txt"
 ES_INSTALL_DIR=${HOME}
 ES_UNZIP_FOLDER="elasticsearch-${ELASTICSEARCH_VERSION}"
 ES_HOME_DIR=${ES_INSTALL_DIR}/${ES_UNZIP_FOLDER}
-
-# TODO: comment
-env |sort
 
 log info "Installing Elasticsearch on ${ES_HOME_DIR}"
 
