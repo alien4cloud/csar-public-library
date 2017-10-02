@@ -5,7 +5,7 @@ DASHBOARD_FILE=$1
 source ${utils_scripts}/utils.sh
 log begin
 ensure_home_var_is_set
-source $HOME/.starlings/kibana_env.sh
+source ${YSTIA_DIR}/kibana_env.sh
 
 ELASTICSEARCH_URL=http://localhost:9200
 KIBANA_INDEX=".kibana"

@@ -21,7 +21,7 @@ if [[ -e "${flag}" ]]; then
     exit 0
 fi
 
-source $HOME/.starlings/${SOURCE_NODE}-service.env
+source ${YSTIA_DIR}/${SOURCE_NODE}-service.env
 
 source ${ls_scripts}/java_utils.sh
 

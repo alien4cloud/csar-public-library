@@ -3,7 +3,7 @@
 source ${utils_scripts}/utils.sh
 log begin
 ensure_home_var_is_set
-source ${HOME}/.starlings/kibana_env.sh
+source ${YSTIA_DIR}/kibana_env.sh
 
 # Check the url parameter value validity
 [[ -z "${url}" ]] && error_exit "ERROR: url parameter is required !"

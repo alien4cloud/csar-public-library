@@ -7,6 +7,6 @@ ensure_home_var_is_set
 
 # Env file contains:
 # FLINK_HOME: Flink installation path
-source ${HOME}/.starlings/${SOURCE_NODE}-service.env
+source ${YSTIA_DIR}/${SOURCE_NODE}-service.env
 
 touch ${FLINK_HOME}/.taskmanager

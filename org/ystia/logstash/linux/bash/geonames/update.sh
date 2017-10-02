@@ -13,7 +13,7 @@ ensure_home_var_is_set
 log begin
 
 # Get GEONAMES_HOME
-source ${HOME}/.starlings/${NODE}-service.env
+source ${YSTIA_DIR}/${NODE}-service.env
 
 log info "Update GeoNames index using file $FNAME"
 

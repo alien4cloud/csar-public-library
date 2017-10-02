@@ -12,8 +12,8 @@ log begin
 
 log info "TARGET=${TARGET_NODE} SOURCE=${SOURCE_NODE}"
 
-source ${HOME}/.starlings/${TARGET_NODE}-service.env
-source ${HOME}/.starlings/${SOURCE_NODE}-service.env
+source ${YSTIA_DIR}/${TARGET_NODE}-service.env
+source ${YSTIA_DIR}/${SOURCE_NODE}-service.env
 
 log info "Remove default es output plugin"
 rm $LOGSTASH_HOME/conf/*elasticsearch*.conf
@@ -39,6 +39,6 @@ sed -i -e "s@#INDEX#@${INDEX}@g" ${LOGSTASH_HOME}/conf/geonames_parse.conf
 send_sighup_ifneeded
 
 # Retain some LOGSTASH properties necessary for GeoNames (re-)configure
-echo "LOGSTASH_HOME=$LOGSTASH_HOME" >> ${HOME}/.starlings/${SOURCE_NODE}-service.env
+echo "LOGSTASH_HOME=$LOGSTASH_HOME" >> ${YSTIA_DIR}/${SOURCE_NODE}-service.env
 
 log end

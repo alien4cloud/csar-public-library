@@ -18,7 +18,7 @@ fi
 
 # Env file contains:
 # FLINK_HOME: Flink installation path
-source ${HOME}/.starlings/${NODE}-service.env
+source ${YSTIA_DIR}/${NODE}-service.env
 
 # Register the service in consul
 

@@ -64,8 +64,7 @@ chmod +x ${INSTALL_DIR}/consul
 
 sed -e "s@#INSTALL_DIR#@${INSTALL_DIR}@g" -e "s/#IP#/${IP_ADDRESS}/g"  ${scripts}/config/1_main_conf.json > "${INSTALL_DIR}/config/1_main_conf.json"
 
-mkdir -p ${HOME}/.starlings
-echo "CONSUL_HOME=${INSTALL_DIR}" >${HOME}/.starlings/starlings_consul_env.sh
+echo "CONSUL_HOME=${INSTALL_DIR}" >${YSTIA_DIR}/starlings_consul_env.sh
 
 # Setup systemd service
 # Setup GOMAXPROCS to the number of cpu

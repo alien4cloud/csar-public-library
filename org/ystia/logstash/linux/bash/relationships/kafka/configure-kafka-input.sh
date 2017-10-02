@@ -22,7 +22,7 @@ if [[ -e "${flag}" ]]; then
 fi
 
 
-source $HOME/.starlings/${SOURCE_NODE}-service.env
+source ${YSTIA_DIR}/${SOURCE_NODE}-service.env
 
 mkdir -p ${LOGSTASH_HOME}/conf
 

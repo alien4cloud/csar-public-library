@@ -40,7 +40,7 @@ if [[ "$#" != "3" ]]; then
 fi
 
 service_name=$1
-source ${HOME}/.starlings/${service_name}-service.env
+source ${YSTIA_DIR}/${service_name}-service.env
 
 component=$2
 check=$3

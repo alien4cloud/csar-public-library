@@ -26,8 +26,8 @@ mkdir -p ${GEONAMES_HOME}/data
 
 GEONAMES_FILE=$GEONAMES_HOME/data/${FNAME}.txt
 
-echo "GEONAMES_HOME=$GEONAMES_HOME" > ${HOME}/.starlings/${NODE}-service.env
-echo "GEONAMES_FILE=$GEONAMES_FILE" >> ${HOME}/.starlings/${NODE}-service.env
+echo "GEONAMES_HOME=$GEONAMES_HOME" > ${YSTIA_DIR}/${NODE}-service.env
+echo "GEONAMES_FILE=$GEONAMES_FILE" >> ${YSTIA_DIR}/${NODE}-service.env
 
 get_geonames_from_repository $FNAME $REPOSITORY
 

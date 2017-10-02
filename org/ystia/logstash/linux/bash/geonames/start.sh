@@ -10,7 +10,7 @@ ensure_home_var_is_set
 
 log begin
 
-source ${HOME}/.starlings/${NODE}-service.env
+source ${YSTIA_DIR}/${NODE}-service.env
 
 if is_port_open "127.0.0.1" "8500"
 then

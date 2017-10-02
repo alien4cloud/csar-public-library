@@ -6,7 +6,7 @@ log begin
 ensure_home_var_is_set
 
 
-source ${HOME}/.starlings/${HOST}-service.env
+source ${YSTIA_DIR}/${HOST}-service.env
 
 zk_nodes=$(cat ${KAFKA_HOME}/config/server.properties | grep -E "^zookeeper.connect=.+" | tail -1 | cut -d '=' -f 2)
 

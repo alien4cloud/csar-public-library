@@ -14,7 +14,7 @@ log begin
 # KAFKA_BASE_DNS_SRV_NAME: Base DNS service name for Kafka service
 # KAFKA_ZK_SRV_NAME: Name of the Kafka-Zookeeper service as registered in consul
 # KAFKA_ZK_BASE_DNS_SRV_NAME: Base DNS service name for Kafka-Zookeeper service
-source ${HOME}/.starlings/${NODE}-service.env
+source ${YSTIA_DIR}/${NODE}-service.env
 
 
 if [[ -z "${DATA_DIR}" ]]
