@@ -25,7 +25,7 @@ JAVA_OPTS_2=$(echo ${JAVA_OPTS} |sed -s 's|-Xmx[0-9]*[a-zA-Z]||')
 export JAVA_OPTS=${JAVA_OPTS_2}
 
 # Setup systemd service
-sudo cp ${scripts}/files/elasticsearch.service /etc/systemd/system/elasticsearch.service
+sudo cp ${scripts}/systemd/elasticsearch.service /etc/systemd/system/elasticsearch.service
 sudo sed -i -e "s/%USER%/${USER}/g" -e "s@%ES_HOME%@${ES_HOME}@g" -e "s@%JAVA_HOME%@${JAVA_HOME}@g" -e "s/%JAVA_OPTS%/${JAVA_OPTS}/g" /etc/systemd/system/elasticsearch.service
 sudo systemctl daemon-reload
 #sudo systemctl enable elasticsearch.service
