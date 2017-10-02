@@ -33,8 +33,8 @@ sudo systemctl daemon-reload
 #sudo systemctl enable kafka.service
 
 DATA_DIR="/tmp"
-if [[ -e "${STARLINGS_DIR}/.${NODE}-volumeFlag" ]]; then
-    DATA_DIR=$(cat ${STARLINGS_DIR}/${NODE}-service.env | grep "^DATA_DIR" | cut -d '=' -f 2)
+if [[ -e "${YSTIA_DIR}/.${NODE}-volumeFlag" ]]; then
+    DATA_DIR=$(cat ${YSTIA_DIR}/${NODE}-service.env | grep "^DATA_DIR" | cut -d '=' -f 2)
     log info "Kafka component '${NODE}' connected to a volume mounted on '${DATA_DIR}'"
     # If restarting on an non-empty volume get our id from the zookeeper stored id
     if [[ -e ${DATA_DIR}/zookeeper/myid ]]; then
@@ -43,7 +43,7 @@ if [[ -e "${STARLINGS_DIR}/.${NODE}-volumeFlag" ]]; then
     fi
 else
     log info "No volume for kafka ; use /tmp as DATA_DIR"
-    echo "DATA_DIR=${DATA_DIR}" >> ${STARLINGS_DIR}/${NODE}-service.env
+    echo "DATA_DIR=${DATA_DIR}" >> ${YSTIA_DIR}/${NODE}-service.env
 fi
 
 # For first deployments get a new id
@@ -69,7 +69,7 @@ KAFKA_ZK_DNS_SRV_NAME="${INSTANCE_ID}.${KAFKA_ZK_BASE_DNS_SRV_NAME}"
 log info "Kafka IP = ${IP_ADDRESS}"
 log info "Kafka HostName = ${KAFKA_DNS_SRV_NAME}"
 
-cat >> "${STARLINGS_DIR}/${NODE}-service.env" << EOF
+cat >> "${YSTIA_DIR}/${NODE}-service.env" << EOF
 INSTANCE_ID=${INSTANCE_ID}
 KAFKA_SRV_NAME=${KAFKA_SRV_NAME}
 KAFKA_BASE_DNS_SRV_NAME=${KAFKA_BASE_DNS_SRV_NAME}

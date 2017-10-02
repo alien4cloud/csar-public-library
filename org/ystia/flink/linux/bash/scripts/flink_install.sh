@@ -22,7 +22,7 @@ bash ${utils_scripts}/install-components.sh jq wget
 INSTALL_DIR="${HOME}/flink"
 TARGET_DIR="${INSTALL_DIR}/flink-${FLINK_VERSION}"
 
-cat > "${STARLINGS_DIR}/${NODE}-service.env" << EOF
+cat > "${YSTIA_DIR}/${NODE}-service.env" << EOF
 FLINK_HOME=${TARGET_DIR}
 EOF
 

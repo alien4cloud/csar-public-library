@@ -7,7 +7,7 @@ lock "$(basename $0)"
 
 ensure_home_var_is_set
 
-if [[ -e "${STARLINGS_DIR}/.${SOURCE_NODE}-preconfiguresourceFlag" ]]; then
+if [[ -e "${YSTIA_DIR}/.${SOURCE_NODE}-preconfiguresourceFlag" ]]; then
     unlock "$(basename $0)"
     exit 0
 fi
@@ -28,5 +28,5 @@ sed -i -e "/client_addr/ a\  \"recursors\": [${addr_block}], \n\
 
 log info "Consul Agent configured to connects to server on [${addr_block}]"
 
-touch "${STARLINGS_DIR}/.${SOURCE_NODE}-preconfiguresourceFlag"
+touch "${YSTIA_DIR}/.${SOURCE_NODE}-preconfiguresourceFlag"
 unlock "$(basename $0)"

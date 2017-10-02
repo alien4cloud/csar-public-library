@@ -253,39 +253,39 @@ ensure_home_var_is_set () {
 }
 
 isServiceInstalled() {
-    [ -e ${STARLINGS_DIR}/.${NODE}-installFlag ]
+    [ -e ${YSTIA_DIR}/.${NODE}-installFlag ]
 }
 
 setServiceInstalled() {
-    touch ${STARLINGS_DIR}/.${NODE}-installFlag
+    touch ${YSTIA_DIR}/.${NODE}-installFlag
 }
 
 unsetServiceInstalled() {
-    rm -f ${STARLINGS_DIR}/.${NODE}-installFlag
+    rm -f ${YSTIA_DIR}/.${NODE}-installFlag
 }
 
 isServiceConfigured() {
-    [ -e ${STARLINGS_DIR}/.${NODE}-configureFlag ]
+    [ -e ${YSTIA_DIR}/.${NODE}-configureFlag ]
 }
 
 setServiceConfigured() {
-    touch ${STARLINGS_DIR}/.${NODE}-configureFlag
+    touch ${YSTIA_DIR}/.${NODE}-configureFlag
 }
 
 unsetServiceConfigured() {
-    rm -f ${STARLINGS_DIR}/.${NODE}-configureFlag
+    rm -f ${YSTIA_DIR}/.${NODE}-configureFlag
 }
 
 isServiceStarted() {
-    [ -e ${STARLINGS_DIR}/.${NODE}-startFlag ]
+    [ -e ${YSTIA_DIR}/.${NODE}-startFlag ]
 }
 
 setServiceStarted() {
-    touch ${STARLINGS_DIR}/.${NODE}-startFlag
+    touch ${YSTIA_DIR}/.${NODE}-startFlag
 }
 
 unsetServiceStarted() {
-    rm -f ${STARLINGS_DIR}/.${NODE}-startFlag
+    rm -f ${YSTIA_DIR}/.${NODE}-startFlag
 }
 
 # Check if a service is already configured before stopped him to avoid error
@@ -348,9 +348,9 @@ sudo mkdir -p $log_dir
 sudo chown "$(id --user):$(id --group)" $log_dir
 exec > >(tee -a "${log_dir}/${LOG_FILE}.log") 2>&1
 
-# STARLINGS_DIR
-STARLINGS_DIR="${HOME}/.starlings"
-mkdir -p $STARLINGS_DIR
+# YSTIA_DIR
+YSTIA_DIR="${HOME}/.ystia"
+mkdir -p $YSTIA_DIR
 
 # Exit on error
 set -e

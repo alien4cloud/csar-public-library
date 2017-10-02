@@ -17,7 +17,7 @@ KBN_UNZIP_FOLDER="kibana-${KBN_VERSION}-linux-x86_64"
 INSTALL_DIR=${HOME}
 KIBANA_HOME_DIR=${INSTALL_DIR}/${KBN_UNZIP_FOLDER}
 
-echo "KIBANA_HOME=${KIBANA_HOME_DIR}" >${STARLINGS_DIR}/kibana_env.sh
+echo "KIBANA_HOME=${KIBANA_HOME_DIR}" >${YSTIA_DIR}/kibana_env.sh
 
 KIBANA_PLUGIN_DIR=${KIBANA_HOME_DIR}/plugins
 #https://github.com/chenryn/kbn_sankey_vis/tree/kibana5

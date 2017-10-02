@@ -13,7 +13,7 @@ ensure_home_var_is_set
 
 lock "$(basename $0)"
 
-flag="${STARLINGS_DIR}/.${SOURCE_NODE}-preconfiguresource-output-Flag"
+flag="${YSTIA_DIR}/.${SOURCE_NODE}-preconfiguresource-output-Flag"
 
 if [[ -e "${flag}" ]]; then
     log info "Kafka input already configured, skipping."

@@ -7,7 +7,7 @@ lock "$(basename $0)"
 
 [ -z ${LOGSTASH_HOME} ] && error_exit "LOGSTASH_HOME not set"
 
-if [[ -e "${STARLINGS_DIR}/.${SOURCE_NODE}-ls2esFlag" ]]; then
+if [[ -e "${YSTIA_DIR}/.${SOURCE_NODE}-ls2esFlag" ]]; then
     log info "Logstash component '${SOURCE_NODE}' already configured with Elasticsearch output"
     unlock "$(basename $0)"
     exit 0
@@ -37,7 +37,7 @@ log info "Elasticsearch host is $host"
 echo -e "output {\n\telasticsearch {\n\t\thosts => [\"$host\"] }\n}" >>${LOGSTASH_HOME}/conf/3-elasticsearch_logstash_outputs.conf
 log info "A4C configure elasticsearch cluster ${cluster_name}"
 
-touch "${STARLINGS_DIR}/.${SOURCE_NODE}-ls2esFlag"
+touch "${YSTIA_DIR}/.${SOURCE_NODE}-ls2esFlag"
 log info "Logstash connected to Elasticsearch host ${host}"
 
 unlock "$(basename $0)"

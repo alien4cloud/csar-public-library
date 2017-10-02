@@ -30,7 +30,7 @@ env |sort
 
 log info "Installing Elasticsearch on ${ES_HOME_DIR}"
 
-echo "ELASTICSEARCH_HOME=${ES_HOME_DIR}" >>${STARLINGS_DIR}/kibana_env.sh
+echo "ELASTICSEARCH_HOME=${ES_HOME_DIR}" >>${YSTIA_DIR}/kibana_env.sh
 
 # Install dependencies
 bash ${utils_scripts}/install-components.sh "wget" || error_exit "ERROR: Failed to install wget"

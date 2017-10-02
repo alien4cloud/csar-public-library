@@ -7,7 +7,7 @@ log begin
 ensure_home_var_is_set
 
 # To set ELASTICSEARCH_HOME
-source ${STARLINGS_DIR}/kibana_env.sh
+source ${YSTIA_DIR}/kibana_env.sh
 
 # TODO: comment
 env |sort
