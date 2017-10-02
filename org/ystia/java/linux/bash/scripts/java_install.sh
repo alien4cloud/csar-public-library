@@ -6,28 +6,28 @@ log begin
 ensure_home_var_is_set
 
 function install_from_url () {
-    STARLINGS_JAVA_HOME=${1}
-    sudo mkdir -p ${STARLINGS_JAVA_HOME}
+    YSTIA_JAVA_HOME=${1}
+    sudo mkdir -p ${YSTIA_JAVA_HOME}
     java_zip="java-$$.zip"
-    sudo wget --header "Cookie: oraclelicense=accept-securebackup-cookie" -O "${STARLINGS_JAVA_HOME}/${java_zip}" "${JAVA_DOWNLOAD_URL}"
+    sudo wget --header "Cookie: oraclelicense=accept-securebackup-cookie" -O "${YSTIA_JAVA_HOME}/${java_zip}" "${JAVA_DOWNLOAD_URL}"
 
     case "${JAVA_DOWNLOAD_URL}" in
         *.zip)
-            sudo unzip "${STARLINGS_JAVA_HOME}/${java_zip}" -d ${STARLINGS_JAVA_HOME}
-            sudo rm "${STARLINGS_JAVA_HOME}/${java_zip}"
-            sudo mv ${STARLINGS_JAVA_HOME}/*/* ${STARLINGS_JAVA_HOME}
+            sudo unzip "${YSTIA_JAVA_HOME}/${java_zip}" -d ${YSTIA_JAVA_HOME}
+            sudo rm "${YSTIA_JAVA_HOME}/${java_zip}"
+            sudo mv ${YSTIA_JAVA_HOME}/*/* ${YSTIA_JAVA_HOME}
             ;;
         *.tar)
-            sudo tar xf "${STARLINGS_JAVA_HOME}/${java_zip}" --strip-components=1 --directory=${STARLINGS_JAVA_HOME}
-            sudo rm "${STARLINGS_JAVA_HOME}/${java_zip}"
+            sudo tar xf "${YSTIA_JAVA_HOME}/${java_zip}" --strip-components=1 --directory=${YSTIA_JAVA_HOME}
+            sudo rm "${YSTIA_JAVA_HOME}/${java_zip}"
             ;;
         *.tar.gz | *.tgz)
-            sudo tar xzf "${STARLINGS_JAVA_HOME}/${java_zip}" --strip-components=1 --directory=${STARLINGS_JAVA_HOME}
-            sudo rm "${STARLINGS_JAVA_HOME}/${java_zip}"
+            sudo tar xzf "${YSTIA_JAVA_HOME}/${java_zip}" --strip-components=1 --directory=${YSTIA_JAVA_HOME}
+            sudo rm "${YSTIA_JAVA_HOME}/${java_zip}"
             ;;
         *.tar.bz2)
-            sudo tar xjf "${STARLINGS_JAVA_HOME}/${java_zip}" --strip-components=1 --directory=${STARLINGS_JAVA_HOME}
-            sudo rm "${STARLINGS_JAVA_HOME}/${java_zip}"
+            sudo tar xjf "${YSTIA_JAVA_HOME}/${java_zip}" --strip-components=1 --directory=${YSTIA_JAVA_HOME}
+            sudo rm "${YSTIA_JAVA_HOME}/${java_zip}"
             ;;
     esac
 }
@@ -47,12 +47,12 @@ function ubuntu_install_openjdk () {
         error_exit "Failed to install java packages: \"${packages}\" using apt-get"
     }
 
-    STARLINGS_JAVA_HOME="/usr/lib/jvm/java-${JAVA_VERSION}-openjdk-$(dpkg --print-architecture)"
+    YSTIA_JAVA_HOME="/usr/lib/jvm/java-${JAVA_VERSION}-openjdk-$(dpkg --print-architecture)"
     if [[ "${JAVA_IS_JRE}" == "true" ]]
     then
-        STARLINGS_JAVA_HOME="${STARLINGS_JAVA_HOME}/jre"
+        YSTIA_JAVA_HOME="${YSTIA_JAVA_HOME}/jre"
     fi
-    export STARLINGS_JAVA_HOME=${STARLINGS_JAVA_HOME}
+    export YSTIA_JAVA_HOME=${YSTIA_JAVA_HOME}
 }
 
 function ubuntu_install_oracle_jdk () {
@@ -67,12 +67,12 @@ function ubuntu_install_oracle_jdk () {
     bash ${utils_scripts}/apt-install-components.sh ${packages} || {
         error_exit "Failed to install java packages: \"${packages}\" using apt-get"
     }
-    STARLINGS_JAVA_HOME="/usr/lib/jvm/java-${JAVA_VERSION}-oracle"
+    YSTIA_JAVA_HOME="/usr/lib/jvm/java-${JAVA_VERSION}-oracle"
     if [[ "${JAVA_IS_JRE}" == "true" ]]
     then
-        STARLINGS_JAVA_HOME="${STARLINGS_JAVA_HOME}/jre"
+        YSTIA_JAVA_HOME="${YSTIA_JAVA_HOME}/jre"
     fi
-    export STARLINGS_JAVA_HOME=${STARLINGS_JAVA_HOME}
+    export YSTIA_JAVA_HOME=${YSTIA_JAVA_HOME}
 }
 
 # If java component already installed, nothing to do
@@ -83,7 +83,7 @@ then
 fi
 
 os_distribution="$(get_os_distribution)"
-STARLINGS_JAVA_HOME=""
+YSTIA_JAVA_HOME=""
 case "${os_distribution}" in
     "ubuntu")
         if [[ ! -z "${JAVA_DOWNLOAD_URL}" ]] && [[ "${JAVA_DOWNLOAD_URL}" != "null" ]]
@@ -91,8 +91,8 @@ case "${os_distribution}" in
             bash ${utils_scripts}/apt-install-components.sh "wget" "unzip" "tar" "bzip2" "gzip" || {
                 error_exit "Failed to install required support packages using apt-get"
             }
-            STARLINGS_JAVA_HOME=/opt/${NODE}
-            install_from_url "${STARLINGS_JAVA_HOME}"
+            YSTIA_JAVA_HOME=/opt/${NODE}
+            install_from_url "${YSTIA_JAVA_HOME}"
         else
             packages="openjdk-${JAVA_VERSION}"
             if [[ "$(apt-cache pkgnames ${packages} | wc -l)" != "0" ]]; then
@@ -109,8 +109,8 @@ case "${os_distribution}" in
             sudo yum install -y "wget" "unzip" "tar" "bzip2" "gzip" || {
                 error_exit "Failed to install required support packages using yum"
             }
-            STARLINGS_JAVA_HOME=/opt/${NODE}
-            install_from_url "${STARLINGS_JAVA_HOME}"
+            YSTIA_JAVA_HOME=/opt/${NODE}
+            install_from_url "${YSTIA_JAVA_HOME}"
         else
             packages="java-1.${JAVA_VERSION}.0-openjdk"
             if (( "${JAVA_VERSION}" >= "8" )) && [[ "${JAVA_IS_JRE}" == "true" ]] && [[ "${JAVA_IS_HEADLESS}" == "true" ]]
@@ -126,13 +126,13 @@ case "${os_distribution}" in
             }
             if [[ "${JAVA_IS_JRE}" == "true" ]]
             then
-                STARLINGS_JAVA_HOME="/usr/lib/jvm/jre-1.${JAVA_VERSION}.0-openjdk"
+                YSTIA_JAVA_HOME="/usr/lib/jvm/jre-1.${JAVA_VERSION}.0-openjdk"
             else
-                STARLINGS_JAVA_HOME="/usr/lib/jvm/java-1.${JAVA_VERSION}.0-openjdk"
+                YSTIA_JAVA_HOME="/usr/lib/jvm/java-1.${JAVA_VERSION}.0-openjdk"
             fi
             if [[ "${os_distribution}" != "centos" ]]
             then
-                STARLINGS_JAVA_HOME="${STARLINGS_JAVA_HOME}.$(uname -i)"
+                YSTIA_JAVA_HOME="${YSTIA_JAVA_HOME}.$(uname -i)"
             fi
         fi
         ;;
@@ -142,6 +142,6 @@ case "${os_distribution}" in
         ;;
 esac
 
-log info "JAVA_HOME is ${STARLINGS_JAVA_HOME}"
-export STARLINGS_JAVA_HOME
+log info "JAVA_HOME is ${YSTIA_JAVA_HOME}"
+export YSTIA_JAVA_HOME
 log end
