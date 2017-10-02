@@ -334,7 +334,7 @@ unlock() {
 }
 
 # Need sudo + chown on centos (not on ubuntu)
-lock_dir=/var/lock/starlings
+lock_dir=/var/lock/ystia
 sudo mkdir -p $lock_dir
 sudo chown $(id --user):$(id --group) $lock_dir
 
@@ -343,7 +343,7 @@ sudo chown $(id --user):$(id --group) $lock_dir
 [[ ! -z ${LOG_FILE} ]] || LOG_FILE=$NODE
 [[ ! -z ${LOG_FILE} ]] || LOG_FILE=$SOURCE_NODE
 [[ ! -z ${LOG_FILE} ]] || LOG_FILE=bdcf
-log_dir="/var/log/bdcf"
+log_dir="/var/log/ystia"
 sudo mkdir -p $log_dir
 sudo chown "$(id --user):$(id --group)" $log_dir
 exec > >(tee -a "${log_dir}/${LOG_FILE}.log") 2>&1
