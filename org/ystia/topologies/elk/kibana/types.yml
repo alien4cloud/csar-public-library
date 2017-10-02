@@ -13,10 +13,10 @@ imports:
   - org.ystia.java.pub:1.0-SNAPSHOT
   - org.ystia.consul.pub:1.0-SNAPSHOT
   - org.ystia.elasticsearch.pub:1.0-SNAPSHOT
-  - org.ystia.java.linux.sh:1.0-SNAPSHOT
-  - org.ystia.consul.linux.sh:1.0-SNAPSHOT
-  - org.ystia.elasticsearch.linux.sh:1.0-SNAPSHOT
-  - org.ystia.kibana.linux.sh:1.0-SNAPSHOT
+  - org.ystia.java.linux.bash:1.0-SNAPSHOT
+  - org.ystia.consul.linux.bash:1.0-SNAPSHOT
+  - org.ystia.elasticsearch.linux.bash:1.0-SNAPSHOT
+  - org.ystia.kibana.linux.bash:1.0-SNAPSHOT
 
 topology_template:
 
@@ -34,7 +34,7 @@ topology_template:
     Compute_CS:
       type: tosca.nodes.Compute
     Consul_Server:
-      type: org.ystia.consul.linux.sh.nodes.Consul
+      type: org.ystia.consul.linux.bash.nodes.Consul
       requirements:
         - host:
             node: Compute_CS
@@ -50,19 +50,19 @@ topology_template:
             node: Network
             relationship: tosca.relationships.Network
     Consul_ES:
-      type: org.ystia.consul.linux.sh.nodes.Consul
+      type: org.ystia.consul.linux.bash.nodes.Consul
       requirements:
         - host:
             node: Compute_ES
         - server_endpoint:
             node: Consul_Server
     Java_ES:
-      type: org.ystia.java.linux.sh.nodes.Java
+      type: org.ystia.java.linux.bash.nodes.Java
       requirements:
         - host:
             node: Compute_ES
     Elasticsearch:
-      type: org.ystia.elasticsearch.linux.sh.nodes.Elasticsearch
+      type: org.ystia.elasticsearch.linux.bash.nodes.Elasticsearch
       requirements:
         - host:
             node: Java_ES
@@ -78,19 +78,19 @@ topology_template:
             node: Network
             relationship: tosca.relationships.Network
     Consul_KBN:
-      type: org.ystia.consul.linux.sh.nodes.Consul
+      type: org.ystia.consul.linux.bash.nodes.Consul
       requirements:
         - host:
             node: Compute_KBN
         - server_endpoint:
             node: Consul_Server
     Java_KBN:
-      type: org.ystia.java.linux.sh.nodes.Java
+      type: org.ystia.java.linux.bash.nodes.Java
       requirements:
         - host:
             node: Compute_KBN
     Kibana:
-      type: org.ystia.kibana.linux.sh.nodes.Kibana
+      type: org.ystia.kibana.linux.bash.nodes.Kibana
       requirements:
         - host:
             node: Java_KBN
@@ -99,7 +99,7 @@ topology_template:
         - search_endpoint:
             node: Elasticsearch
     KibanaDashboard:
-      type: org.ystia.kibana.linux.sh.nodes.KibanaDashboard
+      type: org.ystia.kibana.linux.bash.nodes.KibanaDashboard
       requirements:
         - dashboard_host:
             node: Kibana

@@ -1,0 +1,200 @@
+tosca_definitions_version: alien_dsl_1_4_0
+
+metadata:
+  template_name: org.ystia.flink.linux.bash
+  template_version: 1.0-SNAPSHOT
+  template_author: Bull
+
+description: Apache Flink is an open source platform for distributed stream and batch data processing.
+
+imports:
+  - tosca-normative-types:1.0.0-ALIEN14
+  - org.ystia.common:1.0-SNAPSHOT
+  - org.ystia.java.pub:1.0-SNAPSHOT
+  - org.ystia.consul.pub:1.0-SNAPSHOT
+  - org.ystia.flink.pub:1.0-SNAPSHOT
+
+node_types:
+  org.ystia.flink.linux.bash.nodes.JobManager:
+    derived_from: org.ystia.consul.pub.nodes.ConsulUser
+    description: Installation of Flink JobManager
+    tags:
+      icon: /images/flink-icon.png
+    attributes:
+      url: { concat: ["http://", get_attribute: [HOST, public_ip_address], ":8081" ] }
+    properties:
+      component_version:
+        type: version
+        default: 1.1.3
+        description: Version of the installed Flink component
+        constraints:
+          - valid_values: [1.1.3, 1.1.4, 1.1.5, 1.2.1, 1.3.2]
+      jobmanager.rpc.port:
+        type: integer
+        description: >
+          The port number of the JobManager.
+        default: 6123
+        constraints:
+          - equal: 6123
+      jobmanager.heap.mb:
+        type: integer
+        description: >
+          JVM heap size (in megabytes) for the JobManager
+        default: "512"
+      repository:
+        type: string
+        default: http://archive.apache.org/dist/flink
+        description: >
+          This property give the opportunity to specify an alternative
+          download repository for this component artifacts.  It is your
+          responsibility to provide an accessible download url and to store
+          required artifacts on it.  You should specify only the base
+          repository url. Artifacts names will be appended to it, so this
+          property could be shared among several components using the
+          inputs feature.
+        required: false
+        constraints:
+          - pattern: ^(http|https|ftp)://.+/.*$
+    attributes:
+      java_home: { get_operation_output: [ SELF, Configure, pre_configure_source, JAVA_HOME ] }
+    capabilities:
+      jobmanager:
+        type: org.ystia.flink.pub.capabilities.JobManager
+    requirements:
+      - host:
+          capability: org.ystia.java.pub.capabilities.JavaHosting
+          relationship: org.ystia.java.pub.relationships.HostedOnJavaRuntime
+          occurrences: [1,1]
+    interfaces:
+      Standard:
+        create:
+          inputs:
+            FLINK_REPO: { get_property: [SELF, repository] }
+            FLINK_VERSION: { get_property: [SELF, component_version] }
+          implementation: scripts/flink_install.sh
+        configure:
+          inputs:
+            IP_ADDRESS: { get_attribute: [SELF, ip_address] }
+            JOBMANAGER_PORT: { get_property: [SELF, jobmanager.rpc.port] }
+            JOBMANAGER_HEAP: { get_property: [SELF, jobmanager.heap.mb] }
+            JAVA_HOME: { get_attribute: [SELF, java_home] }
+          implementation: scripts/flink_jm_configure.sh
+        start:
+          implementation: scripts/flink_jm_start.sh
+        stop:
+          implementation: scripts/flink_stop.sh
+    artifacts:
+      - scripts:
+          file: scripts
+          type: tosca.artifacts.File
+  org.ystia.flink.linux.bash.nodes.TaskManager:
+    derived_from: org.ystia.consul.pub.nodes.ConsulUser
+    description: Installation of Flink TaskManager
+    tags:
+      icon: /images/flink-icon.png
+    properties:
+      component_version:
+        type: version
+        default: 1.1.3
+        description: Version of the installed Flink component
+        constraints:
+          - valid_values: [1.1.3, 1.1.4, 1.1.5, 1.2.1, 1.3.2]
+      taskmanager.rpc.port:
+        type: integer
+        description: >
+          The task manager’s IPC port (DEFAULT: 0, which lets the OS choose a free port).
+        default: 0
+        constraints:
+          - equal: 0
+      taskmanager.heap.mb:
+        type: integer
+        description: >
+          JVM heap size (in megabytes) for the TaskManagers, which are the parallel workers of the system.
+          This value should be as large as possible. If the cluster is exclusively running Flink, the total amount of available memory per machine minus some memory for the operating system (maybe 1-2 GB) is a good value.
+        default: "512"
+      taskmanager.numberOfTaskSlots:
+        type: integer
+        description: >
+          The number of parallel operator or user function instances that a single TaskManager can run.
+          This value is typically proportional to the number of physical CPU cores that the TaskManager’s machine has (e.g., equal to the number of cores, or half the number of cores).
+        default: 1
+      parallelism.default:
+        type: integer
+        description: >
+          The default parallelism to use for programs that have no parallelism specified.
+          For setups that have no concurrent jobs running, setting this value to NumTaskManagers * NumSlotsPerTaskManager will cause the system to use all available execution resources for the program’s execution.
+        default: 1
+      taskmanager.tmp.dirs:
+        type: string
+        description: >
+          Specifies a list of directories into which Flink writes temporary files when data doesn’t fit into main memory.
+          The paths of the directories need to be separated by ‘:’ (colon character)
+        default: /tmp
+      repository:
+        type: string
+        default: http://archive.apache.org/dist/flink
+        description: >
+          This property give the opportunity to specify an alternative
+          download repository for this component artifacts.  It is your
+          responsibility to provide an accessible download url and to store
+          required artifacts on it.  You should specify only the base
+          repository url. Artifacts names will be appended to it, so this
+          property could be shared among several components using the
+          inputs feature.
+        required: false
+        constraints:
+          - pattern: ^(http|https|ftp)://.+/.*$
+    attributes:
+      java_home: { get_operation_output: [ SELF, Configure, pre_configure_source, JAVA_HOME ] }
+    requirements:
+      - host:
+          capability: org.ystia.java.pub.capabilities.JavaHosting
+          relationship: org.ystia.java.pub.relationships.HostedOnJavaRuntime
+          occurrences: [1,1]
+      - jobmanager_endpoint:
+          capability: org.ystia.flink.pub.capabilities.JobManager
+          relationship: org.ystia.flink.linux.bash.relationships.TaskManagerToJobManager
+          occurrences: [1,1]
+    interfaces:
+      Standard:
+        create:
+          inputs:
+            FLINK_REPO: { get_property: [SELF, repository] }
+            FLINK_VERSION: { get_property: [SELF, component_version] }
+          implementation: scripts/flink_install.sh
+        configure:
+          inputs:
+            IP_ADDRESS: { get_attribute: [SELF, ip_address] }
+            TASKMANAGER_PORT: { get_property: [SELF, taskmanager.rpc.port] }
+            TASKMANAGER_MEM: { get_property: [SELF, taskmanager.heap.mb] }
+            TASKMANAGER_SLOTS: { get_property: [SELF, taskmanager.numberOfTaskSlots] }
+            PARALLELISM_DEFAULT: { get_property: [SELF, parallelism.default] }
+            TASKMANAGER_TMP_DIRS: { get_property: [SELF, taskmanager.tmp.dirs] }
+            JAVA_HOME: { get_attribute: [SELF, java_home] }
+          implementation: scripts/flink_tm_configure.sh
+        start:
+          implementation: scripts/flink_tm_start.sh
+        stop:
+          implementation: scripts/flink_stop.sh
+    artifacts:
+      - scripts:
+          file: scripts
+          type: tosca.artifacts.File
+
+relationship_types:
+  org.ystia.flink.linux.bash.relationships.TaskManagerToJobManager:
+    derived_from: tosca.relationships.ConnectsTo
+    description: >
+      Connects a Flink taskmanager to a Flink jobmanager
+    valid_target_types: [ org.ystia.flink.linux.bash.nodes.JobManager ]
+    interfaces:
+      Configure:
+        pre_configure_source:
+          inputs:
+            JOBMANAGER_IP: { get_attribute: [TARGET, ip_address] }
+            TASKMANAGER_IP: { get_attribute: [SOURCE, ip_address] }
+          implementation: scripts/taskmanager_to_jobmanager.sh
+    artifacts:
+      - scripts:
+          file: scripts
+          type: tosca.artifacts.File

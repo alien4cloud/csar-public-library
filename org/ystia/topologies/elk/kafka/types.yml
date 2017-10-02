@@ -11,11 +11,11 @@ imports:
   - tosca-normative-types:1.0.0-ALIEN14
   - org.ystia.common:1.0-SNAPSHOT
   - org.ystia.consul.pub:1.0-SNAPSHOT
-  - org.ystia.consul.linux.sh:1.0-SNAPSHOT
+  - org.ystia.consul.linux.bash:1.0-SNAPSHOT
   - org.ystia.kafka.pub:1.0-SNAPSHOT
-  - org.ystia.kafka.linux.sh:1.0-SNAPSHOT
+  - org.ystia.kafka.linux.bash:1.0-SNAPSHOT
   - org.ystia.java.pub:1.0-SNAPSHOT
-  - org.ystia.java.linux.sh:1.0-SNAPSHOT
+  - org.ystia.java.linux.bash:1.0-SNAPSHOT
 
 topology_template:
   node_templates:
@@ -43,21 +43,21 @@ topology_template:
             network_name: PRIVATE
             initiator: source
     Consul:
-      type: org.ystia.consul.linux.sh.nodes.Consul
+      type: org.ystia.consul.linux.bash.nodes.Consul
       requirements:
         - host:
             node: Compute
             capability: tosca.capabilities.Container
             relationship: tosca.relationships.HostedOn
     Java:
-      type: org.ystia.java.linux.sh.nodes.Java
+      type: org.ystia.java.linux.bash.nodes.Java
       requirements:
         - host:
             node: Compute
             capability: tosca.capabilities.Container
             relationship: tosca.relationships.HostedOn
     Kafka:
-      type: org.ystia.kafka.linux.sh.nodes.Kafka
+      type: org.ystia.kafka.linux.bash.nodes.Kafka
       properties:
       requirements:
         - host:
@@ -69,7 +69,7 @@ topology_template:
             capability: org.ystia.consul.pub.capabilities.ConsulAgent
             relationship: org.ystia.consul.pub.relationships.ConnectsToConsulAgent
     KafkaTopic:
-      type: org.ystia.kafka.linux.sh.nodes.KafkaTopic
+      type: org.ystia.kafka.linux.bash.nodes.KafkaTopic
       properties:
         topic_name: mytopic
       requirements:

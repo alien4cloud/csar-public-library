@@ -10,7 +10,7 @@ description: Topology template for MongoDB with a single 3-member replica set
 imports:
   - tosca-normative-types:1.0.0-ALIEN14
   - org.ystia.mongodb.pub:1.0-SNAPSHOT
-  - org.ystia.mongodb.linux.sh:1.0-SNAPSHOT
+  - org.ystia.mongodb.linux.bash:1.0-SNAPSHOT
 
 topology_template:
   inputs:
@@ -34,7 +34,7 @@ topology_template:
       required: true
   node_templates:
     ReplicaSlave2:
-      type: org.ystia.mongodb.linux.sh.nodes.ReplicaSlave
+      type: org.ystia.mongodb.linux.bash.nodes.ReplicaSlave
       properties:
         db_port:     { get_input: db_port }
         mongo_repo:  { get_input: mongo_repo }
@@ -53,7 +53,7 @@ topology_template:
             secure: false
             network_name: PRIVATE
     ReplicaSlave1:
-      type: org.ystia.mongodb.linux.sh.nodes.ReplicaSlave
+      type: org.ystia.mongodb.linux.bash.nodes.ReplicaSlave
       properties:
         db_port:     { get_input: db_port }
         mongo_repo:  { get_input: mongo_repo }
@@ -72,7 +72,7 @@ topology_template:
             secure: false
             network_name: PRIVATE
     ReplicaMain:
-      type: org.ystia.mongodb.linux.sh.nodes.ReplicaMain
+      type: org.ystia.mongodb.linux.bash.nodes.ReplicaMain
       properties:
         db_port:     { get_input: db_port }
         mongo_repo:  { get_input: mongo_repo }
@@ -86,11 +86,11 @@ topology_template:
         - primary2secondary:
             node: ReplicaSlave1
             capability: org.ystia.mongodb.pub.capabilities.Endpoint.PrimaryToSecondary
-            relationship: org.ystia.mongodb.linux.sh.relationships.ConnectsTo.primary_to_secondary
+            relationship: org.ystia.mongodb.linux.bash.relationships.ConnectsTo.primary_to_secondary
         - primary2secondary:
             node: ReplicaSlave2
             capability: org.ystia.mongodb.pub.capabilities.Endpoint.PrimaryToSecondary
-            relationship: org.ystia.mongodb.linux.sh.relationships.ConnectsTo.primary_to_secondary
+            relationship: org.ystia.mongodb.linux.bash.relationships.ConnectsTo.primary_to_secondary
       capabilities:
         router2replicaset:
           properties:

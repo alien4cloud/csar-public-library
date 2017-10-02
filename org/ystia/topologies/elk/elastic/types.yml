@@ -12,10 +12,10 @@ imports:
   - org.ystia.common:1.0-SNAPSHOT
   - org.ystia.consul.pub:1.0-SNAPSHOT
   - org.ystia.elasticsearch.pub:1.0-SNAPSHOT
-  - org.ystia.java.linux.sh:1.0-SNAPSHOT
-  - org.ystia.consul.linux.sh:1.0-SNAPSHOT
+  - org.ystia.java.linux.bash:1.0-SNAPSHOT
+  - org.ystia.consul.linux.bash:1.0-SNAPSHOT
   - org.ystia.java.pub:1.0-SNAPSHOT
-  - org.ystia.elasticsearch.linux.sh:1.0-SNAPSHOT
+  - org.ystia.elasticsearch.linux.bash:1.0-SNAPSHOT
 
 topology_template:
   node_templates:
@@ -45,21 +45,21 @@ topology_template:
             network_name: PRIVATE
             initiator: source
     Consul:
-      type: org.ystia.consul.linux.sh.nodes.Consul
+      type: org.ystia.consul.linux.bash.nodes.Consul
       requirements:
         - host:
             node: Compute
             capability: tosca.capabilities.Container
             relationship: tosca.relationships.HostedOn
     Java:
-      type: org.ystia.java.linux.sh.nodes.Java
+      type: org.ystia.java.linux.bash.nodes.Java
       requirements:
         - host:
             node: Compute
             capability: tosca.capabilities.Container
             relationship: tosca.relationships.HostedOn
     Elasticsearch:
-      type: org.ystia.elasticsearch.linux.sh.nodes.Elasticsearch
+      type: org.ystia.elasticsearch.linux.bash.nodes.Elasticsearch
       requirements:
         - host:
             node: Java

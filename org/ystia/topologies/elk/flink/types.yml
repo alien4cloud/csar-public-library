@@ -12,10 +12,10 @@ imports:
   - org.ystia.common:1.0-SNAPSHOT
   - org.ystia.consul.pub:1.0-SNAPSHOT
   - org.ystia.flink.pub:1.0-SNAPSHOT
-  - org.ystia.java.linux.sh:1.0-SNAPSHOT
-  - org.ystia.consul.linux.sh:1.0-SNAPSHOT
+  - org.ystia.java.linux.bash:1.0-SNAPSHOT
+  - org.ystia.consul.linux.bash:1.0-SNAPSHOT
   - org.ystia.java.pub:1.0-SNAPSHOT
-  - org.ystia.flink.linux.sh:1.0-SNAPSHOT
+  - org.ystia.flink.linux.bash:1.0-SNAPSHOT
 
 topology_template:
   node_templates:
@@ -43,21 +43,21 @@ topology_template:
             network_name: PRIVATE
             initiator: source
     Consul:
-      type: org.ystia.consul.linux.sh.nodes.Consul
+      type: org.ystia.consul.linux.bash.nodes.Consul
       requirements:
         - host:
             node: Compute
             capability: tosca.capabilities.Container
             relationship: tosca.relationships.HostedOn
     Java:
-      type: org.ystia.java.linux.sh.nodes.Java
+      type: org.ystia.java.linux.bash.nodes.Java
       requirements:
         - host:
             node: Compute
             capability: tosca.capabilities.Container
             relationship: tosca.relationships.HostedOn
     JobManager:
-      type: org.ystia.flink.linux.sh.nodes.JobManager
+      type: org.ystia.flink.linux.bash.nodes.JobManager
       requirements:
         - host:
             node: Java
@@ -87,30 +87,30 @@ topology_template:
             network_name: PRIVATE
             initiator: source
     Consul_2:
-      type: org.ystia.consul.linux.sh.nodes.Consul
+      type: org.ystia.consul.linux.bash.nodes.Consul
       requirements:
         - server_endpoint:
             node: Consul
             capability: org.ystia.consul.pub.capabilities.ConsulServer
-            relationship: org.ystia.consul.linux.sh.relationships.ConnectsConsulAgentToServer
+            relationship: org.ystia.consul.linux.bash.relationships.ConnectsConsulAgentToServer
         - host:
             node: Compute_2
             capability: tosca.capabilities.Container
             relationship: tosca.relationships.HostedOn
     Java_2:
-      type: org.ystia.java.linux.sh.nodes.Java
+      type: org.ystia.java.linux.bash.nodes.Java
       requirements:
         - host:
             node: Compute_2
             capability: tosca.capabilities.Container
             relationship: tosca.relationships.HostedOn
     TaskManager:
-      type: org.ystia.flink.linux.sh.nodes.TaskManager
+      type: org.ystia.flink.linux.bash.nodes.TaskManager
       requirements:
         - jobmanager_endpoint:
             node: JobManager
             capability: org.ystia.flink.pub.capabilities.JobManager
-            relationship: org.ystia.flink.linux.sh.relationships.TaskManagerToJobManager
+            relationship: org.ystia.flink.linux.bash.relationships.TaskManagerToJobManager
         - host:
             node: Java_2
             capability: org.ystia.java.pub.capabilities.JavaHosting

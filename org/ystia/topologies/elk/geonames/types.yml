@@ -13,11 +13,11 @@ imports:
   - org.ystia.java.pub:1.0-SNAPSHOT
   - org.ystia.consul.pub:1.0-SNAPSHOT
   - org.ystia.elasticsearch.pub:1.0-SNAPSHOT
-  - org.ystia.java.linux.sh:1.0-SNAPSHOT
-  - org.ystia.consul.linux.sh:1.0-SNAPSHOT
-  - org.ystia.elasticsearch.linux.sh:1.0-SNAPSHOT
+  - org.ystia.java.linux.bash:1.0-SNAPSHOT
+  - org.ystia.consul.linux.bash:1.0-SNAPSHOT
+  - org.ystia.elasticsearch.linux.bash:1.0-SNAPSHOT
   - org.ystia.logstash.pub:1.0-SNAPSHOT
-  - org.ystia.logstash.linux.sh:1.0-SNAPSHOT
+  - org.ystia.logstash.linux.bash:1.0-SNAPSHOT
 
 topology_template:
   
@@ -35,7 +35,7 @@ topology_template:
     ComputeCL:
       type: tosca.nodes.Compute
     ConsulServer:
-      type: org.ystia.consul.linux.sh.nodes.Consul
+      type: org.ystia.consul.linux.bash.nodes.Consul
       requirements:
         - host:
             node: ComputeCL
@@ -51,19 +51,19 @@ topology_template:
             node: Network
             relationship: tosca.relationships.Network
     ConsulES:
-      type: org.ystia.consul.linux.sh.nodes.Consul
+      type: org.ystia.consul.linux.bash.nodes.Consul
       requirements:
         - host:
             node: ComputeES
         - server_endpoint:
             node: ConsulServer
     JavaES:
-      type: org.ystia.java.linux.sh.nodes.Java
+      type: org.ystia.java.linux.bash.nodes.Java
       requirements:
         - host:
             node: ComputeES
     Elasticsearch:
-      type: org.ystia.elasticsearch.linux.sh.nodes.Elasticsearch
+      type: org.ystia.elasticsearch.linux.bash.nodes.Elasticsearch
       requirements:
         - host:
             node: JavaES
@@ -79,19 +79,19 @@ topology_template:
             node: Network
             relationship: tosca.relationships.Network
     ConsulLS:
-      type: org.ystia.consul.linux.sh.nodes.Consul
+      type: org.ystia.consul.linux.bash.nodes.Consul
       requirements:
         - host:
             node: ComputeLS
         - server_endpoint:
             node: ConsulServer
     JavaLS:
-      type: org.ystia.java.linux.sh.nodes.Java
+      type: org.ystia.java.linux.bash.nodes.Java
       requirements:
         - host:
             node: ComputeLS
     Logstash:
-      type: org.ystia.logstash.linux.sh.nodes.Logstash
+      type: org.ystia.logstash.linux.bash.nodes.Logstash
       requirements:
         - host:
             node: JavaLS
@@ -100,7 +100,7 @@ topology_template:
         - search_endpoint:
             node: Elasticsearch
     GeoNames:
-      type: org.ystia.logstash.linux.sh.nodes.GeoNames
+      type: org.ystia.logstash.linux.bash.nodes.GeoNames
       properties:
         filename: cities15000
       requirements:

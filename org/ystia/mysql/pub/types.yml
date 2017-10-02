@@ -79,11 +79,11 @@ node_types:
     requirements:
       - host:
           capability: org.ystia.mysql.pub.capabilities.Container.MySQLServer
-          relationship: org.ystia.mysql.linux.sh.relationships.HostedOn.MySQLServer
+          relationship: org.ystia.mysql.linux.bash.relationships.HostedOn.MySQLServer
           occurrences: [1,1]
 
 relationship_types:
-  org.ystia.mysql.linux.sh.relationships.HostedOn.MySQLServer:
+  org.ystia.mysql.linux.bash.relationships.HostedOn.MySQLServer:
     derived_from: tosca.relationships.HostedOn
     description: >
       This type represents a hosting relationship between MySQLServer and MySQLDataBase components

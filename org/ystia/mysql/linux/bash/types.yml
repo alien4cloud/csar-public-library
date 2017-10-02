@@ -1,0 +1,81 @@
+tosca_definitions_version: alien_dsl_1_4_0
+
+metadata:
+  template_name: org.ystia.mysql.linux.bash
+  template_version: 1.0-SNAPSHOT
+  template_author: Bull
+
+description: MySQL Component
+
+imports:
+  - tosca-normative-types:1.0.0-ALIEN14
+  - org.ystia.common:1.0-SNAPSHOT
+  - org.ystia.mysql.pub:1.0-SNAPSHOT
+
+node_types:
+  org.ystia.mysql.linux.bash.nodes.MySQLServer:
+    derived_from: org.ystia.mysql.pub.nodes.MySQLServer
+    interfaces:
+      Standard:
+        create:
+          inputs:
+            MYSQL_COMMUNITY_REPO: { get_property: [SELF, mysql_community_repo]}
+          implementation: scripts/mysql_create.sh
+        configure:
+          inputs:
+            DBMS_ROOT_PASSWORD: { get_property: [SELF, root_password]}
+            DBMS_PORT: { get_property: [SELF, port]}
+          implementation: scripts/mysql_configure.sh
+        start:
+          implementation: scripts/mysql_start.sh
+    artifacts:
+      - scripts:
+          type: tosca.artifacts.File
+          file: scripts
+  org.ystia.mysql.linux.bash.nodes.MySQLDatabase:
+    derived_from: org.ystia.mysql.pub.nodes.MySQLDatabase
+    requirements:
+      - blockstorage:
+          capability: tosca.capabilities.Node
+          relationship: org.ystia.mysql.linux.bash.relationships.DependsOn.MySqlVolume
+          occurrences: [0,1]
+    interfaces:
+     Standard:
+       create:
+         inputs:
+          DB_NAME: { get_property: [SELF, name]}
+          DB_USER: { get_property: [SELF, user]}
+          DB_PASSWORD: { get_property: [SELF, password]}
+          DB_PORT: { get_property: [SELF, port]}
+          DBMS_ROOT_PASSWORD : { get_property: [HOST, root_password]}
+         implementation: scripts/mysql_db_create.sh
+       configure:
+         inputs:
+          DB_NAME: { get_property: [SELF, name]}
+          DB_USER: { get_property: [SELF, user]}
+          DB_PORT: { get_property: [SELF, port]}
+          DB_PASSWORD: { get_property: [SELF, password]}
+          DBMS_ROOT_PASSWORD : { get_property: [HOST, root_password]}
+         implementation: scripts/mysql_db_configure.sh
+       start:
+         implementation: scripts/mysql_db_start.sh
+    artifacts:
+      - scripts:
+          type: tosca.artifacts.File
+          file: scripts
+
+relationship_types:
+  org.ystia.mysql.linux.bash.relationships.DependsOn.MySqlVolume:
+    derived_from: org.ystia.relationships.DependsOn
+    valid_target_types: [ tosca.capabilities.Node ]
+    interfaces:
+      Configure:
+        pre_configure_source:
+          inputs:
+            TARGET_BLOCKSTORAGE_DEVICE: { get_attribute: [TARGET, device] }
+          implementation: scripts/mysql_pre_configure_volume.sh
+    artifacts:
+      - scripts:
+          type: tosca.artifacts.File
+          file: scripts
+

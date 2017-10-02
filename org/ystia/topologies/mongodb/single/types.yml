@@ -9,7 +9,7 @@ description: Topology template for MongoDB as a standard Single Server
 
 imports:
   - tosca-normative-types:1.0.0-ALIEN14
-  - org.ystia.mongodb.linux.sh:1.0-SNAPSHOT
+  - org.ystia.mongodb.linux.bash:1.0-SNAPSHOT
 
 topology_template:
   inputs:
@@ -28,7 +28,7 @@ topology_template:
       properties:
         ip_version: 4
     MongoDBsingle:
-      type: org.ystia.mongodb.linux.sh.nodes.MongoDBsingle
+      type: org.ystia.mongodb.linux.bash.nodes.MongoDBsingle
       properties:
         db_port:     { get_input: db_port }
         mongo_repo:  { get_input: mongo_repo }

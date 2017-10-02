@@ -1,0 +1,199 @@
+tosca_definitions_version: alien_dsl_1_4_0
+
+metadata:
+  template_name: org.ystia.logstash.linux.bash
+  template_version: 1.0-SNAPSHOT
+  template_author: Bull
+
+description:
+
+imports:
+  - tosca-normative-types:1.0.0-ALIEN14
+  - org.ystia.common:1.0-SNAPSHOT
+  - org.ystia.logstash.pub:1.0-SNAPSHOT
+
+node_types:
+  org.ystia.logstash.linux.bash.nodes.Logstash:
+    derived_from: org.ystia.logstash.pub.nodes.Logstash
+    description: Linux installation of Logstash from Elastic Stack
+    attributes:
+      java_home: { get_operation_output: [ SELF, Configure, pre_configure_source, JAVA_HOME ] }
+      ls_home: { get_operation_output: [ SELF, Standard, create, LOGSTASH_HOME ] }
+    requirements:
+      - search_endpoint:
+          capability: org.ystia.elasticsearch.pub.capabilities.SearchEndpoint
+          relationship: org.ystia.logstash.linux.bash.relationships.LogstashToElasticsearch
+          occurrences: [0,1]
+      - kafka_output:
+          capability: org.ystia.kafka.pub.capabilities.KafkaTopic
+          relationship: org.ystia.logstash.linux.bash.relationships.LogstashToKafka
+          occurrences: [0,1]
+      - kafka_input:
+          capability: org.ystia.kafka.pub.capabilities.KafkaTopic
+          relationship: org.ystia.logstash.linux.bash.relationships.KafkaToLogstash
+          occurrences: [0,1]
+    interfaces:
+      Standard:
+          create:
+            inputs:
+              REPOSITORY: { get_property: [SELF, repository] }
+              LS_VERSION: { get_property: [SELF, component_version] }
+            implementation: scripts/logstash_install.sh
+          configure:
+            inputs:
+              STDOUT: { get_property: [SELF, stdout] }
+              LOGSTASH_HEAP_SIZE: { get_property: [SELF, heap_size] }
+              JAVA_HOME: { get_attribute: [SELF, java_home] }
+              LOGSTASH_HOME: { get_attribute: [SELF, ls_home] }
+              AUTO_RELOAD: { get_property: [SELF, auto_reload] }
+              RELOAD_INTERVAL: { get_property: [SELF, reload_interval] }
+              LOGSTASH_LOG_LEVEL: { get_property: [SELF, log_level] }
+            implementation: scripts/logstash_configure.sh
+          start:
+            inputs:
+              LOGSTASH_HOME: { get_attribute: [SELF, ls_home] }
+            implementation: scripts/logstash_start.sh
+          stop:
+            inputs:
+              LOGSTASH_HOME: { get_attribute: [SELF, ls_home] }
+            implementation: scripts/logstash_stop.sh
+      custom:
+          change_input:
+            inputs:
+              url:
+                type: string
+                description: input param for change_input
+                required: true
+              AUTO_RELOAD: { get_property: [SELF, auto_reload] }
+              LOGSTASH_HOME: { get_attribute: [SELF, ls_home] }
+            implementation: scripts/logstash_changeInput.sh
+          change_output:
+            inputs:
+              url:
+                type: string
+                description: input param for change_output
+                required: true
+              AUTO_RELOAD: { get_property: [SELF, auto_reload] }
+              LOGSTASH_HOME: { get_attribute: [SELF, ls_home] }
+            implementation: scripts/logstash_changeOutput.sh
+          change_filter:
+            inputs:
+              url:
+                type: string
+                description: input param for change_filter
+                required: true
+              AUTO_RELOAD: { get_property: [SELF, auto_reload] }
+              LOGSTASH_HOME: { get_attribute: [SELF, ls_home] }
+            implementation: scripts/logstash_changeFilter.sh
+    artifacts:
+      - scripts:
+          file: scripts
+          type: tosca.artifacts.File
+      - conf:
+          file: conf
+          type: tosca.artifacts.File
+      - certificates:
+          file: certificates
+          type: tosca.artifacts.File
+      - private_key:
+          file: certificates/default-logstash-forwarder.key
+          type: tosca.artifacts.File
+      - certificate:
+          file: certificates/default-logstash-forwarder.crt
+          type: tosca.artifacts.File
+      - inputs_conf:
+          file: conf/1-1_logstash_inputs.conf
+          type: tosca.artifacts.File
+      - filters_conf:
+          file: conf/2-1_logstash_filters.conf
+          type: tosca.artifacts.File
+      - outputs_conf:
+          file: conf/3-1_logstash_outputs.conf
+          type: tosca.artifacts.File
+      - extra_host:
+          file: artifactsFiles/hosts_to_add.txt
+          type: tosca.artifacts.File
+
+  org.ystia.logstash.linux.bash.nodes.GeoNames:
+    derived_from: org.ystia.logstash.pub.nodes.GeoNames
+    description: A GeoNames connector
+    interfaces:
+      Standard:
+          create:
+            inputs:
+              REPOSITORY: { get_property: [SELF, repository] }
+              FNAME: { get_property: [SELF, filename] }
+            implementation: geonames/create.sh
+          configure:
+            implementation: geonames/configure.sh
+          start:
+            implementation: geonames/start.sh
+          stop:
+            implementation: geonames/stop.sh
+      custom:
+          update:
+            inputs:
+              REPOSITORY: { get_property: [SELF, repository] }
+              FNAME:
+                type: string
+                description: file name used for update (without .zip suffix)
+                required: true
+            implementation: geonames/update.sh
+    artifacts:
+      - geoscripts:
+          file: geonames
+          type: tosca.artifacts.File
+      - scripts:
+          file: scripts
+          type: tosca.artifacts.File
+
+relationship_types:
+  org.ystia.logstash.linux.bash.relationships.LogstashToKafka:
+    derived_from: org.ystia.kafka.pub.relationships.PublishToKafkaTopic
+    description: Connects Logstash to Kafka
+    valid_target_types: [ org.ystia.kafka.pub.capabilities.KafkaTopic ]
+    interfaces:
+      Configure:
+        pre_configure_source:
+          inputs:
+            TOPIC_NAME: { get_property: [TARGET, topic_name] }
+            REQUIRED_ACKS: { get_property: [SOURCE, request_required_acks] }
+            MESSAGE_MAX_RETRIES: { get_property: [SOURCE, message_send_max_retries] }
+            RETRY_BACKOFF_MS: { get_property: [SOURCE, retry_backoff_ms] }
+            REQUEST_TIMEOUT_MS: { get_property: [SOURCE, request_timeout_ms] }
+          implementation: relationships/kafka/configure-kafka-output.sh
+    artifacts:
+      - scripts:
+          file: scripts
+          type: tosca.artifacts.File
+
+  org.ystia.logstash.linux.bash.relationships.KafkaToLogstash:
+    derived_from: org.ystia.kafka.pub.relationships.ConnectsToKafkaTopic
+    description: Connects Kafka to Logstash
+    valid_target_types: [ org.ystia.kafka.pub.capabilities.KafkaTopic ]
+    interfaces:
+      Configure:
+          pre_configure_source:
+            inputs:
+              TOPIC_NAME: { get_property: [TARGET, topic_name] }
+            implementation: relationships/kafka/configure-kafka-input.sh
+    artifacts:
+      - scripts:
+          file: scripts
+          type: tosca.artifacts.File
+
+  org.ystia.logstash.linux.bash.relationships.LogstashToElasticsearch:
+    derived_from: org.ystia.relationships.ConnectsTo
+    description: Connects Logstash to ElasticSearch
+    valid_target_types: [ org.ystia.elasticsearch.pub.capabilities.SearchEndpoint ]
+    interfaces:
+      Configure:
+          pre_configure_source:
+            inputs:
+              LOGSTASH_HOME: { get_attribute: [SOURCE, ls_home] }
+              cluster_name: { get_property: [ TARGET, cluster_name ] }
+            implementation: relationships/elasticsearch/configure.sh
+    artifacts:
+      - scripts:
+          file: scripts
+          type: tosca.artifacts.File

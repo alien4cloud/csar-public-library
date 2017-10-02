@@ -10,7 +10,7 @@ description: Topology template for MySQL as a standard Single Server
 imports:
   - tosca-normative-types:1.0.0-ALIEN14
   - org.ystia.mysql.pub:1.0-SNAPSHOT
-  - org.ystia.mysql.linux.sh:1.0-SNAPSHOT
+  - org.ystia.mysql.linux.bash:1.0-SNAPSHOT
 
 topology_template:
   inputs:
@@ -39,7 +39,7 @@ topology_template:
             capability: tosca.capabilities.Connectivity
             relationship: tosca.relationships.Network
     MySQLServer:
-      type: org.ystia.mysql.linux.sh.nodes.MySQLServer
+      type: org.ystia.mysql.linux.bash.nodes.MySQLServer
       properties:
         mysql_community_repo: { get_input: repository }
       requirements:
@@ -48,7 +48,7 @@ topology_template:
             capability: tosca.capabilities.Container
             relationship: tosca.relationships.HostedOn
     MySQLDatabase:
-      type: org.ystia.mysql.linux.sh.nodes.MySQLDatabase
+      type: org.ystia.mysql.linux.bash.nodes.MySQLDatabase
       properties:
         name: { get_input: name }
         password: { get_input: password }
@@ -56,5 +56,5 @@ topology_template:
         - host:
             node: MySQLServer
             capability: org.ystia.mysql.pub.capabilities.Container.MySQLServer
-            relationship: org.ystia.mysql.linux.sh.relationships.HostedOn.MySQLServer
+            relationship: org.ystia.mysql.linux.bash.relationships.HostedOn.MySQLServer
 
