@@ -30,7 +30,7 @@ cat > ${LOGSTASH_HOME}/conf/1-kafka_logstash_inputs.conf << END
 input {
     kafka {
         topics => ["${TOPIC_NAME}"]
-        bootstrap_servers => "kafka.service.starlings:9092"
+        bootstrap_servers => "kafka.service.ystia:9092"
         group_id => "${SOURCE_NODE}"
     }
 }

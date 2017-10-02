@@ -24,12 +24,12 @@ env |sort
 # Configure Elasticsearch as a client node
 ES_SERVICE_NAME="elasticsearch"
 echo "cluster.name: ${cluster_name}" > ${ELASTICSEARCH_HOME}/config/elasticsearch.yml
-echo "node.name: client4kibana.${ES_SERVICE_NAME}.service.starlings" >> ${ELASTICSEARCH_HOME}/config/elasticsearch.yml
+echo "node.name: client4kibana.${ES_SERVICE_NAME}.service.ystia" >> ${ELASTICSEARCH_HOME}/config/elasticsearch.yml
 echo "node.master: false" >> ${ELASTICSEARCH_HOME}/config/elasticsearch.yml
 echo "node.data: false" >> ${ELASTICSEARCH_HOME}/config/elasticsearch.yml
 echo "network.bind_host: 0.0.0.0" >> ${ELASTICSEARCH_HOME}/config/elasticsearch.yml
 echo "network.publish_host: ${kibanaIp}" >> ${ELASTICSEARCH_HOME}/config/elasticsearch.yml
-echo "discovery.zen.ping.unicast.hosts: [\"${ES_SERVICE_NAME}.service.starlings\"]" >> ${ELASTICSEARCH_HOME}/config/elasticsearch.yml
+echo "discovery.zen.ping.unicast.hosts: [\"${ES_SERVICE_NAME}.service.ystia\"]" >> ${ELASTICSEARCH_HOME}/config/elasticsearch.yml
 
 # Set JVM heap size via jvm.options
 JVM_OPTIONS_FILE=${ELASTICSEARCH_HOME}/config/jvm.options

@@ -20,7 +20,7 @@ cp ${conf}/geonames_parse.conf $LOGSTASH_HOME/conf
 # Update GeoNames config file
 if is_port_open "127.0.0.1" "8500"
 then
-    es_host_name="elasticsearch.service.starlings"
+    es_host_name="elasticsearch.service.ystia"
 else
     es_host_name="localhost"
 fi

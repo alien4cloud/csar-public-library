@@ -32,14 +32,14 @@ bash ${utils_scripts}/install-components.sh jq || error_exit "ERROR: Failed to i
 
 #brooker_urls=()
 #for brooker_id in $(curl -s http://127.0.0.1:8500/v1/catalog/service/kafka | jq -r '.[]|.ServiceTags[]'); do
-#    brooker_urls+=("${brooker_id}.kafka.service.starlings:9092")
+#    brooker_urls+=("${brooker_id}.kafka.service.ystia:9092")
 #done
 
 #broker_urls are replaced by boostrap_servers
 #can be a kafka brocker or a list of brovkers
 #a kafka broker can be identified by "host:port"
 #a list of brokers is defined by "host1:port1,host2:port2"
-kafka_host_name="kafka.service.starlings"
+kafka_host_name="kafka.service.ystia"
 kafka_port="9092"
 kafka_host=$kafka_host_name:$kafka_port
 log info "Kafka host is $kafka_host"

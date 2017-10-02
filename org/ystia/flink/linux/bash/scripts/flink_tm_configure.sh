@@ -25,8 +25,8 @@ if [[ -z "${INSTANCE_ID}" ]]; then
     log info "Instance id is '${INSTANCE_ID}'"
 fi
 
-FLK_TM_BASE_DNS_SERVICE_NAME="flink-tm.service.starlings"
-FLK_JM_BASE_DNS_SERVICE_NAME="flink-jm.service.starlings"
+FLK_TM_BASE_DNS_SERVICE_NAME="flink-tm.service.ystia"
+FLK_JM_BASE_DNS_SERVICE_NAME="flink-jm.service.ystia"
 FLK_TM_DNS_SERVICE_NAME="${INSTANCE_ID}.${FLK_TM_BASE_DNS_SERVICE_NAME}"
 
 log info "Flink TaskManager IP = ${IP_ADDRESS}"

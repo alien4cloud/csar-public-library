@@ -11,8 +11,8 @@ source ${YSTIA_DIR}/${NODE}-service.env
 if is_port_open "127.0.0.1" "8500"
 then
     # Consul is present: distributed case
-    OPTIONS='--noproxy .starlings'
-    ES='0.elasticsearch.service.starlings'
+    OPTIONS='--noproxy .ystia'
+    ES='0.elasticsearch.service.ystia'
 else
     # No consul: local case.
     ES='localhost'

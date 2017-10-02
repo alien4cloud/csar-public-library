@@ -41,7 +41,7 @@ if is_port_open "127.0.0.1" "8500"
 then
     IS_CONSUL=0
     # Register the service in consul
-    ES_BASE_DNS_SERVICE_NAME="elasticsearch.service.starlings"
+    ES_BASE_DNS_SERVICE_NAME="elasticsearch.service.ystia"
     INSTANCE_ID="$(get_new_id service/elasticsearch retry |tail -1)"
     register_consul_service=${consul_utils}/register-consul-service.py
     chmod +x ${register_consul_service}

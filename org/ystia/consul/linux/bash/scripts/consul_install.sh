@@ -15,7 +15,7 @@ install_dnsmasq () {
         case "$(get_os_distribution)" in
             "ubuntu" | "debian" | "mint")
                 echo -e "\nIGNORE_RESOLVCONF=yes\n" | sudo tee -a /etc/default/dnsmasq > /dev/null 2>&1
-                # Add 'node.dc1.starlings' as domain name
+                # Add 'node.dc1.ystia' as domain name
                 # TODO WARNING: Not already works on Ubuntu !!!
                 if [[ "`egrep -q '^[[:blank:]]*dns-nameservers' ; echo $?`" == "1" ]]
                 then
@@ -30,11 +30,11 @@ EOF
                 if [[ "`egrep -q '^[[:blank:]]*dns-search' ; echo $?`" == "1" ]]
                 then
                     sudo bash << EOF
-                    sed -i "/dns-nameservers/a\dns-search node.dc1.starlings" /etc/network/interfaces.d/eth0.cfg
+                    sed -i "/dns-nameservers/a\dns-search node.dc1.ystia" /etc/network/interfaces.d/eth0.cfg
 EOF
                 else
                     sudo bash << EOF
-                    sed -i "s/dns-search/dns-search node.dc1.starlings/" /etc/network/interfaces.d/eth0.cfg
+                    sed -i "s/dns-search/dns-search node.dc1.ystia/" /etc/network/interfaces.d/eth0.cfg
 EOF
                 fi
                 sudo ifdown eth0; sudo ifup eth0
@@ -45,7 +45,7 @@ EOF
                 echo -e "\nresolv-file=/etc/resolv.dnsmasq.conf\n" | sudo tee -a /etc/dnsmasq.conf > /dev/null 2>&1
                 sudo sed -i -e "/PEERDNS/ s/^/#/g" /etc/sysconfig/network-scripts/ifcfg-eth*
                 echo -e "\nPEERDNS=no\n" | sudo tee -a /etc/sysconfig/network-scripts/ifcfg-eth* > /dev/null 2>&1
-                echo -e "# Generated with Ystia to enable dnsmasq\n\nnameserver 127.0.0.1\nsearch node.dc1.starlings\n" | sudo tee /etc/resolv.conf > /dev/null 2>&1
+                echo -e "# Generated with Ystia to enable dnsmasq\n\nnameserver 127.0.0.1\nsearch node.dc1.ystia\n" | sudo tee /etc/resolv.conf > /dev/null 2>&1
                 ;;
         esac
         sudo service dnsmasq restart

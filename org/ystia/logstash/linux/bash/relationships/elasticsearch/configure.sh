@@ -25,7 +25,7 @@ touch "${LOGSTASH_HOME}/conf/3-elasticsearch_logstash_outputs.conf"
 IS_CONSUL=1
 if is_port_open "127.0.0.1" "8500"
 then
-    host_name="elasticsearch.service.starlings"
+    host_name="elasticsearch.service.ystia"
 else
     host_name="localhost"
 fi
