@@ -16,6 +16,8 @@ node_types:
     derived_from: org.ystia.nodes.SoftwareComponent
     abstract: true
     description: Consul agent
+    tags:
+      icon: /images/consul-icon.png
     properties:
       install_dnsmasq:
         type: boolean
