@@ -11,7 +11,7 @@ imports:
   - org.alien4cloud.java.jdk.linux:1.4.0-SNAPSHOT
   - org.alien4cloud.elasticsearch.pub:1.4.0-SNAPSHOT
   - org.alien4cloud.java.jmx.jolokia:1.4.0-SNAPSHOT
-  - org.alien4cloud.samba:1.4.0-SNAPSHOT
+  - org.alien4cloud.consul.pub:1.4.0-SNAPSHOT
 
 node_types:
   org.alien4cloud.alien4cloud.webapp.nodes.Alien4Cloud:
