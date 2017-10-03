@@ -66,19 +66,6 @@ node_types:
         type: org.alien4cloud.consul.pub.capabilities.ConsulServer
         valid_source_types: [org.alien4cloud.consul.pub.capabilities.ConsulClient]
 
-
-  org.alien4cloud.consul.pub.nodes.ConsulClient:
-    derived_from: org.alien4cloud.consul.pub.nodes.ConsulAgent
-    description: >
-      Consul discovery service installation (client node).
-    properties:
-      agent_mode:
-        description: Indicate the consul agent mode (actually client).
-        type: string
-        constraints:
-          - equal: client
-        default: client
-
 capability_types:
   org.alien4cloud.consul.pub.capabilities.ConsulAgent:
     derived_from: tosca.capabilities.Root

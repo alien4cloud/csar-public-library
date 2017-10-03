@@ -44,7 +44,7 @@ node_types:
             type: tosca.artifacts.File
 
     org.alien4cloud.samba.samba_sh.nodes.SambaClient:
-      derived_from: org.alien4cloud.samba.pub.nodes.SambaClient
+      derived_from: tosca.nodes.SoftwareComponent
       description: >
         Configure a samba client
       tags:
