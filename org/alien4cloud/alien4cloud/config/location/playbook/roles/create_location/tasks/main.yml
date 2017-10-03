@@ -5,6 +5,7 @@
     method: POST
     return_content: yes
     status_code: 302
+    validate_certs: no
     headers:
       Content-Type: "application/x-www-form-urlencoded"
   register: login
@@ -17,6 +18,7 @@
     url: "{{ alien_url }}/rest/latest/orchestrators/{{ orchestratorId }}/locations"
     method: POST
     return_content: yes
+    validate_certs: no
     HEADER_cookie: "{{ session_id }}"
     body:
       name: "{{ location_name }}"
