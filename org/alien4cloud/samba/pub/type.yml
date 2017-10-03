@@ -28,4 +28,4 @@ node_types:
 capability_types:
 
   org.alien4cloud.samba.pub.capabilities.SambaServer:
-    derived_from: tosca.capabilities.Root
+    derived_from: tosca.capabilities.Endpoint
