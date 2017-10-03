@@ -56,7 +56,7 @@ node_types:
       requirements:
         - smb_server:
             capability: org.alien4cloud.samba.pub.capabilities.SambaServer
-            relationship: org.alien4cloud.samba.samba_sh.relationships.ConnectsToSambaServer
+            relationship: org.alien4cloud.samba.relationships.ConnectsToSambaServer
       interfaces:
         Standard:
           create: scripts/smbClient/install.sh
@@ -64,29 +64,3 @@ node_types:
         - commons:
             file: scripts/commons
             type: tosca.artifacts.File
-
-relationship_types:
-
-  org.alien4cloud.samba.samba_sh.relationships.ConnectsToSambaServer:
-    derived_from: tosca.relationships.ConnectsTo
-    valid_target_types: [org.alien4cloud.samba.pub.capabilities.SambaServer]
-    properties:
-      mount_point:
-        type: string
-        default: "/var/alien4cloud"
-    interfaces:
-      Configure:
-        add_target:
-          inputs:
-            SAMBA_SERVER_IP: { get_attribute: [TARGET, ip_address] }
-            SHARE_NAME: { get_property: [TARGET, share_name] }
-            MOUNT_POINT: { get_property: [SELF, mount_point] }
-          implementation: scripts/smbClient/add_target.sh
-        remove_target:
-          inputs:
-            MOUNT_POINT: { get_property: [SELF, mount_point] }
-          implementation: scripts/smbClient/remove_target.sh
-    artifacts:
-      - commons:
-          file: scripts/commons
-          type: tosca.artifacts.File

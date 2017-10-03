@@ -7,7 +7,7 @@ metadata:
 
 imports:
   - tosca-normative-types:1.0.0-ALIEN14
-  - org.alien4cloud.consul.consul_sh:1.4.0-SNAPSHOT
+  - org.alien4cloud.alien4cloud.webapp:1.4.0-SNAPSHOT
 
 node_types:
   org.alien4cloud.nginx.nginx_sh.nodes.Nginx:
@@ -79,7 +79,7 @@ node_types:
     requirements:
       - consul:
           capability: org.alien4cloud.consul.pub.capabilities.ConsulAgent
-          relationship: org.alien4cloud.consul.consul_sh.relationships.ConnectToConsulAgent
+          relationship: org.alien4cloud.consul.relationships.ConnectToConsulAgent
           occurrences: [ 1, 1 ]
     properties:
       download_url:

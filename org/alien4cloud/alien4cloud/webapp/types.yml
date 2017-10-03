@@ -11,7 +11,6 @@ imports:
   - org.alien4cloud.java.jdk.linux:1.4.0-SNAPSHOT
   - org.alien4cloud.elasticsearch.pub:1.4.0-SNAPSHOT
   - org.alien4cloud.java.jmx.jolokia:1.4.0-SNAPSHOT
-  - org.alien4cloud.consul.consul_sh:1.4.0-SNAPSHOT
   - org.alien4cloud.samba:1.4.0-SNAPSHOT
 
 node_types:
@@ -94,7 +93,7 @@ node_types:
           occurrences: [ 0, 1 ]
       - consul:
           capability: org.alien4cloud.consul.pub.capabilities.ConsulAgent
-          relationship: org.alien4cloud.consul.consul_sh.relationships.ConnectToConsulAgent
+          relationship: org.alien4cloud.consul.relationships.ConnectToConsulAgent
           occurrences: [ 0, 1 ]
     interfaces:
       Standard:
@@ -153,27 +152,27 @@ node_types:
 
 relationship_types:
 
-  # org.alien4cloud.consul.relationships.ConnectToConsulAgent:
-  #   derived_from: tosca.relationships.ConnectsTo
-  #   valid_target_types: [org.alien4cloud.consul.capabilities.ConsulAgent]
-  #   interfaces:
-  #     Configure:
-  #       pre_configure_source:
-  #         inputs:
-  #           # the capabity name is required here, but in fact I can't guess it
-  #           # TOSCA limitation ?
-  #           TLS_ENABLED: { get_property: [SOURCE, consul, tls_enabled] }
-  #           CA_PASSPHRASE: { get_property: [SOURCE, consul, ca_passphrase] }
-  #           AGENT_IP: { get_attribute: [TARGET, ip_address] }
-  #           AGENT_API_PORT: { get_property: [TARGET, consul_agent, api_port] }
-  #         implementation: scripts/ConnectToConsulAgent/pre_configure_source.sh
-  #   artifacts:
-  #     - ssl:
-  #         file: ssl
-  #         type: tosca.artifacts.File
-  #     - commons:
-  #         file: scripts/commons
-  #         type: tosca.artifacts.File
+org.alien4cloud.consul.relationships.ConnectToConsulAgent:
+  derived_from: tosca.relationships.ConnectsTo
+  valid_target_types: [org.alien4cloud.consul.pub.capabilities.ConsulAgent]
+  interfaces:
+    Configure:
+      pre_configure_source:
+        inputs:
+          # the capabity name is required here, but in fact I can't guess it
+          # TOSCA limitation ?
+          TLS_ENABLED: { get_property: [SOURCE, consul, tls_enabled] }
+          CA_PASSPHRASE: { get_property: [SOURCE, consul, ca_passphrase] }
+          AGENT_IP: { get_attribute: [TARGET, ip_address] }
+          AGENT_API_PORT: { get_property: [TARGET, consul_agent, api_port] }
+        implementation: scripts/ConnectToConsulAgent/pre_configure_source.sh
+  artifacts:
+    - ssl:
+        file: ssl
+        type: tosca.artifacts.File
+    - commons:
+        file: scripts/commons
+        type: tosca.artifacts.File
   org.alien4cloud.alien4cloud.webapp.relationships.AlienConnectToElasticSearch:
     derived_from: tosca.relationships.ConnectsTo
     valid_target_types: [org.alien4cloud.elasticsearch.pub.capabilities.ElasticSearchTransportAPI]
@@ -189,26 +188,26 @@ relationship_types:
       - commons:
           file: scripts/commons
           type: tosca.artifacts.File
-  # org.alien4cloud.samba.relationships.ConnectsToSambaServer:
-  #   derived_from: tosca.relationships.ConnectsTo
-  #   valid_target_types: [org.alien4cloud.samba.capabilities.SambaServer]
-  #   properties:
-  #     mount_point:
-  #       type: string
-  #       default: "/var/alien4cloud"
-  #   interfaces:
-  #     Configure:
-  #       add_target:
-  #         inputs:
-  #           SAMBA_SERVER_IP: { get_attribute: [TARGET, ip_address] }
-  #           SHARE_NAME: { get_property: [TARGET, share_name] }
-  #           MOUNT_POINT: { get_property: [SELF, mount_point] }
-  #         implementation: scripts/smbClient/add_target.sh
-  #       remove_target:
-  #         inputs:
-  #           MOUNT_POINT: { get_property: [SELF, mount_point] }
-  #         implementation: scripts/smbClient/remove_target.sh
-  #   artifacts:
-  #     - commons:
-  #         file: scripts/commons
-  #         type: tosca.artifacts.File
+  org.alien4cloud.samba.relationships.ConnectsToSambaServer:
+    derived_from: tosca.relationships.ConnectsTo
+    valid_target_types: [org.alien4cloud.samba.capabilities.SambaServer]
+    properties:
+      mount_point:
+        type: string
+        default: "/var/alien4cloud"
+    interfaces:
+      Configure:
+        add_target:
+          inputs:
+            SAMBA_SERVER_IP: { get_attribute: [TARGET, ip_address] }
+            SHARE_NAME: { get_property: [TARGET, share_name] }
+            MOUNT_POINT: { get_property: [SELF, mount_point] }
+          implementation: scripts/smbClient/add_target.sh
+        remove_target:
+          inputs:
+            MOUNT_POINT: { get_property: [SELF, mount_point] }
+          implementation: scripts/smbClient/remove_target.sh
+    artifacts:
+      - commons:
+          file: scripts/commons
+          type: tosca.artifacts.File
