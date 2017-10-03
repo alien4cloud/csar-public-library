@@ -8,6 +8,8 @@ metadata:
 imports:
   - tosca-normative-types:1.0.0-ALIEN14
   - org.alien4cloud.samba.pub:1.4.0-SNAPSHOT
+  - org.alien4cloud.alien4cloud.webapp:1.4.0-SNAPSHOT
+
 
 node_types:
     org.alien4cloud.samba.samba_sh.nodes.SambaServer:
