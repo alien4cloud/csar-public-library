@@ -81,7 +81,7 @@ topology_template:
         - consul:
             node: ConsulClient
             capability: org.alien4cloud.consul.pub.capabilities.ConsulAgent
-            relationship: org.alien4cloud.consul.consul_sh.relationships.ConnectToConsulAgent
+            relationship: org.alien4cloud.consul.relationships.ConnectToConsulAgent
         - java:
             node: OracleJDK
             capability: org.alien4cloud.java.pub.capabilities.JDK
@@ -225,7 +225,7 @@ topology_template:
         - consul:
             node: ConsulClient_2
             capability: org.alien4cloud.consul.pub.capabilities.ConsulAgent
-            relationship: org.alien4cloud.consul.consul_sh.relationships.ConnectToConsulAgent
+            relationship: org.alien4cloud.consul.relationships.ConnectToConsulAgent
         - host:
             node: FrontCompute
             capability: tosca.capabilities.Container
@@ -271,7 +271,7 @@ topology_template:
         - smb_server:
             node: SambaServer
             capability: org.alien4cloud.samba.pub.capabilities.SambaServer
-            relationship: org.alien4cloud.samba.samba_sh.relationships.ConnectsToSambaServer
+            relationship: org.alien4cloud.samba.relationships.ConnectsToSambaServer
             properties:
               mount_point: { get_input: data_dir }
     SambaCompute:

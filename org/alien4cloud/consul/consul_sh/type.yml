@@ -8,6 +8,7 @@ metadata:
 imports:
   - tosca-normative-types:1.0.0-ALIEN14
   - org.alien4cloud.consul.pub:1.4.0-SNAPSHOT
+  - org.alien4cloud.alien4cloud.webapp:1.4.0-SNAPSHOT
 
 node_types:
   org.alien4cloud.consul.consul_sh.nodes.ConsulAgent:
@@ -155,27 +156,6 @@ relationship_types:
             CONSUL_SERVER_ADDRESS: { get_attribute: [TARGET, ip_address] }
           implementation: scripts/consul/join_consul_cluster.sh
     artifacts:
-      - commons:
-          file: scripts/commons
-          type: tosca.artifacts.File
-  org.alien4cloud.consul.consul_sh.relationships.ConnectToConsulAgent:
-    derived_from: tosca.relationships.ConnectsTo
-    valid_target_types: [org.alien4cloud.consul.pub.capabilities.ConsulAgent]
-    interfaces:
-      Configure:
-        pre_configure_source:
-          inputs:
-            # the capabity name is required here, but in fact I can't guess it
-            # TOSCA limitation ?
-            TLS_ENABLED: { get_property: [SOURCE, consul, tls_enabled] }
-            CA_PASSPHRASE: { get_property: [SOURCE, consul, ca_passphrase] }
-            AGENT_IP: { get_attribute: [TARGET, ip_address] }
-            AGENT_API_PORT: { get_property: [TARGET, consul_agent, api_port] }
-          implementation: scripts/ConnectToConsulAgent/pre_configure_source.sh
-    artifacts:
-      - ssl:
-          file: ssl
-          type: tosca.artifacts.File
       - commons:
           file: scripts/commons
           type: tosca.artifacts.File
