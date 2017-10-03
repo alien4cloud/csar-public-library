@@ -17,7 +17,7 @@ imports:
 node_types:
   org.ystia.kibana.linux.bash.nodes.Kibana:
     derived_from: org.ystia.consul.pub.nodes.ConsulUser
-    description: Installation of the Kibana module from ELK stack
+    description: Kibana node component from ELK Stack for linux
     tags:
       icon: /images/kibana-icon.png
     attributes:
@@ -97,7 +97,7 @@ node_types:
 
   org.ystia.kibana.linux.bash.nodes.KibanaDashboard:
     derived_from: tosca.nodes.Root
-    description: The dummy dashboard element hosted on Kibana
+    description: The default Dashboard node component hosted on Kibana
     tags:
       icon: /images/chart-icon.png
     requirements:
@@ -111,7 +111,7 @@ node_types:
           inputs:
             dashboard_url:
               type: string
-              description: url of the dashboard to upload to update the current one
+              description: URL of the dashboard to upload to update the current one
               required: true
           implementation: scripts/updateDashboardFile.sh
     artifacts:
@@ -124,7 +124,7 @@ node_types:
 
   org.ystia.kibana.linux.bash.nodes.BeatsDashboards:
     derived_from: org.ystia.nodes.Root
-    description: The dashboard element for Beats components hosted on Kibana
+    description: The Dashboard node component for Beats components hosted on Kibana
     tags:
       icon: /images/chart-icon.png
     requirements:
@@ -170,7 +170,7 @@ relationship_types:
 
   org.ystia.kibana.linux.bash.relationships.DashboardHostedOnKibana:
     derived_from: org.ystia.relationships.HostedOn
-    description: Relationship that allows to host a dashboard on kibana.
+    description: Relationship that allows to host a Dashboard on kibana.
     valid_target_types: [ org.ystia.kibana.linux.bash.capabilities.DashboardHosting ]
     interfaces:
       configure:
@@ -183,7 +183,7 @@ relationship_types:
 
   org.ystia.kibana.linux.bash.relationships.BeatsDashboardsHostedOnKibana:
     derived_from: org.ystia.relationships.HostedOn
-    description: Relationship that allows to host dashboards for Beats components on Kibana.
+    description: Relationship that allows to host Dashboards for Beats components on Kibana.
     valid_target_types: [ org.ystia.kibana.linux.bash.capabilities.DashboardHosting ]
 
 capability_types:

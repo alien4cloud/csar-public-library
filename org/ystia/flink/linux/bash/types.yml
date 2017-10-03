@@ -17,7 +17,7 @@ imports:
 node_types:
   org.ystia.flink.linux.bash.nodes.JobManager:
     derived_from: org.ystia.consul.pub.nodes.ConsulUser
-    description: Installation of Flink JobManager
+    description: Flink JobManager node component for linux
     tags:
       icon: /images/flink-icon.png
     attributes:
@@ -32,7 +32,7 @@ node_types:
       jobmanager.rpc.port:
         type: integer
         description: >
-          The port number of the JobManager.
+          The port number of the JobManager
         default: 6123
         constraints:
           - equal: 6123
@@ -89,7 +89,7 @@ node_types:
           type: tosca.artifacts.File
   org.ystia.flink.linux.bash.nodes.TaskManager:
     derived_from: org.ystia.consul.pub.nodes.ConsulUser
-    description: Installation of Flink TaskManager
+    description: Flink TaskManager node component for linux
     tags:
       icon: /images/flink-icon.png
     properties:
@@ -110,19 +110,23 @@ node_types:
         type: integer
         description: >
           JVM heap size (in megabytes) for the TaskManagers, which are the parallel workers of the system.
-          This value should be as large as possible. If the cluster is exclusively running Flink, the total amount of available memory per machine minus some memory for the operating system (maybe 1-2 GB) is a good value.
+          This value should be as large as possible.
+          If the cluster is exclusively running Flink, the total amount of available memory per machine minus some memory for the operating system (maybe 1-2 GB)
+          is a good value.
         default: "512"
       taskmanager.numberOfTaskSlots:
         type: integer
         description: >
           The number of parallel operator or user function instances that a single TaskManager can run.
-          This value is typically proportional to the number of physical CPU cores that the TaskManager’s machine has (e.g., equal to the number of cores, or half the number of cores).
+          This value is typically proportional to the number of physical CPU cores that the TaskManager’s machine has
+          (e.g., equal to the number of cores, or half the number of cores).
         default: 1
       parallelism.default:
         type: integer
         description: >
           The default parallelism to use for programs that have no parallelism specified.
-          For setups that have no concurrent jobs running, setting this value to NumTaskManagers * NumSlotsPerTaskManager will cause the system to use all available execution resources for the program’s execution.
+          For setups that have no concurrent jobs running, setting this value to NumTaskManagers * NumSlotsPerTaskManager will cause the system
+          to use all available execution resources for the program’s execution.
         default: 1
       taskmanager.tmp.dirs:
         type: string
@@ -185,7 +189,7 @@ relationship_types:
   org.ystia.flink.linux.bash.relationships.TaskManagerToJobManager:
     derived_from: tosca.relationships.ConnectsTo
     description: >
-      Connects a Flink taskmanager to a Flink jobmanager
+      Connects a Flink TaskmManager to a Flink JobManager
     valid_target_types: [ org.ystia.flink.linux.bash.nodes.JobManager ]
     interfaces:
       Configure:

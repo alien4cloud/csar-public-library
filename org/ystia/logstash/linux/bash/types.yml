@@ -15,7 +15,7 @@ imports:
 node_types:
   org.ystia.logstash.linux.bash.nodes.Logstash:
     derived_from: org.ystia.logstash.pub.nodes.Logstash
-    description: Linux installation of Logstash from Elastic Stack
+    description: Logstash node component from Elastic Stack for linux
     attributes:
       java_home: { get_operation_output: [ SELF, Configure, pre_configure_source, JAVA_HOME ] }
       ls_home: { get_operation_output: [ SELF, Standard, create, LOGSTASH_HOME ] }
@@ -62,7 +62,7 @@ node_types:
             inputs:
               url:
                 type: string
-                description: input param for change_input
+                description: Input param for change_input
                 required: true
               AUTO_RELOAD: { get_property: [SELF, auto_reload] }
               LOGSTASH_HOME: { get_attribute: [SELF, ls_home] }
@@ -71,7 +71,7 @@ node_types:
             inputs:
               url:
                 type: string
-                description: input param for change_output
+                description: Input param for change_output
                 required: true
               AUTO_RELOAD: { get_property: [SELF, auto_reload] }
               LOGSTASH_HOME: { get_attribute: [SELF, ls_home] }
@@ -80,7 +80,7 @@ node_types:
             inputs:
               url:
                 type: string
-                description: input param for change_filter
+                description: Input param for change_filter
                 required: true
               AUTO_RELOAD: { get_property: [SELF, auto_reload] }
               LOGSTASH_HOME: { get_attribute: [SELF, ls_home] }
@@ -116,7 +116,7 @@ node_types:
 
   org.ystia.logstash.linux.bash.nodes.GeoNames:
     derived_from: org.ystia.logstash.pub.nodes.GeoNames
-    description: A GeoNames connector
+    description: A GeoNames node connector for linux
     interfaces:
       Standard:
           create:
@@ -136,7 +136,7 @@ node_types:
               REPOSITORY: { get_property: [SELF, repository] }
               FNAME:
                 type: string
-                description: file name used for update (without .zip suffix)
+                description: File name used for update (without .zip suffix)
                 required: true
             implementation: geonames/update.sh
     artifacts:

@@ -27,5 +27,5 @@ capability_types:
 artifact_types:
   org.ystia.elasticsearch.pub.artifacts.elasticsearchConfig:
     derived_from: tosca.artifacts.Root
-    description: A elasticsearch configuration file (.yml file)
+    description: An Elasticsearch configuration file (.yml file)
     file_ext: [yml]

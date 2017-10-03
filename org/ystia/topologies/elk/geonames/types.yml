@@ -5,7 +5,7 @@ metadata:
   template_version: 1.0-SNAPSHOT
   template_author: Bull
 
-description: Topology Template for logstash/elasticsearch with geoname input
+description: Basic topology Template for Logstash/Elasticsearch with GeoNames input
 
 imports:
   - tosca-normative-types:1.0.0-ALIEN14

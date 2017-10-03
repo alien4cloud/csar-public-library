@@ -15,7 +15,7 @@ imports:
 node_types:
   org.ystia.xfs.linux.bash.nodes.XFS:
     derived_from: org.ystia.nodes.SoftwareComponent
-    description: XFS FileSystem node can be used to mount and format a volume.
+    description: XFS FileSystem node component which can be used to mount and format a volume.
     tags:
       icon: /images/volume.png
     properties:
@@ -62,10 +62,11 @@ node_types:
 relationship_types:
   org.ystia.xfs.linux.bash.relationships.LinuxPartition:
     derived_from: tosca.relationships.DependsOn
-    description: Connets a FileSystem to a Volume.
+    description: Connects a FileSystem to a Volume
     properties:
-      partition_type:
-        description: The partition type. 83 is a Linux Native Partition.
+      partition_type: >
+        description: The partition type.
+        Default value is 83: a Linux Native Partition
         type: integer
         default: 83
     attributes:

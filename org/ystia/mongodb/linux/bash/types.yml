@@ -16,7 +16,7 @@ node_types:
   org.ystia.mongodb.linux.bash.nodes.MongoRouter:
     derived_from: org.ystia.nodes.SoftwareComponent
     description: >
-      A node to install Mongodb as a Router using mongos.
+      Mongodb, as a Router using mongos, node component for linux.
     requirements:
       - router2config:
           capability: org.ystia.mongodb.pub.capabilities.Endpoint.ConfigToRouter
@@ -70,7 +70,7 @@ node_types:
   org.ystia.mongodb.linux.bash.nodes.MongoConfigServer:
     derived_from: org.ystia.nodes.SoftwareComponent
     description: >
-      A node to install Mongodb as a Config Server.
+      A node to install Mongodb as a Config Server on linux.
     capabilities:
       config2router:
         type: org.ystia.mongodb.pub.capabilities.Endpoint.ConfigToRouter
@@ -117,7 +117,7 @@ node_types:
   org.ystia.mongodb.linux.bash.nodes.ReplicaMain:
     derived_from: org.ystia.nodes.SoftwareComponent
     description: >
-      A node to install Mongodb with a Replica Set configured as Main Node.
+      A node to install Mongodb with a Replica Set configured as Main Node on linux.
     requirements:
       - primary2secondary:
           capability: org.ystia.mongodb.pub.capabilities.Endpoint.PrimaryToSecondary
@@ -188,7 +188,7 @@ node_types:
   org.ystia.mongodb.linux.bash.nodes.ReplicaSlave:
     derived_from: org.ystia.nodes.SoftwareComponent
     description: >
-      A node to install Mongodb with a Replica Set configured as Main Node.
+      A node to install Mongodb, with a Replica Set configured as Main Node, on linux.
     capabilities:
       primary2secondary:
         type: org.ystia.mongodb.pub.capabilities.Endpoint.PrimaryToSecondary
@@ -251,7 +251,7 @@ node_types:
   org.ystia.mongodb.linux.bash.nodes.MongoDBsingle:
     derived_from: org.ystia.nodes.DBMS
     description: >
-      A node to install Mongodb.
+      MongoDB node component for linux
     capabilities:
       endpoint: tosca.capabilities.Endpoint.Database
       mongo_endpoint:
@@ -301,7 +301,7 @@ node_types:
 relationship_types:
   org.ystia.mongodb.linux.bash.relationships.ConnectsTo.config_to_router:
     derived_from: org.ystia.relationships.ConnectsTo
-    description: Config Server to Router
+    description: Config Server to Router, on linux
     valid_target_types: [ org.ystia.mongodb.pub.capabilities.Endpoint.ConfigToRouter ]
     interfaces:
       Configure:
@@ -317,7 +317,7 @@ relationship_types:
 
   org.ystia.mongodb.linux.bash.relationships.ConnectsTo.primary_to_secondary:
     derived_from: org.ystia.relationships.ConnectsTo
-    description: Config Server to Router
+    description: Config Primary Server to Secondary server, on linux
     valid_target_types: [ org.ystia.mongodb.pub.capabilities.Endpoint.PrimaryToSecondary ]
     interfaces:
       Configure:
@@ -335,7 +335,7 @@ relationship_types:
 
   org.ystia.mongodb.linux.bash.relationships.ConnectsTo.router_to_replicaset:
     derived_from: org.ystia.relationships.ConnectsTo
-    description: Router to Replica Set
+    description: Connect Router to Replica Set Server, on linux
     valid_target_types: [ org.ystia.mongodb.pub.capabilities.Endpoint.RouterToReplicaset ]
     interfaces:
       Configure:

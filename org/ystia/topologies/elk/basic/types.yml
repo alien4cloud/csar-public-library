@@ -5,7 +5,7 @@ metadata:
   template_version: 1.0-SNAPSHOT
   template_author: Bull
 
-description: Topology template to connect Logstash, ElasticSearch and Kibana.
+description: Basic topology template to connect Logstash, Elasticsearch and Kibana.
 
 imports:
   - tosca-normative-types:1.0.0-ALIEN14

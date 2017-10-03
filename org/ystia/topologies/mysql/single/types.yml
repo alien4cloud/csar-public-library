@@ -5,7 +5,7 @@ metadata:
   template_version: 1.0-SNAPSHOT
   template_author: Bull
 
-description: Topology template for MySQL as a standard Single Server
+description: Basic topology template for MySQL as a standard Single Server
 
 imports:
   - tosca-normative-types:1.0.0-ALIEN14
@@ -20,11 +20,11 @@ topology_template:
       default: http://repo.mysql.com/yum/mysql-5.6-community/el/7/x86_64
     name:
       type: string
-      description: DataBase name
+      description: Database name
       required: false
     password:
       type: string
-      description: DataBase user password
+      description: Database user password
       required: false
   node_templates:
     Network:

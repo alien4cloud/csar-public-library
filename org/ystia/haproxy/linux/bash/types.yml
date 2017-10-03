@@ -15,7 +15,7 @@ imports:
 node_types:
   org.ystia.haproxy.linux.bash.nodes.HAProxy:
     derived_from: org.ystia.haproxy.pub.nodes.HAProxy
-    description: Install, configure and start a HAProxy for linux
+    description: HAProxy node component for linux
     interfaces:
       Standard:
         create:

@@ -15,7 +15,7 @@ imports:
 node_types:
   org.ystia.consul.linux.bash.nodes.Consul:
     derived_from: org.ystia.consul.pub.nodes.Consul
-    description: Installation of a Consul Server or Agent for linux
+    description: Consul Server or Agent node for linux
     requirements:
       - server_endpoint:
           capability: org.ystia.consul.pub.capabilities.ConsulServer

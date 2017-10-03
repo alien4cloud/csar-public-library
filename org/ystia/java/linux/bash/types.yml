@@ -15,7 +15,7 @@ imports:
 node_types:
   org.ystia.java.linux.bash.nodes.Java:
     derived_from: org.ystia.java.pub.nodes.Java
-    description: Installation of a Java module for linux
+    description: Java node component for linux
     attributes:
       java_home: { get_operation_output: [SELF, Standard, create, YSTIA_JAVA_HOME] }
     interfaces:

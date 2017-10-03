@@ -16,7 +16,7 @@ imports:
 node_types:
   org.ystia.kafka.linux.bash.nodes.Kafka:
     derived_from: org.ystia.kafka.pub.nodes.Kafka
-    description: Installation of a Kafka module for linux
+    description: Kafka node component for linux
     attributes:
       java_home: { get_operation_output: [ SELF, Configure, pre_configure_source, JAVA_HOME ] }
       kafka_home: { get_operation_output: [ SELF, Standard, create, KAFKA_HOME ] }
@@ -59,7 +59,7 @@ node_types:
 
   org.ystia.kafka.linux.bash.nodes.KafkaTopic:
     derived_from: org.ystia.kafka.pub.nodes.KafkaTopic
-    description: Apache Kafka topic implementation for linux.bash
+    description: Apache Kafka topic implementation for linux
     interfaces:
       Standard:
         create:

@@ -16,7 +16,7 @@ imports:
 node_types:
   org.ystia.elasticsearch.linux.bash.nodes.Elasticsearch:
     derived_from: org.ystia.consul.pub.nodes.ConsulUser
-    description: Installation of a Elasticsearch module for linux
+    description: Elasticsearch node component for linux
     tags:
       icon: /images/elasticsearch-icon.jpg
     properties:
@@ -44,7 +44,7 @@ node_types:
         type: string
         default: http://packages.elastic.co/curator/4/centos/7
         description: >
-          The yum repository to install the package elasticsearch-curator.
+          The yum repository to use to install the package elasticsearch-curator.
         required: false
         constraints:
           - pattern: ^(http|https|ftp)://.+/.*$
@@ -60,7 +60,7 @@ node_types:
       heap_size:
         type: string
         default: "2G"
-        description:
+        description: >
           This property allows to set the heap memory size that is allocated to Elasticsearch java process,
           It allocates the same value to both initial and maximum values (ie -Xms and -Xmx java options).
         constraints:
@@ -69,9 +69,8 @@ node_types:
         type: string
         default: ystia
         description: >
-          Cluster name identifies your cluster for auto-discovery. If
-          you're running multiple clusters on the same network, make sure
-          you're using unique names.
+          Cluster name identifies your Elasticsearch cluster for auto-discovery.
+          If you're running multiple clusters on the same network, make sure you're using unique names.
       number_of_shards:
         type: integer
         default: 5

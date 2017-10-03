@@ -15,7 +15,7 @@ node_types:
   org.ystia.consul.pub.nodes.Consul:
     derived_from: org.ystia.nodes.SoftwareComponent
     abstract: true
-    description: Consul agent
+    description: Abstract Consul Server or Agent node
     tags:
       icon: /images/consul-icon.png
     properties:
@@ -27,7 +27,7 @@ node_types:
         default: true
       installation_directory:
         type: string
-        description: Installation path of consul
+        description: installation path of consul
         default: ~/consul
       component_version:
         type: version
@@ -44,7 +44,7 @@ node_types:
   org.ystia.consul.pub.nodes.ConsulUser:
     derived_from: org.ystia.nodes.SoftwareComponent
     abstract: true
-    description: Ystia component using Consul agent
+    description: Ystia Software Component using Consul Agent
     requirements:
       - consul:
           capability: org.ystia.consul.pub.capabilities.ConsulAgent

@@ -15,7 +15,7 @@ node_types:
   org.ystia.mysql.pub.nodes.MySQLServer:
     derived_from: org.ystia.nodes.DBMS
     abstract: true
-    description: Install, configure and start a MySQL Server
+    description: Abstract MySQL Server node component for linux
     tags:
       icon: /images/mysql_server.jpg
     properties:
@@ -47,14 +47,14 @@ node_types:
 
   org.ystia.mysql.pub.nodes.MySQLDatabase:
     derived_from: org.ystia.nodes.Database
-    description: Create and configure a new database for MySQL
+    description: Abstract node Database for MySQL
     abstract: true
     tags:
       icon: /images/mysql_db.jpg
     properties:
       name:
         type: string
-        description: DataBase name
+        description: Database name
         required: true
         default: "Jack"
       user:
@@ -86,13 +86,13 @@ relationship_types:
   org.ystia.mysql.linux.bash.relationships.HostedOn.MySQLServer:
     derived_from: tosca.relationships.HostedOn
     description: >
-      This type represents a hosting relationship between MySQLServer and MySQLDataBase components
+      This type represents a hosting relationship between MySQLServer and MySQLDataBase nodes components
     valid_target_types: [ org.ystia.mysql.pub.capabilities.Container.MySQLServer ]
     
 capability_types:
   org.ystia.mysql.pub.capabilities.Container.MySQLServer:
     derived_from: tosca.capabilities.Container
-    description: MySQLServer can host MySQLDataBase components
+    description: MySQLServer can host MySQLDataBase
 
   org.ystia.mysql.pub.capabilities.Endpoint.MySQLDatabase:
     derived_from: tosca.capabilities.Root

@@ -14,7 +14,7 @@ imports:
 node_types:
   org.ystia.haproxy.pub.nodes.HAProxy:
     derived_from: org.ystia.nodes.SoftwareComponent
-    description: Install, configure and start a HAProxy
+    description: Abstract HAProxy node component
     abstract: true
     tags:
       icon: /images/logo.png
