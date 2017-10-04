@@ -15,7 +15,7 @@ imports:
 node_types:
   org.ystia.haproxy.linux.bash.nodes.HAProxy:
     derived_from: org.ystia.haproxy.pub.nodes.HAProxy
-    description: HAProxy node component for linux
+    description: HAProxy Server component for linux
     interfaces:
       Standard:
         create:
@@ -31,7 +31,7 @@ node_types:
 
   org.ystia.haproxy.linux.bash.nodes.HAProxyHTTP:
     derived_from: org.ystia.haproxy.pub.nodes.HAProxyHTTP
-    description: Add a HAProxy configuration for an HTTP server for linux
+    description: HAProxy Server for HTTP connection on linux
     interfaces:
       Standard:
         configure:
@@ -47,7 +47,7 @@ node_types:
 
   org.ystia.haproxy.linux.bash.nodes.HAProxyTCP:
     derived_from: org.ystia.haproxy.pub.nodes.HAProxyTCP
-    description: Add a HAProxy configuration for TCP connexion for linux
+    description: HAProxy Server for TCP connexion on linux
     interfaces:
       Standard:
         configure:

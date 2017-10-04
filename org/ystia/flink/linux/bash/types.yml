@@ -17,7 +17,7 @@ imports:
 node_types:
   org.ystia.flink.linux.bash.nodes.JobManager:
     derived_from: org.ystia.consul.pub.nodes.ConsulUser
-    description: Flink JobManager node component for linux
+    description: Flink JobManager component for linux
     tags:
       icon: /images/flink-icon.png
     attributes:
@@ -89,7 +89,7 @@ node_types:
           type: tosca.artifacts.File
   org.ystia.flink.linux.bash.nodes.TaskManager:
     derived_from: org.ystia.consul.pub.nodes.ConsulUser
-    description: Flink TaskManager node component for linux
+    description: Flink TaskManager component for linux
     tags:
       icon: /images/flink-icon.png
     properties:

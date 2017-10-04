@@ -14,7 +14,7 @@ node_types:
   org.ystia.nodes.Root:
     derived_from: tosca.nodes.Root
     abstract: true
-    description: Abstract Ystia Root node component
+    description: Abstract Ystia Root component
     artifacts:
       - utils_scripts:
           type: tosca.artifacts.File
@@ -22,7 +22,7 @@ node_types:
   org.ystia.nodes.SoftwareComponent:
     derived_from: tosca.nodes.SoftwareComponent
     abstract: true
-    description: Abstract Ystia Software node component
+    description: Abstract Ystia Software component
     artifacts:
       - utils_scripts:
           type: tosca.artifacts.File
@@ -30,7 +30,7 @@ node_types:
   org.ystia.nodes.DBMS:
     derived_from: tosca.nodes.DBMS
     abstract: true
-    description: Abstract Ystia DBMS node component
+    description: Abstract Ystia DBMS component
     artifacts:
       - utils_scripts:
           type: tosca.artifacts.File
@@ -38,7 +38,7 @@ node_types:
   org.ystia.nodes.Database:
     derived_from: tosca.nodes.Database
     abstract: true
-    description: Abstract Ystia Database node component
+    description: Abstract Ystia Database component
     artifacts:
       - utils_scripts:
           type: tosca.artifacts.File

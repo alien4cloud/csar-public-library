@@ -17,7 +17,7 @@ imports:
 node_types:
   org.ystia.kibana.linux.bash.nodes.Kibana:
     derived_from: org.ystia.consul.pub.nodes.ConsulUser
-    description: Kibana node component from ELK Stack for linux
+    description: Kibana component from Elastic Stack for linux
     tags:
       icon: /images/kibana-icon.png
     attributes:
@@ -97,7 +97,7 @@ node_types:
 
   org.ystia.kibana.linux.bash.nodes.KibanaDashboard:
     derived_from: tosca.nodes.Root
-    description: The default Dashboard node component hosted on Kibana
+    description: Default Dashboard component hosted on Kibana
     tags:
       icon: /images/chart-icon.png
     requirements:
@@ -124,7 +124,7 @@ node_types:
 
   org.ystia.kibana.linux.bash.nodes.BeatsDashboards:
     derived_from: org.ystia.nodes.Root
-    description: The Dashboard node component for Beats components hosted on Kibana
+    description: Dashboard component for Beats components hosted on Kibana
     tags:
       icon: /images/chart-icon.png
     requirements:

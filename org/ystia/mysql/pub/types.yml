@@ -15,7 +15,7 @@ node_types:
   org.ystia.mysql.pub.nodes.MySQLServer:
     derived_from: org.ystia.nodes.DBMS
     abstract: true
-    description: Abstract MySQL Server node component for linux
+    description: Abstract MySQL Server component
     tags:
       icon: /images/mysql_server.jpg
     properties:
@@ -47,7 +47,7 @@ node_types:
 
   org.ystia.mysql.pub.nodes.MySQLDatabase:
     derived_from: org.ystia.nodes.Database
-    description: Abstract node Database for MySQL
+    description: Abstract Database component for MySQL
     abstract: true
     tags:
       icon: /images/mysql_db.jpg

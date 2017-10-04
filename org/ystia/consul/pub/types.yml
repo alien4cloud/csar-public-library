@@ -15,7 +15,7 @@ node_types:
   org.ystia.consul.pub.nodes.Consul:
     derived_from: org.ystia.nodes.SoftwareComponent
     abstract: true
-    description: Abstract Consul Server or Agent node
+    description: Abstract Consul Server or Consul Agent component
     tags:
       icon: /images/consul-icon.png
     properties:

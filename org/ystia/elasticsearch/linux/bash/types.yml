@@ -16,7 +16,7 @@ imports:
 node_types:
   org.ystia.elasticsearch.linux.bash.nodes.Elasticsearch:
     derived_from: org.ystia.consul.pub.nodes.ConsulUser
-    description: Elasticsearch node component for linux
+    description: Elasticsearch component for linux
     tags:
       icon: /images/elasticsearch-icon.jpg
     properties:

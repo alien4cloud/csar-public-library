@@ -5,7 +5,7 @@ metadata:
   template_version: 1.0-SNAPSHOT
   template_author: Bull
 
-description: Topology template for MongoDB with a single 3-member replica set
+description: A topology template for a cluster MongoDB with 3 Replica Server nodes on 3 compute nodes
 
 imports:
   - tosca-normative-types:1.0.0-ALIEN14
@@ -33,8 +33,8 @@ topology_template:
       default: false
       required: true
   node_templates:
-    ReplicaSlave2:
-      type: org.ystia.mongodb.linux.bash.nodes.ReplicaSlave
+    MongoReplicaSlave2:
+      type: org.ystia.mongodb.linux.bash.nodes.MongoReplicaSlave
       properties:
         db_port:     { get_input: db_port }
         mongo_repo:  { get_input: mongo_repo }
@@ -52,8 +52,8 @@ topology_template:
             initiator: source
             secure: false
             network_name: PRIVATE
-    ReplicaSlave1:
-      type: org.ystia.mongodb.linux.bash.nodes.ReplicaSlave
+    MongoReplicaSlave1:
+      type: org.ystia.mongodb.linux.bash.nodes.MongoReplicaSlave
       properties:
         db_port:     { get_input: db_port }
         mongo_repo:  { get_input: mongo_repo }
@@ -71,8 +71,8 @@ topology_template:
             initiator: source
             secure: false
             network_name: PRIVATE
-    ReplicaMain:
-      type: org.ystia.mongodb.linux.bash.nodes.ReplicaMain
+    MongoReplicaMain:
+      type: org.ystia.mongodb.linux.bash.nodes.MongoReplicaMain
       properties:
         db_port:     { get_input: db_port }
         mongo_repo:  { get_input: mongo_repo }
@@ -84,11 +84,11 @@ topology_template:
             capability: tosca.capabilities.Container
             relationship: tosca.relationships.HostedOn
         - primary2secondary:
-            node: ReplicaSlave1
+            node: MongoReplicaSlave1
             capability: org.ystia.mongodb.pub.capabilities.Endpoint.PrimaryToSecondary
             relationship: org.ystia.mongodb.linux.bash.relationships.ConnectsTo.primary_to_secondary
         - primary2secondary:
-            node: ReplicaSlave2
+            node: MongoReplicaSlave2
             capability: org.ystia.mongodb.pub.capabilities.Endpoint.PrimaryToSecondary
             relationship: org.ystia.mongodb.linux.bash.relationships.ConnectsTo.primary_to_secondary
       capabilities:

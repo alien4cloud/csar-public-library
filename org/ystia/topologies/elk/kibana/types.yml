@@ -5,7 +5,7 @@ metadata:
   template_version: 1.0-SNAPSHOT
   template_author: Bull
 
-description: Basic topology template for Kibana connects to Elasticsearch
+description: A basic topology template with Kibana connects to Elasticsearch
 
 imports:
   - tosca-normative-types:1.0.0-ALIEN14

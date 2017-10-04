@@ -15,7 +15,7 @@ imports:
 node_types:
   org.ystia.xfs.linux.bash.nodes.XFS:
     derived_from: org.ystia.nodes.SoftwareComponent
-    description: XFS FileSystem node component which can be used to mount and format a volume.
+    description: XFS FileSystem component which can be used to mount and format a volume
     tags:
       icon: /images/volume.png
     properties:

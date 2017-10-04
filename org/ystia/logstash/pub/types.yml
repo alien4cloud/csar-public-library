@@ -19,7 +19,7 @@ node_types:
   org.ystia.logstash.pub.nodes.Logstash:
     derived_from: org.ystia.consul.pub.nodes.ConsulUser
     abstract: true
-    description: Abstract Logstash node component
+    description: Abstract Logstash component from Elastic Stack
     tags:
       icon: /images/logstash-icon.png
     properties:
@@ -82,7 +82,7 @@ node_types:
   org.ystia.logstash.pub.nodes.GeoNames:
     derived_from: org.ystia.consul.pub.nodes.ConsulUser
     abstract: true
-    description: Abstract GeoNames node component
+    description: Abstract GeoNames connector for Logstash
     tags:
       icon: /images/geonames.gif
     properties:

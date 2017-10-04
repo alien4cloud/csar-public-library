@@ -14,7 +14,7 @@ imports:
 node_types:
   org.ystia.haproxy.pub.nodes.HAProxy:
     derived_from: org.ystia.nodes.SoftwareComponent
-    description: Abstract HAProxy node component
+    description: Abstract HAProxy Server component
     abstract: true
     tags:
       icon: /images/logo.png
@@ -24,7 +24,7 @@ node_types:
 
   org.ystia.haproxy.pub.nodes.HAProxyHTTP:
     derived_from: org.ystia.nodes.SoftwareComponent
-    description: Add a HAProxy configuration for an HTTP server
+    description: Abstract HAProxy Server for HTTP connection
     abstract: true
     tags:
       icon: /images/logo.png
@@ -41,7 +41,7 @@ node_types:
 
   org.ystia.haproxy.pub.nodes.HAProxyTCP:
     derived_from: org.ystia.nodes.SoftwareComponent
-    description: Add a HAProxy configuration for TCP connexion
+    description: Abstract HAProxy Server for TCP connection
     abstract: true
     tags:
       icon: /images/logo.png

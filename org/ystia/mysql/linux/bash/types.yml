@@ -15,6 +15,7 @@ imports:
 node_types:
   org.ystia.mysql.linux.bash.nodes.MySQLServer:
     derived_from: org.ystia.mysql.pub.nodes.MySQLServer
+    description: MySQL Server component for linux
     interfaces:
       Standard:
         create:
@@ -34,6 +35,7 @@ node_types:
           file: scripts
   org.ystia.mysql.linux.bash.nodes.MySQLDatabase:
     derived_from: org.ystia.mysql.pub.nodes.MySQLDatabase
+    description: Database component for MySQL, on linux
     requirements:
       - blockstorage:
           capability: tosca.capabilities.Node

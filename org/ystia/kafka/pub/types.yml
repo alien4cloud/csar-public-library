@@ -17,7 +17,7 @@ node_types:
   org.ystia.kafka.pub.nodes.Kafka:
     derived_from: org.ystia.consul.pub.nodes.ConsulUser
     abstract: true
-    description: Abstract main Kafka node component
+    description: Abstract Kafka component
     tags:
       icon: /images/kafka-icon.png
     properties:
@@ -80,7 +80,7 @@ node_types:
   org.ystia.kafka.pub.nodes.KafkaTopic:
     derived_from: org.ystia.nodes.SoftwareComponent
     abstract: true
-    description: Abstarct Apache Kafka Topic node component
+    description: Abstract Kafka Topic component
     tags:
       icon: /images/kafka-topic-icon.png
     properties:

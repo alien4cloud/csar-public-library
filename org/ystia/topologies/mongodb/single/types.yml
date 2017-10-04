@@ -5,7 +5,7 @@ metadata:
   template_version: 1.0-SNAPSHOT
   template_author: Bull
 
-description: Topology template for MongoDB as a standard Single Server
+description: A basic topology template for a MongoDB Single Server nodes
 
 imports:
   - tosca-normative-types:1.0.0-ALIEN14
@@ -27,8 +27,8 @@ topology_template:
       type: tosca.nodes.Network
       properties:
         ip_version: 4
-    MongoDBsingle:
-      type: org.ystia.mongodb.linux.bash.nodes.MongoDBsingle
+    MongoSingle:
+      type: org.ystia.mongodb.linux.bash.nodes.MongoSingle
       properties:
         db_port:     { get_input: db_port }
         mongo_repo:  { get_input: mongo_repo }
