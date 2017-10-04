@@ -64,9 +64,10 @@ relationship_types:
     derived_from: tosca.relationships.DependsOn
     description: Connects a FileSystem to a Volume
     properties:
-      partition_type: >
-        description: The partition type.
-        Default value is 83: a Linux Native Partition
+      partition_type:
+        description: >
+          The partition type.
+          Default value is 83: a Linux Native Partition
         type: integer
         default: 83
     attributes:
