@@ -1,5 +1,16 @@
 #!/bin/bash
 
+### BEGIN INIT INFO
+# Provides:          alien
+# Required-Start:    $remote_fs $syslog
+# Required-Stop:     $remote_fs $syslog
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: Start alien
+# Description:       Start alien on boot
+### END INIT INFO
+
+
 APP_NAME=alien4cloud
 #PIDFILE=/var/run/${APP_NAME}.pid
 PROC=`ps -ef | grep -e alien4cloud* | grep -v grep | awk -F " " '{ print $2 }'`

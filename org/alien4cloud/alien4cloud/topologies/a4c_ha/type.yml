@@ -1,0 +1,351 @@
+tosca_definitions_version: alien_dsl_1_4_0
+
+metadata:
+  template_name: org.alien4cloud.alien4cloud.topologies.a4c_ha
+  template_version: 1.4.0-SNAPSHOT
+  template_author: alien4cloud
+
+description: >
+  Alien4cloud HA topology
+  Centos AMI > ami-6daf5e14
+  Ubuntu AMI > ami-63529a1a
+  security group cfy > sg-7e7df706
+
+
+imports:
+  - org.alien4cloud.java.jmx.jolokia:1.4.0-SNAPSHOT
+  - org.alien4cloud.samba.samba_sh:1.4.0-SNAPSHOT
+  - org.alien4cloud.alien4cloud.pub:1.4.0-SNAPSHOT
+  - org.alien4cloud.nginx.nginx_sh:1.4.0-SNAPSHOT
+  - tosca-normative-types:1.0.0-ALIEN14
+  - org.alien4cloud.elasticsearch.pub:1.4.0-SNAPSHOT
+  - org.alien4cloud.elasticsearch.ubuntu:1.4.0-SNAPSHOT
+  - org.alien4cloud.java.pub:1.4.0-SNAPSHOT
+  - org.alien4cloud.alien4cloud.webapp:1.4.0-SNAPSHOT
+  - org.alien4cloud.java.jdk.linux:1.4.0-SNAPSHOT
+  - org.alien4cloud.consul.consul_sh:1.4.0-SNAPSHOT
+
+topology_template:
+  inputs:
+    data_dir:
+      type: string
+      required: true
+      default: "/opt/alien4cloud/data"
+      description: "The location on the file system where A4C will store data (plugins, images ...)."
+    java_url:
+      type: string
+      required: true
+      default: "https://edelivery.oracle.com/otn-pub/java/jdk/8u131-b11/d54c1d3a095b4ff2b6607d096fa80163/jdk-8u131-linux-x64.tar.gz"
+  input_artifacts:
+    alien_dist:
+        type: tosca.artifacts.File
+  node_templates:
+    OracleJDK:
+      type: org.alien4cloud.java.jdk.linux.nodes.OracleJDK
+      properties:
+        java_url: { get_input: java_url }
+        java_home: "/opt/java"
+        component_version: "1.8.0-131-b11"
+      requirements:
+        - host:
+            node: AlienCompute
+            capability: tosca.capabilities.Container
+            relationship: tosca.relationships.HostedOn
+    ConsulClient:
+      type: org.alien4cloud.consul.consul_sh.nodes.ConsulClient
+      properties:
+        agent_mode: client
+        download_url: "https://releases.hashicorp.com/consul/0.6.4/consul_0.6.4_linux_amd64.zip"
+        data_dir: "/var/consul"
+        tls_enabled: false
+      requirements:
+        - consul_server:
+            node: ConsulServer
+            capability: org.alien4cloud.consul.pub.capabilities.ConsulServer
+            relationship: org.alien4cloud.consul.consul_sh.relationships.JoinCluster
+        - host:
+            node: AlienCompute
+            capability: tosca.capabilities.Container
+            relationship: tosca.relationships.HostedOn
+      capabilities:
+        consul_agent:
+          properties:
+            api_port: 8500
+    Alien4Cloud:
+      type: org.alien4cloud.alien4cloud.webapp.nodes.Alien4Cloud
+      properties:
+        context_root: "/"
+        component_version: "1.4.1"
+        data_dir: { get_input: data_dir }
+      requirements:
+        - consul:
+            node: ConsulClient
+            capability: org.alien4cloud.consul.pub.capabilities.ConsulAgent
+            relationship: org.alien4cloud.consul.relationships.ConnectToConsulAgent
+        - java:
+            node: OracleJDK
+            capability: org.alien4cloud.java.pub.capabilities.JDK
+            relationship: org.alien4cloud.java.pub.relationships.JavaSoftwareHostedOnJDK
+        - dependency:
+            node: SambaClient
+            capability: tosca.capabilities.Node
+            relationship: tosca.relationships.DependsOn
+        - elasticsearch:
+            node: ElasticSearch
+            capability: org.alien4cloud.elasticsearch.pub.capabilities.ElasticSearchTransportAPI
+            relationship: org.alien4cloud.alien4cloud.webapp.relationships.AlienConnectToElasticSearch
+      capabilities:
+        consul:
+          properties:
+            tls_enabled: false
+        jolokia:
+          properties:
+            port: 8778
+        http:
+          properties:
+            port: 9200
+            protocol: http
+            secure: false
+            network_name: PRIVATE
+            initiator: source
+        rest:
+          properties:
+            user: admin
+            password: admin
+            port: 8080
+            protocol: http
+            secure: false
+            network_name: PRIVATE
+            initiator: source
+      artifacts:
+        alien_dist:
+          file: { get_input_artifact: alien_dist }
+          type: tosca.artifacts.File
+    ConsulServer:
+      type: org.alien4cloud.consul.consul_sh.nodes.ConsulServer
+      properties:
+        agent_mode: server
+        download_url: "https://releases.hashicorp.com/consul/0.6.4/consul_0.6.4_linux_amd64.zip"
+        data_dir: "/var/consul"
+        tls_enabled: false
+      requirements:
+        - host:
+            node: ConsulCompute
+            capability: tosca.capabilities.Container
+            relationship: tosca.relationships.HostedOn
+      capabilities:
+        consul_agent:
+          properties:
+            api_port: 8500
+    AlienCompute:
+      type: tosca.nodes.Compute
+      capabilities:
+        os:
+          properties:
+            architecture: "x86_64"
+            type: linux
+            distribution: centos
+        scalable:
+          properties:
+            min_instances: 1
+            max_instances: 10
+            default_instances: 1
+        endpoint:
+          properties:
+            secure: true
+            protocol: tcp
+            network_name: PRIVATE
+            initiator: source
+    ConsulCompute:
+      type: tosca.nodes.Compute
+      capabilities:
+        os:
+          properties:
+            architecture: "x86_64"
+            type: linux
+            distribution: centos
+        scalable:
+          properties:
+            min_instances: 1
+            max_instances: 1
+            default_instances: 1
+        endpoint:
+          properties:
+            secure: true
+            protocol: tcp
+            network_name: PRIVATE
+            initiator: source
+    FrontCompute:
+      type: tosca.nodes.Compute
+      capabilities:
+        os:
+          properties:
+            architecture: "x86_64"
+            type: linux
+            distribution: centos
+        scalable:
+          properties:
+            min_instances: 1
+            max_instances: 10
+            default_instances: 1
+        endpoint:
+          properties:
+            secure: true
+            protocol: tcp
+            network_name: PRIVATE
+            initiator: source
+    ConsulClient_2:
+      type: org.alien4cloud.consul.consul_sh.nodes.ConsulClient
+      properties:
+        agent_mode: client
+        download_url: "https://releases.hashicorp.com/consul/0.6.4/consul_0.6.4_linux_amd64.zip"
+        data_dir: "/var/consul"
+        tls_enabled: false
+      requirements:
+        - consul_server:
+            node: ConsulServer
+            capability: org.alien4cloud.consul.pub.capabilities.ConsulServer
+            relationship: org.alien4cloud.consul.consul_sh.relationships.JoinCluster
+        - host:
+            node: FrontCompute
+            capability: tosca.capabilities.Container
+            relationship: tosca.relationships.HostedOn
+      capabilities:
+        consul_agent:
+          properties:
+            api_port: 8500
+    ConsulTemplate4Nginx:
+      type: org.alien4cloud.nginx.nginx_sh.nodes.ConsulTemplate4Nginx
+      properties:
+        download_url: "https://releases.hashicorp.com/consul-template/0.15.0/consul-template_0.15.0_linux_amd64.zip"
+        listen_port: 80
+        front_protocol: http
+        target_protocol: http
+      requirements:
+        - consul:
+            node: ConsulClient_2
+            capability: org.alien4cloud.consul.pub.capabilities.ConsulAgent
+            relationship: org.alien4cloud.consul.relationships.ConnectToConsulAgent
+        - host:
+            node: FrontCompute
+            capability: tosca.capabilities.Container
+            relationship: tosca.relationships.HostedOn
+        - dependency:
+            node: Nginx
+            capability: tosca.capabilities.Node
+            relationship: tosca.relationships.DependsOn
+      capabilities:
+        consul:
+          properties:
+            tls_enabled: false
+    Nginx:
+      type: org.alien4cloud.nginx.nginx_sh.nodes.Nginx
+      properties:
+        listen_port: 80
+        target_protocol: http
+        front_protocol: http
+      requirements:
+        - host:
+            node: FrontCompute
+            capability: tosca.capabilities.Container
+            relationship: tosca.relationships.HostedOn
+    SambaServer:
+      type: org.alien4cloud.samba.samba_sh.nodes.SambaServer
+      properties:
+        share_name: ALIEN4CLOUD
+        share_path: "/srv/samba/alien4cloud"
+      requirements:
+        - host:
+            node: SambaCompute
+            capability: tosca.capabilities.Container
+            relationship: tosca.relationships.HostedOn
+    SambaClient:
+      type: org.alien4cloud.samba.samba_sh.nodes.SambaClient
+      properties:
+        mount_point: { get_input: data_dir }
+      requirements:
+        - host:
+            node: AlienCompute
+            capability: tosca.capabilities.Container
+            relationship: tosca.relationships.HostedOn
+        - smb_server:
+            node: SambaServer
+            capability: org.alien4cloud.samba.pub.capabilities.SambaServer
+            relationship: org.alien4cloud.samba.relationships.ConnectsToSambaServer
+            properties:
+              mount_point: { get_input: data_dir }
+    SambaCompute:
+      type: tosca.nodes.Compute
+      capabilities:
+        os:
+          properties:
+            architecture: "x86_64"
+            type: linux
+            distribution: centos
+        scalable:
+          properties:
+            min_instances: 1
+            max_instances: 1
+            default_instances: 1
+        endpoint:
+          properties:
+            secure: true
+            protocol: tcp
+            network_name: PRIVATE
+            initiator: source
+    ElasticSearchCompute:
+      type: tosca.nodes.Compute
+      capabilities:
+        os:
+          properties:
+            architecture: "x86_64"
+            type: linux
+            distribution: ubuntu
+        scalable:
+          properties:
+            min_instances: 1
+            max_instances: 10
+            default_instances: 1
+        endpoint:
+          properties:
+            secure: true
+            protocol: tcp
+            network_name: PRIVATE
+            initiator: source
+    ESOracleJDK:
+      type: org.alien4cloud.java.jdk.linux.nodes.OracleJDK
+      properties:
+        java_url: { get_input: java_url }
+        java_home: "/opt/java"
+        component_version: "1.8.0-131-b11"
+      requirements:
+        - host:
+            node: ElasticSearchCompute
+            capability: tosca.capabilities.Container
+            relationship: tosca.relationships.HostedOn
+    ElasticSearch:
+      type: org.alien4cloud.elasticsearch.ubuntu.nodes.ElasticSearch
+      properties:
+        component_version: "1.7.0"
+        elasticsearch_url: "https://download.elastic.co/elasticsearch/elasticsearch/elasticsearch-1.7.0.deb"
+        cluster_name: escluster
+      requirements:
+        - java:
+            node: ESOracleJDK
+            capability: org.alien4cloud.java.pub.capabilities.JDK
+            relationship: org.alien4cloud.java.pub.relationships.JavaSoftwareHostedOnJDK
+      capabilities:
+        elasticsearch:
+          properties:
+            port: 9300
+            protocol: tcp
+            secure: false
+            network_name: PRIVATE
+            initiator: source
+        http:
+          properties:
+            port: 9200
+            protocol: http
+            secure: false
+            network_name: PRIVATE
+            initiator: source

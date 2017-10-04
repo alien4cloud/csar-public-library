@@ -1,0 +1,68 @@
+tosca_definitions_version: alien_dsl_1_4_0
+
+metadata:
+  template_name: org.alien4cloud.samba.samba_sh
+  template_version: 1.4.0-SNAPSHOT
+  template_author: alien4cloud
+
+imports:
+  - tosca-normative-types:1.0.0-ALIEN14
+  - org.alien4cloud.samba.pub:1.4.0-SNAPSHOT
+  - org.alien4cloud.alien4cloud.webapp:1.4.0-SNAPSHOT
+
+
+node_types:
+    org.alien4cloud.samba.samba_sh.nodes.SambaServer:
+      derived_from: org.alien4cloud.samba.pub.nodes.SambaServer
+      description: >
+        Configure a samba server
+      tags:
+        icon: /images/samba.png
+      properties:
+        share_name:
+          type: string
+          default: "ALIEN4CLOUD"
+        share_path:
+          type: string
+          default: "/srv/samba/alien4cloud"
+      capabilities:
+        smb_server: org.alien4cloud.samba.pub.capabilities.SambaServer
+      interfaces:
+        Standard:
+          create: scripts/smbServer/install.sh
+          configure:
+            inputs:
+              SHARE_NAME: { get_property: [SELF, share_name] }
+              SHARE_PATH: { get_property: [SELF, share_path] }
+            implementation: scripts/smbServer/configure.sh
+          start: scripts/smbServer/start.sh
+          stop: scripts/smbServer/stop.sh
+      artifacts:
+        - config:
+            file: config/samba/smb.conf
+            type: tosca.artifacts.File
+        - commons:
+            file: scripts/commons
+            type: tosca.artifacts.File
+
+    org.alien4cloud.samba.samba_sh.nodes.SambaClient:
+      derived_from: tosca.nodes.SoftwareComponent
+      description: >
+        Configure a samba client
+      tags:
+        icon: /images/samba.png
+      properties:
+        mount_point:
+          type: string
+          default: "/var/alien4cloud"
+      requirements:
+        - smb_server:
+            capability: org.alien4cloud.samba.pub.capabilities.SambaServer
+            relationship: org.alien4cloud.samba.relationships.ConnectsToSambaServer
+      interfaces:
+        Standard:
+          create: scripts/smbClient/install.sh
+      artifacts:
+        - commons:
+            file: scripts/commons
+            type: tosca.artifacts.File

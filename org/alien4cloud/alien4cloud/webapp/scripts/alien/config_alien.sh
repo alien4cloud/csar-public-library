@@ -122,4 +122,8 @@ fi
 sudo bash -c "sed -e 's/\\\${APP_ARGS}/${APP_ARGS}/' $bin/alien.sh > /etc/init.d/alien"
 sudo chmod +x /etc/init.d/alien
 
-sudo update-rc.d alien defaults 95 10
+if [[ "$(which yum)" != "" ]]; then
+  sudo chkconfig --add alien
+elif [[ "$(which apt-get)" != "" ]]; then
+  sudo update-rc.d alien defaults 95 10
+fi
