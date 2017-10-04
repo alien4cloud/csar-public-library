@@ -15,7 +15,7 @@ imports:
 node_types:
   org.ystia.logstash.linux.bash.nodes.Logstash:
     derived_from: org.ystia.logstash.pub.nodes.Logstash
-    description: Logstash node component from Elastic Stack for linux
+    description: Logstash component from Elastic Stack for linux
     attributes:
       java_home: { get_operation_output: [ SELF, Configure, pre_configure_source, JAVA_HOME ] }
       ls_home: { get_operation_output: [ SELF, Standard, create, LOGSTASH_HOME ] }
@@ -116,7 +116,7 @@ node_types:
 
   org.ystia.logstash.linux.bash.nodes.GeoNames:
     derived_from: org.ystia.logstash.pub.nodes.GeoNames
-    description: A GeoNames node connector for linux
+    description: A GeoNames connector for Logstash on linux
     interfaces:
       Standard:
           create:
@@ -124,8 +124,6 @@ node_types:
               REPOSITORY: { get_property: [SELF, repository] }
               FNAME: { get_property: [SELF, filename] }
             implementation: geonames/create.sh
-          configure:
-            implementation: geonames/configure.sh
           start:
             implementation: geonames/start.sh
           stop:
