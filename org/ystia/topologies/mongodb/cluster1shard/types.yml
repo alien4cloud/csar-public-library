@@ -5,7 +5,7 @@ metadata:
   template_version: 1.0-SNAPSHOT
   template_author: Bull
 
-description: Topology template for MongoDB as a Cluster with one Shard
+description: A topology template for a cluster MongoDB with 3 Config Server nodes and 1 Shard as a 3 Replica Server nodes
 
 imports:
   - tosca-normative-types:1.0.0-ALIEN14
@@ -46,8 +46,8 @@ topology_template:
       default: true
       description: To enable the Replica Set to be a Shard or not
   node_templates:
-    ReplicaSlave2:
-      type: org.ystia.mongodb.linux.bash.nodes.ReplicaSlave
+    MongoReplicaSlave2:
+      type: org.ystia.mongodb.linux.bash.nodes.MongoReplicaSlave
       properties:
         db_port: { get_input: rep1_port }
         mongo_repo: { get_input: mongo_repo }
@@ -65,8 +65,8 @@ topology_template:
             initiator: source
             secure: false
             network_name: PRIVATE
-    ReplicaSlave1:
-      type: org.ystia.mongodb.linux.bash.nodes.ReplicaSlave
+    MongoReplicaSlave1:
+      type: org.ystia.mongodb.linux.bash.nodes.MongoReplicaSlave
       properties:
         db_port: { get_input: rep1_port }
         mongo_repo: { get_input: mongo_repo }
@@ -84,8 +84,8 @@ topology_template:
             initiator: source
             secure: false
             network_name: PRIVATE
-    ReplicaMain:
-      type: org.ystia.mongodb.linux.bash.nodes.ReplicaMain
+    MongoReplicaMain:
+      type: org.ystia.mongodb.linux.bash.nodes.MongoReplicaMain
       properties:
         db_port: { get_input: rep1_port }
         mongo_repo: { get_input: mongo_repo }
@@ -93,7 +93,7 @@ topology_template:
         shard: { get_input: shard }
       requirements:
         - primary2secondary:
-            node: ReplicaSlave2
+            node: MongoReplicaSlave2
             capability: org.ystia.mongodb.pub.capabilities.Endpoint.PrimaryToSecondary
             relationship: org.ystia.mongodb.linux.bash.relationships.ConnectsTo.primary_to_secondary
         - host:
@@ -101,7 +101,7 @@ topology_template:
             capability: tosca.capabilities.Container
             relationship: tosca.relationships.HostedOn
         - primary2secondary:
-            node: ReplicaSlave1
+            node: MongoReplicaSlave1
             capability: org.ystia.mongodb.pub.capabilities.Endpoint.PrimaryToSecondary
             relationship: org.ystia.mongodb.linux.bash.relationships.ConnectsTo.primary_to_secondary
       capabilities:
@@ -245,7 +245,7 @@ topology_template:
         mongo_repo: { get_input: mongo_repo }
       requirements:
         - router2replicaset:
-            node: ReplicaMain
+            node: MongoReplicaMain
             capability: org.ystia.mongodb.pub.capabilities.Endpoint.RouterToReplicaset
             relationship: org.ystia.mongodb.linux.bash.relationships.ConnectsTo.router_to_replicaset
         - router2config:

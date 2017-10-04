@@ -16,7 +16,7 @@ node_types:
   org.ystia.mongodb.linux.bash.nodes.MongoRouter:
     derived_from: org.ystia.nodes.SoftwareComponent
     description: >
-      Mongodb, as a Router using mongos, node component for linux.
+      MongoRouter component for linux.
     requirements:
       - router2config:
           capability: org.ystia.mongodb.pub.capabilities.Endpoint.ConfigToRouter
@@ -70,7 +70,7 @@ node_types:
   org.ystia.mongodb.linux.bash.nodes.MongoConfigServer:
     derived_from: org.ystia.nodes.SoftwareComponent
     description: >
-      A node to install Mongodb as a Config Server on linux.
+      Mongo Config Server component for linux.
     capabilities:
       config2router:
         type: org.ystia.mongodb.pub.capabilities.Endpoint.ConfigToRouter
@@ -114,10 +114,10 @@ node_types:
           type: tosca.artifacts.File
           file: data
 
-  org.ystia.mongodb.linux.bash.nodes.ReplicaMain:
+  org.ystia.mongodb.linux.bash.nodes.MongoReplicaMain:
     derived_from: org.ystia.nodes.SoftwareComponent
     description: >
-      A node to install Mongodb with a Replica Set configured as Main Node on linux.
+      Mongo Replica Main Server component for linux (ie Mongo Primary Server)
     requirements:
       - primary2secondary:
           capability: org.ystia.mongodb.pub.capabilities.Endpoint.PrimaryToSecondary
@@ -185,10 +185,10 @@ node_types:
           type: tosca.artifacts.File
           file: data
 
-  org.ystia.mongodb.linux.bash.nodes.ReplicaSlave:
+  org.ystia.mongodb.linux.bash.nodes.MongoReplicaSlave:
     derived_from: org.ystia.nodes.SoftwareComponent
     description: >
-      A node to install Mongodb, with a Replica Set configured as Main Node, on linux.
+      Mongo Replica Server component on linux (ie Mongo Secondary Server).
     capabilities:
       primary2secondary:
         type: org.ystia.mongodb.pub.capabilities.Endpoint.PrimaryToSecondary
@@ -248,10 +248,10 @@ node_types:
           type: tosca.artifacts.File
           file: data
 
-  org.ystia.mongodb.linux.bash.nodes.MongoDBsingle:
+  org.ystia.mongodb.linux.bash.nodes.MongoSingle:
     derived_from: org.ystia.nodes.DBMS
     description: >
-      MongoDB node component for linux
+      Mongo Single Server component for linux
     capabilities:
       endpoint: tosca.capabilities.Endpoint.Database
       mongo_endpoint:
