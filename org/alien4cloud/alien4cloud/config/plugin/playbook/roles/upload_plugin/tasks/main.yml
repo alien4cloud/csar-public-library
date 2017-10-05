@@ -5,6 +5,7 @@
     method: POST
     return_content: yes
     status_code: 302
+    validate_certs: no
     headers:
       Content-Type: "application/x-www-form-urlencoded"
   register: login

@@ -18,6 +18,7 @@
     method: POST
     return_content: yes
     status_code: 302
+    validate_certs: no
     headers:
       Content-Type: "application/x-www-form-urlencoded"
   register: login
@@ -30,6 +31,7 @@
     url: "{{ alien_url }}/rest/latest/orchestrators/{{ orchestratorId }}/locations/{{ locationId }}/resources"
     method: POST
     return_content: yes
+    validate_certs: no
     HEADER_cookie: "{{ session_id }}"
     body:
       resourceType: "{{ resourceType }}"
@@ -49,6 +51,7 @@
     url: "{{ alien_url }}/rest/latest/orchestrators/{{ orchestratorId }}/locations/{{ locationId }}/resources/{{ resourceId }}/template/properties"
     method: POST
     return_content: yes
+    validate_certs: no
     HEADER_cookie: "{{ session_id }}"
     body:
       propertyName: "host_pool_service_endpoint"
@@ -62,6 +65,7 @@
     url: "{{ alien_url }}/rest/latest/orchestrators/{{ orchestratorId }}/locations/{{ locationId }}/resources/{{ resourceId }}/template/properties"
     method: POST
     return_content: yes
+    validate_certs: no
     HEADER_cookie: "{{ session_id }}"
     body:
       propertyName: "agent_config"
