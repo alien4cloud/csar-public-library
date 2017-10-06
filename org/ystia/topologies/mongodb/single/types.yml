@@ -5,13 +5,12 @@ metadata:
   template_version: 1.0-SNAPSHOT
   template_author: Bull
 
-description: A basic topology template for a MongoDB Single Server nodes
-
 imports:
   - tosca-normative-types:1.0.0-ALIEN14
   - org.ystia.mongodb.linux.bash:1.0-SNAPSHOT
 
 topology_template:
+  description: A basic topology template for a MongoDB as a Single Server node
   inputs:
     db_port:
       type: integer

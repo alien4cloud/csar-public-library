@@ -5,14 +5,13 @@ metadata:
   template_version: 1.0-SNAPSHOT
   template_author: Bull
 
-description: A basic topology template for MySQL as a standard Single Server
-
 imports:
   - tosca-normative-types:1.0.0-ALIEN14
   - org.ystia.mysql.pub:1.0-SNAPSHOT
   - org.ystia.mysql.linux.bash:1.0-SNAPSHOT
 
 topology_template:
+  description: A basic topology template for MySQL as a Single Server node
   inputs:
     repository:
       type: string

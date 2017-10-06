@@ -5,7 +5,6 @@ metadata:
   template_version: 1.0-SNAPSHOT
   template_author: Bull
 
-description: A topology template to connect Logstash, Elasticsearch and Kibana.
 
 imports:
   - tosca-normative-types:1.0.0-ALIEN14
@@ -21,6 +20,7 @@ imports:
   - org.ystia.logstash.linux.bash:1.0-SNAPSHOT
 
 topology_template:
+  description: A topology template to connect Logstash, Elasticsearch and Kibana
 
   node_templates:
 

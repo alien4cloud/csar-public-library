@@ -5,12 +5,11 @@ metadata:
   template_version: 1.0-SNAPSHOT
   template_author: Bull
 
-description:
-
 imports:
   - tosca-normative-types:1.0.0-ALIEN14
 
 topology_template:
+  description:
   inputs:
   node_templates:
     Nutch:

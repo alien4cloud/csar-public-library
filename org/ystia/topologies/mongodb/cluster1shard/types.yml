@@ -5,14 +5,13 @@ metadata:
   template_version: 1.0-SNAPSHOT
   template_author: Bull
 
-description: A topology template for a cluster MongoDB with 3 Config Server nodes and 1 Shard as a 3 Replica Server nodes
-
 imports:
   - tosca-normative-types:1.0.0-ALIEN14
   - org.ystia.mongodb.pub:1.0-SNAPSHOT
   - org.ystia.mongodb.linux.bash:1.0-SNAPSHOT
 
 topology_template:
+  description: A topology template for a cluster MongoDB with 3 Config Server nodes and 1 Shard as a 3 Replica Server nodes
   inputs:
     routermain_port:
       type: integer
