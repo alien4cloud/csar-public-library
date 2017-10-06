@@ -110,6 +110,8 @@ if [ -d "/tmp/a4c/work/${NODE}/ConnectToConsulAgent" ]; then
       sudo sed -i -e "s@keyStorePath\: \(.*\)@keyStorePath\: $SSL_STORE_PATH/client-keystore.jks@g" ${A4C_CONFIG}
       sudo sed -i -e "s@trustStorePath\: \(.*\)@trustStorePath\: $SSL_STORE_PATH/truststore.jks@g" ${A4C_CONFIG}
       sudo sed -i -e "s/keyStoresPwd\: \(.*\)/keyStoresPwd\: changeit/g" ${A4C_CONFIG}
+      sudo sed -i -e "s/keyStorePwd\: \(.*\)/keyStorePwd\: changeit/g" ${A4C_CONFIG}
+      sudo sed -i -e "s/trustStorePwd\: \(.*\)/trustStorePwd\: changeit/g" ${A4C_CONFIG}
   else
       sudo sed -i -e "s/consul_tls_enabled\: \(.*\)/consul_tls_enabled\: false/g" ${A4C_CONFIG}
   fi
