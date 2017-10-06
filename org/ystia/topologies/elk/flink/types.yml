@@ -5,7 +5,6 @@ metadata:
   template_version: 1.0-SNAPSHOT
   template_author: Bull
 
-description: A basic topology template with Flink
 
 imports:
   - tosca-normative-types:1.0.0-ALIEN14
@@ -18,12 +17,14 @@ imports:
   - org.ystia.flink.linux.bash:1.0-SNAPSHOT
 
 topology_template:
+  description: A basic topology template with Flink
+
   node_templates:
     Network:
       type: tosca.nodes.Network
       properties:
         ip_version: 4
-    Compute:
+    Compute_FJM:
       type: tosca.nodes.Compute
       requirements:
         - network:
@@ -42,32 +43,32 @@ topology_template:
             protocol: tcp
             network_name: PRIVATE
             initiator: source
-    Consul:
+    Consul_FJM:
       type: org.ystia.consul.linux.bash.nodes.Consul
       requirements:
         - host:
-            node: Compute
+            node: Compute_FJM
             capability: tosca.capabilities.Container
             relationship: tosca.relationships.HostedOn
-    Java:
+    Java_FJM:
       type: org.ystia.java.linux.bash.nodes.Java
       requirements:
         - host:
-            node: Compute
+            node: Compute_FJM
             capability: tosca.capabilities.Container
             relationship: tosca.relationships.HostedOn
-    JobManager:
+    FlinkJobManager:
       type: org.ystia.flink.linux.bash.nodes.JobManager
       requirements:
         - host:
-            node: Java
+            node: Java_FJM
             capability: org.ystia.java.pub.capabilities.JavaHosting
             relationship: org.ystia.java.pub.relationships.HostedOnJavaRuntime
         - consul:
-            node: Consul
+            node: Consul_FJM
             capability: org.ystia.consul.pub.capabilities.ConsulAgent
             relationship: org.ystia.consul.pub.relationships.ConnectsToConsulAgent
-    Compute_2:
+    Compute_FTM:
       type: tosca.nodes.Compute
       requirements:
         - network:
@@ -86,36 +87,43 @@ topology_template:
             protocol: tcp
             network_name: PRIVATE
             initiator: source
-    Consul_2:
+    Consul_FTM:
       type: org.ystia.consul.linux.bash.nodes.Consul
       requirements:
         - server_endpoint:
-            node: Consul
+            node: Consul_FJM
             capability: org.ystia.consul.pub.capabilities.ConsulServer
             relationship: org.ystia.consul.linux.bash.relationships.ConnectsConsulAgentToServer
         - host:
-            node: Compute_2
+            node: Compute_FTM
             capability: tosca.capabilities.Container
             relationship: tosca.relationships.HostedOn
-    Java_2:
+    Java_FTM:
       type: org.ystia.java.linux.bash.nodes.Java
       requirements:
         - host:
-            node: Compute_2
+            node: Compute_FTM
             capability: tosca.capabilities.Container
             relationship: tosca.relationships.HostedOn
-    TaskManager:
+    FlinkTaskManager:
       type: org.ystia.flink.linux.bash.nodes.TaskManager
       requirements:
         - jobmanager_endpoint:
-            node: JobManager
+            node: FlinkJobManager
             capability: org.ystia.flink.pub.capabilities.JobManager
             relationship: org.ystia.flink.linux.bash.relationships.TaskManagerToJobManager
         - host:
-            node: Java_2
+            node: Java_FTM
             capability: org.ystia.java.pub.capabilities.JavaHosting
             relationship: org.ystia.java.pub.relationships.HostedOnJavaRuntime
         - consul:
-            node: Consul_2
+            node: Consul_FTM
             capability: org.ystia.consul.pub.capabilities.ConsulAgent
             relationship: org.ystia.consul.pub.relationships.ConnectsToConsulAgent
+
+
+  # Output property for Flink Dashboard URL
+
+  outputs:
+    flink_dasboard_url:
+      value: { get_attribute: [ FlinkJobManager, dashboard_url ] }
