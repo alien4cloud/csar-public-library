@@ -20,8 +20,6 @@ node_types:
     description: Flink JobManager component for linux
     tags:
       icon: /images/flink-icon.png
-    attributes:
-      url: { concat: ["http://", get_attribute: [HOST, public_ip_address], ":8081" ] }
     properties:
       component_version:
         type: version
@@ -56,6 +54,7 @@ node_types:
         constraints:
           - pattern: ^(http|https|ftp)://.+/.*$
     attributes:
+      dashboard_url: { concat: ["http://", get_attribute: [HOST, public_ip_address], ":8081/" ] }
       java_home: { get_operation_output: [ SELF, Configure, pre_configure_source, JAVA_HOME ] }
     capabilities:
       jobmanager:
