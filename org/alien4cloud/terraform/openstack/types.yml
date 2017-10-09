@@ -1,0 +1,238 @@
+tosca_definitions_version: alien_dsl_1_4_0
+
+metadata:
+  template_name: org.alien4cloud.terraform.openstack
+  template_version: 1.4.0-SNAPSHOT
+  template_author: alien4cloud
+
+imports:
+  - tosca-normative-types:1.0.0-ALIEN14
+
+data_types:
+
+  org.alien4cloud.terraform.openstack.datatypes.AgentConfig:
+    derived_from: tosca.datatypes.Root
+    properties:
+      install_method:
+        type: string
+        required: true
+      user:
+        type: string
+        required: false
+      key:
+        type: string
+        required: false
+
+  org.alien4cloud.terraform.openstack.datatypes.OpenstackConfig:
+    derived_from: tosca.datatypes.Root
+    properties:
+      user_name: 
+        type: string
+      tenant_name: 
+        type: string
+      password: 
+        type: string
+      auth_url: 
+        type: string
+      region: 
+        type: string
+
+node_types:
+
+  org.alien4cloud.terraform.openstack.nodes.TerraInstance:
+    derived_from: org.alien4cloud.terraform.openstack.nodes.AbstractTerraInstance
+
+  org.alien4cloud.terraform.openstack.nodes.AbstractTerraInstance:
+    abstract: true
+    derived_from: tosca.nodes.Compute
+    description: |
+      Launch an openstack instance. Needs terraform cli to be installed on the host (usually a 'manager' since this is a compute resource).
+      Information about the key and the user is needed for cloudify manager to establish connection to the created compute.
+    properties:
+      agent_config:
+        type: org.alien4cloud.terraform.openstack.datatypes.AgentConfig
+      openstack_config:
+        type: org.alien4cloud.terraform.openstack.datatypes.OpenstackConfig
+      image_id:
+        type: string
+      flavor_id:
+        type: string
+      key_name:
+        type: string
+      openstack_prefix:
+        type: string
+      external_network_name:
+        type: string
+      internal_network_name:
+        type: string
+      metadata:
+        type: map
+        entry_schema:
+          type: string
+      floating_ips:
+        type: list
+        entry_schema:
+          type: string
+        required: false
+      pool_name:
+        type: string
+        required: false
+      internal_secgroup_ids:
+        type: list
+        entry_schema:
+          type: string
+      external_secgroup_ids:
+        type: list
+        entry_schema:
+          type: string
+      TF_LOG:
+        type: string
+        default: INFO
+        constraints:
+          - valid_values: [ TRACE, DEBUG, INFO, WARN, ERROR ]
+      OS_DEBUG:
+        type: integer
+        default: 0
+    attributes:
+      ip_address: { get_operation_output: [ SELF, Standard, start, IP_ADDRESS ] }
+      public_ip_address: { get_operation_output: [ SELF, Standard, start, PUBLIC_IP_ADDRESS ] }
+      instance_id: { get_operation_output: [ SELF, Standard, start, INSTANCE_ID ] }
+      instance_name: { get_operation_output: [ SELF, Standard, start, INSTANCE_NAME ] }
+    capabilities:
+      - secgroup:
+          type: org.alien4cloud.terraform.openstack.capabilities.SecurityGroup
+          occurrences: [ 0, 1 ]
+    requirements:
+      - network:
+          capability: org.alien4cloud.terraform.openstack.capabilities.Unimplemented
+          occurrences: [ 0, 0 ]
+    artifacts:
+      - ARTIFACT_TERRAFORM:
+          file: templates/template-compute.tf
+          type: tosca.artifacts.File
+          description: Terraform file to provision a compute with a new floating
+      - ARTIFACT_TERRAFORM_EXISTING_FIP:
+          file: templates/template-compute-existing-floatingips.tf
+          type: tosca.artifacts.File
+          description: Terraform file to provision a compute with an existing floating
+      - ARTIFACT_PORT_OVERRIDE:
+          file: templates/template-compute-port-override.tf
+          type: tosca.artifacts.File
+          description: Terraform file to override ports with secgroups ids (used in secgroup relationship)
+      - ARTIFACT_PYTHON:
+          file: scripts/render-inputs.py
+          type: tosca.artifacts.File
+          description: Python script to convert env to terraform inputs file (to handle structures like map or list)
+    interfaces:
+      Standard:
+        create:
+          inputs:
+            _TF_OPENSTACK_CONFIG: { get_property: [ SELF, openstack_config] }
+            _TF_IMAGE_ID: { get_property: [ SELF, image_id] }
+            _TF_FLAVOR_ID: { get_property: [ SELF, flavor_id] }
+            _TF_KEY_NAME: { get_property: [ SELF, key_name] }
+            _TF_OPENSTACK_PREFIX: { get_property: [ SELF, openstack_prefix] }
+            _TF_EXTERNAL_NETWORK_NAME: { get_property: [ SELF, external_network_name] }
+            _TF_INTERNAL_NETWORK_NAME: { get_property: [ SELF, internal_network_name] }
+            _TF_EXTERNAL_SECGROUP_IDS: { get_property: [ SELF, external_secgroup_ids] }
+            _TF_INTERNAL_SECGROUP_IDS: { get_property: [ SELF, internal_secgroup_ids] }
+            _TF_METADATA: { get_property: [ SELF, metadata] }
+            _TFL_FLOATING_IP: { get_property: [ SELF, floating_ips] }
+            _TF_POOL_NAME: { get_property: [ SELF, pool_name] }
+          implementation: scripts/prepare_terraform.sh
+        start:
+          inputs:
+            INPUT_FILE: { get_operation_output: [ SELF, Standard, create, INPUT_FILE ] }
+            TF_LOG: { get_property: [ SELF, TF_LOG] }
+            OS_DEBUG: { get_property: [ SELF, OS_DEBUG] }
+          implementation: scripts/apply_terraform.sh
+        configure:
+          inputs:
+            FLOATING_IPS: { get_property: [ SELF, floating_ips] }
+          implementation: scripts/tf_compute_configure.sh
+        delete:
+          inputs:
+            INPUT_FILE: { get_operation_output: [ SELF, Standard, create, INPUT_FILE ] }
+            TF_LOG: { get_property: [ SELF, TF_LOG] }
+            OS_DEBUG: { get_property: [ SELF, OS_DEBUG] }
+          implementation: scripts/destroy_terraform.sh
+
+  org.alien4cloud.terraform.openstack.nodes.CustomSecurityGroup:
+    derived_from: tosca.nodes.Root
+    description: |
+      Create a security group and rules and attach it to the port linked to the "internal" network
+    properties:
+      openstack_config:
+        type: org.alien4cloud.terraform.openstack.datatypes.OpenstackConfig
+      TF_LOG:
+        type: string
+        default: INFO
+        constraints:
+          - valid_values: [ TRACE, DEBUG, INFO, WARN, ERROR ]
+      OS_DEBUG:
+        type: integer
+        default: 0
+    requirements:
+      - secgroup:
+          capability: org.alien4cloud.terraform.openstack.capabilities.SecurityGroup
+          relationship: org.alien4cloud.terraform.openstack.relationships.SecurityGroup
+          occurrences: [1, unbounded]
+    artifacts:
+      - ARTIFACT_TERRAFORM:
+          file: templates/template-secgroup.tf
+          type: tosca.artifacts.File
+          description: Terraform file to apply
+      - ARTIFACT_REL_SG_TERRAFORM:
+          file: templates/template-rel-add-sgrule.tf
+          type: tosca.artifacts.File
+          description: Terraform file to add a rule for floating ip (used in relationship)
+      - ARTIFACT_PYTHON:
+          file: scripts/render-inputs.py
+          type: tosca.artifacts.File
+          description: Python script to convert env to terraform inputs file (to handle structures like map or list)
+    interfaces:
+      Standard:
+        create:
+          inputs:
+            _TF_OPENSTACK_CONFIG: { get_property: [ SELF, openstack_config] }
+          implementation: scripts/prepare_terraform.sh
+        start:
+          inputs:
+            INPUT_FILE: { get_operation_output: [ SELF, Standard, create, INPUT_FILE ] }
+            TF_LOG: { get_property: [ SELF, TF_LOG] }
+            OS_DEBUG: { get_property: [ SELF, OS_DEBUG] }
+          implementation: scripts/apply_terraform.sh
+        delete:
+          inputs:
+            INPUT_FILE: { get_operation_output: [ SELF, Standard, create, INPUT_FILE ] }
+            TF_LOG: { get_property: [ SELF, TF_LOG] }
+            OS_DEBUG: { get_property: [ SELF, OS_DEBUG] }
+          implementation: scripts/destroy_terraform.sh
+
+
+capability_types:
+
+  org.alien4cloud.terraform.openstack.capabilities.Unimplemented:
+    derived_from: tosca.capabilities.Root
+  org.alien4cloud.terraform.openstack.capabilities.SecurityGroup:
+    derived_from: tosca.capabilities.Root
+
+
+relationship_types:
+
+  org.alien4cloud.terraform.openstack.relationships.SecurityGroup:
+    derived_from: tosca.relationships.DependsOn
+    valid_target_types: [ org.alien4cloud.terraform.openstack.capabilities.SecurityGroup ]
+    interfaces:
+      configure:
+        add_target:
+          inputs:
+            _TF_OPENSTACK_CONFIG: { get_property: [ SOURCE, openstack_config] }
+            _TF_FLOATING_IP: { get_attribute: [ TARGET, public_ip ] }
+          implementation: scripts/tf_rel_sg_add_target.sh
+        remove_target:
+          implementation: scripts/tf_rel_sg_remove_target.sh
+        add_source:
+          implementation: scripts/tf_rel_sg_add_source.sh
+        remove_source:
+          implementation: scripts/tf_rel_sg_remove_source.sh
