@@ -14,13 +14,37 @@ imports:
 
 node_types:
   org.ystia.consul.linux.bash.nodes.Consul:
-    derived_from: org.ystia.consul.pub.nodes.Consul
+    derived_from: org.ystia.nodes.SoftwareComponent
     description: Consul Server or Consul Agent component for linux
     requirements:
       - server_endpoint:
           capability: org.ystia.consul.pub.capabilities.ConsulServer
           relationship: org.ystia.consul.linux.bash.relationships.ConnectsConsulAgentToServer
           occurrences: [0,1]
+    tags:
+      icon: /images/consul-icon.png
+    properties:
+      install_dnsmasq:
+        type: boolean
+        description: >
+          By default, a dnsmask is installed as a DNS proxy.
+          It is sometimes needed to remove it if another DNS is already installed (bind for example)
+        default: true
+      installation_directory:
+        type: string
+        description: installation path of consul
+        default: ~/consul
+      component_version:
+        type: version
+        description: the Consul version installed.
+        default: 0.5.2
+        constraints:
+          - equal: 0.5.2
+    capabilities:
+      agent:
+        type: org.ystia.consul.pub.capabilities.ConsulAgent
+      server:
+        type: org.ystia.consul.pub.capabilities.ConsulServer
     interfaces:
       Standard:
         create:

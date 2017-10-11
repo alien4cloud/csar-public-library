@@ -10,8 +10,8 @@ imports:
   - tosca-normative-types:1.0.0-ALIEN14
   - org.ystia.common:1.0-SNAPSHOT
   - org.ystia.consul.pub:1.0-SNAPSHOT
-  - org.ystia.elasticsearch.pub:1.0-SNAPSHOT
   - org.ystia.java.linux.bash:1.0-SNAPSHOT
+  - org.ystia.elasticsearch.pub:1.0-SNAPSHOT
   - org.ystia.consul.linux.bash:1.0-SNAPSHOT
   - org.ystia.java.pub:1.0-SNAPSHOT
   - org.ystia.elasticsearch.linux.bash:1.0-SNAPSHOT

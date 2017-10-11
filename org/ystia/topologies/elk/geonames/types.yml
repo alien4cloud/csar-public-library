@@ -102,7 +102,8 @@ topology_template:
     GeoNames:
       type: org.ystia.logstash.linux.bash.nodes.GeoNames
       properties:
-        filename: cities15000
+        filename: FR
+        indexname: ystia_geonames
       requirements:
         - host:
             node: Logstash

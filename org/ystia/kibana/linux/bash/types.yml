@@ -12,6 +12,7 @@ imports:
   - org.ystia.common:1.0-SNAPSHOT
   - org.ystia.consul.pub:1.0-SNAPSHOT
   - org.ystia.java.pub:1.0-SNAPSHOT
+  - org.ystia.kibana.pub:1.0-SNAPSHOT
   - org.ystia.elasticsearch.pub:1.0-SNAPSHOT
 
 node_types:
@@ -51,7 +52,7 @@ node_types:
           - pattern: "[1-9][0-9]*[kKmMgG]"
     capabilities:
       dashboard_host:
-        type: org.ystia.kibana.linux.bash.capabilities.DashboardHosting
+        type: org.ystia.kibana.pub.capabilities.DashboardHosting
         occurrences: [0,unbounded]
     requirements:
       - host:
@@ -102,7 +103,7 @@ node_types:
       icon: /images/chart-icon.png
     requirements:
       - dashboard_host:
-          capability: org.ystia.kibana.linux.bash.capabilities.DashboardHosting
+          capability: org.ystia.kibana.pub.capabilities.DashboardHosting
           relationship: org.ystia.kibana.linux.bash.relationships.DashboardHostedOnKibana
           occurrences: [1,1]
     interfaces:
@@ -120,7 +121,7 @@ node_types:
           type: tosca.artifacts.File
       - dashboard_file:
           file: dashboardFiles/kdb_default.json
-          type: org.ystia.kibana.linux.bash.artifacts.Dashboard
+          type: org.ystia.kibana.pub.artifacts.Dashboard
 
   org.ystia.kibana.linux.bash.nodes.BeatsDashboards:
     derived_from: org.ystia.nodes.Root
@@ -129,7 +130,7 @@ node_types:
       icon: /images/chart-icon.png
     requirements:
       - dashboard_host:
-          capability: org.ystia.kibana.linux.bash.capabilities.DashboardHosting
+          capability: org.ystia.kibana.pub.capabilities.DashboardHosting
           relationship: org.ystia.kibana.linux.bash.relationships.BeatsDashboardsHostedOnKibana
           occurrences: [1,1]
     interfaces:
@@ -171,7 +172,7 @@ relationship_types:
   org.ystia.kibana.linux.bash.relationships.DashboardHostedOnKibana:
     derived_from: org.ystia.relationships.HostedOn
     description: Relationship that allows to host a Dashboard on kibana.
-    valid_target_types: [ org.ystia.kibana.linux.bash.capabilities.DashboardHosting ]
+    valid_target_types: [ org.ystia.kibana.pub.capabilities.DashboardHosting ]
     interfaces:
       configure:
         post_configure_source:
@@ -184,14 +185,4 @@ relationship_types:
   org.ystia.kibana.linux.bash.relationships.BeatsDashboardsHostedOnKibana:
     derived_from: org.ystia.relationships.HostedOn
     description: Relationship that allows to host Dashboards for Beats components on Kibana.
-    valid_target_types: [ org.ystia.kibana.linux.bash.capabilities.DashboardHosting ]
-
-capability_types:
-  org.ystia.kibana.linux.bash.capabilities.DashboardHosting:
-    derived_from: tosca.capabilities.Container
-
-artifact_types:
-  org.ystia.kibana.linux.bash.artifacts.Dashboard:
-    derived_from: tosca.artifacts.Root
-    description: A Kibana dashboard file (.json file)
-    file_ext: [json]
+    valid_target_types: [ org.ystia.kibana.pub.capabilities.DashboardHosting ]

@@ -8,7 +8,12 @@ log begin
 
 log info "TARGET=${TARGET_NODE} SOURCE=${SOURCE_NODE}"
 
-source ${YSTIA_DIR}/${TARGET_NODE}-service.env
+# TODO (HJo) A enlever
+env |sort
+
+# Check LOGSTASH_HOME, ...
+[ -z ${LOGSTASH_HOME} ] && error_exit "LOGSTASH_HOME not set"
+
 source ${YSTIA_DIR}/${SOURCE_NODE}-service.env
 
 log info "Remove default es output plugin"

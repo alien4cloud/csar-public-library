@@ -14,8 +14,36 @@ imports:
 
 node_types:
   org.ystia.mysql.linux.bash.nodes.MySQLServer:
-    derived_from: org.ystia.mysql.pub.nodes.MySQLServer
+    derived_from: org.ystia.nodes.DBMS
     description: MySQL Server component for linux
+    tags:
+      icon: /images/mysql_server.jpg
+    properties:
+      root_password:
+        type: string
+        description: DBMS root password
+        default: "mysql"
+        required: false
+      port:
+        type: integer
+        description: DBMS port
+        default: 3306
+        required: false
+      component_version:
+        type: version
+        description: The optional MySQL component’s version.
+        default: 5.6
+        required: false
+      mysql_community_repo:
+        type: string
+        required: false
+        description: >
+          This property give the opportunity to specify an alternative download repository for this component artifact.
+          It is your responsibility to provide an accessible download url and to store required artifacts on it.
+        default: http://repo.mysql.com/yum/mysql-5.6-community/el/7/x86_64
+    capabilities:
+      host:
+        type: org.ystia.mysql.pub.capabilities.Container.MySQLServer
     interfaces:
       Standard:
         create:
@@ -34,9 +62,40 @@ node_types:
           type: tosca.artifacts.File
           file: scripts
   org.ystia.mysql.linux.bash.nodes.MySQLDatabase:
-    derived_from: org.ystia.mysql.pub.nodes.MySQLDatabase
+    derived_from: org.ystia.nodes.Database
     description: Database component for MySQL, on linux
+    tags:
+      icon: /images/mysql_db.jpg
+    properties:
+      name:
+        type: string
+        description: Database name
+        required: true
+        default: "Jack"
+      user:
+        type: string
+        description: DataBase user
+        required: true
+        default: "mysql"
+      password:
+        type: string
+        description: DataBase user password
+        required: true
+        default: "secret"
+      port:
+        type: integer
+        description: DBMS port
+        default: 3306
+        required: true
+    capabilities:
+     mysql_db_endpoint:
+        type: org.ystia.mysql.pub.capabilities.Endpoint.MySQLDatabase
+        occurrences: [0, unbounded]
     requirements:
+      - host:
+          capability: org.ystia.mysql.pub.capabilities.Container.MySQLServer
+          relationship: org.ystia.mysql.linux.bash.relationships.HostedOn.MySQLServer
+          occurrences: [1,1]
       - blockstorage:
           capability: tosca.capabilities.Node
           relationship: org.ystia.mysql.linux.bash.relationships.DependsOn.MySqlVolume
@@ -67,6 +126,12 @@ node_types:
           file: scripts
 
 relationship_types:
+  org.ystia.mysql.linux.bash.relationships.HostedOn.MySQLServer:
+    derived_from: org.ystia.relationships.HostedOn
+    description: >
+      This type represents a hosting relationship between MySQLServer and MySQLDataBase nodes components
+    valid_target_types: [ org.ystia.mysql.pub.capabilities.Container.MySQLServer ]
+
   org.ystia.mysql.linux.bash.relationships.DependsOn.MySqlVolume:
     derived_from: org.ystia.relationships.DependsOn
     valid_target_types: [ tosca.capabilities.Node ]

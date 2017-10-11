@@ -16,6 +16,9 @@ if isServiceConfigured; then
      exit 0
 fi
 
+# Check JAVA_HOME, ...
+[ -z ${JAVA_HOME} ] && error_exit "JAVA_HOME not set"
+
 # Increase the maximum file open limit to avoid a warning at elasticsearch startup
 sudo bash -c 'echo "* - nofile 65536" >>/etc/security/limits.conf'
 

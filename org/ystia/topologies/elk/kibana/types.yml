@@ -15,7 +15,9 @@ imports:
   - org.ystia.java.linux.bash:1.0-SNAPSHOT
   - org.ystia.consul.linux.bash:1.0-SNAPSHOT
   - org.ystia.elasticsearch.linux.bash:1.0-SNAPSHOT
+  - org.ystia.kibana.pub:1.0-SNAPSHOT
   - org.ystia.kibana.linux.bash:1.0-SNAPSHOT
+
 
 topology_template:
   description: A basic topology template with Kibana connects to Elasticsearch

@@ -12,6 +12,9 @@ if isServiceConfigured; then
     exit 0
 fi
 
+# Check JAVA_HOME, ...
+[ -z ${JAVA_HOME} ] && error_exit "JAVA_HOME not set"
+
 # Env file contains:
 # FLINK_HOME: Flink installation path
 source ${YSTIA_DIR}/${NODE}-service.env

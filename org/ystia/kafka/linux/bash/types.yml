@@ -11,16 +11,74 @@ imports:
   - tosca-normative-types:1.0.0-ALIEN14
   - org.ystia.common:1.0-SNAPSHOT
   - org.ystia.consul.pub:1.0-SNAPSHOT
+  - org.ystia.java.pub:1.0-SNAPSHOT
   - org.ystia.kafka.pub:1.0-SNAPSHOT
 
 node_types:
   org.ystia.kafka.linux.bash.nodes.Kafka:
-    derived_from: org.ystia.kafka.pub.nodes.Kafka
+    derived_from: org.ystia.consul.pub.nodes.ConsulUser
     description: Kafka component for linux
+    tags:
+      icon: /images/kafka-icon.png
+    properties:
+      component_version:
+        type: version
+        description: Version of the installed Kafka component
+        default: 0.10.1.1
+        constraints:
+          - valid_values: [0.8.2.1, 0.9.0.1, 0.10.1.1, 0.11.0.1]
+      scala_version:
+        type: version
+        description: Version of the scala imbedded
+        default: 2.11
+        constraints:
+          - valid_values: [2.10, 2.11, 2.12]
+      repository:
+        type: string
+        description: >
+          This property give the opportunity to specify an alternative download repository for this component artifacts.
+          It is your responsibility to provide an accessible download url and to store required artifacts on it.
+          You should specify only the base repository url. Artifacts names will be appended to it, so this property could be shared among
+          several components using the inputs feature.
+        required: false
+        default: http://mirrors.standaloneinstaller.com/apache/
+        constraints:
+          - pattern: ^(http|https|ftp)://.+/.*$
+      kf_heap_size:
+        type: string
+        default: "1G"
+        description: >
+          This property allows to set the heap memory size that is allocated to Kafka java process,
+          It allocates the same value to both initial and maximum values (ie -Xms and -Xmx java options).
+        constraints:
+          - pattern: "[1-9][0-9]*[kKmMgG]"
+      zk_heap_size:
+        type: string
+        default: "500M"
+        description: >
+          This property allows to set the heap memory size that is allocated to Zookeeper java process,
+          It allocates the same value to both initial and maximum values (ie -Xms and -Xmx java options).
+        constraints:
+          - pattern: "[1-9][0-9]*[kKmMgG]"
+      log_cleaner_enable:
+        type: boolean
+        default: false
+        description: >
+          This property allows you to enable the default Kafka log cleaner.
+          The default value is false.
+          The default policy for the cleaner is to delete the log segments older than 7 days.
     attributes:
       java_home: { get_operation_output: [ SELF, Configure, pre_configure_source, JAVA_HOME ] }
       kafka_home: { get_operation_output: [ SELF, Standard, create, KAFKA_HOME ] }
+    capabilities:
+      kafka_host:
+        type: org.ystia.kafka.pub.capabilities.KafkaHosting
+        occurrences: [0,unbounded]
     requirements:
+      - host:
+          capability: org.ystia.java.pub.capabilities.JavaHosting
+          relationship: org.ystia.java.pub.relationships.HostedOnJavaRuntime
+          occurrences: [1, 1]
       - filesystem_endpoint:
           capability: tosca.capabilities.Node
           relationship: org.ystia.kafka.linux.bash.relationships.ConnectsToFilessystem
@@ -58,8 +116,77 @@ node_types:
           type: tosca.artifacts.File
 
   org.ystia.kafka.linux.bash.nodes.KafkaTopic:
-    derived_from: org.ystia.kafka.pub.nodes.KafkaTopic
+    derived_from: org.ystia.nodes.Root
     description: Kafka topic implementation for linux
+    tags:
+      icon: /images/kafka-topic-icon.png
+    properties:
+      topic_name:
+        type: string
+        description: Name of this topic
+        required: true
+        constraints:
+          - pattern: "[-_A-Za-z0-9]+"
+      partitions:
+        type: integer
+        description: Number of partitions. default is 1 partition.
+        required: false
+        default: 1
+      replicas:
+        type: integer
+        description: Number of replicas. default is 1 replica.
+        required: false
+        default: 1
+      min_insync_replicas:
+        description: >
+          When a producer sets request_required_acks to in_syncs, min_insync_replicas specifies the minimum number of replicas
+          that must acknowledge a write for the write to be considered successful.
+          If this minimum cannot be met, then the producer will raise an exception (either NotEnoughReplicas or NotEnoughReplicasAfterAppend).
+          When used together, min_insync_replicas and request_required_acks allow you to enforce greater durability guarantees.
+          A typical scenario would be to create a topic with a replication factor of 3, set min_insync_replicas to 2,
+          and produce with request_required_acks of in_syncs.
+          This will ensure that the producer raises an exception if a majority of replicas do not receive a write.
+        type: integer
+        required: false
+        default: 1
+        constraints:
+          - greater_or_equal: 0
+      retention_minutes:
+        description: >
+          The number of minutes to keep a log file before deleting it.
+          Default value is 7 days.
+        type: integer
+        required: false
+        default: 10080
+        constraints:
+          - greater_or_equal: 1
+      segment_minutes:
+        description: >
+          This configuration controls the period of time after which Kafka will force the log to roll
+          even if the segment file isn't full to ensure that retention can delete or compact old data.
+          Default value is 7 days.
+        type: integer
+        required: false
+        default: 10080
+        constraints:
+          - greater_or_equal: 1
+      segment_bytes:
+        description: >
+          Segment file size for the log.
+          Default value is 1GB.
+        type: integer
+        required: false
+        default: 1073741824
+        constraints:
+          - greater_or_equal: 1024
+    capabilities:
+      kafka_topic: org.ystia.kafka.pub.capabilities.KafkaTopic
+      spark_app_resource: org.ystia.kafka.pub.capabilities.SparkEndpoint
+    requirements:
+      - host:
+          capability: org.ystia.kafka.pub.capabilities.KafkaHosting
+          relationship: org.ystia.kafka.linux.bash.relationships.HostedOnKafka
+          occurrences: [1,1]
     interfaces:
       Standard:
         create:
@@ -78,8 +205,14 @@ node_types:
           type: tosca.artifacts.File
 
 relationship_types:
+  org.ystia.kafka.linux.bash.relationships.HostedOnKafka:
+    derived_from: org.ystia.relationships.HostedOn
+    description: Relationship between a Kafka topic and Kafka
+    valid_target_types: [ org.ystia.kafka.linux.bash.nodes.Kafka ]
   org.ystia.kafka.linux.bash.relationships.ConnectsToFilessystem:
-    derived_from: org.ystia.kafka.pub.relationships.ConnectsToFilessystem
+    derived_from: org.ystia.relationships.ConnectsTo
+    description: Connects Kafka to Block Storage File System
+    valid_target_types: [ tosca.capabilities.Node ]
     interfaces:
       Configure:
           pre_configure_source:
@@ -90,3 +223,56 @@ relationship_types:
       - scripts:
           file: scripts
           type: tosca.artifacts.File
+
+  org.ystia.kafka.linux.bash.relationships.PublishToKafkaTopic:
+    derived_from: org.ystia.kafka.pub.relationships.PublishToKafkaTopic
+    description: Publish to a Kafka topic
+    properties:
+      request_required_acks:
+        description: |
+          This value controls when a produce request is considered completed.
+          Specifically, how many other brokers must have committed the data to their log and acknowledged this to the leader?
+          Typical values are
+          - no_ack, which means that the producer never waits for an acknowledgement from the broker (the same behavior as 0.7).
+            This option provides the lowest latency but the weakest durability guarantees (some data will be lost when a server fails).
+          - leader, which means that the producer gets an acknowledgement after the leader replica has received the data.
+            This option provides better durability as the client waits until the server acknowledges the request as successful
+            (only messages that were written to the now-dead leader but not yet replicated will be lost).
+          - in_syncs, The producer gets an acknowledgement after all in-sync replicas have received the data.
+            This option provides the greatest level of durability.
+            However, it does not completely eliminate the risk of message loss because the number of in sync replicas may, in rare cases, shrink to 1.
+            If you want to ensure that some minimum number of replicas (typically a majority) receive a write,
+            then you must set the topic-level min.insync.replicas setting.
+            Please read the Replication section of the design documentation for a more in-depth discussion.
+        type: string
+        required: true
+        default: "no_ack"
+        constraints:
+          - valid_values: [ "no_ack", "leader", "in_syncs" ]
+      message_send_max_retries:
+        description: >
+          This property will cause the producer to automatically retry a failed send request.
+          This property specifies the number of retries when such failures occur.
+          Note that setting a non-zero value here can lead to duplicates in the case of network errors that cause a message to be sent but the acknowledgement to be lost.
+        type: integer
+        required: false
+        default: 3
+        constraints:
+          - greater_or_equal: 0
+      retry_backoff_ms:
+        description: >
+          Before each retry, the producer refreshes the metadata of relevant topics to see if a new leader has been elected.
+          Since leader election takes a bit of time, this property specifies the amount of time that the producer waits before refreshing the metadata.
+        type: integer
+        required: false
+        default: 100
+        constraints:
+          - greater_or_equal: 0
+      request_timeout_ms:
+        description: >
+          The amount of time the broker will wait trying to meet the request.required.acks requirement before sending back an error to the client.
+        type: integer
+        required: false
+        default: 10000
+        constraints:
+          - greater_or_equal: 0

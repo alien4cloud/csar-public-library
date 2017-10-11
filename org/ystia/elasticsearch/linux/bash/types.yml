@@ -10,8 +10,9 @@ description: Elasticsearch implementation
 imports:
   - tosca-normative-types:1.0.0-ALIEN14
   - org.ystia.common:1.0-SNAPSHOT
-  - org.ystia.elasticsearch.pub:1.0-SNAPSHOT
   - org.ystia.consul.pub:1.0-SNAPSHOT
+  - org.ystia.java.pub:1.0-SNAPSHOT
+  - org.ystia.elasticsearch.pub:1.0-SNAPSHOT
 
 node_types:
   org.ystia.elasticsearch.linux.bash.nodes.Elasticsearch:
@@ -191,7 +192,7 @@ node_types:
           type: tosca.artifacts.File
       - config_file:
           file: config/elasticsearch.yml
-          type: org.ystia.elasticsearch.pub.artifacts.elasticsearchConfig
+          type: org.ystia.elasticsearch.linux.bash.artifacts.elasticsearchConfig
       - curator_cron_tab:
           file: config/curator-crontab
           type: tosca.artifacts.File
@@ -202,9 +203,18 @@ node_types:
           file: config/curator.yml
           type: tosca.artifacts.File
 
+artifact_types:
+  org.ystia.elasticsearch.linux.bash.artifacts.elasticsearchConfig:
+    derived_from: tosca.artifacts.Root
+    description: An Elasticsearch configuration file (.yml file)
+    file_ext: [yml]
+
 relationship_types:
   org.ystia.elasticsearch.linux.bash.relationships.ConnectsToFilessystem:
-    derived_from: org.ystia.elasticsearch.pub.relationships.ConnectsToFilessystem
+    derived_from: org.ystia.relationships.ConnectsTo
+    description: >
+      Connects Elasticsearch to Block Storage File System
+    valid_target_types: [ tosca.capabilities.Node ]
     interfaces:
       Configure:
           post_configure_source:

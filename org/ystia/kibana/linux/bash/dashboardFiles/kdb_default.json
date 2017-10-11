@@ -37,7 +37,7 @@
     "_type": "visualization",
     "_source": {
       "title": "Welcome_2_YSTIA",
-      "visState": "{\"title\":\"Welcome_2_YSTIA\",\"type\":\"markdown\",\"params\":{\"markdown\":\"# Welcome to the Kibana Dashboard YSTIA Component.\\n## Happy to have you here !\\n###### This is the default dummy dashboard.\"},\"aggs\":[],\"listeners\":{}}",
+      "visState": "{\"title\":\"Welcome_2_YSTIA\",\"type\":\"markdown\",\"params\":{\"markdown\":\"# Welcome to the Kibana Dashboard Ystia Component.\\n## Happy to have you here !\\n###### This is the default dummy dashboard.\"},\"aggs\":[],\"listeners\":{}}",
       "uiStateJSON": "{}",
       "description": "",
       "version": 1,

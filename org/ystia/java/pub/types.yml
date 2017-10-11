@@ -11,48 +11,7 @@ imports:
   - tosca-normative-types:1.0.0-ALIEN14
   - org.ystia.common:1.0-SNAPSHOT
 
-node_types:
-  org.ystia.java.pub.nodes.Java:
-    derived_from: org.ystia.nodes.SoftwareComponent
-    description: Abstract Java component
-    abstract: true
-    tags:
-      icon: /images/java-icon.png
-    properties:
-      component_version:
-        type: version
-        description: The installed Java version
-        default: 8
-        constraints:
-          - valid_values: [6, 7, 8]
-      jre:
-        type: boolean
-        description: Is the installed Java a JRE or a JDK
-        default: true
-      headless:
-        type: boolean
-        description: >
-          This option is only relevant when installing a JRE.
-          If true try to install an headless version of the JRE. That means without graphical libraries.
-          Depending on the OS and the Java version the headless version may not be available,
-          in this case the usual version will be used.
-        default: true
-      download_url:
-        type: string
-        description: >
-          By default we will try to use the OS package manager to install Java.
-          If you use this property you can specify an url used to download a Java archive.
-          This url should be a direct access url without redirection.
-          Supported archive types are: zip, tar, tar.gz, tgz, tar.bz2.
-          The Java distribution should be include in a top directory inside of this archive (ie: This directory is the JAVA_HOME directory).
-        required: false
-        constraints:
-          - pattern: ^(http|https|ftp)://.+/.+(zip|tar|tar.gz|tgz|tar.bz2)$
-    capabilities:
-      java_host:
-        type: org.ystia.java.pub.capabilities.JavaHosting
-        occurrences: [0,unbounded]
-
+# interfaces/Configure/pre_configure_source implementation must be in this public tosca to be able to get the JAVA_HOME value in the relationship target.
 relationship_types:
   org.ystia.java.pub.relationships.HostedOnJavaRuntime:
     derived_from: org.ystia.relationships.HostedOn

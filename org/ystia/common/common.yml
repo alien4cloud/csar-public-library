@@ -48,7 +48,6 @@ relationship_types:
   org.ystia.relationships.ConnectsTo:
     derived_from: tosca.relationships.ConnectsTo
     description: Abstract Ystia ConnectsTo relationships
-    abstract: true
     artifacts:
       - utils_scripts:
           type: tosca.artifacts.File

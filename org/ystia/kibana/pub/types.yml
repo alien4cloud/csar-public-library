@@ -9,3 +9,13 @@ description: Public interface types for Kibana support.
 
 imports:
   - tosca-normative-types:1.0.0-ALIEN14
+
+capability_types:
+  org.ystia.kibana.pub.capabilities.DashboardHosting:
+    derived_from: tosca.capabilities.Container
+
+artifact_types:
+  org.ystia.kibana.pub.artifacts.Dashboard:
+    derived_from: tosca.artifacts.Root
+    description: A Kibana dashboard file (.json file)
+    file_ext: [json]
