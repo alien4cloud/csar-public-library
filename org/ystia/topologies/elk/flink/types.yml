@@ -20,110 +20,71 @@ topology_template:
   description: A basic topology template with Flink
 
   node_templates:
+
+    # Network
+
     Network:
       type: tosca.nodes.Network
       properties:
         ip_version: 4
+
+    # VM for Flink Job Manager
+
     Compute_FJM:
       type: tosca.nodes.Compute
       requirements:
         - network:
             node: Network
-            capability: tosca.capabilities.Connectivity
             relationship: tosca.relationships.Network
-      capabilities:
-        scalable:
-          properties:
-            min_instances: 1
-            max_instances: 1
-            default_instances: 1
-        endpoint:
-          properties:
-            secure: true
-            protocol: tcp
-            network_name: PRIVATE
-            initiator: source
     Consul_FJM:
       type: org.ystia.consul.linux.bash.nodes.Consul
       requirements:
         - host:
             node: Compute_FJM
-            capability: tosca.capabilities.Container
-            relationship: tosca.relationships.HostedOn
     Java_FJM:
       type: org.ystia.java.linux.bash.nodes.Java
       requirements:
         - host:
             node: Compute_FJM
-            capability: tosca.capabilities.Container
-            relationship: tosca.relationships.HostedOn
     FlinkJobManager:
       type: org.ystia.flink.linux.bash.nodes.JobManager
       requirements:
         - host:
             node: Java_FJM
-            capability: org.ystia.java.pub.capabilities.JavaHosting
-            relationship: org.ystia.java.pub.relationships.HostedOnJavaRuntime
         - consul:
             node: Consul_FJM
-            capability: org.ystia.consul.pub.capabilities.ConsulAgent
-            relationship: org.ystia.consul.pub.relationships.ConnectsToConsulAgent
+
+    # VM for Flink Task Manager
+
     Compute_FTM:
       type: tosca.nodes.Compute
       requirements:
         - network:
             node: Network
-            capability: tosca.capabilities.Connectivity
             relationship: tosca.relationships.Network
-      capabilities:
-        scalable:
-          properties:
-            min_instances: 1
-            max_instances: 1
-            default_instances: 1
-        endpoint:
-          properties:
-            secure: true
-            protocol: tcp
-            network_name: PRIVATE
-            initiator: source
     Consul_FTM:
       type: org.ystia.consul.linux.bash.nodes.Consul
       requirements:
         - server_endpoint:
             node: Consul_FJM
-            capability: org.ystia.consul.pub.capabilities.ConsulServer
-            relationship: org.ystia.consul.linux.bash.relationships.ConnectsConsulAgentToServer
         - host:
             node: Compute_FTM
-            capability: tosca.capabilities.Container
-            relationship: tosca.relationships.HostedOn
     Java_FTM:
       type: org.ystia.java.linux.bash.nodes.Java
       requirements:
         - host:
             node: Compute_FTM
-            capability: tosca.capabilities.Container
-            relationship: tosca.relationships.HostedOn
     FlinkTaskManager:
       type: org.ystia.flink.linux.bash.nodes.TaskManager
       requirements:
         - jobmanager_endpoint:
             node: FlinkJobManager
-            capability: org.ystia.flink.pub.capabilities.JobManager
-            relationship: org.ystia.flink.linux.bash.relationships.TaskManagerToJobManager
         - host:
             node: Java_FTM
-            capability: org.ystia.java.pub.capabilities.JavaHosting
-            relationship: org.ystia.java.pub.relationships.HostedOnJavaRuntime
         - consul:
             node: Consul_FTM
-            capability: org.ystia.consul.pub.capabilities.ConsulAgent
-            relationship: org.ystia.consul.pub.relationships.ConnectsToConsulAgent
-
-
-  # Output property for Flink Dashboard URL
 
   outputs:
+    # Output property for Flink Dashboard URL
     flink_dasboard_url:
       value: { get_attribute: [ FlinkJobManager, dashboard_url ] }

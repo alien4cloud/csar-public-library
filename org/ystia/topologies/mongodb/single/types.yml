@@ -11,6 +11,9 @@ imports:
 
 topology_template:
   description: A basic topology template for a MongoDB as a Single Server node
+
+  # Inputs properties
+
   inputs:
     db_port:
       type: integer
@@ -21,11 +24,24 @@ topology_template:
       type: string
       required: false
       default: https://repo.mongodb.org/yum/redhat/7/mongodb-org/3.2/x86_64
+
   node_templates:
+
+    # Network
+
     Network:
       type: tosca.nodes.Network
       properties:
         ip_version: 4
+
+    # VM for MongoDB Replica Main Server
+
+    Compute:
+      type: tosca.nodes.Compute
+      requirements:
+        - network:
+            node: Network
+            relationship: tosca.relationships.Network
     MongoSingle:
       type: org.ystia.mongodb.linux.bash.nodes.MongoSingle
       properties:
@@ -33,33 +49,4 @@ topology_template:
         mongo_repo:  { get_input: mongo_repo }
       requirements:
         - host:
-            node: Single
-            capability: tosca.capabilities.Container
-            relationship: tosca.relationships.HostedOn
-      capabilities:
-        endpoint:
-          properties:
-            protocol: tcp
-            initiator: source
-            secure: false
-            network_name: PRIVATE
-    Single:
-      type: tosca.nodes.Compute
-      requirements:
-        - network:
-            node: Network
-            capability: tosca.capabilities.Connectivity
-            relationship: tosca.relationships.Network
-      capabilities:
-        endpoint:
-          properties:
-            protocol: tcp
-            initiator: source
-            secure: true
-            network_name: PRIVATE
-        scalable:
-          properties:
-            max_instances: 1
-            min_instances: 1
-            default_instances: 1
-
+            node: Compute

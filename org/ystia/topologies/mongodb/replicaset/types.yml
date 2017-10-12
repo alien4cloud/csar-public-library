@@ -12,6 +12,9 @@ imports:
 
 topology_template:
   description: A topology template for a cluster MongoDB with 3 Replica Server nodes on 3 compute nodes
+
+  # Inputs properties
+
   inputs:
     db_port:
       type: integer
@@ -31,45 +34,24 @@ topology_template:
       description: To enable the Replica Set to be a Shard or not
       default: false
       required: true
+
   node_templates:
-    MongoReplicaSlave2:
-      type: org.ystia.mongodb.linux.bash.nodes.MongoReplicaSlave
+
+    # Network
+
+    Network:
+      type: tosca.nodes.Network
       properties:
-        db_port:     { get_input: db_port }
-        mongo_repo:  { get_input: mongo_repo }
-        replica_set: { get_input: replica_set }
-        shard:       { get_input: shard }
+        ip_version: 4
+
+    # VM for MongoDB Replica Main
+
+    C_ReplicaMain:
+      type: tosca.nodes.Compute
       requirements:
-        - host:
-            node: Replica3
-            capability: tosca.capabilities.Container
-            relationship: tosca.relationships.HostedOn
-      capabilities:
-        primary2secondary:
-          properties:
-            protocol: tcp
-            initiator: source
-            secure: false
-            network_name: PRIVATE
-    MongoReplicaSlave1:
-      type: org.ystia.mongodb.linux.bash.nodes.MongoReplicaSlave
-      properties:
-        db_port:     { get_input: db_port }
-        mongo_repo:  { get_input: mongo_repo }
-        replica_set: { get_input: replica_set }
-        shard:       { get_input: shard }
-      requirements:
-        - host:
-            node: Replica2
-            capability: tosca.capabilities.Container
-            relationship: tosca.relationships.HostedOn
-      capabilities:
-        primary2secondary:
-          properties:
-            protocol: tcp
-            initiator: source
-            secure: false
-            network_name: PRIVATE
+        - network:
+            node: Network
+            relationship: tosca.relationships.Network
     MongoReplicaMain:
       type: org.ystia.mongodb.linux.bash.nodes.MongoReplicaMain
       properties:
@@ -79,83 +61,47 @@ topology_template:
         shard:       { get_input: shard }
       requirements:
         - host:
-            node: Replica1
-            capability: tosca.capabilities.Container
-            relationship: tosca.relationships.HostedOn
+            node: C_ReplicaMain
         - primary2secondary:
             node: MongoReplicaSlave1
-            capability: org.ystia.mongodb.pub.capabilities.Endpoint.PrimaryToSecondary
-            relationship: org.ystia.mongodb.linux.bash.relationships.ConnectsTo.primary_to_secondary
         - primary2secondary:
             node: MongoReplicaSlave2
-            capability: org.ystia.mongodb.pub.capabilities.Endpoint.PrimaryToSecondary
-            relationship: org.ystia.mongodb.linux.bash.relationships.ConnectsTo.primary_to_secondary
-      capabilities:
-        router2replicaset:
-          properties:
-            protocol: tcp
-            initiator: source
-            secure: false
-            network_name: PRIVATE
-    Network:
-      type: tosca.nodes.Network
+
+    # VM for MongoDB Replica Slave 1
+
+    C_ReplicaSlave1:
+      type: tosca.nodes.Compute
+      requirements:
+        - network:
+            node: Network
+            relationship: tosca.relationships.Network
+    MongoReplicaSlave2:
+      type: org.ystia.mongodb.linux.bash.nodes.MongoReplicaSlave
       properties:
-        ip_version: 4
-    Replica3:
+        db_port:     { get_input: db_port }
+        mongo_repo:  { get_input: mongo_repo }
+        replica_set: { get_input: replica_set }
+        shard:       { get_input: shard }
+      requirements:
+        - host:
+            node: C_ReplicaSlave1
+
+    # VM for MongoDB Replica Slave 2
+
+    C_ReplicaSlave2:
       type: tosca.nodes.Compute
       requirements:
         - network:
             node: Network
-            capability: tosca.capabilities.Connectivity
             relationship: tosca.relationships.Network
-      capabilities:
-        endpoint:
-          properties:
-            protocol: tcp
-            initiator: source
-            secure: true
-            network_name: PRIVATE
-        scalable:
-          properties:
-            max_instances: 1
-            min_instances: 1
-            default_instances: 1
-    Replica2:
-      type: tosca.nodes.Compute
+    MongoReplicaSlave1:
+      type: org.ystia.mongodb.linux.bash.nodes.MongoReplicaSlave
+      properties:
+        db_port:     { get_input: db_port }
+        mongo_repo:  { get_input: mongo_repo }
+        replica_set: { get_input: replica_set }
+        shard:       { get_input: shard }
       requirements:
-        - network:
-            node: Network
-            capability: tosca.capabilities.Connectivity
-            relationship: tosca.relationships.Network
-      capabilities:
-        endpoint:
-          properties:
-            protocol: tcp
-            initiator: source
-            secure: true
-            network_name: PRIVATE
-        scalable:
-          properties:
-            max_instances: 1
-            min_instances: 1
-            default_instances: 1
-    Replica1:
-      type: tosca.nodes.Compute
-      requirements:
-        - network:
-            node: Network
-            capability: tosca.capabilities.Connectivity
-            relationship: tosca.relationships.Network
-      capabilities:
-        endpoint:
-          properties:
-            protocol: tcp
-            initiator: source
-            secure: true
-            network_name: PRIVATE
-        scalable:
-          properties:
-            max_instances: 1
-            min_instances: 1
-            default_instances: 1
+        - host:
+            node: C_ReplicaSlave2
 

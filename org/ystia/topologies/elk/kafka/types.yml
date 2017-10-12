@@ -19,55 +19,40 @@ topology_template:
   description: A basic topology template with Kafka
 
   node_templates:
+
+    # Network
+
     Network:
       type: tosca.nodes.Network
       properties:
         ip_version: 4
+
+    # VM for Kafka
+
     Compute:
       type: tosca.nodes.Compute
       requirements:
         - network:
             node: Network
-            capability: tosca.capabilities.Connectivity
             relationship: tosca.relationships.Network
-      capabilities:
-        scalable:
-          properties:
-            min_instances: 1
-            max_instances: 1
-            default_instances: 1
-        endpoint:
-          properties:
-            secure: true
-            protocol: tcp
-            network_name: PRIVATE
-            initiator: source
     Consul:
       type: org.ystia.consul.linux.bash.nodes.Consul
       requirements:
         - host:
             node: Compute
-            capability: tosca.capabilities.Container
-            relationship: tosca.relationships.HostedOn
     Java:
       type: org.ystia.java.linux.bash.nodes.Java
       requirements:
         - host:
             node: Compute
-            capability: tosca.capabilities.Container
-            relationship: tosca.relationships.HostedOn
     Kafka:
       type: org.ystia.kafka.linux.bash.nodes.Kafka
       properties:
       requirements:
         - host:
             node: Java
-            capability: org.ystia.java.pub.capabilities.JavaHosting
-            relationship: org.ystia.java.pub.relationships.HostedOnJavaRuntime
         - consul:
             node: Consul
-            capability: org.ystia.consul.pub.capabilities.ConsulAgent
-            relationship: org.ystia.consul.pub.relationships.ConnectsToConsulAgent
     KafkaTopic:
       type: org.ystia.kafka.linux.bash.nodes.KafkaTopic
       properties:
@@ -75,4 +60,3 @@ topology_template:
       requirements:
         - host:
             node: Kafka
-            capability: org.ystia.kafka.pub.capabilities.KafkaHosting

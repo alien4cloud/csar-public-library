@@ -12,6 +12,9 @@ imports:
 
 topology_template:
   description: A basic topology template for MySQL as a Single Server node
+
+  # Inputus properties
+
   inputs:
     repository:
       type: string
@@ -25,17 +28,23 @@ topology_template:
       type: string
       description: Database user password
       required: false
+
   node_templates:
+
+    # Network
+
     Network:
       type: tosca.nodes.Network
       properties:
         ip_version: 4
+
+    # VM for MySQL Server
+
     Compute:
       type: tosca.nodes.Compute
       requirements:
         - network:
             node: Network
-            capability: tosca.capabilities.Connectivity
             relationship: tosca.relationships.Network
     MySQLServer:
       type: org.ystia.mysql.linux.bash.nodes.MySQLServer
@@ -44,8 +53,6 @@ topology_template:
       requirements:
         - host:
             node: Compute
-            capability: tosca.capabilities.Container
-            relationship: tosca.relationships.HostedOn
     MySQLDatabase:
       type: org.ystia.mysql.linux.bash.nodes.MySQLDatabase
       properties:
@@ -54,6 +61,3 @@ topology_template:
       requirements:
         - host:
             node: MySQLServer
-            capability: org.ystia.mysql.pub.capabilities.Container.MySQLServer
-            relationship: org.ystia.mysql.linux.bash.relationships.HostedOn.MySQLServer
-
