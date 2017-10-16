@@ -92,6 +92,8 @@ topology_template:
             node: ComputeLS
     Logstash:
       type: org.ystia.logstash.linux.bash.nodes.Logstash
+      properties:
+        auto_reload: true
       requirements:
         - host:
             node: JavaLS
