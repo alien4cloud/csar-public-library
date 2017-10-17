@@ -183,4 +183,4 @@ topology_template:
         mongo_repo: { get_input: mongo_repo }
       requirements:
         - host:
-            node: Router3
+            node: C_Router3
