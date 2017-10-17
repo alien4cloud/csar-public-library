@@ -311,7 +311,7 @@ getlockfd() {
 # take a local lock
 # usage: lock name
 lock() {
-    local prefix=${1:-bdcf}
+    local prefix=${1:-ystia}
     local fd=$(getlockfd $prefix)
 
     # create lock file
@@ -326,7 +326,7 @@ lock() {
 # release a lock previously taken
 # usage: unlock name
 unlock() {
-    local prefix=${1:-bdcf}
+    local prefix=${1:-ystia}
     local fd=$(getlockfd $prefix)
 
     # drop the lock
@@ -342,7 +342,7 @@ sudo chown $(id --user):$(id --group) $lock_dir
 # LOG_FILE may be set explicitely, or $NODE or $SOURCE_NODE will be used.
 [[ ! -z ${LOG_FILE} ]] || LOG_FILE=$NODE
 [[ ! -z ${LOG_FILE} ]] || LOG_FILE=$SOURCE_NODE
-[[ ! -z ${LOG_FILE} ]] || LOG_FILE=bdcf
+[[ ! -z ${LOG_FILE} ]] || LOG_FILE=ystia
 log_dir="/var/log/ystia"
 sudo mkdir -p $log_dir
 sudo chown "$(id --user):$(id --group)" $log_dir

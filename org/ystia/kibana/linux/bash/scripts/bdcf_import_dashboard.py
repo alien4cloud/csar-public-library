@@ -50,7 +50,7 @@ class BDCFImportDashboard:
 if __name__ == '__main__':
 
     # Parse arguments
-    parser = argparse.ArgumentParser(description='BDCF import Kibana dashboard tool')
+    parser = argparse.ArgumentParser(description='Import Kibana dashboard Ystia tool')
     parser.add_argument('-f', help='Path of the json dashboard file', required=True)
     parser.add_argument('-es', help='Elasticsearch URL (Default: \'http://localhost:9200\')', default='http://localhost:9200')
     parser.add_argument('-k', help='Kibana index (Default: \'.kibana\'', default='.kibana')
