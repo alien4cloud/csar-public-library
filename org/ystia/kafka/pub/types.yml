@@ -23,7 +23,7 @@ capability_types:
   org.ystia.kafka.pub.capabilities.KafkaTopic:
     derived_from: tosca.capabilities.Root
 
-  org.ystia.kafka.pub.capabilities.SparkEndpoint :
+  org.ystia.kafka.pub.capabilities.SparkEndpoint:
     derived_from: tosca.capabilities.Root
 
 relationship_types:

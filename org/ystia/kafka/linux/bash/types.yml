@@ -71,7 +71,7 @@ node_types:
       java_home: { get_operation_output: [ SELF, Configure, pre_configure_source, JAVA_HOME ] }
       kafka_home: { get_operation_output: [ SELF, Standard, create, KAFKA_HOME ] }
     capabilities:
-      kafka_host:
+      host:
         type: org.ystia.kafka.pub.capabilities.KafkaHosting
         occurrences: [0,unbounded]
     requirements:

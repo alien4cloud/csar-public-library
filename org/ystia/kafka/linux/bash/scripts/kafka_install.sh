@@ -25,6 +25,9 @@ os_distribution="$(get_os_distribution)"
 bash ${utils_scripts}/install-components.sh ${packages_names["${os_distribution}"]} || error_exit "ERROR: Failed to install netcat (install-components.sh ${packages_names["${os_distribution}"]} problem) !!!"
 bash ${utils_scripts}/install-components.sh "wget" || error_exit "ERROR: Failed to install wget"
 
+cat > "${YSTIA_DIR}/${NODE}-service.env" << EOF
+KAFKA_HOME=${KAFKA_HOME}
+EOF
 mkdir -p ${installDir}
 log info  "Downloading $downloadPath"
 wget "${downloadPath}" -P "${installDir}" -N
