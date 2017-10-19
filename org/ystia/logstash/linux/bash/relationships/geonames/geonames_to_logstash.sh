@@ -8,9 +8,6 @@ log begin
 
 log info "TARGET=${TARGET_NODE} SOURCE=${SOURCE_NODE}"
 
-# TODO (HJo) A enlever
-env |sort
-
 # Check LOGSTASH_HOME, ...
 [ -z ${LOGSTASH_HOME} ] && error_exit "LOGSTASH_HOME not set"
 
