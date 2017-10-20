@@ -13,8 +13,6 @@ imports:
   - org.ystia.consul.pub:1.0-SNAPSHOT
   - org.ystia.java.pub:1.0-SNAPSHOT
   - org.ystia.kafka.pub:1.0-SNAPSHOT
-  # TODO (HJo) : import kafka.linux.bash instead of kafka.pub (Janus issue)
-  - org.ystia.kafka.linux.bash:1.0-SNAPSHOT
   - org.ystia.elasticsearch.pub:1.0-SNAPSHOT
   - org.ystia.logstash.pub:1.0-SNAPSHOT
 
@@ -246,9 +244,7 @@ node_types:
 
 relationship_types:
   org.ystia.logstash.linux.bash.relationships.LogstashToKafka:
-    # TODO (HJo) : Janus issue
-#    derived_from: org.ystia.kafka.pub.relationships.PublishToKafkaTopic
-    derived_from: org.ystia.kafka.linux.bash.relationships.PublishToKafkaTopic
+    derived_from: org.ystia.kafka.pub.relationships.PublishToKafkaTopic
     description: Connects Logstash to Kafka
     valid_target_types: [ org.ystia.kafka.pub.capabilities.KafkaTopic ]
     interfaces:
@@ -267,9 +263,7 @@ relationship_types:
           type: tosca.artifacts.File
 
   org.ystia.logstash.linux.bash.relationships.KafkaToLogstash:
-    # TODO (HJo) : Janus issue
-    #    derived_from: org.ystia.kafka.pub.relationships.ConnectsToKafkaTopic
-    derived_from: org.ystia.kafka.linux.bash.relationships.ConnectsToKafkaTopic
+    derived_from: org.ystia.kafka.pub.relationships.ConnectsToKafkaTopic
     description: Connects Kafka to Logstash
     valid_target_types: [ org.ystia.kafka.pub.capabilities.KafkaTopic ]
     interfaces:
