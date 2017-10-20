@@ -13,6 +13,8 @@ imports:
   - org.ystia.consul.pub:1.0-SNAPSHOT
   - org.ystia.java.pub:1.0-SNAPSHOT
   - org.ystia.kafka.pub:1.0-SNAPSHOT
+  # TODO (HJo) : import kafka.linux.bash instead of kafka.pub (Janus issue)
+  - org.ystia.kafka.linux.bash:1.0-SNAPSHOT
   - org.ystia.elasticsearch.pub:1.0-SNAPSHOT
   - org.ystia.logstash.pub:1.0-SNAPSHOT
 
@@ -244,7 +246,9 @@ node_types:
 
 relationship_types:
   org.ystia.logstash.linux.bash.relationships.LogstashToKafka:
-    derived_from: org.ystia.kafka.pub.relationships.PublishToKafkaTopic
+    # TODO (HJo) : Janus issue
+#    derived_from: org.ystia.kafka.pub.relationships.PublishToKafkaTopic
+    derived_from: org.ystia.kafka.linux.bash.relationships.PublishToKafkaTopic
     description: Connects Logstash to Kafka
     valid_target_types: [ org.ystia.kafka.pub.capabilities.KafkaTopic ]
     interfaces:
@@ -252,10 +256,10 @@ relationship_types:
         pre_configure_source:
           inputs:
             TOPIC_NAME: { get_property: [TARGET, topic_name] }
-            REQUIRED_ACKS: { get_property: [SOURCE, request_required_acks] }
-            MESSAGE_MAX_RETRIES: { get_property: [SOURCE, message_send_max_retries] }
-            RETRY_BACKOFF_MS: { get_property: [SOURCE, retry_backoff_ms] }
-            REQUEST_TIMEOUT_MS: { get_property: [SOURCE, request_timeout_ms] }
+            REQUIRED_ACKS: { get_property: [SELF, request_required_acks] }
+            MESSAGE_MAX_RETRIES: { get_property: [SELF, message_send_max_retries] }
+            RETRY_BACKOFF_MS: { get_property: [SELF, retry_backoff_ms] }
+            REQUEST_TIMEOUT_MS: { get_property: [SELF, request_timeout_ms] }
           implementation: relationships/kafka/configure-kafka-output.sh
     artifacts:
       - scripts:
@@ -263,7 +267,9 @@ relationship_types:
           type: tosca.artifacts.File
 
   org.ystia.logstash.linux.bash.relationships.KafkaToLogstash:
-    derived_from: org.ystia.kafka.pub.relationships.ConnectsToKafkaTopic
+    # TODO (HJo) : Janus issue
+    #    derived_from: org.ystia.kafka.pub.relationships.ConnectsToKafkaTopic
+    derived_from: org.ystia.kafka.linux.bash.relationships.ConnectsToKafkaTopic
     description: Connects Kafka to Logstash
     valid_target_types: [ org.ystia.kafka.pub.capabilities.KafkaTopic ]
     interfaces:

@@ -26,11 +26,12 @@ capability_types:
   org.ystia.kafka.pub.capabilities.SparkEndpoint:
     derived_from: tosca.capabilities.Root
 
-relationship_types:
-  org.ystia.kafka.pub.relationships.ConnectsToKafkaTopic:
-    derived_from: org.ystia.relationships.ConnectsTo
-    description: Publish or Subscribe to a Kafka topic
-    valid_target_types: [ org.ystia.kafka.pub.capabilities.KafkaTopic ]
-  org.ystia.kafka.pub.relationships.PublishToKafkaTopic:
-    derived_from: org.ystia.relationships.ConnectsTo
-    description: Publish to a Kafka topic
+# TODO (HJo) : Defined in kafka.linux.bash (Janus issue)
+#relationship_types:
+#  org.ystia.kafka.pub.relationships.ConnectsToKafkaTopic:
+#    derived_from: org.ystia.relationships.ConnectsTo
+#    description: Publish or Subscribe to a Kafka topic
+#    valid_target_types: [ org.ystia.kafka.pub.capabilities.KafkaTopic ]
+#  org.ystia.kafka.pub.relationships.PublishToKafkaTopic:
+#    derived_from: org.ystia.relationships.ConnectsTo
+#    description: Publish to a Kafka topic

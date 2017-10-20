@@ -19,10 +19,6 @@ fi
 
 source ${YSTIA_DIR}/${SOURCE_NODE}-service.env
 
-source ${ls_scripts}/java_utils.sh
-
-retrieve_java_home "${HOST}"
-
 mkdir -p ${LOGSTASH_HOME}/conf
 
 # Install dependencies

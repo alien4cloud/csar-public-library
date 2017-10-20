@@ -22,9 +22,6 @@ source ${YSTIA_DIR}/${SOURCE_NODE}-service.env
 
 mkdir -p ${LOGSTASH_HOME}/conf
 
-source ${ls_scripts}/java_utils.sh
-
-retrieve_java_home "${HOST}"
 LS_JAVA_OPTS=${JAVA_OPTS}
 cat > ${LOGSTASH_HOME}/conf/1-kafka_logstash_inputs.conf << END
 input {

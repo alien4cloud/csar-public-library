@@ -13,6 +13,7 @@ fi
 LS_ZIP_NAME="logstash-${LS_VERSION}.tar.gz"
 LS_DOWNLOAD_PATH="${REPOSITORY}/${LS_ZIP_NAME}"
 export LOGSTASH_HOME=$HOME/logstash-${LS_VERSION}
+echo "LOGSTASH_HOME=${LOGSTASH_HOME}" > ${YSTIA_DIR}/${NODE}-service.env
 log info "Environment variables : source is ${scripts} - home is ${HOME}"
 
 # Install dependencies

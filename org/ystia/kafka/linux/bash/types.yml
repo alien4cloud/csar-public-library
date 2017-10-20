@@ -205,10 +205,12 @@ node_types:
           type: tosca.artifacts.File
 
 relationship_types:
+
   org.ystia.kafka.linux.bash.relationships.HostedOnKafka:
     derived_from: org.ystia.relationships.HostedOn
     description: Relationship between a Kafka topic and Kafka
     valid_target_types: [ org.ystia.kafka.linux.bash.nodes.Kafka ]
+
   org.ystia.kafka.linux.bash.relationships.ConnectsToFilessystem:
     derived_from: org.ystia.relationships.ConnectsTo
     description: Connects Kafka to Block Storage File System
@@ -224,9 +226,19 @@ relationship_types:
           file: scripts
           type: tosca.artifacts.File
 
+# TODO (HJo) : Janus issue
+  org.ystia.kafka.linux.bash.relationships.ConnectsToKafkaTopic:
+    derived_from: org.ystia.relationships.ConnectsTo
+    description: Publish or Subscribe to a Kafka topic
+    valid_target_types: [ org.ystia.kafka.pub.capabilities.KafkaTopic ]
+
   org.ystia.kafka.linux.bash.relationships.PublishToKafkaTopic:
-    derived_from: org.ystia.kafka.pub.relationships.PublishToKafkaTopic
+    # TODO (HJo) : Janus issue
+    #    derived_from: org.ystia.kafka.pub.relationships.PublishToKafkaTopic
+    derived_from: org.ystia.relationships.ConnectsTo
     description: Publish to a Kafka topic
+    # TODO (HJo) : Janus issue
+    valid_target_types: [ org.ystia.kafka.pub.capabilities.KafkaTopic ]
     properties:
       request_required_acks:
         description: |
