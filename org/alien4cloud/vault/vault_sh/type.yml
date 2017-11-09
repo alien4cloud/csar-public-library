@@ -1,0 +1,42 @@
+tosca_definitions_version: alien_dsl_1_4_0
+
+metadata:
+  template_name: org.alien4cloud.vault.vault_sh
+  template_version: 1.4.0-SNAPSHOT
+  template_author: alien4cloud
+
+imports:
+  - tosca-normative-types:1.0.0-ALIEN14
+  - org.alien4cloud.vault.pub:1.4.0-SNAPSHOT
+
+node_types:
+  org.alien4cloud.vault.vault_sh.nodes.VaultServer:
+    derived_from: org.alien4cloud.vault.pub.nodes.VaultServer
+    description: >
+      Vault server installation.
+    tags:
+      icon: /images/vault.png
+    capabilities:
+      consul_agent:
+        type: org.alien4cloud.vault.pub.capabilities.ConsulAgent
+        valid_source_types: [org.alien4cloud.vault.pub.capabilities.ConsulClient]
+    properties:
+      download_url:
+        description: The URL to download the vault archive.
+        type: string
+        required: true
+        default: https://releases.hashicorp.com/vault/0.8.3/vault_0.8.3_linux_amd64.zip
+      data_dir:
+        description: The location on the FS where consul will store data.
+        type: string
+        required: true
+        default: /var/vault
+    interfaces:
+      Standard:
+        create:
+          inputs:
+            VAULT_DATA_DIR: { get_property: [SELF, data_dir] }
+            VAULT_DOWNLOAD_URL: { get_property: [SELF, download_url] }
+          implementation: scripts/vault/create_vault.sh
+        start:
+          implementation: scripts/vault/start_vault.sh
