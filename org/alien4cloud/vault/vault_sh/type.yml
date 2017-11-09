@@ -8,6 +8,7 @@ metadata:
 imports:
   - tosca-normative-types:1.0.0-ALIEN14
   - org.alien4cloud.vault.pub:1.4.0-SNAPSHOT
+  - org.alien4cloud.consul.pub:1.4.0-SNAPSHOT
 
 node_types:
   org.alien4cloud.vault.vault_sh.nodes.VaultServer:
@@ -16,18 +17,23 @@ node_types:
       Vault server installation.
     tags:
       icon: /images/vault.png
-    capabilities:
-      consul_agent:
-        type: org.alien4cloud.vault.pub.capabilities.ConsulAgent
-        valid_source_types: [org.alien4cloud.vault.pub.capabilities.ConsulClient]
+    # capabilities:
+    #   consul_agent:
+    #     type: org.alien4cloud.vault.pub.capabilities.ConsulAgent
+    #     valid_source_types: [org.alien4cloud.vault.pub.capabilities.ConsulClient]
     properties:
+      port:
+        description: The port of Vault.
+        type: integer
+        required: true
+        default: 8200
       download_url:
         description: The URL to download the vault archive.
         type: string
         required: true
         default: https://releases.hashicorp.com/vault/0.8.3/vault_0.8.3_linux_amd64.zip
-      data_dir:
-        description: The location on the FS where consul will store data.
+      install_dir:
+        description: The location on the FS where install Vault.
         type: string
         required: true
         default: /var/vault
@@ -35,8 +41,21 @@ node_types:
       Standard:
         create:
           inputs:
-            VAULT_DATA_DIR: { get_property: [SELF, data_dir] }
+            VAULT_INSTALL_DIR: { get_property: [SELF, install_dir] }
             VAULT_DOWNLOAD_URL: { get_property: [SELF, download_url] }
           implementation: scripts/vault/create_vault.sh
         start:
           implementation: scripts/vault/start_vault.sh
+
+relationship_types:
+  org.alien4cloud.vault.relationships.ConnectToConsulAgent:
+    derived_from: tosca.relationships.ConnectsTo
+    valid_target_types: [org.alien4cloud.consul.pub.capabilities.ConsulAgent]
+    interfaces:
+      Configure:
+        pre_configure_source:
+          inputs:
+            AGENT_IP: { get_attribute: [TARGET, ip_address] }
+            AGENT_API_PORT: { get_property: [TARGET, consul_agent, api_port] }
+            VAULT_PORT: { get_property: [SOURCE, port] }
+          implementation: scripts/vault/configure_vault.sh

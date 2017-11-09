@@ -9,6 +9,6 @@ if [ -f $PIDFILE ]; then
     echo "Running"
   fi
 else
-  printf "%s\n" "Service not running"
-  ./usr/bin/vault server -dev & echo \$! > ${PIDFILE}
+  printf "%s\n" "Service not running, we start it"
+  ./usr/bin/vault server -config=/etc/vault/config.hcl & echo \$! > ${PIDFILE}
 fi
