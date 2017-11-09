@@ -17,10 +17,11 @@ node_types:
       Vault server installation.
     tags:
       icon: /images/vault.png
-    # capabilities:
-    #   consul_agent:
-    #     type: org.alien4cloud.vault.pub.capabilities.ConsulAgent
-    #     valid_source_types: [org.alien4cloud.vault.pub.capabilities.ConsulClient]
+    requirements:
+      - consul:
+          capability: org.alien4cloud.consul.pub.capabilities.ConsulAgent
+          relationship: org.alien4cloud.vault.relationships.ConnectToConsulAgent
+          occurrences: [ 0, 1 ]
     properties:
       port:
         description: The port of Vault.
