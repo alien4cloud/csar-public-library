@@ -1,0 +1,42 @@
+tosca_definitions_version: alien_dsl_1_4_0
+
+metadata:
+  template_name: org.alien4cloud.vault.vault_dev
+  template_version: 1.4.0-SNAPSHOT
+  template_author: alien4cloud
+
+imports:
+  - tosca-normative-types:1.0.0-ALIEN14
+  - org.alien4cloud.vault.pub:1.4.0-SNAPSHOT
+
+node_types:
+  org.alien4cloud.vault.vault_dev.nodes.VaultServer:
+    derived_from: org.alien4cloud.vault.pub.nodes.VaultServer
+    description: >
+      Vault server in dev mode.
+    tags:
+      icon: /images/vault.png
+    properties:
+      download_url:
+        description: The URL to download the vault archive.
+        type: string
+        required: true
+        default: https://releases.hashicorp.com/vault/0.8.3/vault_0.8.3_linux_amd64.zip
+      install_dir:
+        description: The location on the FS where install Vault.
+        type: string
+        required: true
+        default: /var/vault
+    interfaces:
+      Standard:
+        create:
+          inputs:
+            VAULT_INSTALL_DIR: { get_property: [SELF, install_dir] }
+            VAULT_DOWNLOAD_URL: { get_property: [SELF, download_url] }
+          implementation: scripts/vault_dev/create_vault.sh
+        start:
+          implementation: scripts/vault_dev/start_vault.sh
+    artifacts:
+      - commons:
+          file: scripts/commons
+          type: tosca.artifacts.File

@@ -22,7 +22,5 @@ echo "Unzipped vault package to /usr/bin"
 
 sudo rm ${VAULT_TMP_ZIP}
 
-sudo cp $configs/config.hcl /etc/vault/config.hcl
-
 echo "Use the mlock syscall without running the process as root"
 sudo setcap cap_ipc_lock=+ep $(readlink -f $(which vault))

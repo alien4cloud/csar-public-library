@@ -47,6 +47,13 @@ node_types:
           implementation: scripts/vault/create_vault.sh
         start:
           implementation: scripts/vault/start_vault.sh
+    artifacts:
+      - configs:
+          file: config/vault
+          type: tosca.artifacts.File
+      - commons:
+          file: scripts/commons
+          type: tosca.artifacts.File
 
 relationship_types:
   org.alien4cloud.vault.relationships.ConnectToConsulAgent:

@@ -9,6 +9,6 @@ if [ -f $PIDFILE ]; then
     echo "Running"
   fi
 else
-  printf "%s\n" "Service not running, we start it"
-  nohup bash -c 'vault server -config=/etc/vault/config.hcl & echo \$! > sudo ${PIDFILE}' >> /dev/null 2>&1 &
+  printf "%s\n" "Service not running, we start Vault in dev mode."
+  nohup bash -c 'vault server -dev & echo \$! > sudo ${PIDFILE}' >> /dev/null 2>&1 &
 fi
