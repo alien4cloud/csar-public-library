@@ -1,0 +1,44 @@
+tosca_definitions_version: alien_dsl_1_4_0
+
+metadata:
+  template_name: org.ystia.samples.welcome.linux.bash
+  template_version: 1.0-SNAPSHOT
+  template_author: Bull
+
+description:
+
+imports:
+  - tosca-normative-types:1.0.0-ALIEN14
+  - org.ystia.common:1.0-SNAPSHOT
+
+node_types:
+  org.ystia.samples.welcome.linux.bash.nodes.Welcome:
+    derived_from: org.ystia.nodes.SoftwareComponent
+    description: Installation of the Welcome Very Simple HTTP Server, an Ystia Sample.
+    tags:
+      icon: /images/welcome-icon.png
+    attributes:
+      url: { concat: ["http://", get_attribute: [HOST, public_ip_address], ":", get_property: [SELF, port] ] }
+    properties:
+      component_version:
+        type: version
+        default: 1.0-SNAPSHOT
+        constraints:
+          - equal: 1.0-SNAPSHOT
+      port:
+        type: integer
+        description: |
+          Port number of the Welcome HTTP server.
+        required: true
+        default: 8111
+    interfaces:
+      Standard:
+        start:
+          inputs:
+            PORT: { get_property: [SELF, port] }
+          implementation: scripts/welcome_start.sh
+        stop: scripts/welcome_stop.sh
+    artifacts:
+      - scripts:
+          file: scripts
+          type: tosca.artifacts.File
