@@ -5,7 +5,7 @@ metadata:
   template_version: 2.0.0-SNAPSHOT
   template_author: alien4cloud
 
-description: "It's a topology designed to deploy a vault service in production mode. It contains a service vault with a service consul."
+description: "It's a topology designed to deploy a vault service in production mode. It contains a service vault with a Consul backend."
 
 imports:
   - tosca-normative-types:1.0.0-ALIEN14
