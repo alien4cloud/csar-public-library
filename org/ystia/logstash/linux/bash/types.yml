@@ -242,6 +242,300 @@ node_types:
           file: scripts
           type: tosca.artifacts.File
 
+  org.ystia.logstash.linux.bash.nodes.TwitterConnector:
+    derived_from: org.ystia.nodes.Root
+    description: A twitter connector
+    tags:
+      icon: /images/twitter-icon.png
+    requirements:
+      - connector_host:
+          capability: org.ystia.logstash.pub.capabilities.LogstashConnectorHosting
+          relationship: org.ystia.logstash.linux.bash.relationships.TwitterConnectorHostedOnLogstash
+          occurrences: [1,1]
+    properties:
+      consumer_key:
+        type: string
+        description: Your Twitter App's consumer key.
+        required: true
+      consumer_secret:
+        type: string
+        description: Your Twitter App's consumer secret.
+        required: true
+      oauth_token:
+        type: string
+        description: Your Twitter oauth token.
+        required: true
+      oauth_token_secret:
+        type: string
+        description: Your Twitter oauth token secret.
+        required: true
+      use_proxy:
+        type: boolean
+        default: false
+        description: Use a proxy to handle the connections.
+        required: false
+      proxy_address:
+        type: string
+        description: >
+          Address of the proxy to use.
+          If use_proxy property is true, and no value is set for this property,
+          then default environment proxy settings on the compute will be used.
+        required: false
+      proxy_port:
+        type: integer
+        description: >
+          Port of the proxy to use.
+          If use_proxy property is true, and no value is set for this property,
+          then default environment proxy settings on the compute will be used.
+        required: false
+      keywords:
+        type: string
+        description: >
+          An array of keywords to track in the Twitter stream
+          Ex: ["foo", "bar"]
+          At least one property "keywords" or "follows" must be specified if use_samples property is not set.
+        required: false
+        constraints:
+          - pattern: \[\"(\w)+\"(,\s*\"(\w)+\")*\]
+      follows:
+        type: string
+        description: >
+          An array of user IDs, indicating the users to return statuses for in the Twitter stream.
+          ID can be obtained from Twitter username: http://gettwitterid.com
+          Ex: ["122345", "414512"].
+          At least one property "keywords" or "follows" must be specified if use_samples property is not set.
+        constraints:
+          - pattern: \[\"(\d)+\"(,\s*\"(\d)+\")*\]
+        required: false
+      languages:
+        type: string
+        description: >
+          An array of BCP 47 language identifiers corresponding to any of the languages listed on Twitter's advanced search
+          page will only return tweets that have been detected as being written in the specified languages.
+          Ex: [ "en", "fr" ]
+        required: false
+        constraints:
+          - pattern: \[\"(\w)+\"(,\s*\"(\w)+\")*\]
+      use_samples:
+        type: boolean
+        default: false
+        description: >
+          Returns a small random sample of all public statuses.
+          If set to true, the keywords, follows and languages properties will be ignored.
+        required: false
+      full_tweet:
+        type: boolean
+        default: false
+        description: >
+          Record full tweet object as given to us by the Twitter Streaming API.
+        required: false
+      tags:
+        type: string
+        description: >
+          An array of tags to add to your event. This can help with processing later.
+          Ex: ["tagName"]
+        required: false
+        constraints:
+          - pattern: \[\"(\w)+\"(,\s*\"(\w)+\")*\]
+      ignore_retweets:
+        type: boolean
+        default: false
+        description: >
+          Lets you ignore the retweets coming out of the Twitter API.
+        required: false
+    interfaces:
+      custom:
+        change_authentication:
+          inputs:
+            consumer_key:
+              type: string
+              description: Your Twitter App's consumer key.
+              required: true
+            consumer_secret:
+              type: string
+              description: Your Twitter App's consumer secret.
+              required: true
+            oauth_token:
+              type: string
+              description: Your Twitter oauth token.
+              required: true
+            oauth_token_secret:
+              type: string
+              description: Your Twitter oauth token secret.
+              required: true
+          implementation: twitter/twitter_changeAuthentication.sh
+        change_follows:
+          inputs:
+            follows:
+              type: string
+              description: >
+                An array of user IDs, indicating the users to return statuses for in the Twitter stream.
+                ID can be obtained from Twitter username: http://gettwitterid.com
+                Ex: ["122345", "414512"].
+                At least one property "keywords" or "follows" must be specified if use_samples property is not set.
+              constraints:
+                - pattern: \[\"(\d)+\"(,\s*\"(\d)+\")*\]
+          implementation: twitter/twitter_changeFollows.sh
+        change_keywords:
+          inputs:
+            keywords:
+              type: string
+              description: >
+                An array of keywords to track in the Twitter stream
+                Ex: ["foo", "bar"]
+                At least one property "keywords" or "follows" must be specified if use_samples property is not set.
+              required: false
+              constraints:
+                - pattern: \[\"(\w)+\"(,\s*\"(\w)+\")*\]
+          implementation: twitter/twitter_changeKeywords.sh
+        change_languages:
+          inputs:
+            languages:
+              type: string
+              description: >
+                An array of BCP 47 language identifiers corresponding to any of the languages listed on Twitter's advanced search
+                page will only return tweets that have been detected as being written in the specified languages.
+                Ex: [ "en", "fr" ]
+              required: false
+              constraints:
+                - pattern: \[\"(\w)+\"(,\s*\"(\w)+\")*\]
+          implementation: twitter/twitter_changeLanguages.sh
+        change_tags:
+          inputs:
+            tags:
+              type: string
+              description: >
+                An array of tags to add to your event. This can help with processing later.
+                Ex: ["tagName"]
+              required: false
+              constraints:
+                - pattern: \[\"(\w)+\"(,\s*\"(\w)+\")*\]
+          implementation: twitter/twitter_changeTags.sh
+        change_use_samples:
+          inputs:
+            use_samples:
+              type: boolean
+              default: false
+              description: >
+                Returns a small random sample of all public statuses.
+                If set to true, the keywords, follows and languages properties will be ignored.
+              required: false
+          implementation: twitter/twitter_changeUseSamples.sh
+        change_full_tweet:
+          inputs:
+            full_tweet:
+              type: boolean
+              default: false
+              description: >
+                Record full tweet object as given to us by the Twitter Streaming API.
+              required: false
+          implementation: twitter/twitter_changeFullTweet.sh
+        change_ignore_retweets:
+          inputs:
+            ignore_retweets:
+              type: boolean
+              default: false
+              description: >
+                Lets you ignore the retweets coming out of the Twitter API.
+              required: false
+          implementation: twitter/twitter_changeIgnoreRetweets.sh
+        add_tags:
+          inputs:
+            tags:
+              type: string
+              description: >
+                A list of tag(s) to add to existing tags list
+                Ex: ["tag1", "tag2"]
+              required: true
+              constraints:
+               - pattern: \[\"(\w)+\"(,\s*\"(\w)+\")*\]
+          implementation: twitter/twitter_addTags.sh
+        remove_tags:
+          inputs:
+            tags:
+              type: string
+              description: >
+                A list of tag(s) to remove to existing tags list
+                Ex: ["tag1", "tag2"]
+              required: true
+              constraints:
+               - pattern: \[\"(\w)+\"(,\s*\"(\w)+\")*\]
+          implementation: twitter/twitter_removeTags.sh
+        add_keywords:
+          inputs:
+            keywords:
+              type: string
+              description: >
+                A list of keyword(s) to add to existing keywords list
+                Ex: ["keyword1", "keyword2"]
+              required: true
+              constraints:
+               - pattern: \[\"(\w)+\"(,\s*\"(\w)+\")*\]
+          implementation: twitter/twitter_addKeywords.sh
+        remove_keywords:
+          inputs:
+            keywords:
+              type: string
+              description: >
+                A list of keyword(s) to remove to existing keywords list
+                Ex: ["keyword1", "keyword2"]
+              required: true
+              constraints:
+               - pattern: \[\"(\w)+\"(,\s*\"(\w)+\")*\]
+          implementation: twitter/twitter_removeKeywords.sh
+        add_languages:
+          inputs:
+            languages:
+              type: string
+              description: >
+                A list of language(s) to add to existing languages list
+                Ex: ["cz", "de"]
+              required: true
+              constraints:
+               - pattern: \[\"(\w)+\"(,\s*\"(\w)+\")*\]
+          implementation: twitter/twitter_addLanguages.sh
+        remove_languages:
+          inputs:
+            languages:
+              type: string
+              description: >
+                A list of language(s) to remove to existing languages list
+                Ex: ["cz", "de"]
+              required: true
+              constraints:
+               - pattern: \[\"(\w)+\"(,\s*\"(\w)+\")*\]
+          implementation: twitter/twitter_removeLanguages.sh
+        add_follows:
+          inputs:
+            follows:
+              type: string
+              description: >
+                A list of follow(s) to add to existing follows list
+                Ex: ["@ID1", "@ID2"]
+              required: true
+              constraints:
+                - pattern: \[\"@?(\w){1,15}\"(,\s*\"@?(\w){1,15}\")*\]
+          implementation: twitter/twitter_addFollows.sh
+        remove_follows:
+          inputs:
+            follows:
+              type: string
+              description: >
+                A list of follow(s) to remove to existing Follows list
+                Ex: ["@ID1", "@ID2"]
+              required: true
+              constraints:
+                - pattern: \[\"@?(\w){1,15}\"(,\s*\"@?(\w){1,15}\")*\]
+          implementation: twitter/twitter_removeFollows.sh
+    artifacts:
+      - twitterscripts:
+          file: twitter
+          type: tosca.artifacts.File
+      - lsscripts:
+          file: scripts
+          type: tosca.artifacts.File
+
+
 relationship_types:
   org.ystia.logstash.linux.bash.relationships.LogstashToKafka:
     derived_from: org.ystia.kafka.pub.relationships.PublishToKafkaTopic
@@ -318,4 +612,36 @@ relationship_types:
           type: tosca.artifacts.File
       - rsgeoscripts:
           file: relationships/geonames
+          type: tosca.artifacts.File
+
+  org.ystia.logstash.linux.bash.relationships.TwitterConnectorHostedOnLogstash:
+    derived_from: org.ystia.relationships.HostedOn
+    description: >
+      Configure the Logstash Twitter input
+    valid_target_types: [ org.ystia.logstash.pub.capabilities.LogstashConnectorHosting ]
+    interfaces:
+      Configure:
+        pre_configure_source:
+          implementation: relationships/twitter/twitter_on_logstash.sh
+          inputs:
+            CONSUMER_KEY: { get_property: [SOURCE, consumer_key] }
+            CONSUMER_SECRET: { get_property: [SOURCE, consumer_secret] }
+            OAUTH_TOKEN: { get_property: [SOURCE, oauth_token] }
+            OAUTH_TOKEN_SECRET: { get_property: [SOURCE, oauth_token_secret] }
+            USE_PROXY: { get_property: [SOURCE, use_proxy] }
+            PROXY_ADDRESS: { get_property: [SOURCE, proxy_address] }
+            PROXY_PORT: { get_property: [SOURCE, proxy_port] }
+            KEYWORDS: { get_property: [SOURCE, keywords] }
+            FOLLOWS: { get_property: [SOURCE, follows] }
+            LANGUAGES: { get_property: [SOURCE, languages] }
+            USE_SAMPLES: { get_property: [SOURCE, use_samples] }
+            FULL_TWEET: { get_property: [SOURCE, full_tweet] }
+            TAGS: { get_property: [SOURCE, tags] }
+            IGNORE_RETWEETS: { get_property: [SOURCE, ignore_retweets] }
+    artifacts:
+      - twitterscripts:
+          file: relationships/twitter
+          type: tosca.artifacts.File
+      - lsscripts:
+          file: scripts
           type: tosca.artifacts.File
