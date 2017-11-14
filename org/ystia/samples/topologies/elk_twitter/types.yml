@@ -35,6 +35,10 @@ topology_template:
 
   # Input properties for Twitter connector
 
+  #
+  # TODO: default values for keywords and languages are commented to workaround well-known bugs (see BRBDCF-389, SUPALIEN-909, BRBDCF-391)
+  #
+
   inputs:
     consumer_key:
       type: string
