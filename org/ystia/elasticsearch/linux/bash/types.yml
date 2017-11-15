@@ -220,7 +220,8 @@ relationship_types:
           post_configure_source:
             implementation: scripts/elasticsearch-to-filesystem.sh
             inputs:
-              path_fs: { get_property: [ TARGET,location ] }
+              ES_VERSION: { get_property: [SOURCE, component_version] }
+              path_fs: { get_property: [TARGET,location] }
     artifacts:
       - scripts:
           file: scripts
