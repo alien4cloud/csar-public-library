@@ -88,7 +88,7 @@ node_types:
         default: 3306
         required: true
     capabilities:
-     mysql_db_endpoint:
+      mysql_db_endpoint:
         type: org.ystia.mysql.pub.capabilities.Endpoint.MySQLDatabase
         occurrences: [0, unbounded]
     requirements:
