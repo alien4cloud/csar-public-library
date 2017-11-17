@@ -24,6 +24,8 @@ imports:
 topology_template:
   description: A topology template to connect Kafka, Logstash, Elasticsearch and Kibana (Kafka as a broker)
 
+  # TODO Add input properties for repositories
+
   node_templates:
 
     # Network

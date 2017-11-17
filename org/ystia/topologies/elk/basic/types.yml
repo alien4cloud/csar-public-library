@@ -23,6 +23,8 @@ imports:
 topology_template:
   description: A topology template to connect Logstash, Elasticsearch and Kibana
 
+  # TODO Add input properties for repositories
+
   node_templates:
 
     # Network
