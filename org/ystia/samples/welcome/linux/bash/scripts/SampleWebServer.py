@@ -14,7 +14,7 @@ class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
         s.send_response(200)
         s.send_header("Content-type", "text/html")
         s.end_headers()
-        s.wfile.write("<html><head><title>BCDF: a Very Simple Web Server</title></head>")
+        s.wfile.write("<html><head><title>A Very Simple Web Server on Ystia</title></head>")
         s.wfile.write("<body>")
         s.wfile.write("")
         s.wfile.write("<hr size=\"6\" color=\"0066A1\">")
