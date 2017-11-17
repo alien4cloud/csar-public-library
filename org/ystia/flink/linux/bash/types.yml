@@ -27,14 +27,14 @@ node_types:
         description: Version of the installed Flink component
         constraints:
           - valid_values: [1.1.3, 1.1.4, 1.1.5, 1.2.1, 1.3.2]
-      jobmanager.rpc.port:
+      jobmanager_rpc_port:
         type: integer
         description: >
           The port number of the JobManager
         default: 6123
         constraints:
           - equal: 6123
-      jobmanager.heap.mb:
+      jobmanager_head_mb:
         type: integer
         description: >
           JVM heap size (in megabytes) for the JobManager
@@ -74,8 +74,8 @@ node_types:
         configure:
           inputs:
             IP_ADDRESS: { get_attribute: [SELF, ip_address] }
-            JOBMANAGER_PORT: { get_property: [SELF, jobmanager.rpc.port] }
-            JOBMANAGER_HEAP: { get_property: [SELF, jobmanager.heap.mb] }
+            JOBMANAGER_PORT: { get_property: [SELF, jobmanager_rpc_port] }
+            JOBMANAGER_HEAP: { get_property: [SELF, jobmanager_head_mb] }
             JAVA_HOME: { get_attribute: [SELF, java_home] }
           implementation: scripts/flink_jm_configure.sh
         start:
@@ -98,14 +98,14 @@ node_types:
         description: Version of the installed Flink component
         constraints:
           - valid_values: [1.1.3, 1.1.4, 1.1.5, 1.2.1, 1.3.2]
-      taskmanager.rpc.port:
+      taskmanager_rpc_port:
         type: integer
         description: >
           The task manager’s IPC port (DEFAULT: 0, which lets the OS choose a free port).
         default: 0
         constraints:
           - equal: 0
-      taskmanager.heap.mb:
+      taskmanager_heap_mb:
         type: integer
         description: >
           JVM heap size (in megabytes) for the TaskManagers, which are the parallel workers of the system.
@@ -113,21 +113,21 @@ node_types:
           If the cluster is exclusively running Flink, the total amount of available memory per machine minus some memory for the operating system (maybe 1-2 GB)
           is a good value.
         default: "512"
-      taskmanager.numberOfTaskSlots:
+      taskmanager_numberOfTaskSlots:
         type: integer
         description: >
           The number of parallel operator or user function instances that a single TaskManager can run.
           This value is typically proportional to the number of physical CPU cores that the TaskManager’s machine has
           (e.g., equal to the number of cores, or half the number of cores).
         default: 1
-      parallelism.default:
+      parallelism_default:
         type: integer
         description: >
           The default parallelism to use for programs that have no parallelism specified.
           For setups that have no concurrent jobs running, setting this value to NumTaskManagers * NumSlotsPerTaskManager will cause the system
           to use all available execution resources for the program’s execution.
         default: 1
-      taskmanager.tmp.dirs:
+      taskmanager_tmp_dirs:
         type: string
         description: >
           Specifies a list of directories into which Flink writes temporary files when data doesn’t fit into main memory.
@@ -168,11 +168,11 @@ node_types:
         configure:
           inputs:
             IP_ADDRESS: { get_attribute: [SELF, ip_address] }
-            TASKMANAGER_PORT: { get_property: [SELF, taskmanager.rpc.port] }
-            TASKMANAGER_MEM: { get_property: [SELF, taskmanager.heap.mb] }
-            TASKMANAGER_SLOTS: { get_property: [SELF, taskmanager.numberOfTaskSlots] }
-            PARALLELISM_DEFAULT: { get_property: [SELF, parallelism.default] }
-            TASKMANAGER_TMP_DIRS: { get_property: [SELF, taskmanager.tmp.dirs] }
+            TASKMANAGER_PORT: { get_property: [SELF, taskmanager_rpc_port] }
+            TASKMANAGER_MEM: { get_property: [SELF, taskmanager_heap_mb] }
+            TASKMANAGER_SLOTS: { get_property: [SELF, taskmanager_numberOfTaskSlots] }
+            PARALLELISM_DEFAULT: { get_property: [SELF, parallelism_default] }
+            TASKMANAGER_TMP_DIRS: { get_property: [SELF, taskmanager_tmp_dirs] }
             JAVA_HOME: { get_attribute: [SELF, java_home] }
           implementation: scripts/flink_tm_configure.sh
         start:
