@@ -6,10 +6,285 @@ metadata:
   template_author: Bull
 
 
+# TODO alien-extended-storage-types version 1.4.1-SNAPSHOT imported to work araound the known issue SUPALIEN-1011
 imports:
   - tosca-normative-types:1.0.0-ALIEN14
+  - alien-extended-storage-types:1.4.1-SNAPSHOT
+
+  - org.ystia.common:1.0-SNAPSHOT
+  - org.ystia.java.pub:1.0-SNAPSHOT
+  - org.ystia.java.linux.bash:1.0-SNAPSHOT
+  - org.ystia.consul.pub:1.0-SNAPSHOT
+  - org.ystia.consul.linux.bash:1.0-SNAPSHOT
+  - org.ystia.elasticsearch.pub:1.0-SNAPSHOT
+  - org.ystia.elasticsearch.linux.bash:1.0-SNAPSHOT
+  - org.ystia.kibana.pub:1.0-SNAPSHOT
+  - org.ystia.kibana.linux.bash:1.0-SNAPSHOT
+  - org.ystia.logstash.pub:1.0-SNAPSHOT
+  - org.ystia.logstash.linux.bash:1.0-SNAPSHOT
+  - org.ystia.kafka.pub:1.0-SNAPSHOT
+  - org.ystia.kafka.linux.bash:1.0-SNAPSHOT
 
 topology_template:
-  description:
-  inputs:
+  description: A topology template to connect Kafka, Logstash, Elasticsearch and Kibana (Kafka as a broker), in High Avaibilty mode
+
+  # TODO Add input properties for repositories
+
   node_templates:
+
+    # Network
+
+    Network:
+      type: tosca.nodes.Network
+      properties:
+        ip_version: 4
+
+    # VM for Consul Server
+
+    Compute_CS:
+      type: tosca.nodes.Compute
+      capabilities:
+        scalable:
+          properties:
+            max_instances: 3
+            min_instances: 3
+            default_instances: 3
+    Consul_Server:
+      type: org.ystia.consul.linux.bash.nodes.Consul
+      requirements:
+        - host:
+            node: Compute_CS
+
+    # VM for Elasticsearch
+
+    Compute_ES:
+      type: tosca.nodes.Compute
+      properties:
+        mem_size: 12GB
+      requirements:
+        - network:
+            node: Network
+            relationship: tosca.relationships.Network
+      capabilities:
+        os:
+          properties:
+            type: linux
+        scalable:
+          properties:
+            max_instances: 10
+            min_instances: 3
+            default_instances: 3
+    Consul_ES:
+      type: org.ystia.consul.linux.bash.nodes.Consul
+      requirements:
+        - host:
+            node: Compute_ES
+        - server_endpoint:
+            node: Consul_Server
+    Java_ES:
+      type: org.ystia.java.linux.bash.nodes.Java
+      requirements:
+        - host:
+            node: Compute_ES
+    BlockStorage_ES:
+      type: tosca.nodes.BlockStorage
+      properties:
+        size: "10 GB"
+      requirements:
+        - attachment:
+            node: Compute_ES
+            capability: tosca.capabilities.Attachment
+            relationship: tosca.relationships.AttachTo
+    LinuxFileSystem_ES:
+      type: alien.nodes.LinuxFileSystem
+      properties:
+        location: "/mountedStorageES"
+      requirements:
+        - host:
+            node: Compute_ES
+        - partition:
+            node: BlockStorage_ES
+    Elasticsearch:
+      type: org.ystia.elasticsearch.linux.bash.nodes.Elasticsearch
+      requirements:
+        - host:
+            node: Java_ES
+        - consul:
+            node: Consul_ES
+        - filesystem_endpoint:
+            node: LinuxFileSystem_ES
+
+    # VM for Kibana
+
+    Compute_KBN:
+      type: tosca.nodes.Compute
+      requirements:
+        - network:
+            node: Network
+            relationship: tosca.relationships.Network
+    Consul_KBN:
+      type: org.ystia.consul.linux.bash.nodes.Consul
+      requirements:
+        - host:
+            node: Compute_KBN
+        - server_endpoint:
+            node: Consul_Server
+    Java_KBN:
+      type: org.ystia.java.linux.bash.nodes.Java
+      requirements:
+        - host:
+            node: Compute_KBN
+    Kibana:
+      type: org.ystia.kibana.linux.bash.nodes.Kibana
+      requirements:
+        - host:
+            node: Java_KBN
+        - consul:
+            node: Consul_KBN
+        - search_endpoint:
+            node: Elasticsearch
+    KibanaDashboard:
+      type: org.ystia.kibana.linux.bash.nodes.KibanaDashboard
+      requirements:
+        - dashboard_host:
+            node: Kibana
+
+    # VM for Logstash Indexer
+
+    Compute_LI:
+      type: tosca.nodes.Compute
+      requirements:
+        - network:
+            node: Network
+            relationship: tosca.relationships.Network
+      capabilities:
+        scalable:
+          properties:
+            max_instances: 10
+            min_instances: 3
+            default_instances: 3
+    Consul_LI:
+      type: org.ystia.consul.linux.bash.nodes.Consul
+      requirements:
+        - host:
+            node: Compute_LI
+        - server_endpoint:
+            node: Consul_Server
+    Java_LI:
+      type: org.ystia.java.linux.bash.nodes.Java
+      requirements:
+        - host:
+            node: Compute_LI
+    LogstashIndexer:
+      type: org.ystia.logstash.linux.bash.nodes.Logstash
+      requirements:
+        - host:
+            node: Java_LI
+        - consul:
+            node: Consul_LI
+        - kafka_input:
+            node: KafkaTopic
+        - search_endpoint:
+            node: Elasticsearch
+
+    # VM for Kafka
+
+    Compute_KFK:
+      type: tosca.nodes.Compute
+      requirements:
+        - network:
+            node: Network
+            relationship: tosca.relationships.Network
+      capabilities:
+        os:
+          properties:
+            type: linux
+        scalable:
+          properties:
+            max_instances: 3
+            min_instances: 3
+            default_instances: 3
+    Consul_KFK:
+      type: org.ystia.consul.linux.bash.nodes.Consul
+      requirements:
+        - host:
+            node: Compute_KFK
+        - server_endpoint:
+            node: Consul_Server
+    Java_KFK:
+      type: org.ystia.java.linux.bash.nodes.Java
+      requirements:
+        - host:
+            node: Compute_KFK
+    BlockStorage_KFK:
+      type: tosca.nodes.BlockStorage
+      properties:
+        size: "10 GB"
+      requirements:
+        - attachment:
+            node: Compute_KFK
+            capability: tosca.capabilities.Attachment
+            relationship: tosca.relationships.AttachTo
+    LinuxFileSystem_KFK:
+      type: alien.nodes.LinuxFileSystem
+      properties:
+        location: "/mountedStorageKFK"
+      requirements:
+        - partition:
+            node: BlockStorage_KFK
+        - host:
+            node: Compute_KFK
+    Kafka:
+      type: org.ystia.kafka.linux.bash.nodes.Kafka
+      requirements:
+        - host:
+            node: Java_KFK
+        - consul:
+            node: Consul_KFK
+        - filesystem_endpoint:
+            node: LinuxFileSystem_KFK
+
+    KafkaTopic:
+      type: org.ystia.kafka.linux.bash.nodes.KafkaTopic
+      properties:
+        topic_name: KafkaTopic
+      requirements:
+        - host:
+            node: Kafka
+
+    # VM for Logstash Shipper
+
+    Compute_LS:
+      type: tosca.nodes.Compute
+      requirements:
+        - network:
+            node: Network
+            relationship: tosca.relationships.Network
+    Consul_LS:
+      type: org.ystia.consul.linux.bash.nodes.Consul
+      requirements:
+        - host:
+            node: Compute_LS
+        - server_endpoint:
+            node: Consul_Server
+    Java_LS:
+      type: org.ystia.java.linux.bash.nodes.Java
+      requirements:
+        - host:
+            node: Compute_LS
+    LogstashShipper:
+      type: org.ystia.logstash.linux.bash.nodes.Logstash
+      requirements:
+        - host:
+            node: Java_LS
+        - consul:
+            node: Consul_LS
+        - kafka_output:
+            node: KafkaTopic
+
+  # Output property for Kibana URL
+
+  outputs:
+    kibana_url:
+      description: The URL to access the Kibana dashboard
+      value: { get_attribute: [ Kibana, url ] }
