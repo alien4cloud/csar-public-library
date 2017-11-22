@@ -65,5 +65,6 @@ relationship_types:
           inputs:
             AGENT_IP: { get_attribute: [TARGET, ip_address] }
             AGENT_API_PORT: { get_property: [TARGET, consul_agent, api_port] }
+            VAULT_IP: { get_attribute: [SOURCE, ip_address] }
             VAULT_PORT: { get_property: [SOURCE, port] }
           implementation: scripts/vault/configure_vault.sh

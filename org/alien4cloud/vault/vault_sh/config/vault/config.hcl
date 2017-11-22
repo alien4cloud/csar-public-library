@@ -4,6 +4,6 @@ storage "consul" {
 }
 
 listener "tcp" {
- address = "127.0.0.1:%VAULT_PORT%"
+ address = "%VAULT_IP%:%VAULT_PORT%"
  tls_disable = 1
 }
