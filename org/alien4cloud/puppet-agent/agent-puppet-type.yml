@@ -1,0 +1,46 @@
+tosca_definitions_version: alien_dsl_1_4_0
+
+metadata:
+  template_name: org.alien4cloud.agentpuppet.pub
+  template_version: 1.4.0-SNAPSHOT
+  template_author: alien4cloud
+
+description: Install agent Puppet on host compute
+
+imports:
+  - tosca-normative-types:1.0.0-ALIEN14
+
+node_types:
+  org.alien4cloud.agentpuppet.pub.nodes.Agent:
+    abstract: false
+    derived_from: tosca.nodes.SoftwareComponent
+    description: A node that provides a mysql endpoint.
+    metadata:
+      icon: /images/Puppet_Logo.jpg
+    requirements:
+      - host:
+          capability: tosca.capabilities.Container
+          node: tosca.nodes.Compute
+          relationship: tosca.relationships.HostedOn
+          occurrences: [1, 1]
+          node_filter:
+            capabilities:
+              - tosca.capabilities.OperatingSystem:
+                  properties:
+                    - type: { equal: linux }
+                    - architecture: { equal: x86_64 }
+                    - distribution: { valid_values: [ ubuntu ] }
+    capabilities:
+      host: org.alien4cloud.agentpuppet.pub.capabilities.PuppetAgentContainer
+    interfaces:
+      Standard:
+        create:
+          inputs:
+          implementation: scripts/create.sh
+        delete:
+          inputs:
+          implementation: scripts/delete.sh
+
+capability_types:
+  org.alien4cloud.agentpuppet.pub.capabilities.PuppetAgentContainer:
+    derived_from: tosca.capabilities.Container
