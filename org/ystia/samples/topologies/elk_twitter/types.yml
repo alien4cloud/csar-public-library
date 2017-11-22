@@ -22,11 +22,11 @@ imports:
 
 #
 # For US_Elections_2016 sample:
-# - langages: "[\"fr\", \"en\"]"
-# - keywords: "[\"trump\", \"clinton\"]"
+# - languages: [fr, en]
+# - keywords: [trump, clinton]
 # For FR_Elections_2017 sample:
-# - langages: "[\"fr\", \"en\", \"de\", \"it\", \"es\"]"
-# - keywords: "[\"le pen\", \"fillon\", \"macron\", \"hamon\", \"melenchon\"]"
+# - languages: [fr, en, de, it, es]
+# - keywords: [le pen, fillon, macron, hamon, melenchon]
 #
 
 
@@ -34,10 +34,6 @@ topology_template:
   description: A topology template to ingest tweets in an ELK toolchain
 
   # Input properties for Twitter connector
-
-  #
-  # TODO: default values for keywords and languages are commented to workaround well-known bugs (see BRBDCF-389, SUPALIEN-909, BRBDCF-391)
-  #
 
   inputs:
     consumer_key:
@@ -57,14 +53,22 @@ topology_template:
       required: true
       description: Your Twitter oauth token.
     languages:
-      type: string
+      type: list
+      entry_schema:
+        type: string
       required: false
-#      default: "[\"fr\", \"en\", \"de\", \"it\", \"es\"]"
+      default: [fr, en, de, it, es]
     tags:
-      type: string
+      type: list
+      entry_schema:
+        type: string
       required: false
     follows:
-      type: string
+      type: list
+      entry_schema:
+        type: string
+        constraints:
+          - pattern: (\d)+
       required: false
     full_tweet:
       type: boolean
@@ -72,9 +76,11 @@ topology_template:
       default: true
       description: Record full tweet object as given to us by the Twitter Streaming API.
     keywords:
-      type: string
+      type: list
+      entry_schema:
+        type: string
       required: false
-#      default: "[\"le pen\", \"fillon\", \"macron\", \"hamon\", \"melenchon\"]"
+      default: [le pen, fillon, macron, hamon, melenchon]
     proxy_address:
       type: string
       required: false
@@ -205,6 +211,8 @@ topology_template:
             node: Compute_LS
     Logstash:
       type: org.ystia.logstash.linux.bash.nodes.Logstash
+      properties:
+        auto_reload: true
       requirements:
         - host:
             node: Java_LS

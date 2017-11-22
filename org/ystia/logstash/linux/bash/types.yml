@@ -289,33 +289,39 @@ node_types:
           then default environment proxy settings on the compute will be used.
         required: false
       keywords:
-        type: string
+        type: list
+        entry_schema:
+          description: a keyword to track in the Twitter stream
+          type: string
         description: >
-          An array of keywords to track in the Twitter stream
-          Ex: ["foo", "bar"]
+          An list of keywords to track in the Twitter stream
+          Ex: [foo, bar]
           At least one property "keywords" or "follows" must be specified if use_samples property is not set.
         required: false
-        constraints:
-          - pattern: \[\"(\w)+\"(,\s*\"(\w)+\")*\]
       follows:
-        type: string
+        type: list
+        entry_schema:
+          description: >
+            a stringified user ID.
+            ID can be obtained from Twitter username: http://gettwitterid.com
+          type: string
+          constraints:
+            - pattern: (\d)+
         description: >
-          An array of user IDs, indicating the users to return statuses for in the Twitter stream.
-          ID can be obtained from Twitter username: http://gettwitterid.com
-          Ex: ["122345", "414512"].
+          A list of user IDs, indicating the users to return statuses for in the Twitter stream.
+          Ex: [122345, 414512].
           At least one property "keywords" or "follows" must be specified if use_samples property is not set.
-        constraints:
-          - pattern: \[\"(\d)+\"(,\s*\"(\d)+\")*\]
         required: false
       languages:
-        type: string
+        type: list
+        entry_schema:
+          description: a BCP 47 language identifier
+          type: string
         description: >
-          An array of BCP 47 language identifiers corresponding to any of the languages listed on Twitter's advanced search
+          A list of BCP 47 language identifiers corresponding to any of the languages listed on Twitter's advanced search
           page will only return tweets that have been detected as being written in the specified languages.
-          Ex: [ "en", "fr" ]
+          Ex: [ en, fr ]
         required: false
-        constraints:
-          - pattern: \[\"(\w)+\"(,\s*\"(\w)+\")*\]
       use_samples:
         type: boolean
         default: false
@@ -330,13 +336,14 @@ node_types:
           Record full tweet object as given to us by the Twitter Streaming API.
         required: false
       tags:
-        type: string
+        type: list
+        entry_schema:
+          description: a tag to add to your event
+          type: string
         description: >
-          An array of tags to add to your event. This can help with processing later.
-          Ex: ["tagName"]
+          A list of tags to add to your event. This can help with processing later.
+          Ex: [TagName]
         required: false
-        constraints:
-          - pattern: \[\"(\w)+\"(,\s*\"(\w)+\")*\]
       ignore_retweets:
         type: boolean
         default: false
@@ -367,49 +374,51 @@ node_types:
         change_follows:
           inputs:
             follows:
-              type: string
+              type: list
+              entry_schema:
+                constraints:
+                  - pattern: (\d)+
               description: >
-                An array of user IDs, indicating the users to return statuses for in the Twitter stream.
+                An list of user IDs, indicating the users to return statuses for in the Twitter stream.
                 ID can be obtained from Twitter username: http://gettwitterid.com
-                Ex: ["122345", "414512"].
+                Ex: [122345, 414512].
                 At least one property "keywords" or "follows" must be specified if use_samples property is not set.
-              constraints:
-                - pattern: \[\"(\d)+\"(,\s*\"(\d)+\")*\]
+              required: false
           implementation: twitter/twitter_changeFollows.sh
         change_keywords:
           inputs:
             keywords:
-              type: string
+              type: list
+              entry_schema:
+                type: string
               description: >
-                An array of keywords to track in the Twitter stream
-                Ex: ["foo", "bar"]
+                An list of keywords to track in the Twitter stream
+                Ex: [foo, bar]
                 At least one property "keywords" or "follows" must be specified if use_samples property is not set.
               required: false
-              constraints:
-                - pattern: \[\"(\w)+\"(,\s*\"(\w)+\")*\]
           implementation: twitter/twitter_changeKeywords.sh
         change_languages:
           inputs:
             languages:
-              type: string
+              type: list
+              entry_schema:
+                type: string
               description: >
-                An array of BCP 47 language identifiers corresponding to any of the languages listed on Twitter's advanced search
+                An list of BCP 47 language identifiers corresponding to any of the languages listed on Twitter's advanced search
                 page will only return tweets that have been detected as being written in the specified languages.
-                Ex: [ "en", "fr" ]
+                Ex: [ en, fr ]
               required: false
-              constraints:
-                - pattern: \[\"(\w)+\"(,\s*\"(\w)+\")*\]
           implementation: twitter/twitter_changeLanguages.sh
         change_tags:
           inputs:
             tags:
-              type: string
+              type: list
+              entry_schema:
+                type: string
               description: >
-                An array of tags to add to your event. This can help with processing later.
-                Ex: ["tagName"]
+                An list of tags to add to your event. This can help with processing later.
+                Ex: [TagName]
               required: false
-              constraints:
-                - pattern: \[\"(\w)+\"(,\s*\"(\w)+\")*\]
           implementation: twitter/twitter_changeTags.sh
         change_use_samples:
           inputs:
@@ -419,7 +428,7 @@ node_types:
               description: >
                 Returns a small random sample of all public statuses.
                 If set to true, the keywords, follows and languages properties will be ignored.
-              required: false
+              required: true
           implementation: twitter/twitter_changeUseSamples.sh
         change_full_tweet:
           inputs:
@@ -428,7 +437,7 @@ node_types:
               default: false
               description: >
                 Record full tweet object as given to us by the Twitter Streaming API.
-              required: false
+              required: true
           implementation: twitter/twitter_changeFullTweet.sh
         change_ignore_retweets:
           inputs:
@@ -437,95 +446,95 @@ node_types:
               default: false
               description: >
                 Lets you ignore the retweets coming out of the Twitter API.
-              required: false
+              required: true
           implementation: twitter/twitter_changeIgnoreRetweets.sh
         add_tags:
           inputs:
             tags:
-              type: string
+              type: list
+              entry_schema:
+                type: string
               description: >
                 A list of tag(s) to add to existing tags list
-                Ex: ["tag1", "tag2"]
+                Ex: [tag1, tag2]
               required: true
-              constraints:
-               - pattern: \[\"(\w)+\"(,\s*\"(\w)+\")*\]
           implementation: twitter/twitter_addTags.sh
         remove_tags:
           inputs:
             tags:
-              type: string
+              type: list
+              entry_schema:
+                type: string
               description: >
                 A list of tag(s) to remove to existing tags list
-                Ex: ["tag1", "tag2"]
+                Ex: [tag1, tag2]
               required: true
-              constraints:
-               - pattern: \[\"(\w)+\"(,\s*\"(\w)+\")*\]
           implementation: twitter/twitter_removeTags.sh
         add_keywords:
           inputs:
             keywords:
-              type: string
+              type: list
+              entry_schema:
+                type: string
               description: >
                 A list of keyword(s) to add to existing keywords list
-                Ex: ["keyword1", "keyword2"]
+                Ex: [keyword1, keyword2]
               required: true
-              constraints:
-               - pattern: \[\"(\w)+\"(,\s*\"(\w)+\")*\]
           implementation: twitter/twitter_addKeywords.sh
         remove_keywords:
           inputs:
             keywords:
-              type: string
+              type: list
+              entry_schema:
+                type: string
               description: >
                 A list of keyword(s) to remove to existing keywords list
-                Ex: ["keyword1", "keyword2"]
+                Ex: [keyword1, keyword2]
               required: true
-              constraints:
-               - pattern: \[\"(\w)+\"(,\s*\"(\w)+\")*\]
           implementation: twitter/twitter_removeKeywords.sh
         add_languages:
           inputs:
             languages:
-              type: string
+              type: list
+              entry_schema:
+                type: string
               description: >
                 A list of language(s) to add to existing languages list
-                Ex: ["cz", "de"]
+                Ex: [cz, de]
               required: true
-              constraints:
-               - pattern: \[\"(\w)+\"(,\s*\"(\w)+\")*\]
           implementation: twitter/twitter_addLanguages.sh
         remove_languages:
           inputs:
             languages:
               type: string
+              entry_schema:
+                type: string
               description: >
                 A list of language(s) to remove to existing languages list
-                Ex: ["cz", "de"]
+                Ex: [cz, de]
               required: true
-              constraints:
-               - pattern: \[\"(\w)+\"(,\s*\"(\w)+\")*\]
           implementation: twitter/twitter_removeLanguages.sh
         add_follows:
           inputs:
             follows:
-              type: string
+              type: list
+              entry_schema:
+                type: string
               description: >
                 A list of follow(s) to add to existing follows list
-                Ex: ["@ID1", "@ID2"]
+                Ex: [@ID1, @ID2]
               required: true
-              constraints:
-                - pattern: \[\"@?(\w){1,15}\"(,\s*\"@?(\w){1,15}\")*\]
           implementation: twitter/twitter_addFollows.sh
         remove_follows:
           inputs:
             follows:
-              type: string
+              type: list
+              entry_schema:
+                type: string
               description: >
                 A list of follow(s) to remove to existing Follows list
-                Ex: ["@ID1", "@ID2"]
+                Ex: [@ID1, @ID2]
               required: true
-              constraints:
-                - pattern: \[\"@?(\w){1,15}\"(,\s*\"@?(\w){1,15}\")*\]
           implementation: twitter/twitter_removeFollows.sh
     artifacts:
       - twitterscripts:
