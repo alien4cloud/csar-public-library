@@ -22,7 +22,7 @@ node_types:
     requirements:
       - host:
           capability: org.alien4cloud.agentpuppet.capabilities.PuppetAgentContainer
-          node: org.alien4cloud.agentpuppet.pub.nodes.Agent
+          node: org.alien4cloud.agentpuppet.nodes.Agent
           relationship: org.alien4cloud.mysql.linux_pup.relationships.MysqlHostedOnAgentPuppet		  
     metadata:
       icon: /images/mysql.png
@@ -81,4 +81,4 @@ relationship_types:
   org.alien4cloud.mysql.linux_pup.relationships.MysqlHostedOnAgentPuppet:
     derived_from: tosca.relationships.HostedOn
     description: Relationship use to describe that the website is deployed on the target Apache server.
-    valid_target_types: [ org.alien4cloud.agentpuppet.pub.capabilities.PuppetAgentContainer]
+    valid_target_types: [ org.alien4cloud.agentpuppet.capabilities.PuppetAgentContainer]
