@@ -1,0 +1,84 @@
+tosca_definitions_version: alien_dsl_1_4_0
+
+metadata:
+  template_name: org.alien4cloud.mysql.linux_pup
+  template_version: 1.4.0-SNAPSHOT
+  template_author: alien4cloud
+
+description: MySQL RDBMS installation  with Puppet, tested with ami-ed82e39e (t2.medium)
+
+imports:
+  - tosca-normative-types:1.0.0-ALIEN14
+  - alien-base-types:1.4.0
+  - org.alien4cloud.agentpuppet:1.4.0-SNAPSHOT
+  - org.alien4cloud.mysql.pub:1.4.0-SNAPSHOT
+
+node_types:
+  org.alien4cloud.mysql.linux_pup.nodes.Mysql:
+    derived_from: org.alien4cloud.mysql.pub.nodes.Mysql
+    description: A node that provides a mysql endpoint.
+    metadata:
+      icon: /images/mysql.png
+    requirements:
+      - host:
+          capability: org.alien4cloud.agentpuppet.capabilities.PuppetAgentContainer
+          node: org.alien4cloud.agentpuppet.nodes.Agent
+          relationship: org.alien4cloud.mysql.linux_pup.relationships.MysqlHostedOnAgentPuppet		  
+    metadata:
+      icon: /images/mysql.png
+    properties:
+      port:
+        type: integer
+        default: 3306
+        description: The port on which the underlying database service will listen to data. </p>
+      name:
+        type: string
+        required: true
+        default: wordpress
+        description: The logical name of the database.
+      user:
+        type: string
+        default: pass
+        description: The special user account used for database administration.
+      password:
+        type: string
+        default: pass
+        description: The password associated with the user account provided in the ‘db_user’ property.</p>
+      puppet_home:
+        type: string
+        default: /etc/puppet/mysql
+        description: home to move your puppet environment 
+    artifacts:
+      - puppet_file:
+          file: PuppetFiles/recipe.puppet
+    interfaces:
+      Standard:
+        create:
+          inputs:
+            FACTER_db_password: { get_property: [SELF, password] }
+            PUPPET_HOME: { get_property: [SELF, puppet_home ] }
+          implementation: scripts/create_mysql.sh
+        configure:
+          inputs:
+            FACTER_db_name: { get_property: [SELF, name] }
+            FACTER_db_user: { get_property: [SELF, user] }
+            FACTER_db_password: { get_property: [SELF, password] }
+            PUPPET_HOME: { get_property: [SELF, puppet_home ] }
+          implementation: scripts/configure_mysql.sh
+        start:
+          inputs:
+            PUPPET_HOME: { get_property: [SELF, puppet_home ] }
+          implementation: scripts/start_mysql.sh
+        stop:
+          inputs:
+            PUPPET_HOME: { get_property: [SELF, puppet_home ] }
+          implementation: scripts/stop_mysql.sh
+        delete:
+          inputs:
+            PUPPET_HOME: { get_property: [SELF, puppet_home ] }
+          implementation: scripts/delete_mysql.sh
+relationship_types:
+  org.alien4cloud.mysql.linux_pup.relationships.MysqlHostedOnAgentPuppet:
+    derived_from: tosca.relationships.HostedOn
+    description: Relationship use to describe that the website is deployed on the target Apache server.
+    valid_target_types: [ org.alien4cloud.agentpuppet.capabilities.PuppetAgentContainer]
