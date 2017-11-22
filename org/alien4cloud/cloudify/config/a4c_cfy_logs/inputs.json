@@ -1,0 +1,11 @@
+{
+
+"APP_ARCHIVE_URL": "https://fastconnect.org/maven/content/repositories/opensource/alien4cloud/alien4cloud-cfy-logs/2.0.0-SM2/alien4cloud-cfy-logs-2.0.0-SM2.zip",
+"A4C_LOG_DIR": "/opt/alien4cloud-cfy-logs",
+"LOGSTASH_CONFIG_FILE": "/etc/logstash/conf.d/logstash.conf",
+"SERVER_PORT": "8670",
+"HTTP_PORT": "8300",
+"PROTOCOL": "https",
+"USER": "cfyuser",
+"GROUP": "cfyuser",
+"EOF": ""}

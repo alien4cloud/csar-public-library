@@ -1,0 +1,13 @@
+[Unit]
+Description=Alien4Cloud Cloudify Log Service
+
+[Service]
+TimeoutStartSec=0
+Restart=always
+User=cfyuser
+Group=cfyuser
+EnvironmentFile=-/etc/sysconfig/alien4cloud-cfy-logs
+ExecStart=/opt/alien4cloud-cfy-logs/start.sh
+
+[Install]
+WantedBy=multi-user.target
