@@ -18,7 +18,7 @@
     mode    => 600,
     owner   => "mysql",
     group   => "mysql",
-    content => template("/etc/puppet/templates/my.cnf.erb"),
+    content => template("/etc/puppet/mysql/templates/my.cnf.erb"),
 	notify => Service["mysql"],
 	require => Package["mysql-server"],
   }
@@ -27,7 +27,7 @@
     mode    => 600,
     owner   => "mysql",
     group   => "mysql",
-	content => template("/etc/puppet/templates/mysqld_safe_syslog.cnf.erb"),
+	content => template("/etc/puppet/mysql/templates/mysqld_safe_syslog.cnf.erb"),
 	notify => Service["mysql"],
 	require => Package["mysql-server"],
   }
