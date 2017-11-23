@@ -24,15 +24,15 @@ node_types:
       component_version:
         type: version
         description: Version of the installed Kafka component
-        default: 0.10.1.1
+        default: 0.10.2.1
         constraints:
-          - valid_values: [0.8.2.1, 0.9.0.1, 0.10.1.1, 0.11.0.1]
+          - valid_values: [0.10.2.1, 0.11.0.2]
       scala_version:
         type: version
         description: Version of the scala imbedded
         default: 2.11
         constraints:
-          - valid_values: [2.10, 2.11, 2.12]
+          - valid_values: [2.11, 2.12]
       repository:
         type: string
         description: >
