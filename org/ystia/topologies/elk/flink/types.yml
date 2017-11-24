@@ -20,7 +20,7 @@ topology_template:
   description: A basic topology template with Flink
 
   inputs:
-    es_repository:
+    repository:
       type: string
       required: false
       default: "http://archive.apache.org/dist/flink"

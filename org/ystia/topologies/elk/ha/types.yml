@@ -59,6 +59,12 @@ topology_template:
       default: "https://artifacts.elastic.co/downloads/logstash"
       constraints:
         - pattern: ^(http|https|ftp)://.+/.*$
+    kfk_repository:
+      type: string
+      required: false
+      default: "http://mirrors.standaloneinstaller.com/apache/"
+      constraints:
+        - pattern: ^(http|https|ftp)://.+/.*$
 
   node_templates:
 
