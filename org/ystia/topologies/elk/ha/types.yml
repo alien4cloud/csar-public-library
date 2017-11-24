@@ -28,7 +28,37 @@ imports:
 topology_template:
   description: A topology template to connect Kafka, Logstash, Elasticsearch and Kibana (Kafka as a broker), in High Avaibilty mode
 
-  # TODO Add input properties for repositories
+  inputs:
+    es_repository:
+      type: string
+      required: false
+      default: "https://artifacts.elastic.co/downloads/elasticsearch"
+      constraints:
+        - pattern: ^(http|https|ftp)://.+/.*$
+    es_curator_repository_url:
+      type: string
+      required: false
+      default: "http://packages.elastic.co/curator/4/centos/7"
+      constraints:
+        - pattern: ^(http|https|ftp)://.+/.*$
+    es_curator_repository_key_url:
+      type: string
+      required: false
+      default: "http://packages.elastic.co/GPG-KEY-elasticsearch"
+      constraints:
+        - pattern: ^(http|https|ftp)://.+/.*$
+    kbn_repository:
+      type: string
+      required: false
+      default: "https://artifacts.elastic.co/downloads/kibana"
+      constraints:
+        - pattern: ^(http|https|ftp)://.+/.*$
+    ls_repository:
+      type: string
+      required: false
+      default: "https://artifacts.elastic.co/downloads/logstash"
+      constraints:
+        - pattern: ^(http|https|ftp)://.+/.*$
 
   node_templates:
 
@@ -106,6 +136,10 @@ topology_template:
             node: BlockStorage_ES
     Elasticsearch:
       type: org.ystia.elasticsearch.linux.bash.nodes.Elasticsearch
+      properties:
+        repository: { get_input: es_repository }
+        curator_repository_url: { get_input: es_curator_repository_url }
+        curator_repository_key_url: { get_input: es_curator_repository_key_url }
       requirements:
         - host:
             node: Java_ES
@@ -136,6 +170,8 @@ topology_template:
             node: Compute_KBN
     Kibana:
       type: org.ystia.kibana.linux.bash.nodes.Kibana
+      properties:
+        repository: { get_input: kbn_repository }
       requirements:
         - host:
             node: Java_KBN
@@ -177,6 +213,8 @@ topology_template:
             node: Compute_LI
     LogstashIndexer:
       type: org.ystia.logstash.linux.bash.nodes.Logstash
+      properties:
+        repository: { get_input: ls_repository }
       requirements:
         - host:
             node: Java_LI
@@ -236,6 +274,8 @@ topology_template:
             node: Compute_KFK
     Kafka:
       type: org.ystia.kafka.linux.bash.nodes.Kafka
+      properties:
+        repository: { get_input: kfk_repository }
       requirements:
         - host:
             node: Java_KFK
@@ -274,6 +314,8 @@ topology_template:
             node: Compute_LS
     LogstashShipper:
       type: org.ystia.logstash.linux.bash.nodes.Logstash
+      properties:
+        repository: { get_input: ls_repository }
       requirements:
         - host:
             node: Java_LS

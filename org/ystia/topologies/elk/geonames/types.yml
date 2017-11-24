@@ -20,7 +20,33 @@ imports:
 
 topology_template:
   description: A basic topology template for Logstash/Elasticsearch with GeoNames input
-  
+
+  inputs:
+    es_repository:
+      type: string
+      required: false
+      default: "https://artifacts.elastic.co/downloads/elasticsearch"
+      constraints:
+        - pattern: ^(http|https|ftp)://.+/.*$
+    es_curator_repository_url:
+      type: string
+      required: false
+      default: "http://packages.elastic.co/curator/4/centos/7"
+      constraints:
+        - pattern: ^(http|https|ftp)://.+/.*$
+    es_curator_repository_key_url:
+      type: string
+      required: false
+      default: "http://packages.elastic.co/GPG-KEY-elasticsearch"
+      constraints:
+        - pattern: ^(http|https|ftp)://.+/.*$
+    ls_repository:
+      type: string
+      required: false
+      default: "https://artifacts.elastic.co/downloads/logstash"
+      constraints:
+        - pattern: ^(http|https|ftp)://.+/.*$
+
   node_templates:
 
     # Network
@@ -64,6 +90,10 @@ topology_template:
             node: ComputeES
     Elasticsearch:
       type: org.ystia.elasticsearch.linux.bash.nodes.Elasticsearch
+      properties:
+        repository: { get_input: es_repository }
+        curator_repository_url: { get_input: es_curator_repository_url }
+        curator_repository_key_url: { get_input: es_curator_repository_key_url }
       requirements:
         - host:
             node: JavaES
@@ -93,6 +123,7 @@ topology_template:
     Logstash:
       type: org.ystia.logstash.linux.bash.nodes.Logstash
       properties:
+        repository: { get_input: ls_repository }
         auto_reload: true
       requirements:
         - host:

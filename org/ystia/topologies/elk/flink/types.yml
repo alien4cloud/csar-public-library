@@ -19,6 +19,14 @@ imports:
 topology_template:
   description: A basic topology template with Flink
 
+  inputs:
+    es_repository:
+      type: string
+      required: false
+      default: "http://archive.apache.org/dist/flink"
+      constraints:
+        - pattern: ^(http|https|ftp)://.+/.*$
+
   node_templates:
 
     # Network
@@ -48,6 +56,8 @@ topology_template:
             node: Compute_FJM
     FlinkJobManager:
       type: org.ystia.flink.linux.bash.nodes.JobManager
+      properties:
+        repository: { get_input: repository }
       requirements:
         - host:
             node: Java_FJM
@@ -76,6 +86,8 @@ topology_template:
             node: Compute_FTM
     FlinkTaskManager:
       type: org.ystia.flink.linux.bash.nodes.TaskManager
+      properties:
+        repository: { get_input: repository }
       requirements:
         - jobmanager_endpoint:
             node: FlinkJobManager
