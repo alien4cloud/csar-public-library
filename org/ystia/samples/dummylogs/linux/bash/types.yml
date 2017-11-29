@@ -1,0 +1,62 @@
+tosca_definitions_version: alien_dsl_1_4_0
+metadata:
+  template_name: org.ystia.samples.dummylogs.linux.bash
+  template_version: 1.0-SNAPSHOT
+  template_author: Bull
+
+description: Ystia DummyLogs Generator Sample
+
+imports:
+  - tosca-normative-types:1.0.0-ALIEN14
+  - org.ystia.common:1.0-SNAPSHOT
+  - org.ystia.kibana.pub:1.0-SNAPSHOT
+  - org.ystia.kibana.linux.bash:1.0-SNAPSHOT
+  
+node_types:
+  org.ystia.samples.dummylogs.linux.bash.nodes.DummyLogsDashboard:
+    derived_from: org.ystia.kibana.linux.bash.nodes.KibanaDashboard
+    description: The dashboard element hosted on Kibana for the DummyLogs Sample
+    artifacts:
+      - dashboard_file:
+          file: dashboards/kdb_DummyLogs.json
+          type: org.ystia.kibana.pub.artifacts.Dashboard
+
+  org.ystia.samples.dummylogs.linux.bash.nodes.DummyLogsGenerator:
+    derived_from: org.ystia.nodes.SoftwareComponent
+    description: Installation of the DummyLogs Sample logs Generator
+    tags:
+      icon: /images/log.png
+    properties:
+      component_version:
+        type: version
+        default: 1.0-SNAPSHOT
+        constraints:
+          - equal: 1.0-SNAPSHOT
+      log_path:
+        type: string
+        required: true
+        default: "/tmp/dummy.log"
+      total_logs_nb:
+        type: integer
+        required: true
+        default: 2147483647 # max integer
+      delay_s:
+        type: float
+        required: true
+        default: 1
+    interfaces:
+      Standard:
+        start:
+          inputs:
+            LOG_PATH: { get_property: [SELF, log_path] }
+            TOTAL_LOGS_NB: { get_property: [SELF, total_logs_nb] }
+            DELAY_S: { get_property: [SELF, delay_s] }
+          implementation: scripts/logs_generator_start.sh
+        stop:
+          inputs:
+            LOG_PATH: { get_property: [SELF, log_path] }
+          implementation: scripts/logs_generator_stop.sh
+    artifacts:
+      - scripts:
+          type: tosca.artifacts.File
+          file: scripts
