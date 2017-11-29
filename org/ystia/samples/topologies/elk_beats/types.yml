@@ -1,0 +1,307 @@
+tosca_definitions_version: alien_dsl_1_4_0
+
+metadata:
+  template_name: org.ystia.samples.topologies.elk_beats
+  template_version: 1.0-SNAPSHOT
+  template_author: Bull
+
+
+imports:
+  - tosca-normative-types:1.0.0-ALIEN14
+  - org.ystia.common:1.0-SNAPSHOT
+  - org.ystia.java.pub:1.0-SNAPSHOT
+  - org.ystia.consul.pub:1.0-SNAPSHOT
+  - org.ystia.elasticsearch.pub:1.0-SNAPSHOT
+  - org.ystia.java.linux.bash:1.0-SNAPSHOT
+  - org.ystia.consul.linux.bash:1.0-SNAPSHOT
+  - org.ystia.elasticsearch.linux.bash:1.0-SNAPSHOT
+  - org.ystia.kibana.pub:1.0-SNAPSHOT
+  - org.ystia.kibana.linux.bash:1.0-SNAPSHOT
+  - org.ystia.logstash.pub:1.0-SNAPSHOT
+  - org.ystia.logstash.linux.bash:1.0-SNAPSHOT
+  - org.ystia.beats.linux.bash:1.0-SNAPSHOT
+  - org.ystia.samples.dummylogs.linux.bash:1.0-SNAPSHOT
+
+topology_template:
+  description: A topology template for Beats components with the Ystia DummyLogs sample connected to the ELK stack
+
+  inputs:
+    es_repository:
+      type: string
+      required: false
+      default: "https://artifacts.elastic.co/downloads/elasticsearch"
+      constraints:
+        - pattern: ^(http|https|ftp)://.+/.*$
+    es_curator_repository_url:
+      type: string
+      required: false
+      default: "http://packages.elastic.co/curator/4/centos/7"
+      constraints:
+        - pattern: ^(http|https|ftp)://.+/.*$
+    es_curator_repository_key_url:
+      type: string
+      required: false
+      default: "http://packages.elastic.co/GPG-KEY-elasticsearch"
+      constraints:
+        - pattern: ^(http|https|ftp)://.+/.*$
+    kbn_repository:
+      type: string
+      required: false
+      default: "https://artifacts.elastic.co/downloads/kibana"
+      constraints:
+        - pattern: ^(http|https|ftp)://.+/.*$
+    ls_repository:
+      type: string
+      required: false
+      default: "https://artifacts.elastic.co/downloads/logstash"
+      constraints:
+        - pattern: ^(http|https|ftp)://.+/.*$
+    dl_log_path:
+      type: string
+      required: false
+      default: "/tmp/dummy.log"
+    dl_delay_s:
+      type: float
+      required: false
+      default: 1
+
+  node_templates:
+
+    # Network
+
+    Network:
+      type: tosca.nodes.Network
+      properties:
+        ip_version: 4
+
+    # VM for Consul Server
+
+    Compute_CS:
+      type: tosca.nodes.Compute
+    Consul_Server:
+      type: org.ystia.consul.linux.bash.nodes.Consul
+      requirements:
+        - host:
+            node: Compute_CS
+    MetricBeat_CS:
+      type: org.ystia.beats.linux.bash.nodes.MetricBeat
+      requirements:
+        - host:
+            node: Compute_CS
+        - consul:
+            node: Consul_Server
+        - search_endpoint:
+            node: Elasticsearch
+
+    # VM for Elasticsearch
+
+    Compute_ES:
+      type: tosca.nodes.Compute
+      properties:
+        mem_size: 12GB
+      requirements:
+        - network:
+            node: Network
+            relationship: tosca.relationships.Network
+    Consul_ES:
+      type: org.ystia.consul.linux.bash.nodes.Consul
+      requirements:
+        - host:
+            node: Compute_ES
+        - server_endpoint:
+            node: Consul_Server
+    Java_ES:
+      type: org.ystia.java.linux.bash.nodes.Java
+      requirements:
+        - host:
+            node: Compute_ES
+    Elasticsearch:
+      type: org.ystia.elasticsearch.linux.bash.nodes.Elasticsearch
+      properties:
+        repository: { get_input: es_repository }
+        curator_repository_url: { get_input: es_curator_repository_url }
+        curator_repository_key_url: { get_input: es_curator_repository_key_url }
+      requirements:
+        - host:
+            node: Java_ES
+        - consul:
+            node: Consul_ES
+    MetricBeat_ES:
+      type: org.ystia.beats.linux.bash.nodes.MetricBeat
+      requirements:
+        - host:
+            node: Compute_ES
+        - consul:
+            node: Consul_ES
+        - search_endpoint:
+            node: Elasticsearch
+    PacketBeat_ES:
+      type: org.ystia.beats.linux.bash.nodes.PacketBeat
+      properties:
+        device: "any"
+      requirements:
+        - host:
+            node: Compute_ES
+        - consul:
+            node: Consul_ES
+        - search_endpoint:
+            node: Elasticsearch
+
+
+    # VM for Kibana
+
+    Compute_KBN:
+      type: tosca.nodes.Compute
+      requirements:
+        - network:
+            node: Network
+            relationship: tosca.relationships.Network
+    Consul_KBN:
+      type: org.ystia.consul.linux.bash.nodes.Consul
+      requirements:
+        - host:
+            node: Compute_KBN
+        - server_endpoint:
+            node: Consul_Server
+    Java_KBN:
+      type: org.ystia.java.linux.bash.nodes.Java
+      requirements:
+        - host:
+            node: Compute_KBN
+    Kibana:
+      type: org.ystia.kibana.linux.bash.nodes.Kibana
+      properties:
+        repository: { get_input: kbn_repository }
+      requirements:
+        - host:
+            node: Java_KBN
+        - consul:
+            node: Consul_KBN
+        - search_endpoint:
+            node: Elasticsearch
+    DummyLogsDashboard:
+      type: org.ystia.samples.dummylogs.linux.bash.nodes.DummyLogsDashboard
+      requirements:
+        - dashboard_host:
+            node: Kibana
+    BeatsDashboards:
+      type: org.ystia.kibana.linux.bash.nodes.BeatsDashboards
+      requirements:
+        - dashboard_host:
+            node: Kibana
+    MetricBeat_KBN:
+      type: org.ystia.beats.linux.bash.nodes.MetricBeat
+      requirements:
+        - host:
+            node: Compute_KBN
+        - consul:
+            node: Consul_KBN
+        - search_endpoint:
+            node: Elasticsearch
+    PacketBeat_KBN:
+      type: org.ystia.beats.linux.bash.nodes.PacketBeat
+      properties:
+        device: "any"
+      requirements:
+        - host:
+            node: Compute_KBN
+        - consul:
+            node: Consul_KBN
+        - search_endpoint:
+            node: Elasticsearch
+
+
+    # VM for Logstash
+
+    Compute_LS:
+      type: tosca.nodes.Compute
+      requirements:
+        - network:
+            node: Network
+            relationship: tosca.relationships.Network
+    Consul_LS:
+      type: org.ystia.consul.linux.bash.nodes.Consul
+      requirements:
+        - host:
+            node: Compute_LS
+        - server_endpoint:
+            node: Consul_Server
+    Java_LS:
+      type: org.ystia.java.linux.bash.nodes.Java
+      requirements:
+        - host:
+            node: Compute_LS
+    Logstash:
+      type: org.ystia.logstash.linux.bash.nodes.Logstash
+      properties:
+        repository: { get_input: ls_repository }
+      requirements:
+        - host:
+            node: Java_LS
+        - consul:
+            node: Consul_LS
+        - search_endpoint:
+            node: Elasticsearch
+# TODO Those following lines cause error ?
+#      artifacts:
+#        - filters_conf:
+#            file: config/logstash-dummylogs-filters.conf
+#            type: tosca.artifacts.File
+    MetricBeat_LS:
+      type: org.ystia.beats.linux.bash.nodes.MetricBeat
+      requirements:
+        - host:
+            node: Compute_LS
+        - consul:
+            node: Consul_LS
+        - search_endpoint:
+            node: Elasticsearch
+
+    # VM for DummyLogs
+
+    Compute_DL:
+      type: tosca.nodes.Compute
+      requirements:
+        - network:
+            node: Network
+            relationship: tosca.relationships.Network
+    Consul_DL:
+      type: org.ystia.consul.linux.bash.nodes.Consul
+      requirements:
+        - host:
+            node: Compute_DL
+        - server_endpoint:
+            node: Consul_Server
+    DummyLogsGenerator:
+      type: org.ystia.samples.dummylogs.linux.bash.nodes.DummyLogsGenerator
+      properties:
+        log_path: { get_input: dl_log_path }
+        delay_s: { get_input: dl_delay_s }
+      requirements:
+        - host:
+            node: Compute_DL
+    FileBeat:
+      type: org.ystia.beats.linux.bash.nodes.FileBeat
+      properties:
+        files: { get_input: dl_log_path }
+      requirements:
+        - host:
+            node: Compute_DL
+        - logstash_endpoint:
+            node: Logstash
+    MetricBeat_DL:
+      type: org.ystia.beats.linux.bash.nodes.MetricBeat
+      requirements:
+        - host:
+            node: Compute_DL
+        - consul:
+            node: Consul_DL
+        - search_endpoint:
+            node: Elasticsearch
+
+  # Output property for Kibana URL
+
+  outputs:
+    kibana_url:
+      description: The URL to access the Kibana dashboard
+      value: { get_attribute: [ Kibana, url ] }
