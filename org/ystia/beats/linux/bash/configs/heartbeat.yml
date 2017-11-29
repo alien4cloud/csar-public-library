@@ -1,0 +1,90 @@
+################### Heartbeat Configuration Example #########################
+
+# This file is an example configuration file highlighting only some common options.
+# The heartbeat.full.yml file in the same directory contains all the supported options
+# with detailed comments. You can use it for reference.
+#
+# You can find the full configuration reference here:
+# https://www.elastic.co/guide/en/beats/heartbeat/index.html
+
+############################# Heartbeat ######################################
+
+# Configure monitors
+heartbeat.monitors:
+- type: tcp
+  schedule: '@every 10s'
+  #TCP_HOSTS_PLACEHOLDER#
+  hosts: ["localhost:0000"]  
+  ipv4: true
+  ipv6: true
+  mode: any
+  insecure: true
+  enabled: true
+
+- type: icmp
+  schedule: '*/10 * * * * * *'
+  #ICMP_HOSTS_PLACEHOLDER#
+  hosts: ["localhost"]
+  enabled: true
+
+#- type: http
+  # List or urls to query
+#  urls: ["http://localhost:0000"]
+
+  # Configure task schedule
+#  schedule: '@every 10s'
+
+#  ipv4: true
+#  ipv6: true
+#  mode: any
+#  insecure: true
+#  enabled: true
+
+  # Total test connection and data exchange timeout
+  #timeout: 16s
+
+#================================ General =====================================
+
+# The name of the shipper that publishes the network data. It can be used to group
+# all the transactions sent by a single shipper in the web interface.
+#name:
+
+# The tags of the shipper are included in their own field with each
+# transaction published.
+#tags: ["service-X", "web-tier"]
+
+# Optional fields that you can specify to add additional information to the
+# output.
+#fields:
+#  env: staging
+
+#================================ Outputs =====================================
+
+# Configure what outputs to use when sending the data collected by the beat.
+# Multiple outputs may be used.
+
+#-------------------------- Elasticsearch output ------------------------------
+#output.elasticsearch:
+  ### Elasticsearch as output
+  #ELASTIC_SEARCH_OUTPUT_PLACEHOLDER#
+
+  # Optional protocol and basic auth credentials.
+  #protocol: "https"
+  #username: "elastic"
+  #password: "changeme"
+
+#----------------------------- Logstash output --------------------------------
+#output.logstash:
+  ### Logstash as output
+  #LOGSTASH_OUTPUT_PLACEHOLDER#
+
+#================================ Logging =====================================
+
+# Sets log level. The default log level is info.
+# Available log levels are: critical, error, warning, info, debug
+#logging.level: debug
+
+# At debug level, you can selectively enable logging only for some components.
+# To enable all selectors use ["*"]. Examples of other selectors are "beat",
+# "publish", "service".
+#logging.selectors: ["*"]

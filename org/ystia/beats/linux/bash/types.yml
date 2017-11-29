@@ -5,10 +5,206 @@ metadata:
   template_version: 1.0-SNAPSHOT
   template_author: Bull
 
-description:
+description: Beats are data shippers for many types of data you want to enrich with Logstash, search and analyze in Elasticsearch, and visualize in Kibana.
 
 imports:
   - tosca-normative-types:1.0.0-ALIEN14
-  - org.ystia.common:1.0-SNAPSHOT
+  - org.ystia.consul.pub:1.0-SNAPSHOT
+  - org.ystia.elasticsearch.pub:1.0-SNAPSHOT
+  - org.ystia.logstash.pub:1.0-SNAPSHOT
 
 node_types:
+  org.ystia.beats.linux.bash.nodes.Beat:
+    abstract: true
+    derived_from: org.ystia.consul.pub.nodes.ConsulUser
+    description: Abstract Component for supporting common operations on Beats
+    tags:
+      icon: /images/beats-icon.png
+    properties:
+      component_version:
+        type: version
+        description: Version of the embedded Beat components
+        default: 5.1.1
+        constraints:
+          - equal: 5.1.1
+      debug:
+        type: boolean
+        default: false
+        description: Enable debug logs for this beat
+    requirements:
+      - search_endpoint:
+          capability: org.ystia.elasticsearch.pub.capabilities.SearchEndpoint
+          relationship: org.ystia.beats.linux.bash.relationships.ConnectsBeatToES
+          occurrences: [0,1]
+      - logstash_endpoint:
+          capability: org.ystia.logstash.pub.capabilities.LogstashEndpoint
+          relationship: org.ystia.beats.linux.bash.relationships.ConnectsBeatToLS
+          occurrences: [0,1]
+    interfaces:
+      Standard:
+        create:
+          inputs:
+            DEBUG_LOGS: { get_property: [SELF, debug] }
+          implementation: scripts/install_beat.sh
+        start: scripts/start_beat.sh
+        stop: scripts/stop_beat.sh
+
+  org.ystia.beats.linux.bash.nodes.FileBeat:
+    derived_from: org.ystia.beats.linux.bash.nodes.Beat
+    description: A FileBeat ships content of files (typically log files)
+    tags:
+      icon: /images/file-icon.png
+    properties:
+      files:
+        type: string
+        description: A coma separated list of files to beat
+        default: "/var/log/*.log"
+    interfaces:
+      Standard:
+        configure:
+          inputs:
+            FILES: { get_property: [SELF, files] }
+          implementation: scripts/configure_filebeat.sh
+    artifacts:
+      - scripts:
+          type: tosca.artifacts.File
+          file: scripts
+      - beat_bin:
+          file: bins/filebeat.tar.gz
+          type: tosca.artifacts.File
+      - beat_config:
+          file: configs/filebeat.yml
+          type: tosca.artifacts.File
+
+  org.ystia.beats.linux.bash.nodes.MetricBeat:
+    derived_from: org.ystia.beats.linux.bash.nodes.Beat
+    description: A MetricBeat ships information about process/system/filesystem
+    tags:
+      icon: /images/metric-icon.png
+    properties:
+      period:
+        type: integer
+        default: 10
+        description: In seconds, defines how often to read server statistics
+    interfaces:
+      Standard:
+        configure:
+          inputs:
+            PERIOD: { get_property: [SELF, period] }
+          implementation: scripts/configure_metricbeat.sh
+    artifacts:
+      - scripts:
+          type: tosca.artifacts.File
+          file: scripts
+      - beat_bin:
+          file: bins/metricbeat.tar.gz
+          type: tosca.artifacts.File
+      - beat_config:
+          file: configs/metricbeat.yml
+          type: tosca.artifacts.File
+
+  org.ystia.beats.linux.bash.nodes.PacketBeat:
+    derived_from: org.ystia.beats.linux.bash.nodes.Beat
+    description: A PacketBeat ships information about network traffic
+    tags:
+      icon: /images/packet-icon.png
+    properties:
+      device:
+        type: string
+        default: any
+        description: Select the network interfaces to sniff the data. You can use the any keyword to sniff on all connected interfaces.
+    interfaces:
+      Standard:
+        configure:
+          inputs:
+            DEVICE: { get_property: [SELF, device] }
+          implementation: scripts/configure_packetbeat.sh
+    artifacts:
+      - scripts:
+          type: tosca.artifacts.File
+          file: scripts
+      - beat_bin:
+          file: bins/packetbeat.tar.gz
+          type: tosca.artifacts.File
+      - beat_config:
+          file: configs/packetbeat.yml
+          type: tosca.artifacts.File
+
+  org.ystia.beats.linux.bash.nodes.HeartBeat:
+    derived_from: org.ystia.beats.linux.bash.nodes.Beat
+    description: A HeartBeat ships information about running services
+    tags:
+      icon: /images/heartbeat-icon.png
+    properties:
+      schedule:
+        type: integer
+        default: 5
+        description: In seconds, defines how often to check services
+    requirements:
+      - connect_toComponent:
+          capability: tosca.capabilities.Node
+          relationship: org.ystia.beats.linux.bash.relationships.ConnectsHeartBeatToComponent
+          occurrences: [0,UNBOUNDED]
+    interfaces:
+      Standard:
+        configure:
+          inputs:
+            SCHEDULE: { get_property: [SELF, schedule] }
+          implementation: scripts/configure_heartbeat.sh
+    artifacts:
+      - scripts:
+          type: tosca.artifacts.File
+          file: scripts
+      - beat_bin:
+          file: bins/heartbeat.tar.gz
+          type: tosca.artifacts.File
+      - beat_config:
+          file: configs/heartbeat.yml
+          type: tosca.artifacts.File
+
+
+relationship_types:
+  org.ystia.beats.linux.bash.relationships.ConnectsBeatToES:
+    derived_from: org.ystia.relationships.ConnectsTo
+    description: >
+      Connects Beat to Elasticsearch
+    valid_target_types: [ org.ystia.elasticsearch.pub.capabilities.SearchEndpoint ]
+    interfaces:
+      Configure:
+        post_configure_source:
+          implementation: relationships/elasticsearch/beat_to_elasticsearch_post_configure_source.sh
+    artifacts:
+      - rsscripts:
+          file: relationships/elasticsearch
+          type: tosca.artifacts.File
+
+  org.ystia.beats.linux.bash.relationships.ConnectsBeatToLS:
+    derived_from: org.ystia.relationships.ConnectsTo
+    description: >
+      Connects Beat to Logstash
+    valid_target_types: [ org.ystia.logstash.pub.capabilities.LogstashEndpoint ]
+    interfaces:
+      Configure:
+        post_configure_source:
+          inputs:
+            TARGET_IP_ADDRESS: { get_attribute: [TARGET, ip_address] }
+          implementation: relationships/logstash/beat_to_logstash_post_configure_source.sh
+    artifacts:
+      - rsscripts:
+          file: relationships/logstash
+          type: tosca.artifacts.File
+
+  org.ystia.beats.linux.bash.relationships.ConnectsHeartBeatToComponent:
+    derived_from: org.ystia.relationships.ConnectsTo
+    description: >
+      Connects HeartBeat to any Component
+    valid_target_types: [ tosca.capabilities.Node ]
+    interfaces:
+      Configure:
+        post_configure_source:
+          implementation: relationships/component/heartbeat_to_component_post_configure_source.sh
+    artifacts:
+      - scripts:
+          file: relationships/component
+          type: tosca.artifacts.File
+

@@ -1,0 +1,43 @@
+################### Filebeat Configuration Example #########################
+
+#=========================== Filebeat prospectors =============================
+filebeat.prospectors:
+# Each - is a prospector. Most options can be set at the prospector level, so
+# you can use different prospectors for various configurations.
+# Below are the prospector specific configurations.
+
+- input_type: log
+
+  # Paths that should be crawled and fetched. Glob based paths.
+  paths:
+        #FILES_PLACEHOLDER#
+
+
+#================================ Outputs =====================================
+
+# Configure what outputs to use when sending the data collected by the beat.
+# Multiple outputs may be used.
+
+#----------------------------- Elasticsearch output --------------------------------
+#output.elasticsearch:
+  ### Elasticsearch as output
+  #ELASTIC_SEARCH_OUTPUT_PLACEHOLDER#
+
+#----------------------------- Logstash output --------------------------------
+#output.logstash:
+  ### Logstash as output
+  #LOGSTASH_OUTPUT_PLACEHOLDER#
+
+
+#================================ Logging =====================================
+
+# Sets log level. The default log level is info.
+# Available log levels are: critical, error, warning, info, debug
+#logging.level: debug
+
+# At debug level, you can selectively enable logging only for some components.
+# To enable all selectors use ["*"]. Examples of other selectors are "beat",
+# "publish", "service".
+#logging.selectors: ["*"]
+
+

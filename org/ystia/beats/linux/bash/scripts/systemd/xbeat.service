@@ -1,0 +1,8 @@
+[Unit]
+Description=Unit file for managing {{SERVICE_NAME}} within Ystia
+
+[Service]
+ExecStart={{BEAT_HOME}}/{{SERVICE_NAME}} -c {{BEAT_HOME}}/{{SERVICE_NAME}}.yml {{DEBUG_ARGS}}
+
+[Install]
+WantedBy=multi-user.target
