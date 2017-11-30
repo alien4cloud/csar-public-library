@@ -7,7 +7,7 @@ log begin
 ensure_home_var_is_set
 source ${YSTIA_DIR}/kibana_env.sh
 
-ELASTICSEARCH_URL=http://localhost:9200
+ELASTICSEARCH_URL="http://localhost:9200"
 KIBANA_INDEX=".kibana"
 
 
@@ -18,7 +18,8 @@ curl -XPUT "${ELASTICSEARCH_URL}/${KIBANA_INDEX}/_mapping/visualization" -d'{"vi
 curl -XPUT "${ELASTICSEARCH_URL}/${KIBANA_INDEX}/_mapping/dashboard" -d'{"dashboard": {"properties": {"hits": {"type": "integer"}, "version": {"type": "integer"}}}}'
 
 
-CMD="python2 ${scripts}/bdcf_import_dashboard.py -f ${DASHBOARD_FILE} -es ${ELASTICSEARCH_URL} -k ${KIBANA_INDEX}"
+CMD="python2 ${scripts}/ystia_import_dashboard.py -f ${DASHBOARD_FILE} -es ${ELASTICSEARCH_URL} -k ${KIBANA_INDEX}"
 log info "$CMD"
 $CMD
 
+log end

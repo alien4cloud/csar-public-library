@@ -82,12 +82,13 @@ node_types:
         stop:
           implementation: scripts/kibana_stop.sh
       custom:
-        importDashboardOnKibana:
+        load_dashboard:
           inputs:
             url:
               type: string
+              description: URL of the dashboard to upload and import in Kibana
               required: true
-          implementation: scripts/importDashboardOnKibana.sh
+          implementation: scripts/load_dashboard.sh
     artifacts:
       - scripts:
           file: scripts
@@ -97,7 +98,7 @@ node_types:
           type: tosca.artifacts.File
 
   org.ystia.kibana.linux.bash.nodes.KibanaDashboard:
-    derived_from: tosca.nodes.Root
+    derived_from: org.ystia.nodes.Root
     description: Default Dashboard component hosted on Kibana
     tags:
       icon: /images/chart-icon.png
@@ -107,20 +108,22 @@ node_types:
           relationship: org.ystia.kibana.linux.bash.relationships.DashboardHostedOnKibana
           occurrences: [1,1]
     interfaces:
+      Standard:
+        create: scripts/load_dashboard.sh
       custom:
-        updateDashboardFile:
+        update_dashboard:
           inputs:
-            dashboard_url:
+            url:
               type: string
-              description: URL of the dashboard to upload to update the current one
+              description: URL of the dashboard to upload to update the current one in Kibana
               required: true
-          implementation: scripts/updateDashboardFile.sh
+          implementation: scripts/load_dashboard.sh
     artifacts:
       - scripts:
           file: scripts
           type: tosca.artifacts.File
       - dashboard_file:
-          file: dashboardFiles/kdb_default.json
+          file: dashboards/kdb_default.json
           type: org.ystia.kibana.pub.artifacts.Dashboard
 
   org.ystia.kibana.linux.bash.nodes.BeatsDashboards:
@@ -135,10 +138,13 @@ node_types:
           occurrences: [1,1]
     interfaces:
       Standard:
-        create: scripts/load-beats-dashboards.sh
+        create: scripts/load_beats_dashboards.sh
     artifacts:
+      - scripts:
+          file: scripts
+          type: tosca.artifacts.File
       - dashboards_zip:
-          file: dashboardFiles/import_beats-dashboards-5.1.1.zip
+          file: dashboards/import_beats-dashboards-5.1.1.zip
           type: tosca.artifacts.File
 
 relationship_types:
@@ -149,7 +155,7 @@ relationship_types:
     interfaces:
       Configure:
         pre_configure_source:
-          implementation: scripts/kibana_to_elasticsearch_pre_config_source.sh
+          implementation: relationships/elasticsearch/kibana_to_elasticsearch_pre_config_source.sh
           inputs:
             kibanaIp: { get_attribute: [ SOURCE, ip_address] }
             elasticsearchIp: { get_attribute: [ TARGET, ip_address] }
@@ -157,7 +163,7 @@ relationship_types:
             ELASTICSEARCH_REPOSITORY: { get_property: [TARGET, repository] }
             ELASTICSEARCH_VERSION: { get_property: [TARGET, component_version] }
         post_configure_source:
-          implementation: scripts/kibana_to_elasticsearch_post_config_source.sh
+          implementation: relationships/elasticsearch/kibana_to_elasticsearch_post_config_source.sh
           inputs:
             cluster_name: { get_property: [ TARGET, cluster_name ] }
             kibanaIp: { get_attribute: [ SOURCE, ip_address] }
@@ -165,22 +171,14 @@ relationship_types:
             ELASTICSEARCH_HEAP_SIZE: { get_property: [SOURCE, es_heap_size] }
             JAVA_HOME: { get_attribute: [SOURCE, java_home] }
     artifacts:
-      - scripts:
-          file: scripts
+      - rselasticsearch:
+          file: relationships/elasticsearch
           type: tosca.artifacts.File
 
   org.ystia.kibana.linux.bash.relationships.DashboardHostedOnKibana:
     derived_from: org.ystia.relationships.HostedOn
-    description: Relationship that allows to host a Dashboard on kibana.
+    description: Relationship that allows to host a Dashboard on Kibana.
     valid_target_types: [ org.ystia.kibana.pub.capabilities.DashboardHosting ]
-    interfaces:
-      configure:
-        post_configure_source:
-          implementation: scripts/dashboardHostedOnKibana_post_config_source.sh
-    artifacts:
-      - scripts:
-          file: scripts
-          type: tosca.artifacts.File
 
   org.ystia.kibana.linux.bash.relationships.BeatsDashboardsHostedOnKibana:
     derived_from: org.ystia.relationships.HostedOn

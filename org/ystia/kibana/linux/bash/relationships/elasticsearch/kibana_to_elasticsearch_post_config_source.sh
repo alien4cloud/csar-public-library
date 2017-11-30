@@ -30,8 +30,9 @@ JVM_OPTIONS_FILE=${ELASTICSEARCH_HOME}/config/jvm.options
 sed -i -e "s/^-Xms.*$/-Xms${ELASTICSEARCH_HEAP_SIZE}/g" -e "s/^-Xmx.*$/-Xmx${ELASTICSEARCH_HEAP_SIZE}/g" ${JVM_OPTIONS_FILE}
 
 # Set environment variable used for systemd
-#source ${scripts}/java_utils.sh
-#retrieve_java_home "${HOST}"
+# Check JAVA_HOME, ELASTICSEARCH_HOME
+[ -z ${JAVA_HOME} ] && error_exit "JAVA_HOME not set"
+[ -z ${ELASTICSEARCH_HOME} ] && error_exit "ELASTICSEARCH_HOME not set"
 # Note: Remove -Xmx512m option in JAVA_OPTS added by gigaspaces/tools/groovy/bin/startGroovy
 JAVA_OPTS_2=$(echo ${JAVA_OPTS} |sed -s 's|-Xmx[0-9]*[a-zA-Z]||')
 export JAVA_OPTS=${JAVA_OPTS_2}
