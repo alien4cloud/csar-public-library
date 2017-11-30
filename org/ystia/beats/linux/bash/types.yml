@@ -55,6 +55,7 @@ node_types:
     tags:
       icon: /images/file-icon.png
     properties:
+      # Cannot use 'list of string' type because causes a syntax error in the FileBeat configuration file
       files:
         type: string
         description: A coma separated list of files to beat
