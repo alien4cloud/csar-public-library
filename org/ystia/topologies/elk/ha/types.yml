@@ -188,7 +188,7 @@ topology_template:
     KibanaDashboard:
       type: org.ystia.kibana.linux.bash.nodes.KibanaDashboard
       requirements:
-        - dashboard_host:
+        - host:
             node: Kibana
 
     # VM for Logstash Indexer

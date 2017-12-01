@@ -182,12 +182,12 @@ topology_template:
     DummyLogsDashboard:
       type: org.ystia.samples.dummylogs.linux.bash.nodes.DummyLogsDashboard
       requirements:
-        - dashboard_host:
+        - host:
             node: Kibana
     BeatsDashboards:
       type: org.ystia.kibana.linux.bash.nodes.BeatsDashboards
       requirements:
-        - dashboard_host:
+        - host:
             node: Kibana
     MetricBeat_KBN:
       type: org.ystia.beats.linux.bash.nodes.MetricBeat

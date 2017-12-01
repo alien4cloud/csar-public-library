@@ -149,7 +149,7 @@ topology_template:
       properties:
         repository: { get_input: kbn_repository }
       requirements:
-        - dashboard_host:
+        - host:
             node: Kibana
 
     # VM for Logstash Indexer

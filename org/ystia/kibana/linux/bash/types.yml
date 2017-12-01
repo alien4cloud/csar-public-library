@@ -51,7 +51,7 @@ node_types:
         constraints:
           - pattern: "[1-9][0-9]*[kKmMgG]"
     capabilities:
-      dashboard_host:
+      host:
         type: org.ystia.kibana.pub.capabilities.DashboardHosting
         occurrences: [0,unbounded]
     requirements:
@@ -103,7 +103,7 @@ node_types:
     tags:
       icon: /images/chart-icon.png
     requirements:
-      - dashboard_host:
+      - host:
           capability: org.ystia.kibana.pub.capabilities.DashboardHosting
           relationship: org.ystia.kibana.linux.bash.relationships.DashboardHostedOnKibana
           occurrences: [1,1]
@@ -132,7 +132,7 @@ node_types:
     tags:
       icon: /images/chart-icon.png
     requirements:
-      - dashboard_host:
+      - host:
           capability: org.ystia.kibana.pub.capabilities.DashboardHosting
           relationship: org.ystia.kibana.linux.bash.relationships.BeatsDashboardsHostedOnKibana
           occurrences: [1,1]

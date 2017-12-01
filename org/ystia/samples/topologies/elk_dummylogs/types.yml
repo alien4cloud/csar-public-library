@@ -152,7 +152,7 @@ topology_template:
     DummyLogsDashboard:
       type: org.ystia.samples.dummylogs.linux.bash.nodes.DummyLogsDashboard
       requirements:
-        - dashboard_host:
+        - host:
             node: Kibana
 
     # VM for Logstash
