@@ -22,7 +22,7 @@ topology_template:
         scalable:
           properties:
             min_instances: 1
-            max_instances: 1
+            max_instances: 3
             default_instances: 1
         endpoint:
           properties:
@@ -36,7 +36,7 @@ topology_template:
         agent_mode: server
         download_url: "https://releases.hashicorp.com/consul/0.6.4/consul_0.6.4_linux_amd64.zip"
         data_dir: "/var/consul"
-        tls_enabled: false
+        tls_enabled: true
       requirements:
         - host:
             node: Compute_Consul
@@ -47,7 +47,7 @@ topology_template:
           properties:
             api_port: 8500
             protocol: tcp
-            secure: false
+            secure: true
             network_name: PRIVATE
             initiator: source
     Compute_Vault:

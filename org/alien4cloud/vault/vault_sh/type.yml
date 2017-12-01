@@ -46,6 +46,9 @@ node_types:
             VAULT_DOWNLOAD_URL: { get_property: [SELF, download_url] }
           implementation: scripts/vault/create_vault.sh
         start:
+          inputs:
+            VAULT_IP: { get_property: [SELF, ip_address] }
+            VAULT_PORT: { get_property: [SELF, port] }
           implementation: scripts/vault/start_vault.sh
     artifacts:
       - configs:
