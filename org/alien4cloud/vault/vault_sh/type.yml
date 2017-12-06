@@ -38,6 +38,21 @@ node_types:
         type: string
         required: true
         default: /var/vault
+      tls_disable:
+        description: If true, Vault will not use tls for http.
+        type: boolean
+        required: true
+        default: false
+      auto_unsealed:
+        description: If true, Vault will be unsealed automatically and the tokens will be found in the repository /etc/vault
+        type: boolean
+        required: true
+        default: false
+      ldap_enable:
+        description: If true, Vault will use ldap as the authentification server
+        type: boolean
+        required: true
+        default: false
     interfaces:
       Standard:
         create:
@@ -47,15 +62,24 @@ node_types:
           implementation: scripts/vault/create_vault.sh
         start:
           inputs:
-            VAULT_IP: { get_property: [SELF, ip_address] }
+            VAULT_IP: { get_attribute: [SELF, ip_address] }
             VAULT_PORT: { get_property: [SELF, port] }
+            AUTO_UNSEALED: { get_property: [SELF, auto_unsealed] }
+            TLS_DISABLE: { get_property: [SELF, tls_disable] }
+            LDAP_ENABLE: { get_property: [SELF, ldap_enable] }
           implementation: scripts/vault/start_vault.sh
     artifacts:
       - configs:
-          file: config/vault
+          file: configs
           type: tosca.artifacts.File
       - commons:
           file: scripts/commons
+          type: tosca.artifacts.File
+      - tls_cert_file:
+          file: { get_input_artifact: tls_cert_file }
+          type: tosca.artifacts.File
+      - tls_key_file:
+          file: { get_input_artifact: tls_key_file }
           type: tosca.artifacts.File
 
 relationship_types:

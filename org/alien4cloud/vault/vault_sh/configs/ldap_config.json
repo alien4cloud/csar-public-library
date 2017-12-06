@@ -1,0 +1,10 @@
+{
+  "url": "ldap://ldap.fastconnect.fr:389",
+  "userattr": "uid",
+  "userdn": "uid=admin,ou=system",
+  "discoverdn": true,
+  "groupdn": "ou=People,dc=fastconnect,dc=fr",
+  "groupfilter": "(\u0026(objectClass=person)(objectClass=hordePerson)(!(objectClass=CalendarResource))(accountStatus=active))",
+  "insecure_tls": true,
+  "starttls":true
+}

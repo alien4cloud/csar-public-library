@@ -1,8 +1,17 @@
 #!/bin/bash -e
 PIDFILE=/var/run/vault.pid
-require_envs "VAULT_IP VAULT_PORT"
+LOGFILE=/var/log/vault/log.out
+source $commons/commons.sh
+require_envs "VAULT_IP VAULT_PORT AUTO_UNSEALED TLS_DISABLE LDAP_ENABLE"
 
-#1. Start the vault server
+echo "Update the vault_config file"
+sudo sed -i -e "s/%TLS_DISABLE%/${TLS_DISABLE}/g" /etc/vault/vault_config.hcl
+
+PROTOCOL=https
+if [[ $TLS_DISABLE == true ]]; then
+  PROTOCOL=http
+fi
+
 if [ -f $PIDFILE ]; then
   PID=`cat $PIDFILE`
   if [ -z "`ps axf | grep ${PID} | grep -v grep`" ]; then
@@ -11,38 +20,50 @@ if [ -f $PIDFILE ]; then
     echo "Running"
   fi
 else
-  printf "%s\n" "Service not running, we start it"
-  nohup bash -c 'vault server -config=/etc/vault/config.hcl & echo \$! > sudo ${PIDFILE}' &
+  printf "%s\n" "Vault not running, we start vault server"
+  sudo bash -c "nohup vault server -config=/etc/vault/vault_config.hcl > ${LOGFILE} 2>&1 & echo \$! > ${PIDFILE}"
 fi
 
-#2. Wait for the vault server up
-until $(curl --output /dev/null --silent --head --fail http://$VAULT_IP:$VAULT_PORT); do
-    printf '.'
-    sleep 5
-done
+echo "Export the environment variable VAULT_ADDR to $PROTOCOL://${VAULT_IP}:${VAULT_PORT}"
+export VAULT_ADDR=$PROTOCOL://$VAULT_IP:$VAULT_PORT
 
-#3. Init the vault and save the unseal key
-UNSEALED_KEYS_FILE=/etc/vault/unsealed_keys.txt
-vault init >> $UNSEALED_KEYS_FILE
+sleep 10s
 
-while IFS='' read -r line || [[ -n "$line" ]]; do
-  if [[ $line == *"Initial Root Token"* ]]; then
-    #We need to get the Root Token
-    echo "Unable to unsealed vault."
-    exit 1
-  fi
-  echo "Unseal vault with the key"
-  #grep the key
-  KEY=`cut -d ": " -f 2 <<< "$line"`
-  #send the request
-  RESPONSE=`curl \
-              --request PUT \
-              --data '{"key": $KEY}' \
-              https://$VAULT_IP:$VAULT_PORT/v1/sys/unseal`
-  if [[ $RESPONSE == *'"sealed": true'* ]]; then
-    echo "Successfully unsealed vault !"
-    break
-  fi
-done < "$UNSEALED_KEYS_FILE"
+if [[ $AUTO_UNSEALED == true ]]; then
+  echo "Init the vault and save the unseal key"
+  UNSEALED_KEYS_FILE=/etc/vault/unsealed_keys.txt
+  vault init -tls-skip-verify | sudo tee $UNSEALED_KEYS_FILE > /dev/null
 
-#4.
+  IFS=' ' read -r -a array <<< `sed "6q;d" $UNSEALED_KEYS_FILE`
+  echo "Export the root token ${array[3]}"
+  export VAULT_TOKEN="${array[3]}"
+
+  while IFS='' read -r line || [[ -n "$line" ]]; do
+    #grep the key
+    IFS=' ' read -r -a array <<< $line
+    KEY=${array[3]}
+    echo "Unseal vault with the key $KEY"
+    # #send the request
+    RESPONSE=`curl \
+                --insecure \
+                --request PUT \
+                --data '{"key": "'${KEY}'"}' \
+                $PROTOCOL://$VAULT_IP:$VAULT_PORT/v1/sys/unseal`
+    echo $RESPONSE
+    if [[ $RESPONSE == *'"sealed":false'* ]]; then
+      echo "Successfully unsealed vault !"
+      break
+    fi
+  done < "$UNSEALED_KEYS_FILE"
+fi
+
+if [[ $LDAP_ENABLE == true ]]; then
+  echo "Enable ldap !"
+  vault auth-enable -tls-skip-verify ldap
+  curl \
+      -k \
+      --header "X-Vault-Token: $VAULT_TOKEN" \
+      --request POST \
+      --data @/etc/vault/ldap_config.json \
+      $PROTOCOL://$VAULT_IP:$VAULT_PORT/v1/auth/ldap/config
+fi

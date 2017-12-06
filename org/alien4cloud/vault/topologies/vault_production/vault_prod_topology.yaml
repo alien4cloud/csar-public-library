@@ -15,6 +15,12 @@ imports:
   - org.alien4cloud.vault.pub:1.4.0-SNAPSHOT
 
 topology_template:
+
+  input_artifacts:
+    tls_cert_file:
+        type: tosca.artifacts.File
+    tls_key_file:
+        type: tosca.artifacts.File
   node_templates:
     Compute_Consul:
       type: tosca.nodes.Compute
@@ -36,7 +42,7 @@ topology_template:
         agent_mode: server
         download_url: "https://releases.hashicorp.com/consul/0.6.4/consul_0.6.4_linux_amd64.zip"
         data_dir: "/var/consul"
-        tls_enabled: true
+        tls_enabled: false
       requirements:
         - host:
             node: Compute_Consul
@@ -70,6 +76,8 @@ topology_template:
         port: 8200
         download_url: "https://releases.hashicorp.com/vault/0.8.3/vault_0.8.3_linux_amd64.zip"
         install_dir: "/var/vault"
+        auto_unsealed: true
+        ldap_enable: true
       requirements:
         - consul:
             node: ConsulServer
