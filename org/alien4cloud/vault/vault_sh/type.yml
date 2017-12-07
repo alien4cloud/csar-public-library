@@ -81,6 +81,9 @@ node_types:
       - tls_key_file:
           file: { get_input_artifact: tls_key_file }
           type: tosca.artifacts.File
+      - ldap_config:
+          file: configs/ldap_config_example.json
+          type: tosca.artifacts.File
 
 relationship_types:
   org.alien4cloud.vault.relationships.ConnectToConsulAgent:

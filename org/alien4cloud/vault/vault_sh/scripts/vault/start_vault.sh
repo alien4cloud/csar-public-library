@@ -21,7 +21,7 @@ if [ -f $PIDFILE ]; then
   fi
 else
   printf "%s\n" "Vault not running, we start vault server"
-  sudo bash -c "nohup vault server -config=/etc/vault/vault_config.hcl > ${LOGFILE} 2>&1 & echo \$! > ${PIDFILE}"
+  sudo bash -c "nohup vault server -log-level=debug -config=/etc/vault/vault_config.hcl > ${LOGFILE} 2>&1 & echo \$! > ${PIDFILE}"
 fi
 
 echo "Export the environment variable VAULT_ADDR to $PROTOCOL://${VAULT_IP}:${VAULT_PORT}"
@@ -60,10 +60,14 @@ fi
 if [[ $LDAP_ENABLE == true ]]; then
   echo "Enable ldap !"
   vault auth-enable -tls-skip-verify ldap
-  curl \
-      -k \
-      --header "X-Vault-Token: $VAULT_TOKEN" \
-      --request POST \
-      --data @/etc/vault/ldap_config.json \
-      $PROTOCOL://$VAULT_IP:$VAULT_PORT/v1/auth/ldap/config
+  RESPONSE=`curl \
+              -k \
+              --header "X-Vault-Token: $VAULT_TOKEN" \
+              --request POST \
+              --data @/etc/vault/ldap_config.json \
+              $PROTOCOL://$VAULT_IP:$VAULT_PORT/v1/auth/ldap/config`
+  echo $RESPONSE
+  if [[ $RESPONSE == *'"errors:"'* ]]; then
+    exit 1
+  fi
 fi

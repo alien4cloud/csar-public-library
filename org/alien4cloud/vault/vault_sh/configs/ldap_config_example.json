@@ -1,0 +1,8 @@
+#It's a ldap configuration example file
+{
+  "url": "ldap://ldap.example:389",
+  "userdn":"ou=People,dc=example,dc=com",
+  "groupdn":"ou=Groups,dc=example,dc=com",
+  "groupfilter":"(|(memberUid={{.Username}}))",
+  "insecure_tls": true
+}

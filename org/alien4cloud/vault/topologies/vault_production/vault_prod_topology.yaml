@@ -18,9 +18,11 @@ topology_template:
 
   input_artifacts:
     tls_cert_file:
-        type: tosca.artifacts.File
+      type: tosca.artifacts.File
     tls_key_file:
-        type: tosca.artifacts.File
+      type: tosca.artifacts.File
+    ldap_config:
+      type: tosca.artifacts.File
   node_templates:
     Compute_Consul:
       type: tosca.nodes.Compute
@@ -87,6 +89,10 @@ topology_template:
             node: Compute_Vault
             capability: tosca.capabilities.Container
             relationship: tosca.relationships.HostedOn
+      artifacts:
+        ldap_config:
+            file: { get_input_artifact: ldap_config }
+            type: tosca.artifacts.File
   outputs:
     vault_url:
       value: { get_attribute: [ Compute_Vault, ip_address ] }

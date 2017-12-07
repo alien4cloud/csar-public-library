@@ -25,8 +25,9 @@ echo "Unzipped vault package to /usr/bin"
 
 sudo rm ${VAULT_TMP_ZIP}
 
+echo "Copying the configurations $configs/vault_config.hcl and $ldap_config."
 sudo cp $configs/vault_config.hcl /etc/vault/vault_config.hcl
-sudo cp $configs/ldap_config.json /etc/vault/ldap_config.json
+sudo cp $ldap_config /etc/vault/ldap_config.json
 
 echo "Copying the tls certificates files $tls_cert_file and $tls_key_file"
 sudo cp $tls_cert_file /etc/certs/vault.crt
