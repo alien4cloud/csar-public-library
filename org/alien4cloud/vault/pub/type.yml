@@ -20,6 +20,18 @@ node_types:
       consul_server:
         type: org.alien4cloud.vault.pub.capabilities.VaultServer
         valid_source_types: [org.alien4cloud.vault.pub.capabilities.ConsulClient]
+  org.alien4cloud.vault.pub.Policy:
+    abstract: true
+    derived_from: tosca.nodes.Root
+    description: >
+      Represent the vault policy
+    tags:
+      icon: /images/vault.png
+    requirements:
+      - vault:
+          capability: org.alien4cloud.vault.pub.capabilities.VaultServer
+          relationship: org.alien4cloud.vault.pub.relationships.PolicyHostedOnVaultServer
+          occurrences: [ 0, 1 ]
 
 capability_types:
   org.alien4cloud.vault.pub.capabilities.VaultServer:
@@ -30,13 +42,9 @@ capability_types:
     derived_from: tosca.capabilities.Endpoint
     description: >
       The capability to connect to a vault client using the vault API.
-    # properties:
-    #   tls_enabled:
-    #     type: boolean
-    #     description: indicates if the connection will be secured (HTTPS)
-    #     required: false
-    #     default: false
-    #   ca_passphrase:
-    #     type: string
-    #     description: the passphrase for the CA certificate
-    #     required: false
+
+relationship_types:
+  org.alien4cloud.vault.pub.relationships.PolicyHostedOnVaultServer:
+    derived_from: tosca.relationships.HostedOn
+    description: Relationship use to describe that the vault policy is hosted on the vault server.
+    valid_target_types: [ org.alien4cloud.vault.pub.capabilities.VaultServer ]

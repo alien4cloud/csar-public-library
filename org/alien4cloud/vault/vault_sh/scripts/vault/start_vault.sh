@@ -35,7 +35,7 @@ if [[ $AUTO_UNSEALED == true ]]; then
   vault init -tls-skip-verify | sudo tee $UNSEALED_KEYS_FILE > /dev/null
 
   IFS=' ' read -r -a array <<< `sed "6q;d" $UNSEALED_KEYS_FILE`
-  echo "Export the root token ${array[3]}"
+  echo "Export the VAULT_TOKEN=${array[3]}"
   export VAULT_TOKEN="${array[3]}"
 
   while IFS='' read -r line || [[ -n "$line" ]]; do

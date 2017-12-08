@@ -53,6 +53,9 @@ node_types:
         type: boolean
         required: true
         default: false
+    attributes:
+      vault_addr: { get_operation_output: [ SELF, Standard, start, VAULT_ADDR ] }
+      unsealed_keys_file: { get_operation_output: [ SELF, Standard, start, UNSEALED_KEYS_FILE ] }
     interfaces:
       Standard:
         create:
@@ -85,6 +88,50 @@ node_types:
           file: configs/ldap_config_example.json
           type: tosca.artifacts.File
 
+  org.alien4cloud.vault.vault_sh.Policy:
+    derived_from: org.alien4cloud.vault.pub.Policy
+    description: >
+      Represent the vault policy
+    tags:
+      icon: /images/vault.png
+    properties:
+      policy_name:
+        description: The name for the policy
+        type: string
+        required: true
+      groups:
+        description: The groups associating this policy
+        type: list
+        entry_schema:
+          type: string
+      users:
+        description: The users associating this policy
+        type: list
+        entry_schema:
+          type: string
+    requirements:
+      - vault:
+          capability: org.alien4cloud.vault.pub.capabilities.VaultServer
+          relationship: org.alien4cloud.vault.vault_sh.relationships.PolicyHostedOnVaultServer
+          occurrences: [ 0, 1 ]
+    artifacts:
+      - commons:
+          file: scripts/commons
+          type: tosca.artifacts.File
+      - policy_definition_file:
+          description: The HCL file for defining policies.
+          type: tosca.artifacts.File
+    interfaces:
+      Standard:
+        start:
+          inputs:
+            POLICY_NAME: { get_property: [SELF, policy_name] }
+            VAULT_ADDR: { get_attribute: [HOST, vault_addr] }
+            UNSEALED_KEYS_FILE: { get_attribute: [HOST, unsealed_keys_file] }
+            GROUP_ARRAY: { get_property: [SELF, groups] }
+            USER_ARRAY: { get_property: [SELF, users] }
+          implementation: scripts/policy/write_policy.sh
+
 relationship_types:
   org.alien4cloud.vault.relationships.ConnectToConsulAgent:
     derived_from: tosca.relationships.ConnectsTo
@@ -98,3 +145,6 @@ relationship_types:
             VAULT_IP: { get_attribute: [SOURCE, ip_address] }
             VAULT_PORT: { get_property: [SOURCE, port] }
           implementation: scripts/vault/configure_vault.sh
+  org.alien4cloud.vault.vault_sh.relationships.PolicyHostedOnVaultServer:
+    derived_from: tosca.relationships.HostedOn
+    valid_target_types: [org.alien4cloud.vault.vault_sh.nodes.VaultServer]

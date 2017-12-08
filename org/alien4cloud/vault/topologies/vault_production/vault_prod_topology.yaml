@@ -93,6 +93,16 @@ topology_template:
         ldap_config:
             file: { get_input_artifact: ldap_config }
             type: tosca.artifacts.File
+    Policy:
+      type: org.alien4cloud.vault.vault_sh.Policy
+      requirements:
+        - vault:
+            node: VaultServer
+            capability: org.alien4cloud.vault.pub.capabilities.VaultServer
+            relationship: org.alien4cloud.vault.vault_sh.relationships.PolicyHostedOnVaultServer
+      artifacts:
+        policy_definition_file:
+          type: tosca.artifacts.File
   outputs:
     vault_url:
       value: { get_attribute: [ Compute_Vault, ip_address ] }
