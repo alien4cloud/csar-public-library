@@ -1,0 +1,188 @@
+tosca_definitions_version: alien_dsl_1_4_0
+
+metadata:
+  template_name: org.ystia.samples.topologies.elk_nifi
+  template_version: 1.0-SNAPSHOT
+  template_author: Bull
+
+
+imports:
+  - tosca-normative-types:1.0.0-ALIEN14
+  - org.ystia.common:1.0-SNAPSHOT
+  - org.ystia.consul.pub:1.0-SNAPSHOT
+  - org.ystia.consul.linux.bash:1.0-SNAPSHOT
+  - org.ystia.java.pub:1.0-SNAPSHOT
+  - org.ystia.java.linux.bash:1.0-SNAPSHOT
+  - org.ystia.elasticsearch.pub:1.0-SNAPSHOT
+  - org.ystia.elasticsearch.linux.bash:1.0-SNAPSHOT
+  - org.ystia.kibana.pub:1.0-SNAPSHOT
+  - org.ystia.kibana.linux.bash:1.0-SNAPSHOT
+  - org.ystia.nifi.linux.bash:1.0-SNAPSHOT
+
+topology_template:
+  description: A topology template to connect NiFi with Elasticsearch and Kibana
+
+  inputs:
+    es_repository:
+      type: string
+      required: false
+      default: "https://artifacts.elastic.co/downloads/elasticsearch"
+      constraints:
+        - pattern: ^(http|https|ftp)://.+/.*$
+    es_curator_repository_url:
+      type: string
+      required: false
+      default: "http://packages.elastic.co/curator/4/centos/7"
+      constraints:
+        - pattern: ^(http|https|ftp)://.+/.*$
+    es_curator_repository_key_url:
+      type: string
+      required: false
+      default: "http://packages.elastic.co/GPG-KEY-elasticsearch"
+      constraints:
+        - pattern: ^(http|https|ftp)://.+/.*$
+    kbn_repository:
+      type: string
+      required: false
+      default: "https://artifacts.elastic.co/downloads/kibana"
+      constraints:
+        - pattern: ^(http|https|ftp)://.+/.*$
+    nf_repository:
+      type: string
+      required: false
+      default: "http://archive.apache.org/dist/nifi/1.1.2"
+      constraints:
+        - pattern: ^(http|https|ftp)://.+/.*$
+
+  node_templates:
+
+    # Network
+
+    Network:
+      type: tosca.nodes.Network
+      properties:
+        ip_version: 4
+
+    # VM for Consul Server
+
+    Compute_CS:
+      type: tosca.nodes.Compute
+    Consul_Server:
+      type: org.ystia.consul.linux.bash.nodes.Consul
+      requirements:
+        - host:
+            node: Compute_CS
+
+    # VM for Elasticsearch
+
+    Compute_ES:
+      type: tosca.nodes.Compute
+      properties:
+        mem_size: 12GB
+      requirements:
+        - network:
+            node: Network
+            relationship: tosca.relationships.Network
+    Consul_ES:
+      type: org.ystia.consul.linux.bash.nodes.Consul
+      requirements:
+        - host:
+            node: Compute_ES
+        - server_endpoint:
+            node: Consul_Server
+    Java_ES:
+      type: org.ystia.java.linux.bash.nodes.Java
+      requirements:
+        - host:
+            node: Compute_ES
+    Elasticsearch:
+      type: org.ystia.elasticsearch.linux.bash.nodes.Elasticsearch
+      properties:
+        repository: { get_input: es_repository }
+        curator_repository_url: { get_input: es_curator_repository_url }
+        curator_repository_key_url: { get_input: es_curator_repository_key_url }
+        cluster_name: nifi
+      requirements:
+        - host:
+            node: Java_ES
+        - consul:
+            node: Consul_ES
+
+    # VM for Kibana
+
+    Compute_KBN:
+      type: tosca.nodes.Compute
+      requirements:
+        - network:
+            node: Network
+            relationship: tosca.relationships.Network
+    Consul_KBN:
+      type: org.ystia.consul.linux.bash.nodes.Consul
+      requirements:
+        - host:
+            node: Compute_KBN
+        - server_endpoint:
+            node: Consul_Server
+    Java_KBN:
+      type: org.ystia.java.linux.bash.nodes.Java
+      requirements:
+        - host:
+            node: Compute_KBN
+    Kibana:
+      type: org.ystia.kibana.linux.bash.nodes.Kibana
+      properties:
+        repository: { get_input: kbn_repository }
+      requirements:
+        - host:
+            node: Java_KBN
+        - consul:
+            node: Consul_KBN
+        - search_endpoint:
+            node: Elasticsearch
+    KibanaDashboard:
+      type: org.ystia.kibana.linux.bash.nodes.KibanaDashboard
+      requirements:
+        - host:
+            node: Kibana
+
+    # VM for NiFi
+
+    Compute_NF:
+      type: tosca.nodes.Compute
+      requirements:
+        - network:
+            node: Network
+            relationship: tosca.relationships.Network
+    Consul_NF:
+      type: org.ystia.consul.linux.bash.nodes.Consul
+      requirements:
+        - host:
+            node: Compute_NF
+        - server_endpoint:
+            node: Consul_Server
+    Java_NF:
+      type: org.ystia.java.linux.bash.nodes.Java
+      requirements:
+        - host:
+            node: Compute_NF
+    NiFi:
+      type: org.ystia.nifi.linux.bash.nodes.NiFi
+      properties:
+        repository: { get_input: nf_repository }
+      requirements:
+        - host:
+            node: Java_NF
+        - consul:
+            node: Consul_NF
+#        - search_endpoint:
+#            node: Elasticsearch
+
+  # Output property for Kibana and NiFi URL
+
+  outputs:
+    kibana_url:
+      description: The URL to access the Kibana dashboard
+      value: { get_attribute: [ Kibana, url ] }
+    NiFi_url:
+      description: The URL to access the NiFi GUI
+      value: { get_attribute: [ NiFi, url ] }

@@ -1,0 +1,14 @@
+[Unit]
+Description=Unit file for managing NiFi within Ystia
+
+[Service]
+Type=forking
+Environment="JAVA_HOME={{JAVA_HOME}}"
+ExecStart={{NIFI_HOME}}/bin/nifi.sh start
+ExecStop={{NIFI_HOME}}/bin/nifi.sh stop
+ExecReload={{NIFI_HOME}}/bin/nifi.sh restart
+Restart=on-failure
+User={{USER}}
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,66 @@
+tosca_definitions_version: alien_dsl_1_4_0
+
+metadata:
+  template_name: org.ystia.tests.topologies.nifi
+  template_version: 1.0-SNAPSHOT
+  template_author: Bull
+
+
+imports:
+  - tosca-normative-types:1.0.0-ALIEN14
+  - org.ystia.common:1.0-SNAPSHOT
+  - org.ystia.consul.pub:1.0-SNAPSHOT
+  - org.ystia.consul.linux.bash:1.0-SNAPSHOT
+  - org.ystia.java.pub:1.0-SNAPSHOT
+  - org.ystia.java.linux.bash:1.0-SNAPSHOT
+  - org.ystia.nifi.linux.bash:1.0-SNAPSHOT
+
+topology_template:
+  description: A basic topology template with NiFi
+
+  inputs:
+    repository:
+      type: string
+      required: false
+      default: "http://archive.apache.org/dist/nifi/1.1.2"
+      constraints:
+        - pattern: ^(http|https|ftp)://.+/.*$
+
+  node_templates:
+
+    # Network
+
+    Network:
+      type: tosca.nodes.Network
+      properties:
+        ip_version: 4
+
+    # VM for Elasticsearch
+
+    Compute:
+      type: tosca.nodes.Compute
+      properties:
+        mem_size: 12GB
+      requirements:
+        - network:
+            node: Network
+            relationship: tosca.relationships.Network
+    Java:
+      type: org.ystia.java.linux.bash.nodes.Java
+      requirements:
+        - host:
+            node: Compute
+    NiFi:
+      type: org.ystia.nifi.linux.bash.nodes.NiFi
+      properties:
+        repository: { get_input: repository }
+      requirements:
+        - host:
+            node: Java
+
+  # Output property for NiFi URL
+
+  outputs:
+    nifi_url:
+      description: The URL to access the NiFi GUI
+      value: { get_attribute: [ NiFi, url ] }
