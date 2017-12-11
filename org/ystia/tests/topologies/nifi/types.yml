@@ -35,7 +35,7 @@ topology_template:
       properties:
         ip_version: 4
 
-    # VM for Elasticsearch
+    # VM for NiFi
 
     Compute:
       type: tosca.nodes.Compute
