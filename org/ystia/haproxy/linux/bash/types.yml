@@ -37,6 +37,13 @@ node_types:
   org.ystia.haproxy.linux.bash.nodes.HAProxyHTTP:
     derived_from: org.ystia.nodes.SoftwareComponent
     description: HAProxy Server for HTTP connection on linux
+    tags:
+      icon: /images/logo.png
+    properties:
+      port:
+        type: integer
+        required: true
+        description: Port number for mode HTTP
     requirements:
       - host:
           capability: org.ystia.haproxy.pub.capabilities.Container.HAProxy
@@ -54,17 +61,17 @@ node_types:
       - scripts:
           type: tosca.artifacts.File
           file: scripts
+
+  org.ystia.haproxy.linux.bash.nodes.HAProxyTCP:
+    derived_from: org.ystia.nodes.SoftwareComponent
+    description: HAProxy Server for TCP connexion on linux
     tags:
       icon: /images/logo.png
     properties:
       port:
         type: integer
         required: true
-        description: Port number for mode HTTP
-
-  org.ystia.haproxy.linux.bash.nodes.HAProxyTCP:
-    derived_from: org.ystia.nodes.SoftwareComponent
-    description: HAProxy Server for TCP connexion on linux
+        description: Port number for mode TCP
     capabilities:
       app_endpoint: tosca.capabilities.Endpoint
     requirements:
@@ -84,10 +91,3 @@ node_types:
       - scripts:
           type: tosca.artifacts.File
           file: scripts
-    tags:
-      icon: /images/logo.png
-    properties:
-      port:
-        type: integer
-        required: true
-        description: Port number for mode TCP
