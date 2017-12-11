@@ -1,4 +1,4 @@
-#!/bin/bash -e
+#!/bin/bash
 source $commons/commons.sh
 install_dependencies "jq"
 require_envs "POLICY_NAME VAULT_ADDR UNSEALED_KEYS_FILE GROUP_ARRAY USER_ARRAY"
@@ -27,9 +27,10 @@ len=${#groups}
 groups="[${groups:2:len-4}]"
 readarray -t array <<<"$(jq -r '.[]' <<<"$groups")"
 #-------------------------------
+
 for group in "${array[@]}"
 do
-  existing_policies=`vault read -tls-skip-verify -field=policies auth/ldap/groups/$group`
+  existing_policies=`vault read -tls-skip-verify -field=policies auth/ldap/groups/$group 2> /dev/null`
   echo "Group $group has the policies $existing_policies"
   if [[ -z "${existing_policies// }" ]];
   then
@@ -52,7 +53,7 @@ readarray -t array <<<"$(jq -r '.[]' <<<"$users")"
 #-------------------------------
 for user in "${array[@]}"
 do
-  existing_policies=`vault read -tls-skip-verify -field=policies auth/ldap/users/$user`
+  existing_policies=`vault read -tls-skip-verify -field=policies auth/ldap/users/$user 2> /dev/null`
   echo "User $user has the policies $existing_policies"
   if [[ -z "${existing_policies// }" ]];
   then
