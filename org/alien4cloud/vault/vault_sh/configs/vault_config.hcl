@@ -5,5 +5,7 @@ storage "consul" {
 
 listener "tcp" {
  address = "%VAULT_IP%:%VAULT_PORT%"
- tls_disable = 1
+ tls_disable = %TLS_DISABLE%
+ tls_cert_file = "/etc/certs/vault.crt"
+ tls_key_file  = "/etc/certs/vault.key"
 }

@@ -15,6 +15,14 @@ imports:
   - org.alien4cloud.vault.pub:1.4.0-SNAPSHOT
 
 topology_template:
+
+  input_artifacts:
+    tls_cert_file:
+      type: tosca.artifacts.File
+    tls_key_file:
+      type: tosca.artifacts.File
+    ldap_config:
+      type: tosca.artifacts.File
   node_templates:
     Compute_Consul:
       type: tosca.nodes.Compute
@@ -22,7 +30,7 @@ topology_template:
         scalable:
           properties:
             min_instances: 1
-            max_instances: 1
+            max_instances: 3
             default_instances: 1
         endpoint:
           properties:
@@ -47,7 +55,7 @@ topology_template:
           properties:
             api_port: 8500
             protocol: tcp
-            secure: false
+            secure: true
             network_name: PRIVATE
             initiator: source
     Compute_Vault:
@@ -70,6 +78,8 @@ topology_template:
         port: 8200
         download_url: "https://releases.hashicorp.com/vault/0.8.3/vault_0.8.3_linux_amd64.zip"
         install_dir: "/var/vault"
+        auto_unsealed: true
+        ldap_enable: true
       requirements:
         - consul:
             node: ConsulServer
@@ -79,6 +89,20 @@ topology_template:
             node: Compute_Vault
             capability: tosca.capabilities.Container
             relationship: tosca.relationships.HostedOn
+      artifacts:
+        ldap_config:
+            file: { get_input_artifact: ldap_config }
+            type: tosca.artifacts.File
+    Policy:
+      type: org.alien4cloud.vault.vault_sh.Policy
+      requirements:
+        - vault:
+            node: VaultServer
+            capability: org.alien4cloud.vault.pub.capabilities.VaultServer
+            relationship: org.alien4cloud.vault.vault_sh.relationships.PolicyHostedOnVaultServer
+      artifacts:
+        policy_definition_file:
+          type: tosca.artifacts.File
   outputs:
     vault_url:
       value: { get_attribute: [ Compute_Vault, ip_address ] }

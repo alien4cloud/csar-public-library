@@ -38,6 +38,24 @@ node_types:
         type: string
         required: true
         default: /var/vault
+      tls_disable:
+        description: If true, Vault will not use tls for http.
+        type: boolean
+        required: true
+        default: false
+      auto_unsealed:
+        description: If true, Vault will be unsealed automatically and the tokens will be found in the repository /etc/vault
+        type: boolean
+        required: true
+        default: false
+      ldap_enable:
+        description: If true, Vault will use ldap as the authentification server
+        type: boolean
+        required: true
+        default: false
+    attributes:
+      vault_addr: { get_operation_output: [ SELF, Standard, start, VAULT_ADDR ] }
+      unsealed_keys_file: { get_operation_output: [ SELF, Standard, start, UNSEALED_KEYS_FILE ] }
     interfaces:
       Standard:
         create:
@@ -46,14 +64,73 @@ node_types:
             VAULT_DOWNLOAD_URL: { get_property: [SELF, download_url] }
           implementation: scripts/vault/create_vault.sh
         start:
+          inputs:
+            VAULT_IP: { get_attribute: [SELF, ip_address] }
+            VAULT_PORT: { get_property: [SELF, port] }
+            AUTO_UNSEALED: { get_property: [SELF, auto_unsealed] }
+            TLS_DISABLE: { get_property: [SELF, tls_disable] }
+            LDAP_ENABLE: { get_property: [SELF, ldap_enable] }
           implementation: scripts/vault/start_vault.sh
     artifacts:
       - configs:
-          file: config/vault
+          file: configs
           type: tosca.artifacts.File
       - commons:
           file: scripts/commons
           type: tosca.artifacts.File
+      - tls_cert_file:
+          file: { get_input_artifact: tls_cert_file }
+          type: tosca.artifacts.File
+      - tls_key_file:
+          file: { get_input_artifact: tls_key_file }
+          type: tosca.artifacts.File
+      - ldap_config:
+          file: configs/ldap_config_example.json
+          type: tosca.artifacts.File
+
+  org.alien4cloud.vault.vault_sh.Policy:
+    derived_from: org.alien4cloud.vault.pub.Policy
+    description: >
+      Represent the vault policy
+    tags:
+      icon: /images/vault.png
+    properties:
+      policy_name:
+        description: The name for the policy
+        type: string
+        required: true
+      groups:
+        description: The groups associating this policy
+        type: list
+        entry_schema:
+          type: string
+      users:
+        description: The users associating this policy
+        type: list
+        entry_schema:
+          type: string
+    requirements:
+      - vault:
+          capability: org.alien4cloud.vault.pub.capabilities.VaultServer
+          relationship: org.alien4cloud.vault.vault_sh.relationships.PolicyHostedOnVaultServer
+          occurrences: [ 0, 1 ]
+    artifacts:
+      - commons:
+          file: scripts/commons
+          type: tosca.artifacts.File
+      - policy_definition_file:
+          description: The HCL file for defining policies.
+          type: tosca.artifacts.File
+    interfaces:
+      Standard:
+        start:
+          inputs:
+            POLICY_NAME: { get_property: [SELF, policy_name] }
+            VAULT_ADDR: { get_attribute: [HOST, vault_addr] }
+            UNSEALED_KEYS_FILE: { get_attribute: [HOST, unsealed_keys_file] }
+            GROUP_ARRAY: { get_property: [SELF, groups] }
+            USER_ARRAY: { get_property: [SELF, users] }
+          implementation: scripts/policy/write_policy.sh
 
 relationship_types:
   org.alien4cloud.vault.relationships.ConnectToConsulAgent:
@@ -68,3 +145,6 @@ relationship_types:
             VAULT_IP: { get_attribute: [SOURCE, ip_address] }
             VAULT_PORT: { get_property: [SOURCE, port] }
           implementation: scripts/vault/configure_vault.sh
+  org.alien4cloud.vault.vault_sh.relationships.PolicyHostedOnVaultServer:
+    derived_from: tosca.relationships.HostedOn
+    valid_target_types: [org.alien4cloud.vault.vault_sh.nodes.VaultServer]
