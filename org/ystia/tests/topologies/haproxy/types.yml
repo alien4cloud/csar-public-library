@@ -1,0 +1,81 @@
+tosca_definitions_version: alien_dsl_1_4_0
+
+metadata:
+  template_name: org.ystia.tests.topologies.haproxy
+  template_version: 1.0-SNAPSHOT
+  template_author: Bull
+
+
+imports:
+  - tosca-normative-types:1.0.0-ALIEN14
+  - org.ystia.common:1.0-SNAPSHOT
+  - org.ystia.haproxy.pub:1.0-SNAPSHOT
+  - org.ystia.haproxy.linux.bash:1.0-SNAPSHOT
+
+topology_template:
+  description: A test topology template with HAProxy, HAProxyHTTP and HAProxyTCP
+
+  node_templates:
+
+    # Network
+
+    Network:
+      type: tosca.nodes.Network
+      properties:
+        ip_version: 4
+
+    # VM for HAProxy
+
+    Compute_HAP:
+      type: tosca.nodes.Compute
+      requirements:
+        - network:
+            node: Network
+            relationship: tosca.relationships.Network
+    HAProxy:
+      type: org.ystia.haproxy.linux.bash.nodes.HAProxy
+      requirements:
+        - host:
+            node: Compute_HAP
+
+    # VM for HAProxyHTTP
+
+    Compute_HAPhttp:
+      type: tosca.nodes.Compute
+      requirements:
+        - network:
+            node: Network
+            relationship: tosca.relationships.Network
+    HAProxy_H:
+      type: org.ystia.haproxy.linux.bash.nodes.HAProxy
+      requirements:
+        - host:
+            node: Compute_HAPhttp
+    HAProxyHTTP:
+      type: org.ystia.haproxy.linux.bash.nodes.HAProxyHTTP
+      properties:
+        port: 26410
+      requirements:
+        - host:
+            node: HAProxy_H
+
+    # VM for HAProxyHTTP
+
+    Compute_HAPtcp:
+      type: tosca.nodes.Compute
+      requirements:
+        - network:
+            node: Network
+            relationship: tosca.relationships.Network
+    HAProxy_T:
+      type: org.ystia.haproxy.linux.bash.nodes.HAProxy
+      requirements:
+        - host:
+            node: Compute_HAPtcp
+    HAProxyTCP:
+      type: org.ystia.haproxy.linux.bash.nodes.HAProxyTCP
+      properties:
+        port: 26420
+      requirements:
+        - host:
+            node: HAProxy_T
