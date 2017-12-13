@@ -4,7 +4,6 @@ Ystia CSAR library
 
 **Ystia CSAR libray** is **TO BE COMPLETED .....**
 
-:maxdepth: 3
 
 .. include:: docs/user_guide/010_introduction.rst
 .. include:: docs/user_guide/020_getting_started.rst

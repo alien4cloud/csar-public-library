@@ -3,7 +3,7 @@
 Topologies
 **********
 
-Ystia provides different topology templates, which can be used for demos, development or production applications.
+Ystia provides various topology templates, which can be used for demos, development or production applications.
 
 
 .. _topologies_elk_section:
