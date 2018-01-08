@@ -30,11 +30,13 @@ Big Data applications targeted by Ystia are:
 - mainly **Hadoop** applications based on MapR_, Hortonworks_ or Cloudera_.
 - and **Log Analysis** applications based on Elastic_ components.
 
-In addition, Ystia CSAR libray provides useful components such as
-**SQL** and **Not Only SQL** database servers (MySQL_, MongoDB_, PostgreSQL_), message brokers (Kafka_),
-a data science development environment (RStudio_)
-and other technical components such as **Java**, **Consul** (Consensus Systems),
-allowing detailed application architectures to be designed.
+In addition, Ystia CSAR libray provides useful components such as:
+
+- **SQL** and **Not Only SQL** database servers (MySQL_, MongoDB_, PostgreSQL_),
+- message brokers (Kafka_),
+- data science development environments (RStudio_, Jupyter_)
+- and other technical components such as **Java**, **Consul** (Consensus Systems), allowing detailed application
+  architectures to be designed.
 
 The components are connected together in application topologies.
 To simplify topology creation, Ystia provides **topology templates** that can be extended by your applications.
@@ -43,7 +45,9 @@ To simplify topology creation, Ystia provides **topology templates** that can be
 .. _Consul: https://www.consul.io/
 .. _Elastic: https://www.elastic.co/products
 .. _Hortonworks: https://hortonworks.com/
+.. _Jupyter: http://jupyter.org/
 .. _Kafka: https://kafka.apache.org/
+.. _MapR: https://mapr.com/
 .. _MongoDB: https://www.mongodb.com/
 .. _MySQL: http://www.mysql.com/
 .. _PostgreSQL: https://www.postgresql.org/
@@ -52,7 +56,7 @@ To simplify topology creation, Ystia provides **topology templates** that can be
 Ystia is based on the following products:
 
 - Alien4Cloud_, the interface for end-users and administrators. It allows you to define application architectures
-to be deployed on any Cloud.
+  to be deployed on any Cloud.
 - Janus_, the engine to orchestrate application deployment. It works for many Clouds and for Bare-Metal.
 
 .. _Janus: http://TO_BE_COMPLETED/
@@ -84,7 +88,7 @@ YSTIA CSAR library requires:
 - A running instance of **Janus** version **TO BE COMPLETED**
 - A running instance of **Alien4Cloud** version **TO BE COMPLETED**
 - The **Ystia CSAR Library** package, which provides components and topology templates to upload them in the
-Alien4Cloud catalog
+  Alien4Cloud catalog
 
 **TO BE COMPLETED**
 
