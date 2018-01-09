@@ -15,13 +15,13 @@ It can be used to create and deploy your first Alien4Cloud application and to ch
 The following figure shows a *Compute* node hosting *Welcome*
 
 .. image:: docs/images/welcome_component.png
-:scale: 80
+   :scale: 80
    :align: center
 
 The *Welcome* HTTP server index page looks like:
 
 .. image:: docs/images/welcome_index_page.png
-:scale: 100
+   :scale: 100
    :align: center
 
 
