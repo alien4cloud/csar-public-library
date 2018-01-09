@@ -1,0 +1,84 @@
+tosca_definitions_version: alien_dsl_1_4_0
+
+metadata:
+  template_name: org.alien4cloud.cloudify.config.a4c_cfy_logs
+  template_version: 1.4.0-SNAPSHOT
+  template_author: alien4cloud
+
+imports:
+  - alien-base-types:1.4.0
+  - tosca-normative-types:1.0.0-ALIEN14
+  - org.alien4cloud.cloudify.manager.pub:1.4.0-SNAPSHOT
+
+relationship_types:
+  org.alien4cloud.cloudify.config.a4c_cfy_logs.relationships.A4CLogsDependsOnCloudifyAPIv3:
+    derived_from: tosca.relationships.DependsOn
+    valid_target_types: [org.alien4cloud.cloudify.manager.pub.capabilities.CloudifyAPIv3]
+
+node_types:
+
+  org.alien4cloud.cloudify.config.logs_plugin.nodes.Alien4cloudCfyLogConfigurator:
+    derived_from: tosca.nodes.SoftwareComponent
+    description: >
+      The alien4cloud-cfy-logs is a web application that manages deployments logs
+    tags:
+      icon: /images/config.png
+    requirements:
+      - cfy:
+          capability: org.alien4cloud.cloudify.manager.pub.capabilities.CloudifyAPIv3
+          relationship: org.alien4cloud.cloudify.config.a4c_cfy_logs.relationships.A4CLogsDependsOnCloudifyAPIv3
+          occurrences: [1, 1]
+
+    properties:
+      app_archive_url:
+        type: string
+        required: true
+        default: "https://fastconnect.org/maven/content/repositories/opensource/alien4cloud/alien4cloud-cfy-logs/2.0.0-SM2/alien4cloud-cfy-logs-2.0.0-SM2.zip"
+      a4c_log_dir:
+        type: string
+        required: true
+        default: /opt/alien4cloud-cfy-logs
+      logstash_config_file:
+        type: string
+        required: true
+        default: /etc/logstash/conf.d/logstash.conf
+      server_port:
+        type: string
+        required: true
+        default: 8200
+        # constraints:
+        #   - in_range: [ 1, 65535 ]
+      http_port:
+        type: string
+        required: true
+        default: 8209
+        # constraints:
+        #   - in_range: [ 1, 65535 ]
+      protocol:
+        type: string
+        required: true
+        default: http
+        constraints:
+          - valid_values: ["http", "https"]
+
+    interfaces:
+      Standard:
+        configure:
+          inputs:
+            ANSIBLE_VERBOSE: true
+            PLAYBOOK_ENTRY: create.yml
+            APP_ARCHIVE_URL: { get_property: [SELF, app_archive_url] }
+            A4C_LOG_DIR: { get_property: [SELF, a4c_log_dir] }
+            LOGSTASH_CONFIG_FILE: { get_property: [SELF, logstash_config_file] }
+            SERVER_PORT: { get_property: [SELF, server_port] }
+            HTTP_PORT: { get_property: [SELF, http_port] }
+            PROTOCOL: { get_property: [SELF, protocol] }
+          implementation: playbook/playbook.ansible
+
+    # artifacts:
+    #   - bin:
+    #       file: bin
+    #       type: tosca.artifacts.File
+      # - ssl:
+      #     file: ssl
+      #     type: tosca.artifacts.File

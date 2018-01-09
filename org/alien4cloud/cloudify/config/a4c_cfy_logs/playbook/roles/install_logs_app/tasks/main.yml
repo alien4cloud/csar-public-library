@@ -1,0 +1,183 @@
+
+- name: "Create directory {{ A4C_LOG_DIR }}"
+  file:
+    path: "{{ A4C_LOG_DIR }}"
+    state: directory
+    owner: cfyuser
+    group: cfyuser
+    mode: 0775
+
+- name: "Ensure <{{ A4C_LOG_DIR }}> exists"
+  file:
+    path: "{{ A4C_LOG_DIR }}"
+    state: directory
+
+- name: Download application archive
+  get_url:
+    url: "{{ APP_ARCHIVE_URL }}"
+    dest: "{{ A4C_LOG_DIR }}"
+    owner: cfyuser
+    group: cfyuser
+
+- name: install unzip
+  yum:
+    name: unzip
+    state: present
+
+
+- name: Unarchive the logs application
+  unarchive:
+    src: "{{ A4C_LOG_DIR }}/alien4cloud-cfy-logs-2.0.0-SM2.zip"
+    dest: "{{ A4C_LOG_DIR }}"
+    remote_src: yes
+    copy: no
+    owner: cfyuser
+    group: cfyuser
+
+- name: "Create ssl directory"
+  file:
+    path: "{{ A4C_LOG_DIR }}/ssl"
+    state: directory
+    owner: cfyuser
+    group: cfyuser
+    mode: 0775
+
+- name: create textfile.cnf
+  file:
+    path: "{{ A4C_LOG_DIR }}/ssl/extfile.cnf"
+    state: touch
+
+
+- lineinfile:
+    destfile: "{{ A4C_LOG_DIR }}/ssl/extfile.cnf"
+    line: "{{ item }}"
+  with_items:
+    - "subjectAltName = DNS: alien4cloud.org"
+    - "extendedKeyUsage=serverAuth"
+
+
+- name: Wait until the file extfile.cnf is present before continuing
+  wait_for:
+    path: "{{ A4C_LOG_DIR }}/ssl/extfile.cnf"
+
+- name: create the ca and the server cert
+  command: "{{ item }}"
+  with_items:
+    - "openssl genrsa -out {{ A4C_LOG_DIR }}/ssl/ca-key.pem 4096"
+    - "openssl req -new -x509 -days 365 -key {{ A4C_LOG_DIR }}/ssl/ca-key.pem -sha256 -out {{ A4C_LOG_DIR }}/ssl/ca.pem -subj '/C=FR/ST=IDF/L=PARIS/O=alien/CN=example.com'"
+    - "openssl genrsa -out {{ A4C_LOG_DIR }}/ssl/server-key.pem 4096"
+    - "openssl req -subj '/CN=alien4cloud.org' -sha256 -new -key {{ A4C_LOG_DIR }}/ssl/server-key.pem -out {{ A4C_LOG_DIR }}/ssl/server.csr"
+    # - "printf 'subjectAltName = DNS: alien4cloud.org\n
+    #              extendedKeyUsage=serverAuth,clientAuth\n
+    #              client' >> {{ A4C_LOG_DIR }}/ssl/extfile.cnf"
+    - "openssl x509 -req -days 365 -sha256 -in {{ A4C_LOG_DIR }}/ssl/server.csr -CA {{ A4C_LOG_DIR }}/ssl/ca.pem -CAkey {{ A4C_LOG_DIR }}/ssl/ca-key.pem -CAcreateserial -out {{ A4C_LOG_DIR }}/ssl/server-cert.pem -extfile {{ A4C_LOG_DIR }}/ssl/extfile.cnf"
+  when: PROTOCOL == 'https'
+
+# - name: create the client key
+#   command: openssl genrsa -aes256 -out {{ A4C_LOG_DIR }}/ssl/key.pem 4096
+#
+# - name: client certificate
+#   command: openssl req -subj '/CN=client' -new -key {{ A4C_LOG_DIR }}/ssl/key.pem -out {{ A4C_LOG_DIR }}/ssl/client.csr
+#
+# - name : create self-signed SSL cert
+#   command: openssl x509 -req -days 365 -sha256 -in {{ A4C_LOG_DIR }}/ssl/client.csr -CA {{ A4C_LOG_DIR }}/ssl/ca.pem -CAkey {{ A4C_LOG_DIR }}/ssl/ca-key.pem -CAcreateserial -out {{ A4C_LOG_DIR }}/ssl/cert.pem -extfile {{ A4C_LOG_DIR }}/ssl/extfile.cnf -extensions client
+#
+- name: Generate truststore
+  command: "{{ item }}"
+  with_items:
+    - "openssl x509 -outform der -in {{ A4C_LOG_DIR }}/ssl/ca.pem -out {{ A4C_LOG_DIR }}/ssl/ca.der"
+    - "keytool -import -alias alien4cloud -keystore {{ A4C_LOG_DIR }}/ssl/server-truststore.jks -file {{ A4C_LOG_DIR }}/ssl/ca.der -storepass changeit -noprompt "
+  when: PROTOCOL == 'https'
+
+- name: Generate the server keystore
+  command:  "{{ item }}"
+  with_items:
+    - "openssl pkcs12 -export -name alien4cloud -in {{ A4C_LOG_DIR }}/ssl/server-cert.pem -inkey {{ A4C_LOG_DIR }}/ssl/server-key.pem -out {{ A4C_LOG_DIR }}/ssl/server-keystore.p12 -chain -CAfile {{ A4C_LOG_DIR }}/ssl/ca.pem -caname root -password pass:changeit "
+    - "keytool -importkeystore -destkeystore {{ A4C_LOG_DIR }}/ssl/server-keystore.jks -srckeystore {{ A4C_LOG_DIR }}/ssl/server-keystore.p12 -srcstoretype pkcs12 -alias alien4cloud -deststorepass changeit -srcstorepass changeit"
+  when: PROTOCOL == 'https'
+
+- set_fact:
+    SERVER_KEYSTORE_PWD: "changeit"
+- debug:
+    var: SERVER_KEYSTORE_PWD
+
+- template:
+    src: alien4cloud-cfy-logs-config.yaml.j2
+    dest: "{{ A4C_LOG_DIR }}/config/alien4cloud-cfy-logs-config.yml"
+  when: PROTOCOL == 'https'
+
+
+
+#activate that block when Khang provide the service script
+
+- name: Create Alien4cloud-Cfy-Logs service
+  template: src=roles/install_logs_app/templates/alien4cloud-cfy-logs.service.j2 dest=/usr/lib/systemd/system/alien4cloud-cfy-logs.service
+  become: true
+
+- template:
+    src: roles/install_logs_app/templates/alien4cloud-cfy-logs.j2
+    dest: /etc/sysconfig/alien4cloud-cfy-logs
+
+- template:
+    src: roles/install_logs_app/templates/start.sh.j2
+    dest: /opt/alien4cloud-cfy-logs/start.sh
+    owner: cfyuser
+    group: cfyuser
+    mode: 0755
+
+#dest=/etc/init.d/alien4cloud-cfy-logs mode="u=rwx,g=r,o=r"
+
+# - name: Check config CentOS
+#   command: /sbin/chkconfig --add alien4cloud-cfy-logs
+#   when: ansible_os_family == "CentOS"
+- service:
+    name: alien4cloud-cfy-logs
+    state: started
+
+- service:
+    name: alien4cloud-cfy-logs
+    enabled: yes
+
+# - name: Launch Alien4cloud-Cfy-Logs server
+#   service: name=alien4cloud-cfy-logs state=started
+# - service:
+#     name: alien4cloud-cfy-logs
+#     state: restarted
+
+# - name: Wait for port to be available
+#   wait_for: port={{SERVER_PORT}}
+#   when: PROTOCOL == 'http'
+#
+# - name: Wait for port to be available
+#   wait_for: port={{HTTP_PORT}}
+#   when: PROTOCOL == 'https'
+
+# configure logstash
+# if ssl is enabled
+- lineinfile:
+    destfile: "{{LOGSTASH_CONFIG_FILE}}"
+    insertafter: "output"
+    # insertbefore: '"if "log" in [tags] {"'
+    line: "{{ item }}"
+  with_items:
+    - "    http{\n
+              http_method => 'post'\n
+              url => 'http://localhost:{{HTTP_PORT}}/api/v1/logs'\n
+         }\n"
+  when: PROTOCOL == 'https'
+
+# if ssl is disabled
+- lineinfile:
+    destfile: "{{LOGSTASH_CONFIG_FILE}}"
+    insertafter: "output{"
+    line: "{{ item }}"
+  with_items:
+    - "    http{\n
+              http_method => 'post'\n
+              url => 'http://localhost:{{SERVER_PORT}}/api/v1/logs'\n
+         }\n"
+  when: PROTOCOL == 'http'
+
+- service:
+    name: logstash
+    state: restarted

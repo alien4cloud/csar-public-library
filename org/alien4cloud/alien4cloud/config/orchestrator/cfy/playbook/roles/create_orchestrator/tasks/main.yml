@@ -1,4 +1,6 @@
 ---
+# - pause:
+#     minutes: 3
 
 # read cfy_url from cfy connection
 - name: Check relationship inputs exists
@@ -39,6 +41,12 @@
 - set_fact:
     url: "{{ alien_url }}/login?username={{ alien_user }}&password={{ alien_password }}&submit=Login"
 
+# - name: Wait for alien to be up
+#     wait_for:
+#       port:
+#       delay:
+#       timeout=300
+
 - name: "Login onto A4C using {{url}}"
   uri:
     url: "{{url}}"
@@ -49,6 +57,13 @@
     headers:
       Content-Type: "application/x-www-form-urlencoded"
   register: login
+  until: login['status']|default(0) == 200
+  retries: 5
+  delay: 30
+
+# - debug:
+#     var: login
+
 
 - set_fact:
     session_id: "{{ login.set_cookie.split(';')[0] }}"

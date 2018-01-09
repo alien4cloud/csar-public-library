@@ -1,0 +1,7 @@
+---
+- hosts: all
+  name: install logs application
+  become: true
+
+  roles:
+    - install_logs_app
