@@ -36,5 +36,5 @@ Properties
 Attributes
 ^^^^^^^^^^
 
-- **url**: The URL to access the Welcome page.
+- **url**: The URL to access the Welcome home page.
 
