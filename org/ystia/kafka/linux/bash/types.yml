@@ -2,17 +2,17 @@ tosca_definitions_version: alien_dsl_1_4_0
 
 metadata:
   template_name: org.ystia.kafka.linux.bash
-  template_version: 1.0-SNAPSHOT
+  template_version: 3.0-SNAPSHOT
   template_author: Bull
 
 description: Kafka is a distributed, partitioned, replicated commit log service.
 
 imports:
   - tosca-normative-types:1.0.0-ALIEN14
-  - org.ystia.common:1.0-SNAPSHOT
-  - org.ystia.consul.pub:1.0-SNAPSHOT
-  - org.ystia.java.pub:1.0-SNAPSHOT
-  - org.ystia.kafka.pub:1.0-SNAPSHOT
+  - org.ystia.common:3.0-SNAPSHOT
+  - org.ystia.consul.pub:3.0-SNAPSHOT
+  - org.ystia.java.pub:3.0-SNAPSHOT
+  - org.ystia.kafka.pub:3.0-SNAPSHOT
 
 node_types:
   org.ystia.kafka.linux.bash.nodes.Kafka:

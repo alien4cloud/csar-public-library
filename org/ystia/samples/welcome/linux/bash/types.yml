@@ -2,14 +2,14 @@ tosca_definitions_version: alien_dsl_1_4_0
 
 metadata:
   template_name: org.ystia.samples.welcome.linux.bash
-  template_version: 1.0-SNAPSHOT
+  template_version: 3.0-SNAPSHOT
   template_author: Bull
 
 description: Ystia Welcome Web server sample
 
 imports:
   - tosca-normative-types:1.0.0-ALIEN14
-  - org.ystia.common:1.0-SNAPSHOT
+  - org.ystia.common:3.0-SNAPSHOT
 
 node_types:
   org.ystia.samples.welcome.linux.bash.nodes.Welcome:
@@ -22,9 +22,9 @@ node_types:
     properties:
       component_version:
         type: version
-        default: 1.0-SNAPSHOT
+        default: 3.0-SNAPSHOT
         constraints:
-          - equal: 1.0-SNAPSHOT
+          - equal: 3.0-SNAPSHOT
       port:
         type: integer
         description: |

@@ -2,15 +2,15 @@ tosca_definitions_version: alien_dsl_1_4_0
 
 metadata:
   template_name: org.ystia.mysql.linux.bash
-  template_version: 1.0-SNAPSHOT
+  template_version: 3.0-SNAPSHOT
   template_author: Bull
 
 description: MySQL Component
 
 imports:
   - tosca-normative-types:1.0.0-ALIEN14
-  - org.ystia.common:1.0-SNAPSHOT
-  - org.ystia.mysql.pub:1.0-SNAPSHOT
+  - org.ystia.common:3.0-SNAPSHOT
+  - org.ystia.mysql.pub:3.0-SNAPSHOT
 
 node_types:
   org.ystia.mysql.linux.bash.nodes.MySQLServer:
