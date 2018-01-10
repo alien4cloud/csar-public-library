@@ -282,7 +282,15 @@ Cloudera Hadoop components
 Utilities
 =========
 
-**TO BE COMPLETED.....**
+Ystia utilities components are:
+
+- **HAProxy**: a fast and reliable solution offering high availability, load balancing, and proxying
+  for TCP and HTTP-based applications.
+
+- **Java**: a technical component allowing other software components to choose the required Java version
+
+- **XFS**: stands for eXtended File System,
+  a highly scalable, high-performance 64-bit journaling file system originally designed at Silicon Graphics, Inc
 
 
 
