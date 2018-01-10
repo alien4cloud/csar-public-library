@@ -24,7 +24,6 @@ The *Welcome* HTTP server index page looks like:
     :scale: 100
     :align: center
 
-
 Properties
 ^^^^^^^^^^
 
@@ -32,9 +31,19 @@ Properties
 
 - **port**: Port number of the Welcome HTTP server.
 
-
 Attributes
 ^^^^^^^^^^
 
 - **url**: The URL to access the Welcome home page.
 
+Requirements
+^^^^^^^^^^^^
+
+- **host**: Welcome component has to be hosted on a Compute.
+
+Artifacts
+^^^^^^^^^
+
+- **scripts**: Welcome required scripts.
+
+- **utils_scripts**: Common util scripts for whole Ystia components.

@@ -7,9 +7,6 @@ Ystia CSAR library
 	:depth: 4
 
 
-**Ystia CSAR libray** is **TO BE COMPLETED .....**
-
-
 .. *********************************************************************************************************************
 
 .. _introduction_section:
@@ -98,9 +95,13 @@ YSTIA CSAR library requires:
 Welcome sample
 ==============
 
-**TO BE COMPLETED**
+The **Welcome** Ystia component is a very sample HTTP server.
+It can be used to create and deploy your first Alien4Cloud application and to check the Ystia installation.
 
+More information can be found under:
 
+- **org/ystia/samples/welcome** and
+- **org/ystia/samples/topologies/welcome_basic**
 
 .. *********************************************************************************************************************
 
@@ -118,7 +119,27 @@ Topologies
 Topologies for Log Analysis based on Elastic Stack
 ==================================================
 
-**TO BE COMPLETED.....**
+*Ystia* provides several topology template to facilitate Log Analysis application design:
+
+- **elk_basic**,
+- **elk_broker**,
+- **elk_ha**.
+
+All these topology templates contain at least the three Elastic Stack components: **Elasticsearch**, **Logstash**
+and **Kibana**.
+
+You can upload into the Alien4Cloud catalog those topologies after having upload into the catalog the *CSAR* of
+the following Ystia components (respect the order in the list):
+
+- **common**,
+- **consul**,
+- **java**,
+- **kafka**,
+- **elasticsearch**,
+- **logstash**,
+- **kibana**,
+
+More information about those topologies can be found under **org/ystia/topologies/elk**
 
 
 .. _topologies_mongodb_section:
@@ -188,7 +209,8 @@ Components
 Consensus systems
 =================
 
-**TO BE COMPLETED.....**
+- **Consul** is a technical component allowing other software components to discover each other in a flexible,
+  highly available and fault tolerant way.
 
 
 ELK components
