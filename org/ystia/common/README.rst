@@ -2,6 +2,10 @@
 Ystia Common types
 ******************
 
+.. contents::
+    :local:
+    :depth: 3
+
 Common
 ------
 

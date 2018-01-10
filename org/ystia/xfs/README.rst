@@ -1,6 +1,10 @@
 .. _xfs_section:
 
-XFS (eXtended Dile System)
+.. contents::
+    :local:
+    :depth: 3
+
+XFS (eXtended File System)
 --------------------------
 
 XFS is a highly scalable, high-performance 64-bit journaling file system originally designed at Silicon Graphics, Inc (SGI).
@@ -8,11 +12,17 @@ XFS is a highly scalable, high-performance 64-bit journaling file system origina
 XFS supports metadata journaling, which facilitates quicker crash recovery.
 The XFS file system can also be defragmented and enlarged while mounted and active.
 
-The following figure shows a XFS node configuration.
+The following figure shows a XFS node configuration:
 
 .. image:: docs/images/xfs_component.png
     :scale: 100
     :align: center
+
+A XFS node is:
+
+- hosted on a Compute (with *linux* as *type*), via the *host* requirement, and
+- linked to a BlockStorage via the *partition* requirement.
+
 
 
 Properties
@@ -20,8 +30,8 @@ Properties
 
 - **location**: The relative location (for example path on the file system), which provides the root location
   to address an attached node.
-  Example: a mount point / path such as ‘/usr/data’.
-  Note: The user must provide it and it cannot be “root”.
+  Example: a mount point / path such as *‘/usr/data’*.
+  Note: The user must provide it and it cannot be *“root”*.
 
 Requirements
 ^^^^^^^^^^^^

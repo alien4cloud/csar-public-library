@@ -1,5 +1,9 @@
 .. _java_section:
 
+.. contents::
+    :local:
+    :depth: 3
+
 Java
 ----
 
@@ -7,21 +11,22 @@ Java is a technical component allowing other software components to choose the r
 
 Some Ystia components need a Java component to run.
 
-A Java node is hosted on a Compute node. The components that need Java are hosted on the Java node using a prerequisite named **host**,
+A Java node is hosted on a Compute node.
+The components that need Java, are hosted on the Java node using a prerequisite named **host**,
 with the capability **org.ystia.java.pub.capabilities.JavaHosting**.
 
 ****
 
 **Note**
   In the topology templates provided with Ystia, the relationships between Compute, Java and
-  Ystia Component hosted on Java are already configured.
+  Ystia Component hosted on Java, are already configured.
 
 ****
 
 Properties
 ^^^^^^^^^^
 
-- **component_version**: Version. Available values may be 6, 7 or 8
+- **component_version**: Version, available values may be 6, 7 or 8.
 
   - Default: 8
 - **jre**: Boolean allowing to specify that a JRE is sufficient.

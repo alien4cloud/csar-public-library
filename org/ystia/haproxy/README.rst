@@ -4,9 +4,13 @@
 HA Proxies components
 *********************
 
+.. contents::
+    :local:
+    :depth: 3
+
 HAProxy is a fast and reliable solution offering high availability, load balancing, and proxying for TCP and HTTP-based applications.
 
-The following figure shows a HAProxyHTTP node.
+The following figure shows a HAProxyHTTP node:
 
 .. image:: docs/images/haproxyhttp_component.png
     :scale: 80
