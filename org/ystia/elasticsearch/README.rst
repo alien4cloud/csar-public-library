@@ -48,7 +48,7 @@ Properties
   repository url. Artifacts names will be appended to it, so this property could be shared among several components using the inputs
   feature.
 
-  - Default : "https://artifacts.elastic.co/downloads/elasticsearch"
+  - Default : https://www.elastic.co/downloads/elasticsearch
 
 
 - **curator_repository_url**: Specifies an alternative YUM repository URL to install the curator.
