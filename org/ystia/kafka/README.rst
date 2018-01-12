@@ -39,8 +39,8 @@ Properties
   It is your responsibility to provide an accessible download url and to store required artifacts on it. You should specify only the base
   repository url. Artifacts names will be appended to it, so this property could be shared among several components using the inputs
   feature.
-  - Default : "http://mirrors.standaloneinstaller.com/apache/"
 
+  - Default : "http://mirrors.standaloneinstaller.com/apache/"
 - **kf_heap_size**: Heap memory size allocated to Kafka java process. The same value is allocated to both initial and maximum values (ie -Xms and -Xmx java options).
 
   - Default: 1G
@@ -56,7 +56,7 @@ Requirements
 ^^^^^^^^^^^^
 
 - **host**: Kafka should be hosted on a Java component. Java 7 or greater is required.
-- **consul**: Kafka component requires to be connected to a local (hosted on the same Compute) Consul Agent. This is required to perform cluster
+- **consul**: Kafka component requires to be connected to a local Consul Agent. This is required to perform cluster
   discovery.
 - **filesystem_endpoint**: Kafka may be connected to a filesystem in order to store its runtime data on it. A typical use case would be
   to link this filesystem to a block storage in order to achieve data resilience and recovery.
@@ -81,7 +81,7 @@ Artifacts
 KafkaTopic
 -----------
 A KafkaTopic should be hosted on a Kafka component.
-Specify per-topic configuration as shown in the following figure.
+You can specify per-topic configuration as shown in the following figure.
 
 .. image:: docs/images/kafka_topic.png
     :scale: 80
@@ -92,7 +92,6 @@ Properties
 
 - **topic_name**: Topic name (this value should match the following pattern: [-_A-Za-z0-9]+).
 
-  - Default: ""
 - **partitions**: Number of partitions for this topic.
 
   - Default : 1
@@ -196,13 +195,13 @@ For the consumer part
    of the Kafka Topic node.
 
 Kafka Clustering
-^^^^^^^^^^^^^^^^
+----------------
 
 This section describes the recommendations to enable Kafka clustering. Then, Logstash will automatically publish and read logs to the
 appropriate topic partitions.
 
-BDCF offers an easy way to setup a Kafka cluster of several brokers. You just have to set the compute node hosting Kafka
-scalable and to define the scalability properties (min, max and initial number of instances).
+Ystia offers an easy way to setup a Kafka cluster of several brokers. You just have to set the compute node hosting Kafka
+scalable and to defining the scalability properties (min_instances, max_instances and default_instances).
 
 However the Kafka clustering mode has a limitation. A Kafka cluster should be static at runtime. This means that you cannot modify the
 number of deployed Kafka instances after the initial deployment.
@@ -210,7 +209,7 @@ This is due to the **ZooKeeper** component on which Kafka relies to store its co
 instances. ZooKeeper in its stable release does not support dynamicity.
 So we recommend setting scaling parameters as follows:
 
-   **minInstances = maxInstances = initialInstances**
+   **min_instances = max_instances = initial_instances**
 
 Due to ZooKeeper limitations we recommend to have 3 or 5 instances in a clustering mode. 3 instances is the minimum to ensure fault
 tolerance (this ensemble will tolerate the failure of one node at a time). More than 5 instances will start to have a moderate impact on
@@ -218,12 +217,12 @@ ZooKeeper performances.
 Anyway you should have an odd number of instances as ZooKeeper works based on a simple majority voting for the leader election.
 
 Advanced Kafka Configuration
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+----------------------------
 
-As explained in section :ref:`kafka-components-ref`, Kafka exposes various configuration parameters, to tune Kafka precisely
-to your needs. However, this tuning is always a tradeoff between the lowest latency and the greatest level of durability.
+Kafka exposes various configuration parameters, to tune Kafka precisely to your needs.
+However, this tuning is always a tradeoff between the lowest latency and the greatest level of durability.
 
-BDCF ships different topology templates that are designed to address different applications. Kafka is used in two of those
+YSTIA ships different topology templates that are designed to address different applications. Kafka is used in two of those
 templates:
 
 - **ELK-broker**:
