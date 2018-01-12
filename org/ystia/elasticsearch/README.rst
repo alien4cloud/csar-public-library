@@ -53,11 +53,11 @@ Properties
 
 - **curator_repository_url**: Specifies an alternative YUM repository URL to install the curator.
 
-  - Default : "http://packages.elastic.co/curator/4/centos/7"
+  - Default : http://packages.elastic.co/curator/4/centos/7
 
 - **curator_repository_key_url**: Specifies the GPG key to the YUM repository URL to install the curator.
 
-  - Default : "https://packages.elastic.co/GPG-KEY-elasticsearch"
+  - Default : https://packages.elastic.co/GPG-KEY-elasticsearch
 
 - **heap_size**: Sets the heap memory that will be allocated to Elasticsearch java process. It will allocate the same value to both min and max values.
 
@@ -74,13 +74,17 @@ Properties
   - Default: 1 per index. This means that each shard of indexes will be duplicated on another node.
 
 The following properties can be used to configure the **Curator** tool, which allows for Data Management in Elasticsearch.
-See :ref:`data_management` for more details.
 
 - **nb_close_older_than** and **unit_close_older_than**: to close old indexes.
 
 - **nb_delete_older_than** and **unit_delete_older_than**: to delete old indexes.
 
-.. note:: For safety reasons, Elasticsearch cannot be run as a *root* user.
+****
+
+**Note**
+  For safety reasons, Elasticsearch cannot be run as a *root* user.
+
+****
 
 Requirements
 ^^^^^^^^^^^^
