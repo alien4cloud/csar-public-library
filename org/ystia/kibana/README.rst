@@ -8,9 +8,6 @@ Kibana
     :local:
     :depth: 3
 
-Kibana is a ...
-
-
 Kibana
 ------
 
@@ -98,15 +95,37 @@ Properties
   It is your responsibility to provide an accessible download url and to store required artifacts on it. You should specify only the base repository url.
   Artifacts names will be appended to it, so this property could be shared among several components using the inputs feature.
 
-  - Default : https://www.elastic.co/downloads/logstash
+  - Default : https://www.elastic.co/downloads/kibana
+  
 - **es_heap_size**: Heap memory that will be allocated to the java process of the Elasticsearch client node associated to Kibana. It allocates the same value to both initial and maximum values (ie -Xms and -Xmx java options).
 
   - Default: 2G
+
+
+Requirements
+^^^^^^^^^^^^
+
+- **host**: Kibana should be hosted on a Java component. Java 8 or greater is required.
+- **consul**: Kibana component requires to be connected to a local Consul Agent. This is required to perform cluster
+  discovery.
+- **search_endpoint**: allows to connect a Kibana component to Elasticsearch
+
 
 Capabilities
 ^^^^^^^^^^^^
 
 - **host**: Kibana can be used as a **dashboard_host** by Dashboard components. The role of a **Dashboard** component is to carry a dashboard configuration (it has an artifact named **dashboard_file**). This configuration is described in a .JSON file. Several Dashboard components can be connected to a Kibana component by using their **dashboard_host** prerequisite.
+
+Artifacts
+^^^^^^^^^
+
+- **scripts**:  Kibana required scripts.
+
+- **consul_scripts**: Scripts required by the Consul component.
+
+- **utils_scripts**: Common util scripts for whole Ystia components.
+
+- **plugins**: Kibana plugins directory
 
 Using Kibana
 ^^^^^^^^^^^^
