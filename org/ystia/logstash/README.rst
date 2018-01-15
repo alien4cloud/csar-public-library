@@ -146,7 +146,7 @@ Logstash elasticity
 
 The component **Logstash Indexer** is scalable. The scalability of this component allows Log Analysis applications to deal with a huge amount of logs incoming from the Kafka broker. It is possible to deploy initially a topology with one or more Logstash Indexer and it is possible to scale out (add) or scale in (remove) Logstash Indexer instances at runtime.
 
-Each Logstash Indexer instance is a consumer of the same Kafka topic but of a different partition of this topic (see :ref:`Kafka<kafka_section>` for more details,). If there are more partitions of the Kafka topic than Logstash Indexer (consumer), some consumers will read several partitions. But if there are more consumers than partitions, some consumers will not be used. So, it is important to correlate these two values (the number of partitions of the Kafka topic and the number of maximum instances of Logstash Indexer).
+Each Logstash Indexer instance is a consumer of the same Kafka topic but of a different partition of this topic. If there are more partitions of the Kafka topic than Logstash Indexer (consumer), some consumers will read several partitions. But if there are more consumers than partitions, some consumers will not be used. So, it is important to correlate these two values (the number of partitions of the Kafka topic and the number of maximum instances of Logstash Indexer).
 
 
 Logstash resilience
@@ -160,7 +160,7 @@ Three cases of failures are considered:
 
 In cluster mode (composed at least of two Logstash instances), Logstash is always resilient (no service interruption and no loss of data). The Cloudify manager should re-create a new VM and reconnect it to the Elastic Stack chain or just restart the service depending on the problem encountered. This process is automatic and takes between 1 and 5 minutes.
 
-On the other side, in a single instance mode, we cannot ensure the resilience since if the VM crashes, the service is lost for a short amount of time and all data sent during this interval of time are lost. However, this problem can be prevented by using a Kafka broker as explained in :ref:`logstash_relationships`.
+On the other side, in a single instance mode, we cannot ensure the resilience since if the VM crashes, the service is lost for a short amount of time and all data sent during this interval of time are lost. However, this problem can be prevented by using a Kafka broker.
 
 
 Data Management
