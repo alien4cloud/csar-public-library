@@ -55,7 +55,7 @@ Properties
 Requirements
 ^^^^^^^^^^^^
 
-- **host**: Logstash should be hosted on a Java component. Java 7 or greater is required.
+- **host**: Logstash should be hosted on a Java component. Java 8 or greater is required.
 - **consul**: Logstash component requires to be connected to a local Consul Agent. This is required to perform cluster
   discovery.
 - **search_endpoint**: allows to connect a Logstash component to Elasticsearch
@@ -66,7 +66,8 @@ Requirements
 Capabilities
 ^^^^^^^^^^^^
 
-- **search_resource**: Search Endpoint used by components that need to connect to Elasticsearch (for example Logstash or Kibana)
+- **logstash_resource**: Endpoint used by components that need to connect to Logstash
+- **connector_host**: Logstash can host connectors, like for example a Twitter connector
 
 Artifacts
 ^^^^^^^^^
@@ -79,9 +80,9 @@ Input, output and filter configurations can be provided by these dedicated artif
 
 Artifacts for security configuration:
 
-- **certificates**
-- **private_key**
-- **certificate**
+- **certificates**: Directory containing certificates
+- **private_key**: SSL key for logstash forwarder configuration
+- **certificate**: SSL certificate for logstash forwarder configuration
 
 Other artifacts:
 
