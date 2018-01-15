@@ -109,7 +109,7 @@ In a more complex toolchain, a **broker** can be used to split the Logstash pipe
 
 When using Logstash in an Elastic Stack toolchain, it must be related to a Consul agent hosted on its Compute node as shown in the following figure. This is required for the discovery of the Elasticserach cluster.
 
-.. image:: docs/images/logstasConsul.png
+.. image:: docs/images/logstashConsul.png
    :name: logstash_consul_figure
    :scale: 100
    :align: center
