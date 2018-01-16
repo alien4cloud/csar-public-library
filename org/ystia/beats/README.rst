@@ -45,9 +45,14 @@ Requirements
 - **search_endpoint**: FileBeat component may be connected to ElasticSearch.
 - **logstash_endpoint**: FileBeat component may be connected to Logstash.
 
-.. note:: FileBeat component should be connected to at least one of ElasticSearch or Logstash.
-.. note:: If FileBeat component is connected to ElasticSearch, it should also be connected to Consul in order to discover the ElasticSearch cluster.
-          Exception: if FileBeat is on the same compute than ElasticSearch, Consul is not mandatory.
+****
+
+**Notes**
+  FileBeat component should be connected to at least one of ElasticSearch or Logstash.
+
+  If FileBeat component is connected to ElasticSearch, it should also be connected to Consul in order to discover the ElasticSearch cluster. Exception: if FileBeat is on the same compute than ElasticSearch, Consul is not mandatory.
+
+****
 
 Artifacts
 ^^^^^^^^^
@@ -99,9 +104,13 @@ Requirements
 
 - **logstash_endpoint**: MetricBeat component may be connected to Logstash.
 
-.. note:: MetricBeat component should be connected to at least one of ElasticSearch or Logstash.
-.. note:: If MetricBeat component is connected to ElasticSearch, it should also be connected to Consul in order to discover the ElasticSearch cluster.
-          Exception: if TopBeat is on the same compute than ElasticSearch, Consul is not mandatory.
+****
+
+**Notes**
+  MetricBeat component should be connected to at least one of ElasticSearch or Logstash.
+  If MetricBeat component is connected to ElasticSearch, it should also be connected to Consul in order to discover the ElasticSearch cluster. Exception: if TopBeat is on the same compute than ElasticSearch, Consul is not mandatory.
+
+****
 
 Artifacts
 ^^^^^^^^^
@@ -151,9 +160,13 @@ Requirements
 
 - **logstash_endpoint**: PacketBeat component may be connected to Logstash.
 
-.. note:: PacketBeat component should be connected to at least one of ElasticSearch or Logstash.
-.. note:: If PacketBeat component is connected to ElasticSearch, it should also be connected to Consul in order to discover the ElasticSearch cluster.
-          Exception: if PacketBeat is on the same compute than ElasticSearch, Consul is not mandatory.
+****
+
+**Notes**
+  PacketBeat component should be connected to at least one of ElasticSearch or Logstash.
+  If PacketBeat component is connected to ElasticSearch, it should also be connected to Consul in order to discover the ElasticSearch cluster. Exception: if PacketBeat is on the same compute than ElasticSearch, Consul is not mandatory.
+
+****
 
 Artifacts
 ^^^^^^^^^
