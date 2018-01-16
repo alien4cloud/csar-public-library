@@ -41,7 +41,7 @@ Create en application
 A Log Analysis application can be created via the Alien4Cloud GUI using the **elk_basic** topology shown below:
 
 .. image:: docs/images/topology.png
-   :name: FileBeat_figure
+   :name: elk_basic_figure
    :scale: 100
    :align: center
 
