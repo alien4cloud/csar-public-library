@@ -38,7 +38,7 @@ The two instances are connected to a same retention queue provided by Kafka.
 ****
 
 **Note**
-  The kafka version compatible with Logstsh version |elasticstack.version| is the version 0.10.
+  The kafka version compatible with Logstsh version is the version 0.10.
 
 ****
 
