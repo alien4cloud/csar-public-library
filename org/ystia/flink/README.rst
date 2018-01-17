@@ -8,7 +8,7 @@ Flink
     :local:
     :depth: 3
 
-The Apache Flink software (https://flink.apache.org), an open source platform for distributed stream and batch data processing.
+The Apache Flink software (https://flink.apache.org) is an open source platform for distributed stream and batch data processing.
 
 Flink implements a streaming dataflow engine that provides data distribution, communication, and fault tolerance for distributed computations over data streams.
 
@@ -52,13 +52,15 @@ At least one Job Manager is required.
 Properties
 ^^^^^^^^^^
 
-- **jobmanager.heap.mb**: JVM heap size (in megabytes) for the JobManager.
+- **jobmanager_head_mb**: JVM heap size (in megabytes) for the JobManager.
 
   - Default: 512
 
-- **jobmanager.rpc.port**: Port used by JobManager to communicate with TaskManager (not editable).
+- **jobmanager_rpc_port**: Port used by JobManager to communicate with TaskManager (not editable).
 
-- **repository**: Alternative download repository for the Apache Flink binary.
+- **repository**: Download repository for the Apache Flink binary. Providing a different value allows to specify an alternative repository.
+    It is your responsibility to provide an accessible download url and to store required artifacts on it. You should specify only the base
+    repository url. Artifacts names will be appended to it, so this property could be shared among several components using the inputs feature.
 
 - **component_version**: Version of the component (not editable).
 
@@ -68,7 +70,7 @@ Properties
 Requirements
 ^^^^^^^^^^^^
 
-- **java**: A Flink_JobManager node must be hosted on a Java node, which is hosted itself on a compute node. The minimum version of Java is **JRE6**.
+- **host**: A Flink_JobManager node must be hosted on a Java node, which is hosted itself on a compute node. The minimum version of Java is **JRE6**.
 
 - **consul**: A Flink_JobManager node must be related to a Consul agent hosted on its Compute node.
 
@@ -98,23 +100,26 @@ At least one Task Manager is required.
 Properties
 ^^^^^^^^^^
 
-- **taskmanager.heap.mb**: JVM heap size (in megabytes) for the TaskManager.
+- **taskmanager_heap_mb**: JVM heap size (in megabytes) for the TaskManager.
 
   - Default: 512
 
-- **taskmanager.numberOfTaskSlots**: Number of parallel operator or user function instances that a single TaskManager can run. This value is typically proportional to the number of physical CPU cores that the TaskManager’s machine has (for example, equal to the number of cores, or half the number of cores).
+- **taskmanager_numberOfTaskSlots**: Number of parallel operator or user function instances that a single TaskManager can run. This value is typically proportional to the number of physical CPU cores that the TaskManager’s machine has (for example, equal to the number of cores, or half the number of cores).
 
   - Default: 1
 
-- **parallelism.default**: Default parallelism to use for programs that have no parallelism specified. For setups that have no concurrent jobs running, setting this value to NumTaskManagers * NumSlotsPerTaskManager will cause the system to use all available execution resources for the program execution.
+- **parallelism_default**: Default parallelism to use for programs that have no parallelism specified. For setups that have no concurrent jobs running, setting this value to NumTaskManagers * NumSlotsPerTaskManager will cause the system to use all available execution resources for the program execution.
 
   - Default: 1
 
-- **taskmanager.tmp.dirs**: List of directories into which Flink writes temporary files when data do not fit into main memory. The directory paths must be separated by ‘:’ (colon character).
+- **taskmanager_tmp_dirs**: List of directories into which Flink writes temporary files when data do not fit into main memory. The directory paths must be separated by ‘:’ (colon character).
 
   - Default: /tmp
 
-- **repository**: Alternative download repository for the Apache Flink binary.
+- **repository**: Download repository for the Apache Flink binary. Providing a different value allows to specify an alternative repository.
+    It is your responsibility to provide an accessible download url and to store required artifacts on it. You should specify only the base
+    repository url. Artifacts names will be appended to it, so this property could be shared among several components using the inputs feature.
+
 
 - **component_version**: Version of the component (not editable).
 
@@ -125,7 +130,7 @@ Requirements
 
 - **jobmanager_endpoint**: A Flink_TaskManager must be connected to a Flink_JobManager.
 
-- **java**: A Flink_TaskManager node must be hosted on a Java node, which is hosted itself on a compute node. The minimum version of Java is **JRE6**.
+- **host**: A Flink_TaskManager node must be hosted on a Java node, which is hosted itself on a compute node. The minimum version of Java is **JRE6**.
 
 - **consul**: A Flink_TaskManager node must be related to a Consul agent hosted on its Compute node.
 
