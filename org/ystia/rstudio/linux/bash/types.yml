@@ -1,0 +1,144 @@
+tosca_definitions_version: alien_dsl_1_4_0
+
+metadata:
+  template_name: org.ystia.rstudio.linux.bash
+  template_version: 3.0-SNAPSHOT
+  template_author: Bull
+
+description: RStudio is a development platform for R through a web dashboard
+
+imports:
+  - tosca-normative-types:1.0.0-ALIEN14
+  - org.ystia.common:3.0-SNAPSHOT
+  - org.ystia.java.pub:3.0-SNAPSHOT
+
+node_types:
+  org.ystia.rstudio.linux.bash.nodes.RStudio:
+    derived_from: org.ystia.nodes.Root
+    description: RStudio Studio component for linux system
+    tags:
+      icon: /images/rstudio-icon.png
+    attributes:
+      java_home: { get_operation_output: [ SELF, Configure, pre_configure_source, JAVA_HOME ] }
+      url: { concat: ["http://", get_attribute: [HOST, public_ip_address], ":8787" ] }
+    properties:
+      component_version:
+        type: version
+        default: 1.1.383
+        description: Version of the installed RStudio component
+        constraints:
+          - equal: 1.1.383
+      proxy_to_use:
+        type: string
+        required: false
+        description: >
+          Setup a proxy configuration in Renviron.site in order to allow downloading remote packages.
+          If a value is set for this property then it will be used as http and https proxy
+          (it should honor the unix http_proxy env var format).
+          If not set or set to an empty string then the default environment proxy settings on the compute will be used
+          (http_proxy, https_proxy and no_proxy). This is the default.
+          If set to 'None' then proxies are not configured at all.
+      cran_mirror_to_use:
+        type: string
+        required: false
+        default: ""
+        description: >
+          Mirror for R packages download to use. This allow to setup and use your own mirror.
+          If you don't specify any value, it's set to 'https://cran.r-project.org"'.
+      user_to_create:
+        type: string
+        required: true
+        description: User to be created for RStudio
+        default: "rstudio"
+      password_to_create:
+        type: string
+        description: Password of the User created.
+        required: true
+        default: "rstudio"
+      repository:
+        type: string
+        description: >
+          This property give the opportunity to specify an alternative download repository for this component artifacts.
+          It is your responsibility to provide an accessible download url and to store required artifacts on it.
+          You should specify only the base repository url. Artifacts names will be appended to it, so this property could be shared among
+          several components using the inputs feature.
+          If you don't specify any value, it's set to 'https://download2.rstudio.org'.
+        required: false
+        default: ""
+        constraints:
+          - pattern: ^(http|https|ftp)://.+/.*$
+      Rhadoop:
+        type: boolean
+        default: false
+        description: >
+          Install libraries rhdfs, rhbase and ravro on the node.
+          If you set this value to true, be sure that rstudio is on the same node than a MapR/HortonWorks component.
+          default: false
+      SparkR:
+        type: boolean
+        default: false
+        description: >
+          Set spark environment in RStudio.
+          If you set this value to true, be sure that rstudio is on the same node than a Spark component.
+          default: false
+      distribution:
+        type: string
+        description: Hadoop distribution installed on the node
+        default: MapR
+        constraints:
+          - valid_values: [MapR,HortonWorks]
+    requirements:
+      - filesystem_endpoint:
+          capability: tosca.capabilities.Node
+          relationship: org.ystia.rstudio.linux.bash.relationships.ConnectsRStudioToFilessystem
+          occurrences: [0,1]
+      - host:
+          capability: org.ystia.java.pub.capabilities.JavaHosting
+          relationship: org.ystia.java.pub.relationships.HostedOnJavaRuntime
+          occurrences: [1,1]
+    interfaces:
+      Standard:
+        create:
+          inputs:
+            RSTUDIO_VERSION: { get_property: [SELF, component_version] }
+            REPOSITORY: { get_property: [SELF, repository] }
+          implementation: scripts/rstudio_install.sh
+        configure:
+          inputs:
+            JAVA_HOME: { get_attribute: [SELF, java_home] }
+            PROXY: { get_property: [SELF, proxy_to_use] }
+            LOGIN: { get_property: [SELF, user_to_create] }
+            PASSWORD: { get_property: [SELF, password_to_create] }
+            CRAN_MIRROR: { get_property: [SELF, cran_mirror_to_use] }
+          implementation: scripts/rstudio_configure.sh
+        start:
+          inputs:
+            JAVA_HOME: { get_attribute: [SELF, java_home] }
+            ENABLE_RHADOOP: { get_property: [SELF,  Rhadoop] }
+            DISTRIB: { get_property: [SELF,  distribution] }
+            SET_SPARKR_ENV: { get_property: [SELF,  SparkR] }
+            REPOSITORY: { get_property: [SELF, repository] }
+          implementation: scripts/rstudio_start.sh
+        stop: scripts/rstudio_stop.sh
+    artifacts:
+      - scripts:
+          file: scripts
+          type: tosca.artifacts.File
+
+
+relationship_types:
+  org.ystia.rstudio.linux.bash.relationships.ConnectsRStudioToFilessystem:
+    derived_from: org.ystia.relationships.ConnectsTo
+    description: >
+      Connects RStudio to a File System
+    valid_target_types: [ tosca.capabilities.Node ]
+    interfaces:
+      Configure:
+          pre_configure_source:
+            implementation: scripts/rstudio_to_filesystem.sh
+            inputs:
+              path_fs: { get_property: [ TARGET,location ] }
+    artifacts:
+      - scripts:
+          file: scripts
+          type: tosca.artifacts.File

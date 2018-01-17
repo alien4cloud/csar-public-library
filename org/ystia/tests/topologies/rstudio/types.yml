@@ -1,0 +1,78 @@
+tosca_definitions_version: alien_dsl_1_4_0
+
+metadata:
+  template_name: org.ystia.tests.topologies.rstudio
+  template_version: 3.0-SNAPSHOT
+  template_author: Bull
+
+imports:
+  - tosca-normative-types:1.0.0-ALIEN14
+  - alien-extended-storage-types:1.4.1-SNAPSHOT
+  - org.ystia.common:3.0-SNAPSHOT
+  - org.ystia.java.pub:3.0-SNAPSHOT
+  - org.ystia.java.linux.bash:3.0-SNAPSHOT
+  - org.ystia.rstudio.linux.bash:3.0-SNAPSHOT
+
+topology_template:
+  description: A basic topology template with RStudio
+
+  node_templates:
+
+    # Network
+
+    Network:
+      type: tosca.nodes.Network
+      properties:
+        ip_version: 4
+
+    # VM for RStudio
+
+    Compute:
+      type: tosca.nodes.Compute
+      requirements:
+        - network:
+            node: Network
+            relationship: tosca.relationships.Network
+      capabilities:
+        os:
+          properties:
+            type: linux
+    Java:
+      type: org.ystia.java.linux.bash.nodes.Java
+      requirements:
+        - host:
+            node: Compute
+    BlockStorage:
+      type: tosca.nodes.BlockStorage
+      properties:
+        size: "10 GB"
+      requirements:
+        - attachment:
+            node: Compute
+            capability: tosca.capabilities.Attachment
+            relationship: tosca.relationships.AttachTo
+    LinuxFileSystem:
+      type: alien.nodes.LinuxFileSystem
+      properties:
+        location: "/mountedStorageRS"
+      requirements:
+        - host:
+            node: Compute
+        - partition:
+            node: BlockStorage
+    RStudio:
+      type: org.ystia.rstudio.linux.bash.nodes.RStudio
+      properties:
+      requirements:
+        - host:
+            node: Java
+        - filesystem_endpoint:
+            node: LinuxFileSystem
+
+
+  # Output property for RStudio URL
+
+  outputs:
+    rstudio_url:
+      description: The URL to access RStudio
+      value: { get_attribute: [ RStudio, url ] }
