@@ -1,4 +1,4 @@
-.. _elk_basic_section:
+.. _elk_broker_section:
 
 **********
 ELK_BROKER
