@@ -29,8 +29,8 @@ Elasticsearch integrates the idea of cluster and nodes. A cluster is defined by 
 The cluster nodes share the shards and the replicas, and any of them can be queried indifferently.
 The cluster nodes elect a master node that manages the operation. If the master node fails for any reason, another master is elected.
 
-Elasticsearch
--------------
+Elasticsearch Component
+-----------------------
 
 The following figure shows a Compute node hosting Elasticsearch.
 
@@ -118,6 +118,9 @@ Artifacts
 
 - **utils_scripts**: Common util scripts for whole Ystia components.
 
+Advanced Functionalities
+------------------------
+
 Cluster Management
 ^^^^^^^^^^^^^^^^^^
 
@@ -128,7 +131,7 @@ It can be accessed by any node and provides the same response on each node.
 If an Elasticsearch component has the same **cluster_name** property and is related to the same Consul server,
 it will join the same cluster.
 
-Dynamic reconfiguration
+Dynamic Reconfiguration
 ^^^^^^^^^^^^^^^^^^^^^^^
 After deployment of an application containing an Elasticsearch component, you may change dynamically the number of replicas
 for the created indices, as follows:
