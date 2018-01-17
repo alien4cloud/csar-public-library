@@ -70,8 +70,8 @@ The Dev Tools page is a UI Console to interact with the REST API of Elasticsearc
 
 The Management page is where you perform your runtime configuration of Kibana.
 
-Kibana Configuration
-^^^^^^^^^^^^^^^^^^^^
+Kibana Component Configuration
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 A Kibana node must be hosted on a Java node, which is hosted on a Compute node. The minimum version of Java is **JRE 8**.
 Kibana Dashboard nodes can be attached to the Kibana node using **dashboard_host** prerequisite.
