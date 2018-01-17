@@ -12,8 +12,8 @@ Logstash is a tool for receiving, processing and outputting logs. All kinds of l
 Logstash provides a powerful pipeline for storing, querying, and analyzing logs. It includes an arsenal of built-in inputs, filters, codecs, and outputs, that are integrated as plugins.
 See https://www.elastic.co/guide/en/logstash/5.1/index.html for details about all these plugins' configuration
 
-Logstash
---------
+Logstash Component
+------------------
 A Logstash node should be hosted on a Java node, which is hosted itself on a compute node as shown in the following figure.
 The minimum version of Java is **JRE 8**.
 
@@ -91,6 +91,9 @@ Other artifacts:
 - **consul_scripts**: Scripts required by the Consul component.
 - **utils_scripts**: Common util scripts for whole Ystia components.
 
+Advanced Functionalities
+------------------------
+
 Logstash Relationships
 ^^^^^^^^^^^^^^^^^^^^^^
 
@@ -114,7 +117,7 @@ When using Logstash in an Elastic Stack toolchain, it must be related to a Consu
    :scale: 100
    :align: center
 
-Dynamic reconfiguration
+Dynamic Reconfiguration
 ^^^^^^^^^^^^^^^^^^^^^^^
 
 You can change the Logstash configuration at runtime without having to redeploy the application.
@@ -141,7 +144,7 @@ You can follow the process in the **events** tab.
 
 ****
 
-Logstash elasticity
+Logstash Elasticity
 ^^^^^^^^^^^^^^^^^^^^
 
 The component **Logstash Indexer** is scalable. The scalability of this component allows Log Analysis applications to deal with a huge amount of logs incoming from the Kafka broker. It is possible to deploy initially a topology with one or more Logstash Indexer and it is possible to scale out (add) or scale in (remove) Logstash Indexer instances at runtime.
@@ -149,7 +152,7 @@ The component **Logstash Indexer** is scalable. The scalability of this componen
 Each Logstash Indexer instance is a consumer of the same Kafka topic but of a different partition of this topic. If there are more partitions of the Kafka topic than Logstash Indexer (consumer), some consumers will read several partitions. But if there are more consumers than partitions, some consumers will not be used. So, it is important to correlate these two values (the number of partitions of the Kafka topic and the number of maximum instances of Logstash Indexer).
 
 
-Logstash resilience
+Logstash Resilience
 ^^^^^^^^^^^^^^^^^^^
 
 Three cases of failures are considered:
