@@ -225,10 +225,10 @@ However, this tuning is always a tradeoff between the lowest latency and the gre
 YSTIA ships different topology templates that are designed to address different applications. Kafka is used in two of those
 templates:
 
-- **ELK-broker**:
+- **elk_broker**:
   In this template, Kafka is configured to be used with the lowest latency.
 
-- **ELK-HA**:
+- **elk_ha**:
   In this template, Kafka is configured to be used with the greatest level of durability.
 
 
