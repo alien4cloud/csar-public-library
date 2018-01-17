@@ -72,6 +72,12 @@ topology_template:
         - network:
             node: Network
             relationship: tosca.relationships.Network
+      capabilities:
+        scalable:
+          properties:
+            max_instances: 5
+            min_instances: 1
+            default_instances: 2
     Consul_FTM:
       type: org.ystia.consul.linux.bash.nodes.Consul
       requirements:

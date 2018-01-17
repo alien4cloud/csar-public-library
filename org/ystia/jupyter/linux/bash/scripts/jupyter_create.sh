@@ -54,7 +54,7 @@ then
   log info "R is installed"
   #install dans  nouvelle library
   mkdir -p $HOME/R/x86_64-redhat-linux-gnu-library/3.3
-  sudo bash -c "echo 'export LD_LIBRARY_PATH="/lib/:/lib64/:/usr/lib64/:/usr/lib64/R/lib:$HOME/anaconda2/lib"' >> /etc/bashrc"
+  sudo bash -c "echo 'export LD_LIBRARY_PATH="/lib/:/lib64/:/usr/lib64/:/usr/lib64/R/lib:$HOME/anaconda3/lib"' >> /etc/bashrc"
 
   #get the export before Rscript
   source /etc/bashrc
