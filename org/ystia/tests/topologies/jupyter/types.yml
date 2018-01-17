@@ -1,0 +1,54 @@
+tosca_definitions_version: alien_dsl_1_4_0
+
+metadata:
+  template_name: org.ystia.tests.topologies.jupyter
+  template_version: 3.0-SNAPSHOT
+  template_author: Bull
+
+imports:
+  - tosca-normative-types:1.0.0-ALIEN14
+  - org.ystia.common:3.0-SNAPSHOT
+  - org.ystia.python.pub:3.0-SNAPSHOT
+  - org.ystia.python.linux.bash:3.0-SNAPSHOT
+  - org.ystia.jupyter.linux.bash:3.0-SNAPSHOT
+
+
+topology_template:
+  description: A basic topology template with Jupyter
+
+  node_templates:
+
+    # Network
+
+    Network:
+      type: tosca.nodes.Network
+      properties:
+        ip_version: 4
+
+    # VM for Jupyter
+
+    Compute:
+      type: tosca.nodes.Compute
+      requirements:
+        - network:
+            node: Network
+            relationship: tosca.relationships.Network
+    Python:
+      type: org.ystia.python.linux.bash.nodes.Python
+      requirements:
+        - host:
+            node: Compute
+    Jupyter:
+      type: org.ystia.jupyter.linux.bash.nodes.Jupyter
+      properties:
+        h2o: false
+      requirements:
+        - host:
+            node: Python
+
+  # Output property for Jupyter URL
+
+  outputs:
+    jupyter_url:
+      description: The URL to access Jupyter Notebook
+      value: { get_attribute: [ Jupyter, url ] }

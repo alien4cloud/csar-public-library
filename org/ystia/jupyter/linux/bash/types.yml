@@ -1,0 +1,91 @@
+tosca_definitions_version: alien_dsl_1_4_0
+
+metadata:
+  template_name: org.ystia.jupyter.linux.bash
+  template_version: 3.0-SNAPSHOT
+  template_author: Bull
+
+description: Jupyter notebook for linux system
+
+imports:
+  - tosca-normative-types:1.0.0-ALIEN14
+  - org.ystia.common:3.0-SNAPSHOT
+  - org.ystia.python.pub:3.0-SNAPSHOT
+  - org.ystia.python.linux.bash:3.0-SNAPSHOT
+
+
+node_types:
+  org.ystia.jupyter.linux.bash.nodes.Jupyter:
+    derived_from: org.ystia.nodes.Root
+    description: Jupyter notebook component for linux system
+    tags:
+      icon: /images/jupyter-logo.png
+    attributes:
+      url: { concat: ["http://", get_attribute: [HOST, public_ip_address], ":9888" ] }
+    properties:
+      component_version:
+        type: version
+        description: The installed Jupyter version
+        default: 3.6
+        constraints:
+          - valid_values: [3.6]
+      repository:
+         type: string
+         description: >
+           This property give the opportunity to specify an alternative download repository for Anaconda.
+           It is your responsibility to provide an accessible download url and to store required artifact on it.
+           You should specify only the base repository url.
+           The default value is http://repo.continuum.io/archive.
+         required: true
+         default: "http://repo.continuum.io/archive"
+         constraints:
+           - pattern: ^(http|https|ftp)://.+/.*$
+      h2o:
+        type: boolean
+        description: Is the installed Jupyter must have h2o.ai
+        default: false
+    requirements:
+      - host:
+          capability: org.ystia.python.pub.capabilities.PythonHosting
+          relationship: org.ystia.python.pub.relationships.HostedOnPythonRuntime
+          occurrences: [1,1]
+      - filesystem_endpoint:
+          capability: tosca.capabilities.Node
+          relationship: org.ystia.jupyter.linux.bash.relationships.ConnectsJupyterToFilessystem
+          occurrences: [0,1]
+    interfaces:
+      Standard:
+        create:
+          inputs:
+            REPOSITORY: { get_property: [SELF, repository] }
+            IRKERNEL: false
+            SPARK_KERNEL: false
+            H2O: { get_property: [SELF, h2o] }
+          implementation: scripts/jupyter_create.sh
+        start:
+          implementation: scripts/jupyter_start.sh
+    artifacts:
+      - scripts:
+          type: tosca.artifacts.File
+          file: scripts
+      - data_file:
+          type: tosca.artifacts.File
+          file: data
+
+
+relationship_types:
+
+  org.ystia.jupyter.linux.bash.relationships.ConnectsJupyterToFilessystem:
+    derived_from: org.ystia.relationships.ConnectsTo
+    description: Connects Jupyter to a FileSystem to specify where will be stored Jupyter notebooks.
+    valid_target_types: [ tosca.capabilities.Node ]
+    interfaces:
+      Configure:
+          pre_configure_source:
+            implementation: scripts/jupyter-to-filesystem.sh
+            inputs:
+              path_fs: { get_property: [ TARGET, location ] }
+    artifacts:
+      - scripts:
+          type: tosca.artifacts.File
+          file: scripts

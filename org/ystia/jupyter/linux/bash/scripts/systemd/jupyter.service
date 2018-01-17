@@ -1,0 +1,9 @@
+[Unit]
+Description=Unit file for managing Jupyter within Ystia
+
+[Service]
+ExecStart={{CMD_JUPYTER}} notebook
+User={{USER}}
+
+[Install]
+WantedBy=multi-user.target
