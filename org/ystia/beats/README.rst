@@ -1,14 +1,14 @@
 .. _beats_section:
 
-****************
-Beats components
-****************
+***************
+Beat components
+***************
 
 .. contents::
     :local:
     :depth: 3
 
-Beats are data shippers for many types of data that can enrich Logstash, be searched and analyzed in Elasticsearch, and visualized in Kibana.
+Beat components are data shippers for many types of data that can enrich Logstash, be searched and analyzed in Elasticsearch, and visualized in Kibana.
 Currently in BDCF, three Beats are available:
 
 - **FileBeat** which ships file contents (typically log files)
