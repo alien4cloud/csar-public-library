@@ -12,6 +12,10 @@ Logstash is a tool for receiving, processing and outputting logs. All kinds of l
 Logstash provides a powerful pipeline for storing, querying, and analyzing logs. It includes an arsenal of built-in inputs, filters, codecs, and outputs, that are integrated as plugins.
 See https://www.elastic.co/guide/en/logstash/5.1/index.html for details about all these plugins' configuration
 
+The YSTIA Logstash component is packed together with two other components that can be useful for BigData applications development:
+- **GeoNames** component that provides geolocation for Big Data applications
+- **Twitter** connector that allows to connect Twitter to Logstash, and thus, to an ELK chain
+
 Logstash Component
 ------------------
 A Logstash node should be hosted on a Java node, which is hosted itself on a compute node as shown in the following figure.
@@ -199,3 +203,182 @@ Below is an example of this file for Centos Linux distribution::
 .. note::    The PATH must be absolute and the % must be escaped with a \\ character.
 
 For details on Curator, refer to https://www.elastic.co/guide/en/elasticsearch/client/curator/current/index.html
+
+GeonamesComponent
+-----------------
+The **GeoNames** component allows you to load geographical names downloaded from the **Geonames** database - http://www.geonames.org, into Elasticsearch.
+
+Download the archive containing geolocation data necessary for your application from http://download.geonames.org/export/zip, and install it into a local repository accessible from your application's hosts.
+
+Properties
+^^^^^^^^^^
+
+- **repository** : Address of the local repository containing the geolocation data archive.
+
+  - Required
+  - Default: ""
+
+- **filename** : Name of the geolocation data archive.
+
+  - Required
+  - Default: "allCountries".
+
+
+- **indexname** : Name of the target Elasticsearch index.
+
+  - Required
+  - Default: "starlings_geonames"
+
+
+Requirements
+^^^^^^^^^^^^
+
+- **host**: GeoNames should be hosted on a Logstash node
+
+Capabilities
+^^^^^^^^^^^^
+
+- **geonames_resource**: Endpoint used by components that need to connect to GeoNames
+
+Artifacts
+^^^^^^^^^
+
+- **geoscripts**: GeoNames required scripts.
+
+
+Twitter Connector
+-----------------
+The **Twitter Connector** component allows you to connect Twitter to the ELK chain via Logstash, in order to get tweets, filtering them by keywords, language, etc.
+The following figure shows a Twitter node configuration.
+
+.. image:: docs/images/twitter-connector.png
+   :name: Twitter_figure
+   :scale: 100
+   :align: center
+
+Properties
+^^^^^^^^^^
+
+- **consumer_key** : Your Twitter App’s consumer key.
+
+  - Required
+  - Default: ""
+
+- **consumer_secret** : Your Twitter App’s consumer secret.
+
+  - Required
+  - Default: ""
+
+- **oauth_token** : Your Twitter oauth token.
+
+  - Required
+  - Default: ""
+
+- **oauth_token_secret** : Your Twitter oauth token secret.
+
+  - Required
+  - Default: ""
+
+- **use_proxy** : Use a proxy to handle the connections.
+
+  - Default: "false"
+
+- **proxy_address** : Address of the proxy to use. If use_proxy property is true, and no value is set for this property, then default environment proxy settings on the compute will be used.
+
+  - Default: ""
+
+- **proxy_port** : Port of the proxy to use. If use_proxy property is true, and no value is set for this property, then default environment proxy settings on the compute will be used.
+
+  - Default: ""
+
+- **keywords** : An array of keywords to track in the Twitter stream. Example: ["foo", "bar"].
+
+  - Default: ""
+
+- **follows** : An array of user IDs, indicating the users to return statuses for in the Twitter stream. Example: ["ID1", "ID2"].
+
+  - Default: ""
+
+- **languages** : An array of BCP 47 language identifiers corresponding to any of the languages listed on Twitter’s advanced search page will only return tweets that have been detected as being written in the specified languages. Example: [ "en", "fr" ].
+
+  - Default: ""
+
+- **use_samples** : Returns a small random sample of all public statuses. If set to true, the **keywords**, **follows** and **languages** properties will be ignored.
+
+  - Default: "false"
+
+- **full_tweet** : Record full tweet object as given by the Twitter Streaming API.
+
+  - Default: "false"
+
+- **ignore_retweets** : Ignore the retweets coming out of the Twitter API.
+
+  - Default: "false"
+
+- **tags** : An array of tags to add to your event. This can help with processing later. Example: ["tagName"].
+
+  - Default: ""
+
+****
+
+**Note**
+  At least one of **keywords** or **follows** property must be specified if the **use_samples** property is not set.
+
+****
+
+Twitter Connector Dynamic Reconfiguration
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+You can change the Twitter Connector configuration at runtime without having to redeploy the application.
+
+The following commands are available to change the configuration:
+
+- **change_authentication**: To change the Twitter account to get tweets.
+
+  - *consumer_key*
+  - *consumer_secret*
+  - *oauth_token*
+  - *oauth_token_secret*
+
+- **change_full_tweet**: To change the *full_tweet* property.
+
+- **change_use_samples**: To change the *use_samples* property.
+
+- **change_ignore_retweets**: To change the *ignore_retweets* property.
+
+- **change_follows**: To change the *follows* property.
+
+- **add_follows**: To add user ID to the *follows* property.
+
+- **remove_follows**: To remove user ID from the *follows* property.
+
+- **change_tags**: To change the *tags* property.
+
+- **add_tags**: To add values to the *tags*  property.
+
+- **remove_tags**: To remove values from the *tags*  property.
+
+- **change_keywords**: To change the *keywords* property.
+
+- **add_keywords**: To add values to the *keywords* property.
+
+- **remove_keywords**: To remove values from the *keywords* property.
+
+- **change_languages**: To change the *languages* property.
+
+- **add_languages**: To add values to the *languages* property.
+
+- **remove_languages**: To remove values from the *languages* property.
+
+
+****
+
+**Note**
+  The value of the **tags**, **keywords** and **languages** properties can be either:
+
+  - An array of string (["word1", "word2"]). In this case, the initial value (used at deployment time) will be replaced.
+  - Or empty. In this case, the property will be removed from the configuration of the Twitter Connector.
+
+  The **follows** property requires an array of Twitter accounts (["@id1", "@id2", "@id3"]).
+
+****
