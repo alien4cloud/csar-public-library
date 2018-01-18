@@ -51,7 +51,7 @@ Complete configuration
 - Deploy the application created at the previous step.
 
 - Connect to the Nifi User Interface to import a template - the nifi-es5-demo-template.xml file, located the dataflows repository of this topology.
-  You may sse https://nifi.apache.org/docs/nifi-docs/html/user-guide.html#templates for dtails about Nifi templates.
+  You can see https://nifi.apache.org/docs/nifi-docs/html/user-guide.html#templates for details about Nifi templates.
 
 - Configure the Twitter component - the GetTwitterWithProxy processor :
 
