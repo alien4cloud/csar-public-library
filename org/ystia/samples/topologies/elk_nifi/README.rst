@@ -50,7 +50,7 @@ Complete configuration
 
 - Deploy the application created at the previous step.
 
-- Connect to the Nifi User Interface to import a template - the nifi-es5-demo-template.xml file, located the dataflows repository of this topology.
+- Connect to the Nifi User Interface to import a template. Use the **url** output attribute of the Nifi component to get the address of the GUI. Use the nifi-es5-demo-template.xml file, located the dataflows repository of this topology.
   You can see https://nifi.apache.org/docs/nifi-docs/html/user-guide.html#templates for details about Nifi templates.
 
 - Configure the Twitter component - the GetTwitterWithProxy processor :
@@ -79,4 +79,4 @@ Then the NiFi UI looks like:
    :scale: 100
    :align: center
 
-Finally, connect to Kibana using the kibana_url ouput property and create an index pattern names **bigdata**. Check the collected tweets using the Discover view.
+Finally, connect to Kibana using the **url** output attribute of the components, and create an index pattern names **bigdata**. Check the collected tweets using the Discover view.
