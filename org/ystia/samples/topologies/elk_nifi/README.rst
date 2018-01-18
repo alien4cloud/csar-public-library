@@ -79,4 +79,4 @@ Then the NiFi UI looks like:
    :scale: 100
    :align: center
 
-Finally, connect to Kibana using the **url** output attribute of the components, and create an index pattern names **bigdata**. Check the collected tweets using the Discover view.
+Finally, connect to Kibana using the **url** output attribute of the component, and create an index pattern names **bigdata**. Check the collected tweets using the Discover view.
