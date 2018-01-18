@@ -127,6 +127,11 @@ Artifacts
 
 - **plugins**: Kibana plugins directory
 
+Attributes
+^^^^^^^^^^
+
+- **url**: The URL to access Kibana.
+
 Using Kibana
 ^^^^^^^^^^^^
 
