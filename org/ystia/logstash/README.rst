@@ -209,6 +209,10 @@ GeoNames Component
 ------------------
 The **GeoNames** component allows for loading geographical names from the **Geonames** database - http://www.geonames.org, into Elasticsearch.
 
+.. image:: docs/images/geonames.png
+    :scale: 80
+    :align: center
+
 Download the archive containing geolocation data necessary for your application from http://download.geonames.org/export/zip, and install it into a local repository accessible to your application's hosts.
 
 Properties

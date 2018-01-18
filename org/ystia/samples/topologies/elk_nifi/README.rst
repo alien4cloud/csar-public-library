@@ -10,7 +10,7 @@ ELK_NIFI
 
 Install Components and Topology template
 ----------------------------------------
-Install the CSARs of the following YSTIA compoents to the Alien4Cloud Components catalogue, and respect the order in the list:
+Install the CSARs of the following YSTIA compoents to the Alien4Cloud Components catalog, and respect the order in the list:
 
 #. **common**
 #. **consul**
@@ -19,7 +19,7 @@ Install the CSARs of the following YSTIA compoents to the Alien4Cloud Components
 #. **elasticsearch**
 #. **logstash**
 
-Install the **elk_nifi** topology archive to the Alien4Cloud Topology template catalogue
+Install the **elk_nifi** topology archive to the Alien4Cloud Topology template catalog.
 
 
 Topology template
