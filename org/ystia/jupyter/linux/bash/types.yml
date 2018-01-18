@@ -26,9 +26,9 @@ node_types:
       component_version:
         type: version
         description: The installed Jupyter version
-        default: 3.6
+        default: 4.3.0
         constraints:
-          - valid_values: [3.6]
+          - valid_values: [4.3.0]
       repository:
          type: string
          description: >
