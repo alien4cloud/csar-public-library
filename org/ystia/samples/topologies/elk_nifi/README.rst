@@ -40,7 +40,7 @@ Create en application
 ---------------------
 The application can be created via the Alien4Cloud GUI using the **elk_nifi** topology shown below:
 
-.. image:: docs/images/topology.png
+.. image:: docs/images/elk_nifi_topo.png
    :name: elk_nifi_figure
    :scale: 100
    :align: center
