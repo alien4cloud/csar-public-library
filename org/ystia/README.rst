@@ -18,19 +18,35 @@ Introduction
 Ystia CSAR library overview
 ===========================
 
+.. **Ystia CSAR libray** provides a packaged solution to create easily Big Data application clusters on demand.
+.. Deployment of Big Data applications can be done on a public Cloud (such as Amazon),
+.. or on a private cloud (such as OpenStack), on Bare-Metal or on HPC.
+..
+.. Big Data applications targeted by Ystia are:
+..
+.. - mainly **Hadoop** applications based on MapR_, Hortonworks_ or Cloudera_.
+.. - and **Log Analysis** applications based on Elastic_ components.
+..
+.. In addition, Ystia CSAR libray provides useful components such as:
+..
+.. - **SQL** and **Not Only SQL** database servers (MySQL_, MongoDB_, PostgreSQL_),
+.. - message brokers (Kafka_),
+.. - data science development environments (RStudio_, Jupyter_)
+.. - and other technical components such as **Java**, **Consul** (Consensus Systems), allowing detailed application
+..   architectures to be designed.
+..
+.. The components are connected together in application topologies.
+.. To simplify topology creation, Ystia provides **topology templates** that can be extended by your applications.
+..
+
 **Ystia CSAR libray** provides a packaged solution to create easily Big Data application clusters on demand.
 Deployment of Big Data applications can be done on a public Cloud (such as Amazon),
 or on a private cloud (such as OpenStack), on Bare-Metal or on HPC.
 
 Big Data applications targeted by Ystia are:
 
-- mainly **Hadoop** applications based on MapR_, Hortonworks_ or Cloudera_.
-- and **Log Analysis** applications based on Elastic_ components.
-
-In addition, Ystia CSAR libray provides useful components such as:
-
-- **SQL** and **Not Only SQL** database servers (MySQL_, MongoDB_, PostgreSQL_),
-- message brokers (Kafka_),
+- **Log Analysis** applications based on Elastic_ components.
+- message brokers (Kafka_, Nifi_),
 - data science development environments (RStudio_, Jupyter_)
 - and other technical components such as **Java**, **Consul** (Consensus Systems), allowing detailed application
   architectures to be designed.
@@ -47,6 +63,7 @@ To simplify topology creation, Ystia provides **topology templates** that can be
 .. _MapR: https://mapr.com/
 .. _MongoDB: https://www.mongodb.com/
 .. _MySQL: http://www.mysql.com/
+.. _Nifi: https://nifi.apache.org/
 .. _PostgreSQL: https://www.postgresql.org/
 .. _RStudio: https://www.rstudio.com/
 
@@ -59,9 +76,7 @@ Ystia is based on the following products:
 .. _Janus: http://TO_BE_COMPLETED/
 .. _Alien4Cloud: http://alien4cloud.github.io/
 
-**TO BE CONFIRMED .....**
-**AND**
-**TO BE COMPLETED .....**
+**TO BE CONFIRMED .....** and **TO BE COMPLETED .....**
 
 
 
@@ -89,6 +104,12 @@ YSTIA CSAR library requires:
 
 **TO BE COMPLETED**
 
+.. _getting_started_build_section:
+
+How to build an Ystia CSAR
+==========================
+
+**TO BE COMPLETED**
 
 .. _getting_started_samples_section:
 
@@ -128,72 +149,9 @@ Topologies for Log Analysis based on Elastic Stack
 All these topology templates contain at least the three Elastic Stack components: **Elasticsearch**, **Logstash**
 and **Kibana**.
 
-You can upload into the Alien4Cloud catalog those topologies after having upload into the catalog the *CSAR* of
-the following Ystia components (respect the order in the list):
 
-- **common**,
-- **consul**,
-- **java**,
-- **kafka**,
-- **elasticsearch**,
-- **logstash**,
-- **kibana**,
+More information about those topologies can be found under **org/ystia/topologies/elk_\***
 
-More information about those topologies can be found under **org/ystia/topologies/elk**
-
-
-.. _topologies_mongodb_section:
-
-Topologies for MongoDB
-======================
-
-**TO BE COMPLETED.....**
-
-
-.. _topologies_mapr_section:
-
-Topologies for MapR Hadoop applications
-=======================================
-
-**TO BE COMPLETED.....**
-
-
-.. _topologies_hortonworks_section:
-
-Topologies for Hortonworks
-==========================
-
-**TO BE COMPLETED.....**
-
-
-.. _topologies_cloudera_section:
-
-Topologies for Cloudera
-=======================
-
-**TO BE COMPLETED.....**
-
-.. _topologies_web_crawling_section:
-
-Topologies for Web crawling based on MapR and Elastic Stack
-===========================================================
-
-**TO BE COMPLETED.....**
-
-
-.. _topologies_lambda_section:
-
-Topology for Lambda Architecture
-================================
-
-**TO BE COMPLETED.....**
-
-.. _topologies_kappa_section:
-
-Topology for Kappa Architecture
-===============================
-
-**TO BE COMPLETED.....**
 
 
 
@@ -209,14 +167,22 @@ Components
 Consensus systems
 =================
 
-- **Consul** is a technical component allowing other software components to discover each other in a flexible,
-  highly available and fault tolerant way.
-
++-----------+--------------------+
+| *Consul** | *org/ystia/consul* |
++-----------+--------------------+
 
 ELK components
 ==============
 
-**TO BE COMPLETED.....**
++------------------+---------------------------+
+| *Elasticsearch** | *org/ystia/elasticsearch* |
++------------------+---------------------------+
+| **Logstash**     | *org/ystia/logstash*      |
++------------------+---------------------------+
+| **Kibana**       | *org/ystia/kibana*        |
++------------------+---------------------------+
+| **Beats**        | *org/ystia/beats*         |
++------------------+---------------------------+
 
 
 Geolocation components
@@ -245,36 +211,6 @@ Stream & real-time processing
 
 Studios for data scientists
 ===========================
-
-**TO BE COMPLETED.....**
-
-
-Web crawling components
-=======================
-
-**TO BE COMPLETED.....**
-
-
-Database servers
-================
-
-**TO BE COMPLETED.....**
-
-
-MapR Hadoop components
-======================
-
-**TO BE COMPLETED.....**
-
-
-Hortonworks Hadoop components
-=============================
-
-**TO BE COMPLETED.....**
-
-
-Cloudera Hadoop components
-==========================
 
 **TO BE COMPLETED.....**
 
