@@ -15,30 +15,12 @@ A Process Group is a specific set of processes and their connections, which can 
 
 See https://nifi.apache.org/ for details.
 
->>>>>>>>>>>
-The following figure shows **Nifi** architecture.
-
-.. image:: docs/images/nifi_architecture.png
-   :name: nifi_architecture
-   :scale: 100
-   :align: center
-
-
-- **Web Server** : hosts NiFi’s HTTP-based command and control API.
-- **Flow Controller** : the flow controller provides threads for extensions to run on, and manages the schedule of when extensions receive resources to execute.
-- **Extensions** : there are various types of Nifi extensions that can be added.
-- **FlowFile Repository** : the FlowFile Repository is where NiFi keeps track of the state of what it knows about a given FlowFile that is presently active in the flow.
-- **Content Repository** : the Content Repository is where the actual content bytes of a given FlowFile live.
-- **Provenance Repository** : The Provenance Repository is where all provenance event data is stored.
-
-<<<<<<<<<<<<<<<
-
 The following figure shows Nifi node configuration.
 
- .. image:: docs/images/nifi_compute.png
-   :name: nifi_compute
-   :scale: 100
-   :align: center
+.. image:: docs/images/nifi_component.png
+    :name: nifi_compute
+    :scale: 100
+    :align: center
 
 
 Properties
