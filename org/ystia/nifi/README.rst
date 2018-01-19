@@ -45,3 +45,8 @@ Artifacts
 - **consul_scripts**: Scripts required by the Consul component.
 
 - **utils_scripts**: Common util scripts for whole YSTIA components.
+
+Attributes
+^^^^^^^^^^
+
+- **url**: The URL to access nifi GUI.

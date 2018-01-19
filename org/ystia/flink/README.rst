@@ -58,7 +58,8 @@ Properties
 
 - **jobmanager_rpc_port**: Port used by JobManager to communicate with TaskManager (not editable).
 
-- **repository**: Download repository for the Apache Flink binary. Providing a different value allows to specify an alternative repository.
+- **repository**:
+    Download repository for the Apache Flink binary. Providing a different value allows to specify an alternative repository.
     It is your responsibility to provide an accessible download url and to store required artifacts on it. You should specify only the base
     repository url. Artifacts names will be appended to it, so this property could be shared among several components using the inputs feature.
 
@@ -89,6 +90,11 @@ Artifacts
 
 - **utils_scripts**: Common util scripts for whole Ystia components.
 
+Attributes
+^^^^^^^^^^
+
+- **dashboard_url**: The URL to access FlinkJobManager dashboard GUI.
+
 
 Flink TaskManager
 -----------------
@@ -116,7 +122,8 @@ Properties
 
   - Default: /tmp
 
-- **repository**: Download repository for the Apache Flink binary. Providing a different value allows to specify an alternative repository.
+- **repository**:
+    Download repository for the Apache Flink binary. Providing a different value allows to specify an alternative repository.
     It is your responsibility to provide an accessible download url and to store required artifacts on it. You should specify only the base
     repository url. Artifacts names will be appended to it, so this property could be shared among several components using the inputs feature.
 
