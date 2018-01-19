@@ -45,8 +45,8 @@ Create en application
 ---------------------
 The application can be created via the Alien4Cloud GUI using the **elk_dummylogs** topology shown below:
 
-.. image:: docs/images/topology.png
-   :name: elk_basic_figure
+.. image:: docs/images/elk_dummylogs_topo.png
+   :name: elk_dummylogs_figure
    :scale: 100
    :align: center
 

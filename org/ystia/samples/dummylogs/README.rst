@@ -6,10 +6,17 @@ Dummylog sample components
     :local:
     :depth: 3
 
-These components can be used to test an ELK chain with some generated log data.
+This component can be used to test an ELK chain with some generated log data.
 
 DummyLogsGenerator
 ------------------
+
+
+.. image:: docs/images/dummylogs_component.png
+    :name: dummylogs_figure
+    :scale: 100
+    :align: center
+
 Generated periodically log data to a log file. It can be configured using the properties below:
 
 Properties
