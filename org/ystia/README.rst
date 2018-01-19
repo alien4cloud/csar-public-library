@@ -140,19 +140,34 @@ Topologies
 Topologies for Log Analysis based on Elastic Stack
 ==================================================
 
-*Ystia* provides several topology template to facilitate Log Analysis application design:
++-------------------+----------------------------------------------+
+| **elk_basic**     | *org/ystia/topologies/elk_basic*             |
++-------------------+----------------------------------------------+
+| **elk_broker**    | *org/ystia/topologies/elk_broker*            |
++-------------------+----------------------------------------------+
+| **elk_ha**        | *org/ystia/topologies/elk_ha*                |
++-------------------+----------------------------------------------+
+| **elk_geonames**  | *org/ystia/topologies/elk_geonames*          |
++-------------------+----------------------------------------------+
 
-- **elk_basic**,
-- **elk_broker**,
-- **elk_ha**.
++-------------------+----------------------------------------------+
+| **elk_beats**     | *org/ystia/samples/topologies/elk_beats*     |
++-------------------+----------------------------------------------+
+| **elk_heartbeat** | *org/ystia/samples/topologies/elk_heartbeat* |
++-------------------+----------------------------------------------+
+| **elk_dummylogs** | *org/ystia/samples/topologies/elk_dummylogs* |
++-------------------+----------------------------------------------+
+| **elk_nifi**      | *org/ystia/samples/topologies/elk_nifi*      |
++-------------------+----------------------------------------------+
+| **elk_twitter**   | *org/ystia/samples/topologies/elk_twitter*   |
++-------------------+----------------------------------------------+
 
-All these topology templates contain at least the three Elastic Stack components: **Elasticsearch**, **Logstash**
-and **Kibana**.
+Topologies for Flink
+====================
 
-
-More information about those topologies can be found under **org/ystia/topologies/elk_\***
-
-
++---------------+----------------------------------+
+| **elk_flink** | *org/ystia/topologies/elk_basic* |
++---------------+----------------------------------+
 
 
 .. *********************************************************************************************************************
@@ -167,66 +182,78 @@ Components
 Consensus systems
 =================
 
-+-----------+--------------------+
-| *Consul** | *org/ystia/consul* |
-+-----------+--------------------+
++------------+--------------------+
+| **Consul** | *org/ystia/consul* |
++------------+--------------------+
 
 ELK components
 ==============
 
-+------------------+---------------------------+
-| *Elasticsearch** | *org/ystia/elasticsearch* |
-+------------------+---------------------------+
-| **Logstash**     | *org/ystia/logstash*      |
-+------------------+---------------------------+
-| **Kibana**       | *org/ystia/kibana*        |
-+------------------+---------------------------+
-| **Beats**        | *org/ystia/beats*         |
-+------------------+---------------------------+
++-------------------+---------------------------+
+| **Elasticsearch** | *org/ystia/elasticsearch* |
++-------------------+---------------------------+
+| **Logstash**      | *org/ystia/logstash*      |
++-------------------+---------------------------+
+| **Kibana**        | *org/ystia/kibana*        |
++-------------------+---------------------------+
+| **Beats**         | *org/ystia/beats*         |
++-------------------+---------------------------+
 
 
 Geolocation components
 ======================
 
-**TO BE COMPLETED.....**
++--------------+----------------------+
+| **GeoNames** | *org/ystia/logstash* |
++--------------+----------------------+
 
 
 Social network connectors
 =========================
 
-**TO BE COMPLETED.....**
++----------------------+----------------------+
+| **TwitterConnector** | *org/ystia/logstash* |
++----------------------+----------------------+
 
 
 Message brokers
 ===============
 
-**TO BE COMPLETED.....**
++-----------+-------------------+
+| **Kafka** | *org/ystia/kafka* |
++-----------+-------------------+
+| **Nifi**  | *org/ystia/nifi*  |
++-----------+-------------------+
 
 
 Stream & real-time processing
 =============================
 
-**TO BE COMPLETED.....**
++-----------+-------------------+
+| **Flink** | *org/ystia/flink* |
++-----------+-------------------+
 
 
 Studios for data scientists
 ===========================
 
-**TO BE COMPLETED.....**
++-------------+---------------------+
+| **Jupyter** | *org/ystia/jupyter* |
++-------------+---------------------+
+| **RStudio** | *org/ystia/rstudio* |
++-------------+---------------------+
 
 
 Utilities
 =========
 
-Ystia utilities components are:
-
-- **HAProxy**: a fast and reliable solution offering high availability, load balancing, and proxying
-  for TCP and HTTP-based applications.
-
-- **Java**: a technical component allowing other software components to choose the required Java version
-
-- **XFS**: stands for eXtended File System,
-  a highly scalable, high-performance 64-bit journaling file system originally designed at Silicon Graphics, Inc
++-------------+---------------------+
+| **HAProxy** | *org/ystia/haproxy* |
++-------------+---------------------+
+| **Java**    | *org/ystia/java*    |
++-------------+---------------------+
+| **XFS**     | *org/ystia/xfs*     |
++-------------+---------------------+
 
 
 
