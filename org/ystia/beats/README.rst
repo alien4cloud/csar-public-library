@@ -8,12 +8,14 @@ Beat components
     :local:
     :depth: 3
 
-Beat components are data shippers for many types of data that can enrich Logstash, be searched and analyzed in Elasticsearch, and visualized in Kibana.
-Currently in BDCF, three Beats are available:
+Beat components are data shippers for sending different types of data to Logstash, or to Elasticsearch. These data can then be visualized in Kibana.
 
-- **FileBeat** which ships file contents (typically log files)
-- **MetricBeat** which ships metrics about process/system/filesystem
-- **PacketBeat** which ships information about network traffic
+Currently in YSTIA, the following Beats are available:
+
+- **FileBeat** ships file contents (typically log files)
+- **MetricBeat** ships metrics about process/system/filesystem
+- **PacketBeat** ships information about network traffic
+- **HeartBeat** monitors services and ships service availability information
 
 FileBeat
 --------
@@ -175,6 +177,70 @@ Artifacts
   Only the packaged version is supported, in *tar.gz* archive format.
 
 - **beat_config**: Default configuration file. This artifact can be used to overwrite the default configuration for PacketBeat. In this case, to keep the automatic connection to ElasticSearch, a placeholder *#ELASTIC_SEARCH_OUTPUT_PLACEHOLDER#* should be present
+  in the configuration file where the ElasticSearch output configuration should be inserted. Likewise, for automatic connection to Logstash,
+  a placeholder *#LOGSTASH_OUTPUT_PLACEHOLDER#* should be present.
+
+- **scripts**: Beats required scripts.
+
+- **component_version:** Version of the component.
+
+- **consul_scripts**: Scripts required by the Consul component.
+
+- **utils_scripts**: Common util scripts for whole YSTIA components.
+
+HeartBeat
+----------
+
+The YSTIA HeartBeat component allows to monitor an application's services. It is able to get information about the services registered into Consul.
+That's why applications that need service monitoring have to use both Consul and HeartBeat YSTIA components.
+
+The following figure shows a HeartBeat topology example.
+
+.. image:: docs/images/HeartBeat.png
+   :name: HeartBeat_figure
+   :scale: 100
+   :align: center
+
+Properties
+^^^^^^^^^^
+
+- **component_version:** Version of the component.
+
+- **schedule**:
+
+  - Default:
+- **debug**: Enable debug logs for this beat. Logs are located under ~/<Component_Name>/beat.log
+
+  - Default: false
+
+
+Requirements
+^^^^^^^^^^^^
+
+- **host**: HeartBeat component requires to be hosted on a Compute.
+
+- **consul**: HeartBeat component requires to be connected to a Consul component which provides data about available services
+
+- **search_endpoint**: HeartBeat component may be connected to ship data into ElasticSearch.
+
+- **logstash_endpoint**: HeartBeat component may be connected to ship data into Logstash.
+
+- **connect_ToComponent**: HeartBeat component requires to be connected to one of the application's components.
+
+****
+
+**Notes**
+  HeartBeat component should be connected to at least one of ElasticSearch or Logstash
+  HeartBeat component should be connected to Consul and to another application's components in order to obtain service availability information
+****
+
+Artifacts
+^^^^^^^^^
+
+- **beat_bin**: Binary distribution of HearttBeat. This artifact can be used to update HeartBeat binaries to a newer version.
+  Only the packaged version is supported, in *tar.gz* archive format.
+
+- **beat_config**: Default configuration file. This artifact can be used to overwrite the default configuration for HeartBeat. In this case, to keep the automatic connection to ElasticSearch, a placeholder *#ELASTIC_SEARCH_OUTPUT_PLACEHOLDER#* should be present
   in the configuration file where the ElasticSearch output configuration should be inserted. Likewise, for automatic connection to Logstash,
   a placeholder *#LOGSTASH_OUTPUT_PLACEHOLDER#* should be present.
 
