@@ -206,9 +206,9 @@ Properties
 
 - **component_version:** Version of the component.
 
-- **schedule**:
+- **schedule**: defines the time period in seconds to check for service availability
 
-  - Default:
+  - Default: 5
 - **debug**: Enable debug logs for this beat. Logs are located under ~/<Component_Name>/beat.log
 
   - Default: false
