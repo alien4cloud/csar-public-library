@@ -42,7 +42,7 @@ Create and deploy a Flink cluster
 First create an application via the Alien4Cloud GUI using the **flink** topology shown below:
 
 .. image:: docs/images/flink_topo.png
-   :name: elk_flink_figure
+   :name:  flink_figure
    :scale: 100
    :align: center
 
