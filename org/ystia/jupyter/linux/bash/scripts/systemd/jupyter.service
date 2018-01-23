@@ -2,6 +2,7 @@
 Description=Unit file for managing Jupyter within Ystia
 
 [Service]
+{{ENVIRONMENTFILE}}
 ExecStart={{CMD_JUPYTER}} notebook
 User={{USER}}
 

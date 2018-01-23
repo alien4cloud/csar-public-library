@@ -26,24 +26,36 @@ node_types:
       component_version:
         type: version
         description: The installed Jupyter version
-        default: 4.3.0
+        default: 4.3
         constraints:
-          - valid_values: [4.3.0]
+          - valid_values: [4.3]
       repository:
          type: string
          description: >
-           This property give the opportunity to specify an alternative download repository for Anaconda.
+           This property give the opportunity to specify an alternative download repository for Anaconda and the additionnal packages.
            It is your responsibility to provide an accessible download url and to store required artifact on it.
            You should specify only the base repository url.
-           The default value is http://repo.continuum.io/archive.
-         required: true
-         default: "http://repo.continuum.io/archive"
+         required: false
+         default: ""
          constraints:
            - pattern: ^(http|https|ftp)://.+/.*$
-      h2o:
+      irkernel:
         type: boolean
-        description: Is the installed Jupyter must have h2o.ai
-        default: false
+        description: Is the installed Jupyter must have IRkernel (R)
+        default: true
+      py35kernel:
+        type: boolean
+        description: Is the installed Jupyter must have Python 3.5 kernel
+        default: true
+# TODO Will be taken into account when MapR/Hortonworks and H2O will be migrated...
+#      spark-kernel:
+#        type: boolean
+#        description: Is the installed Jupyter must have spark-kernel
+#        default: true
+#      h2o:
+#        type: boolean
+#        description: Is the installed Jupyter must have h2o.ai
+#        default: false
     requirements:
       - host:
           capability: org.ystia.python.pub.capabilities.PythonHosting
@@ -58,9 +70,11 @@ node_types:
         create:
           inputs:
             REPOSITORY: { get_property: [SELF, repository] }
-            IRKERNEL: false
+            IRKERNEL: { get_property: [SELF, irkernel] }
+            PY35KERNEL: { get_property: [SELF, py35kernel] }
+# TODO Will be taken into account when MapR/Hortonworks and H2O will be migrated...
             SPARK_KERNEL: false
-            H2O: { get_property: [SELF, h2o] }
+            H2O: false
           implementation: scripts/jupyter_create.sh
         start:
           implementation: scripts/jupyter_start.sh

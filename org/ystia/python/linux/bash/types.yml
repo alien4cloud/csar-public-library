@@ -23,20 +23,35 @@ node_types:
       component_version:
         type: version
         description: The installed Anaconda Python version
-        default: 3.6.3
+        default: 2.7.14
         constraints:
-          - valid_values: [3.6.3]
+          - valid_values: [2.7.14]
       repository:
          type: string
          description: >
-           This property give the opportunity to specify an alternative download repository for Anaconda.
+           This property give the opportunity to specify an alternative download repository for Anaconda and the additionnal packages.
            It is your responsibility to provide an accessible download url and to store required artifact on it.
            You should specify only the base repository url.
-           The default value is http://repo.continuum.io/archive.
-         required: true
-         default: "http://repo.continuum.io/archive"
+         required: false
+         default: ""
          constraints:
            - pattern: ^(http|https|ftp)://.+/.*$
+      nlp_twitter:
+        type: boolean
+        description: Install additional packages for Natural Language Processing and twitter API (nltk,twython)
+        default: true
+      dataviz:
+        type: boolean
+        description: Install additional packages for data visualization (seaborn,plotly)
+        default: true
+      dataformat:
+        type: boolean
+        description: Install additional packages for data formatting (csvkit,configparser)
+        default: true
+      pybrain:
+        type: boolean
+        description: Install Python-Based Reinforcement Learning, Artificial Intelligence and Neural Network Library (pybrain)
+        default: false
     capabilities:
       python_host:
         type: org.ystia.python.pub.capabilities.PythonHosting
@@ -46,6 +61,10 @@ node_types:
         create:
           inputs:
             REPOSITORY: { get_property: [SELF, repository] }
+            NLP_TWITTER: { get_property: [SELF, nlp_twitter] }
+            DATAVIZ: { get_property: [SELF, dataviz] }
+            DATAFORMAT: { get_property: [SELF, dataformat] }
+            PYBRAIN: { get_property: [SELF, pybrain] }
           implementation: scripts/anaconda_install.sh
     artifacts:
       - scripts:

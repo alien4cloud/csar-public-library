@@ -35,13 +35,22 @@ topology_template:
             relationship: tosca.relationships.Network
     Python:
       type: org.ystia.python.linux.bash.nodes.Python
+      properties:
+        nlp_twitter: true
+        dataviz: true
+        dataformat: true
+        pybrain: true
       requirements:
         - host:
             node: Compute
     Jupyter:
       type: org.ystia.jupyter.linux.bash.nodes.Jupyter
       properties:
-        h2o: false
+        irkernel: true
+        py35kernel: true
+# TODO Will be taken into account when MapR/Hortonworks and H2O will be migrated...
+#        spark-kernel: true
+#        h2o: true
       requirements:
         - host:
             node: Python
