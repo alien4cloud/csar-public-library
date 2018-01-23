@@ -24,20 +24,6 @@ topology_template:
       properties:
         ip_version: 4
 
-    # VM for HAProxy
-
-    Compute_HAP:
-      type: tosca.nodes.Compute
-      requirements:
-        - network:
-            node: Network
-            relationship: tosca.relationships.Network
-    HAProxy:
-      type: org.ystia.haproxy.linux.bash.nodes.HAProxy
-      requirements:
-        - host:
-            node: Compute_HAP
-
     # VM for HAProxyHTTP
 
     Compute_HAPhttp:
