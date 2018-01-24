@@ -20,10 +20,9 @@ CSAR
 
 You have to generate a zip archive file for this component and upload it to the Alien4Cloud catalog in order to make the common Ystia TOSCA types and utils_scripts available for all the other Ystia components and topology templates.
 
+$ cd YOUR_SANDBOX/csar-public-library/org/alien4cloud/consul/pub
 
-  $ cd YOUR_SANDBOX/csar-public-library/org/alien4cloud/consul/pub
-
-  $ zip -r common-csar.zip *
+$ zip -r common-csar.zip *
 
 
 After the upload, you may check in the Components vue that the following elements are presented :
