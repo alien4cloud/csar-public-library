@@ -47,3 +47,20 @@ Artifacts
 - **scripts**: Welcome required scripts.
 
 - **utils_scripts**: Common util scripts for whole Ystia components.
+
+
+CSAR
+----
+
+You have to generate a zip archive file for this component and upload it to the Alien4Cloud Catalog.
+::
+
+  $ cd YOUR_SANDBOX/csar-public-library/org/ystia/samples/welcome/linux/bash
+  $ zip -r welcome-csar.zip *
+
+
+After the csar upload, you may check in the Alien4Cloud Components vue that the following elements are presented :
+
+- ``org.ystia.samples.welcome.linux.bash.Welcome`` component
+
+- ``org.ystia.samples.welcome.linux.bash`` CSAR

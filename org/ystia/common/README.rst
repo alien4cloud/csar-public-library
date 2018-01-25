@@ -23,7 +23,7 @@ You have to generate a zip archive file for this component and upload it to the 
 
 ::
 
-  $ cd YOUR_SANDBOX/csar-public-library/org/alien4cloud/consul/pub
+  $ cd YOUR_SANDBOX/csar-public-library/org/ystia/common
   $ zip -r common-csar.zip *
 
 
