@@ -56,26 +56,26 @@ node_types:
         create:
           inputs:
             FACTER_db_password: { get_property: [SELF, password] }
-            PUPPET_HOME: { get_property: [SELF, puppet_home ] }
+            FACTER_PUPPET_HOME: { get_property: [SELF, puppet_home ] }
           implementation: scripts/create_mysql.sh
         configure:
           inputs:
             FACTER_db_name: { get_property: [SELF, name] }
             FACTER_db_user: { get_property: [SELF, user] }
             FACTER_db_password: { get_property: [SELF, password] }
-            PUPPET_HOME: { get_property: [SELF, puppet_home ] }
+            FACTER_PUPPET_HOME: { get_property: [SELF, puppet_home ] }
           implementation: scripts/configure_mysql.sh
         start:
           inputs:
-            PUPPET_HOME: { get_property: [SELF, puppet_home ] }
+            FACTER_PUPPET_HOME: { get_property: [SELF, puppet_home ] }
           implementation: scripts/start_mysql.sh
         stop:
           inputs:
-            PUPPET_HOME: { get_property: [SELF, puppet_home ] }
+            FACTER_PUPPET_HOME: { get_property: [SELF, puppet_home ] }
           implementation: scripts/stop_mysql.sh
         delete:
           inputs:
-            PUPPET_HOME: { get_property: [SELF, puppet_home ] }
+            FACTER_PUPPET_HOME: { get_property: [SELF, puppet_home ] }
           implementation: scripts/delete_mysql.sh
 relationship_types:
   org.alien4cloud.mysql.linux_pup.relationships.MysqlHostedOnAgentPuppet:
