@@ -18,41 +18,24 @@ Introduction
 Ystia CSAR library overview
 ===========================
 
-.. **Ystia CSAR libray** provides a packaged solution to create easily Big Data application clusters on demand.
-.. Deployment of Big Data applications can be done on a public Cloud (such as Amazon),
-.. or on a private cloud (such as OpenStack), on Bare-Metal or on HPC.
-..
-.. Big Data applications targeted by Ystia are:
-..
-.. - mainly **Hadoop** applications based on MapR_, Hortonworks_ or Cloudera_.
-.. - and **Log Analysis** applications based on Elastic_ components.
-..
-.. In addition, Ystia CSAR libray provides useful components such as:
-..
-.. - **SQL** and **Not Only SQL** database servers (MySQL_, MongoDB_, PostgreSQL_),
-.. - message brokers (Kafka_),
-.. - data science development environments (RStudio_, Jupyter_)
-.. - and other technical components such as **Java**, **Consul** (Consensus Systems), allowing detailed application
-..   architectures to be designed.
-..
-.. The components are connected together in application topologies.
-.. To simplify topology creation, Ystia provides **topology templates** that can be extended by your applications.
-..
+**Ystia CSAR libray** provides TOSCA Components and Topology templates to easily create Big Data application clusters on demand.
+Deployment of Big Data applications can be done on a public Cloud (such as Amazon), or on a private cloud (such as OpenStack), on Bare-Metal or on HPC.
 
-**Ystia CSAR libray** provides a packaged solution to create easily Big Data application clusters on demand.
-Deployment of Big Data applications can be done on a public Cloud (such as Amazon),
-or on a private cloud (such as OpenStack), on Bare-Metal or on HPC.
+The TOSCA Components and Topology template currently contained in this repository can be used to construct different application categories :
 
-Big Data applications targeted by Ystia are:
+- **Log Analysis** applications based on Elastic_ components and on the Kafka_ message broker
 
-- **Log Analysis** applications based on Elastic_ components.
-- message brokers (Kafka_, Nifi_),
-- data science development environments (RStudio_, Jupyter_)
-- and other technical components such as **Java**, **Consul** (Consensus Systems), allowing detailed application
-  architectures to be designed.
+- Applications using **SQL** and **Not Only SQL** database servers (MySQL_, MongoDB_),
+
+- Stream processing development and execution environment based on Flink_
+
+- Data science development and execution environments (RStudio_, Jupyter_)
+
+- Moreover, technical components such as Java_ and Consul_ (Consensus Systems), allow detailed application architectures to be designed.
 
 The components are connected together in application topologies.
 To simplify topology creation, Ystia provides **topology templates** that can be extended by your applications.
+
 
 .. _Cloudera: https://www.cloudera.com/
 .. _Consul: https://www.consul.io/
@@ -67,18 +50,6 @@ To simplify topology creation, Ystia provides **topology templates** that can be
 .. _PostgreSQL: https://www.postgresql.org/
 .. _RStudio: https://www.rstudio.com/
 
-Ystia is based on the following products:
-
-- Alien4Cloud_, the interface for end-users and administrators. It allows you to define application architectures
-  to be deployed on any Cloud.
-- Janus_, the engine to orchestrate application deployment. It works for many Clouds and for Bare-Metal.
-
-.. _Janus: http://TO_BE_COMPLETED/
-.. _Alien4Cloud: http://alien4cloud.github.io/
-
-**TO BE CONFIRMED .....** and **TO BE COMPLETED .....**
-
-
 
 .. *********************************************************************************************************************
 .. _getting_started_section:
@@ -88,6 +59,15 @@ Getting Started
 ***************
 
     This section describes how to set up a basic application cluster using Ystia components.
+
+Ystia contains the following products:
+
+- Alien4Cloud_, provides the Ystia Studio for the end-users. It allows them to define application architectures and to be deploy applications.
+- Janus_, provides the Ystia orchestrator, an engine allowing to orchestrate application deployment.
+
+
+.. _Janus: http://TO_BE_COMPLETED/
+.. _Alien4Cloud: http://alien4cloud.github.io/
 
 
 .. _getting_started_requirements_section:
@@ -99,8 +79,7 @@ YSTIA CSAR library requires:
 
 - A running instance of **Janus** version **TO BE COMPLETED**
 - A running instance of **Alien4Cloud** version **TO BE COMPLETED**
-- The **Ystia CSAR Library** package, which provides components and topology templates to upload them in the
-  Alien4Cloud catalog
+- The **Ystia CSAR Library**, the repository containing the components and topology templates to be uploaded in the Alien4Cloud catalog.
 
 **TO BE COMPLETED**
 
@@ -108,8 +87,24 @@ YSTIA CSAR library requires:
 
 How to build an Ystia CSAR
 ==========================
+In order to use Ystia components and topology templates to define an application, they have to be packed in CSAR archives, and the CSARs uploaded to the Alien4Cloud catalog.
 
-**TO BE COMPLETED**
+There are two possibilities to manage CSARs in Alien4Cloud:
+
+#. Build a zip archive for every necessary components and topologies, then upload them in a precise order based on the possible dependencies between them
+#. Import all the Ystia components and topologies hosted in the present repository using the Alien4Cloud's git integration.
+
+For the first method, see the example provided below for the Welcome sample.
+
+For the second method, you need to define a Git repository in the Catalog vue of Alien4Cloud, and execute the import operation:
+
+.. image:: docs/images/a4c_catalog_git.png
+    :scale: 100
+    :align: center
+
+Dependencies are automatically resolved when importing CSARs with git.
+
+Finally, you can browse the archives list, but also the components and the topologies list to check that all the Ystia library is uploaded.
 
 .. _getting_started_samples_section:
 
@@ -119,10 +114,39 @@ Welcome sample
 The **Welcome** Ystia component is a very sample HTTP server.
 It can be used to create and deploy your first Alien4Cloud application and to check the Ystia installation.
 
-More information can be found under:
+Detailed information can be found under:
 
 - **org/ystia/samples/welcome** and
 - **org/ystia/samples/topologies/welcome_basic**
+
+Generate CSARs for Welcome sample
+---------------------------------
+
+Suppose that none of the necessary components, nor topology template are uploaded to the Alien4CLoud catalog.
+You have to generate CSARs for :
+
+- common and welcome components
+- welcome_basic topology
+
+
+::
+
+  $ cd YOUR_SANDBOX/csar-public-library/org/ystia/common
+  $ zip -r common-csar.zip *
+  $ cd YOUR_SANDBOX/csar-public-library/org/ystia/samples/welcome/linux/bash
+  $ zip -r welcome-csar.zip *
+  $ cd YOUR_SANDBOX/csar-public-library/org/ystia/samples/topologies/welcome
+  $ zip -r welcome_basic-csar.zip *
+
+
+Then you have to upload the generated archives to the Alien4Cloud catalog by drag and drop.
+
+
+Finally, you can browse the archives list, but also the components and the topologies list to check that the uploaded elements are presented:
+
+- ``org.ystia.common`` ``Root``, ``SoftwareComponent``, ``DBMS`` and ``Database`` Components
+- ``org.ystia.samples.welcome.linux.bash.Welcome`` component
+- ``org.ystia.samples.welcome_basic`` topology
 
 .. *********************************************************************************************************************
 
