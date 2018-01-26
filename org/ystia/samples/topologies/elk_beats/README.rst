@@ -62,4 +62,4 @@ Complete configuration
 
 - Deploy application and when the application is running, connect to the Kibana GUI using the component's **url** output attribute
 
-- You may open the DummyLogs_V5 dashboard, the MetricBean and PacketBean dashboard. Because of a known issue with the MetricDashboard, it is necessary to reload some indexes : in the Management view, click to *Index Patterns*, select packetbeat-* index and refresh the field list using the dedicated icon.
+- You may open the DummyLogs_V5 dashboard, the MetricBean and PacketBean dashboard. Because of a known issue with the MetricDashboard (https://github.com/elastic/kibana/issues/9571), it is necessary to reload some indexes : in the Management view, click to *Index Patterns*, select packetbeat-* index and refresh the field list using the dedicated icon.
