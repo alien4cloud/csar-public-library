@@ -67,26 +67,27 @@ node_types:
         default: ""
         constraints:
           - pattern: ^(http|https|ftp)://.+/.*$
-      Rhadoop:
-        type: boolean
-        default: false
-        description: >
-          Install libraries rhdfs, rhbase and ravro on the node.
-          If you set this value to true, be sure that rstudio is on the same node than a MapR/HortonWorks component.
-          default: false
-      SparkR:
-        type: boolean
-        default: false
-        description: >
-          Set spark environment in RStudio.
-          If you set this value to true, be sure that rstudio is on the same node than a Spark component.
-          default: false
-      distribution:
-        type: string
-        description: Hadoop distribution installed on the node
-        default: MapR
-        constraints:
-          - valid_values: [MapR,HortonWorks]
+# TODO Will be taken into account when MapR/Hortonworks will be migrated...
+#      Rhadoop:
+#        type: boolean
+#        default: false
+#        description: >
+#          Install libraries rhdfs, rhbase and ravro on the node.
+#          If you set this value to true, be sure that rstudio is on the same node than a MapR/HortonWorks component.
+#          default: false
+#      SparkR:
+#        type: boolean
+#        default: false
+#        description: >
+#          Set spark environment in RStudio.
+#          If you set this value to true, be sure that rstudio is on the same node than a Spark component.
+#          default: false
+#      distribution:
+#        type: strin)"
+#        description: Hadoop distribution installed on the node
+#        default: MapR
+#        constraints:
+#          - valid_values: [MapR,HortonWorks]
     requirements:
       - filesystem_endpoint:
           capability: tosca.capabilities.Node
@@ -114,9 +115,10 @@ node_types:
         start:
           inputs:
             JAVA_HOME: { get_attribute: [SELF, java_home] }
-            ENABLE_RHADOOP: { get_property: [SELF,  Rhadoop] }
-            DISTRIB: { get_property: [SELF,  distribution] }
-            SET_SPARKR_ENV: { get_property: [SELF,  SparkR] }
+# TODO Will be taken into account when MapR/Hortonworks will be migrated...
+            ENABLE_RHADOOP: false
+            DISTRIB: false
+            SET_SPARKR_ENV: false
             REPOSITORY: { get_property: [SELF, repository] }
           implementation: scripts/rstudio_start.sh
         stop: scripts/rstudio_stop.sh
