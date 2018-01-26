@@ -21,7 +21,7 @@ Ystia CSAR library overview
 **Ystia CSAR libray** provides TOSCA Components and Topology templates to easily create Big Data application clusters on demand.
 Deployment of Big Data applications can be done on a public Cloud (such as Amazon), or on a private cloud (such as OpenStack), on Bare-Metal or on HPC.
 
-The TOSCA Components and Topology template currently contained in this repository can be used to construct different application categories :
+The TOSCA Components and Topology templates currently contained in this repository can be used to construct different application categories :
 
 - **Log Analysis** applications based on Elastic_ components and on the Kafka_ message broker
 
@@ -62,8 +62,8 @@ Getting Started
 
 Ystia contains the following products:
 
-- Alien4Cloud_, provides the Ystia Studio for the end-users. It allows them to define application architectures and to be deploy applications.
-- Janus_, provides the Ystia orchestrator, an engine allowing to orchestrate application deployment.
+- Alien4Cloud_, provides the Ystia Studio for the end-users. It allows them to define application architectures and to deploy those applications on pre-configured locations.
+- Janus_, provides the Ystia Orchestrator, an engine allowing to orchestrate application deployment.
 
 
 .. _Janus: http://TO_BE_COMPLETED/
@@ -75,19 +75,18 @@ Ystia contains the following products:
 Requirements
 ============
 
-YSTIA CSAR library requires:
+To create and run application using YSTIA CSAR library components requires :
 
-- A running instance of **Janus** version **TO BE COMPLETED**
-- A running instance of **Alien4Cloud** version **TO BE COMPLETED**
-- The **Ystia CSAR Library**, the repository containing the components and topology templates to be uploaded in the Alien4Cloud catalog.
-
-**TO BE COMPLETED**
+- A running instance of **Janus**
+- A running instance of **Alien4Cloud**
+- The components and topology templates from the **Ystia CSAR Library** must be uploaded to the Alien4Cloud catalog.
 
 .. _getting_started_build_section:
 
 How to build an Ystia CSAR
 ==========================
-In order to use Ystia components and topology templates to define an application, they have to be packed in CSAR archives, and the CSARs uploaded to the Alien4Cloud catalog.
+
+In order to upload the Ystia components and the topology templates to the catalog, they have to be packed in CSAR archives.
 
 There are two possibilities to manage CSARs in Alien4Cloud:
 
@@ -98,7 +97,7 @@ For the first method, see the example provided below for the Welcome sample.
 
 For the second method, you need to define a Git repository in the Catalog vue of Alien4Cloud, and execute the import operation:
 
-.. image:: docs/images/a4c_catalog_git.png
+.. image:: docs/images/ystia_import_via_git.png
     :scale: 100
     :align: center
 
@@ -448,18 +447,6 @@ Jupyter
 The Jupyter component matches the **jupyter** systemd service.
 
 The **jupyter** service is not started at boot.
-
-
-
-.. *********************************************************************************************************************
-
-.. _monitoring_and_troubleshooting_section:
-
-****************************
-Monitoring & troubleshooting
-****************************
-
-**TO BE COMPLETED ...**
 
 
 
