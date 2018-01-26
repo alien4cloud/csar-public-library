@@ -15,27 +15,31 @@ It can be used to create and deploy your first Alien4Cloud application and to ch
 welcome_basic CSAR
 ------------------
 
-You have to generate a zip archive file for this topology and upload it to the Alien4Cloud Catalog.
+  This step may be skipped in case you use Alien4Cloud's git integration for CSARs management
+
+You have to generate a zip archive file for this topology
 ::
 
   $ cd YOUR_SANDBOX/csar-public-library/org/ystia/samples/topologies/welcome
   $ zip -r welcome_basic-csar.zip *
 
+Install CSARs to
+------------------
+
+  This step may be skipped in case you use Alien4Cloud's git integration for CSARs management
+
+Upload the following CSARs the to the Alien4Cloud catalog, and respect the order in the list:
+
+#. **common-csar.zip**
+#. **welcome-csar.zip**
+#. **welcome_basic-csar.zip**
+
+#. ``org.ystia.common``
+#. ```org.ystia.samples.welcome.linux.bash``
+#. ```org.ystia.samples.topologies.welcome_basic``
 
 After the csar upload, you may check in the Alien4Cloud Topology templates vue that the ``org.ystia.samples.welcome_basic`` template is present.
 
-
-.. image:: docs/images/welcome_basic_topo.png
-    :scale: 100
-    :align: center
-
-Install Components
-------------------
-
-Install the CSARs of the following YSTIA compoents to the Alien4Cloud Components catalog, and respect the order in the list:
-
-#. ``org.ystia.common``
-#. `org.ystia.samples.welcome.linux.bash``
 
 Create application
 ------------------
