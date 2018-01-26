@@ -138,10 +138,14 @@ You have to generate CSARs for :
   $ zip -r welcome_basic-csar.zip *
 
 
-Then you have to upload the generated archives to the Alien4Cloud catalog by drag and drop.
+Then you have to upload the generated archives to the Alien4Cloud catalog by drag and drop respecting following order:
+
+#. **common-csar.zip**
+#. **welcome-csar.zip**
+#. **welcome_basic-csar.zip**
 
 
-Finally, you can browse the archives list, but also the components and the topologies list to check that the uploaded elements are presented:
+Finally, you can browse the archives list, but also the components and the topologies list, to check that the uploaded elements are presented:
 
 - ``org.ystia.common`` ``Root``, ``SoftwareComponent``, ``DBMS`` and ``Database`` Components
 - ``org.ystia.samples.welcome.linux.bash.Welcome`` component
