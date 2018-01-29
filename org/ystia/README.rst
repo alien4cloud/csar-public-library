@@ -31,7 +31,7 @@ The TOSCA Components and Topology templates currently contained in this reposito
 
 - Data science development and execution environments (RStudio_, Jupyter_)
 
-- Moreover, technical components such as Java_ and Consul_ (Consensus Systems), allow detailed application architectures to be designed.
+- Moreover, technical components such as *Java* and Consul_ (Consensus Systems), allow detailed application architectures to be designed.
 
 The components are connected together in application topologies.
 To simplify topology creation, Ystia provides **topology templates** that can be extended by your applications.
@@ -40,6 +40,7 @@ To simplify topology creation, Ystia provides **topology templates** that can be
 .. _Cloudera: https://www.cloudera.com/
 .. _Consul: https://www.consul.io/
 .. _Elastic: https://www.elastic.co/products
+.. _Flink: https://flink.apache.org/
 .. _Hortonworks: https://hortonworks.com/
 .. _Jupyter: http://jupyter.org/
 .. _Kafka: https://kafka.apache.org/
@@ -79,31 +80,36 @@ To create and run application using YSTIA CSAR library components requires :
 
 - A running instance of **Janus**
 - A running instance of **Alien4Cloud**
-- The components and topology templates from the **Ystia CSAR Library** must be uploaded to the Alien4Cloud catalog.
+- The components and topology templates from the **Ystia CSAR Library** must be imported to the Alien4Cloud catalog.
 
 .. _getting_started_build_section:
 
-How to build an Ystia CSAR
-==========================
+How to import Ystia Forge components in the catalog
+===================================================
 
-In order to upload the Ystia components and the topology templates to the catalog, they have to be packed in CSAR archives.
+There are two possibilities to import the Ystia Forge components and topology templates in the catalog:
 
-There are two possibilities to manage CSARs in Alien4Cloud:
+#. Build a CSAR archive for every necessary components and topologies, then upload them in a precise order based on the possible dependencies between them.
+#. Import all the Ystia components and topologies hosted in the present repository using the Alien4Cloud's *CSAR Git Integration*.
 
-#. Build a zip archive for every necessary components and topologies, then upload them in a precise order based on the possible dependencies between them
-#. Import all the Ystia components and topologies hosted in the present repository using the Alien4Cloud's git integration.
+For the first method, see the example provided below for the *Welcome* sample.
 
-For the first method, see the example provided below for the Welcome sample.
+For the second method,
 
-For the second method, you need to define a Git repository in the Catalog vue of Alien4Cloud, and execute the import operation:
+#. you need to define the Git repository of Ystia Forge in the *Components* view of Alien4Cloud,
+  #. Repository URL: https://github.com/alien4cloud/csar-public-library.git
+  #. Credentials: *none*
+  #. Tag: **TO BE DEFINED**
+  #. Archive to import: **org/ystia**
+#. and then execute the import operation.
 
 .. image:: docs/images/ystia_import_via_git.png
     :scale: 100
     :align: center
 
-Dependencies are automatically resolved when importing CSARs with git.
+Using this second method, dependencies are automatically resolved when importing CSARs with *Git integration*.
 
-Finally, you can browse the archives list, but also the components and the topologies list to check that all the Ystia library is uploaded.
+Finally, you can browse the archives list, but also the components and the topologies list to check that all the Ystia Forge is uploaded.
 
 .. _getting_started_samples_section:
 
