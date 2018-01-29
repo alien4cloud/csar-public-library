@@ -10,9 +10,13 @@ This topology templates can be can be used to test an ELK chain with some genera
     :local:
     :depth: 3
 
-Install Components and Topology template
+
+Import Components and Topology template
 ----------------------------------------
-Install the CSARs of the following YSTIA compoents to the Alien4Cloud Components catalog, and respect the order in the list:
+
+  This step may be skipped in case you use Alien4Cloud's git integration for CSARs management
+
+Upload the following YSTIA components' CSARs to the Alien4Cloud catalog, and respect the order in the list:
 
 #. **common**
 #. **consul**
@@ -23,8 +27,7 @@ Install the CSARs of the following YSTIA compoents to the Alien4Cloud Components
 #. **kibana**
 #. **dummylogs**
 
-Install the **elk_dummylogs** topology archive to the Alien4Cloud Topology template catalog
-
+Upload the **elk_dummylogs** topology archive to the Alien4Cloud Topology template catalog.
 
 Topology template
 -----------------

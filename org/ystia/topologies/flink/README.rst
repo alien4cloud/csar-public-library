@@ -10,16 +10,19 @@ Flink Topology Template
 
 This topology uses Flink YSTIA components to install and start a ready to use Flink Cluster.
 
-Install Components and Topology template
+Import Components and Topology template
 ----------------------------------------
-Install the CSARs of the following YSTIA compoents to the Alien4Cloud Components catalog, and respect the order in the list:
+
+  This step may be skipped in case you use Alien4Cloud's git integration for CSARs management
+
+Upload the following YSTIA components' CSARs to the Alien4Cloud catalog, and respect the order in the list:
 
 #. **common**
 #. **consul**
 #. **java**
 #. **flink**
 
-Install the **flink** topology archive to the Alien4Cloud Topology template catalog.
+Upload the **flink** topology archive to the Alien4Cloud Topology template catalog.
 
 
 Topology template
