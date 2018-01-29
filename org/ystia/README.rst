@@ -21,7 +21,7 @@ Ystia CSAR library overview
 **Ystia CSAR libray** provides TOSCA Components and Topology templates to easily create Big Data application clusters on demand.
 Deployment of Big Data applications can be done on a public Cloud (such as Amazon), or on a private cloud (such as OpenStack), on Bare-Metal or on HPC.
 
-The TOSCA Components and Topology templates currently contained in this repository can be used to construct different application categories :
+The TOSCA Components and Topology templates currently contained in this repository which is also called the **Ystia Forge**, can be used to construct different application categories :
 
 - **Log Analysis** applications based on Elastic_ components and on the Kafka_ message broker
 
@@ -76,10 +76,11 @@ Ystia contains the following products:
 Requirements
 ============
 
-To create and run application using YSTIA CSAR library components requires :
+To create and run application using YSTIA CSAR library components require:
 
-- A running instance of **Janus**
 - A running instance of **Alien4Cloud**
+- A running instance of **Janus**
+
 - The components and topology templates from the **Ystia CSAR Library** must be imported to the Alien4Cloud catalog.
 
 .. _getting_started_build_section:
@@ -87,7 +88,7 @@ To create and run application using YSTIA CSAR library components requires :
 How to import Ystia Forge components in the catalog
 ===================================================
 
-There are two possibilities to import the Ystia Forge components and topology templates in the catalog:
+There are two possibilities to import the Ystia TOSCA components and topology templates in the catalog:
 
 #. Build a CSAR archive for every necessary components and topologies, then upload them in a precise order based on the possible dependencies between them.
 #. Import all the Ystia components and topologies hosted in the present repository using the Alien4Cloud's *CSAR Git Integration*.
@@ -118,16 +119,17 @@ Finally, you can browse the archives list, but also the components and the topol
 Welcome sample
 ==============
 
-The **Welcome** Ystia component is a very sample HTTP server.
+The **welcome** Ystia component implements a simple HTTP server.
 It can be used to create and deploy your first Alien4Cloud application and to check the Ystia installation.
+An application topology called **welcome_basic** is also provided for this sample.
 
 Detailed information can be found under:
 
 - **org/ystia/samples/welcome** and
 - **org/ystia/samples/topologies/welcome_basic**
 
-Generate CSARs for Welcome sample
----------------------------------
+To create the sample application you need to have in the Alien4Cloud catalog the CSARs for the welcome component and the welcome_basic topology.
+Moreover, some basic Ystia TOSCA types have to be available in the catalog. These types are brought by the a component called **common**.
 
 Suppose that none of the necessary components, nor topology template are uploaded to the Alien4CLoud catalog.
 You have to generate CSARs for :
