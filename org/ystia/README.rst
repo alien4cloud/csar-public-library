@@ -1,6 +1,6 @@
-##################
-Ystia CSAR library
-##################
+###############
+The Ystia Forge
+###############
 
 .. contents::
 	:local:
@@ -19,6 +19,7 @@ Ystia CSAR library overview
 ===========================
 
 **Ystia CSAR libray** provides TOSCA Components and Topology templates to easily create Big Data application clusters on demand.
+
 Deployment of Big Data applications can be done on a public Cloud (such as Amazon), or on a private cloud (such as OpenStack), on Bare-Metal or on HPC.
 
 The TOSCA Components and Topology templates currently contained in this repository which is also called the **Ystia Forge**, can be used to construct different application categories :
@@ -97,7 +98,7 @@ For the first method, see the example provided below for the *Welcome* sample.
 
 For the second method,
 
-- you need to define the Git repository of Ystia Forge in the *Components* view of Alien4Cloud,
+- you need to configure a Git Location corresponding to the Ystia Forge in Alien4Cloud.
 
   - Repository URL: https://github.com/alien4cloud/csar-public-library.git
   - Credentials: *none*
