@@ -96,12 +96,12 @@ For the first method, see the example provided below for the *Welcome* sample.
 
 For the second method,
 
-#. you need to define the Git repository of Ystia Forge in the *Components* view of Alien4Cloud,
-  #. Repository URL: https://github.com/alien4cloud/csar-public-library.git
-  #. Credentials: *none*
-  #. Tag: **TO BE DEFINED**
-  #. Archive to import: **org/ystia**
-#. and then execute the import operation.
+- you need to define the Git repository of Ystia Forge in the *Components* view of Alien4Cloud,
+  - Repository URL: https://github.com/alien4cloud/csar-public-library.git
+  - Credentials: *none*
+  - Tag: **TO BE DEFINED**
+  - Archive to import: **org/ystia**
+- and then execute the import operation.
 
 .. image:: docs/images/ystia_import_via_git.png
     :scale: 100
