@@ -30,8 +30,8 @@ Upload CSARs to the catalog
 
 Upload the following CSARs to the Alien4Cloud catalog, and respect the order in the list:
 
-#. **common-csar.zip** (common component's CSAR)
-#. **welcome-csar.zip** (welcome component's CSAR)
+#. **common-csar.zip** (**common** component's CSAR)
+#. **welcome-csar.zip** (**welcome** component's CSAR)
 #. **welcome_basic-csar.zip**
 
 After the CSARs upload, you may check in the Alien4Cloud Topology templates vue that the ``org.ystia.samples.welcome_basic`` template is present.
