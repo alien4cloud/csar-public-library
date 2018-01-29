@@ -52,14 +52,14 @@ Artifacts
 CSAR
 ----
 
-You have to generate a zip archive file for this component and upload it to the Alien4Cloud Catalog.
+You can generate a zip archive file for this component in order to upload it to the Alien4Cloud Catalog.
 ::
 
   $ cd YOUR_SANDBOX/csar-public-library/org/ystia/samples/welcome/linux/bash
   $ zip -r welcome-csar.zip *
 
 
-After the csar upload, you may check in the Alien4Cloud Components vue that the following elements are presented :
+After the csar upload, you may check in the Alien4Cloud Catalog that the following elements are presented :
 
 - ``org.ystia.samples.welcome.linux.bash.Welcome`` component
 
