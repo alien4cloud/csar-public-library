@@ -25,7 +25,7 @@ The TOSCA Components and Topology templates currently contained in this reposito
 
 - **Log Analysis** applications based on Elastic_ components and on the Kafka_ message broker
 
-- Applications using **SQL** and **Not Only SQL** database servers (MySQL_, MongoDB_),
+- Applications using MySQL_ database server,
 
 - Stream processing development and execution environment based on Flink_
 
@@ -277,6 +277,14 @@ Studios for data scientists
 +-------------+---------------------+
 | **RStudio** | *org/ystia/rstudio* |
 +-------------+---------------------+
+
+
+Database Servers
+================
+
++-----------+-------------------+
+| **MySQL** | *org/ystia/mysql* |
++-----------+-------------------+
 
 
 Utilities
