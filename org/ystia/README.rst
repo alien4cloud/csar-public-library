@@ -15,10 +15,10 @@ The Ystia Forge
 Introduction
 ************
 
-Ystia CSAR library overview
-===========================
+Ystia Forge overview
+====================
 
-**Ystia CSAR libray** provides TOSCA Components and Topology templates to easily create Big Data application clusters on demand.
+**Ystia Forge** provides TOSCA Components and Topology templates to easily create Big Data application clusters on demand.
 
 Deployment of Big Data applications can be done on a public Cloud (such as Amazon), or on a private cloud (such as OpenStack), on Bare-Metal or on HPC.
 
@@ -35,7 +35,7 @@ The TOSCA Components and Topology templates currently contained in this reposito
 - Moreover, technical components such as *Java* and Consul_ (Consensus Systems), allow detailed application architectures to be designed.
 
 The components are connected together in application topologies.
-To simplify topology creation, Ystia provides **topology templates** that can be extended by your applications.
+To simplify topology creation, Ystia Forge provides **topology templates** that can be extended by your applications.
 
 
 .. _Cloudera: https://www.cloudera.com/
@@ -60,7 +60,7 @@ To simplify topology creation, Ystia provides **topology templates** that can be
 Getting Started
 ***************
 
-    This section describes how to set up a basic application cluster using Ystia components.
+    This section describes how to set up a basic application cluster using Ystia Forge components.
 
 Ystia contains the following products:
 
@@ -77,22 +77,21 @@ Ystia contains the following products:
 Requirements
 ============
 
-To create and run application using YSTIA CSAR library components require:
+To create and run application using Ystia Forge components require:
 
 - A running instance of **Alien4Cloud**
 - A running instance of **Janus**
-
-- The components and topology templates from the **Ystia CSAR Library** must be imported to the Alien4Cloud catalog.
+- The components and topology templates from **Ystia Forge** must be imported to the Alien4Cloud catalog.
 
 .. _getting_started_build_section:
 
 How to import Ystia Forge components in the catalog
 ===================================================
 
-There are two possibilities to import the Ystia TOSCA components and topology templates in the catalog:
+There are two possibilities to import the Ystia Forge TOSCA components and topology templates in the catalog:
 
 #. Build a CSAR archive for every necessary components and topologies, then upload them in a precise order based on the possible dependencies between them.
-#. Import all the Ystia components and topologies hosted in the present repository using the Alien4Cloud's *CSAR Git Integration*.
+#. Import all the Ystia Forge components and topologies hosted in the present repository using the Alien4Cloud's *CSAR Git Integration*.
 
 For the first method, see the example provided below for the *Welcome* sample.
 
@@ -120,7 +119,7 @@ Finally, you can browse the archives list, but also the components and the topol
 Welcome sample
 ==============
 
-The **welcome** Ystia component implements a simple HTTP server.
+The **welcome** Ystia Forge component implements a simple HTTP server.
 It can be used to create and deploy your first Alien4Cloud application and to check the Ystia installation.
 An application topology called **welcome_basic** is also provided for this sample.
 
@@ -130,7 +129,7 @@ Detailed information can be found under:
 - **org/ystia/samples/topologies/welcome_basic**
 
 To create the sample application you need to have in the Alien4Cloud catalog the CSARs for the welcome component and the welcome_basic topology.
-Moreover, some basic Ystia TOSCA types have to be available in the catalog. These types are brought by the a component called **common**.
+Moreover, some basic Ystia Forge TOSCA types have to be available in the catalog. These types are brought by the a component called **common**.
 
 Suppose that none of the necessary components, nor topology template are uploaded to the Alien4CLoud catalog.
 You have to generate CSARs for :
@@ -170,7 +169,7 @@ Finally, you can browse the archives list, but also the components and the topol
 Topologies
 **********
 
-    Ystia provides various topology templates, which can be used for demos, development or production applications.
+    Ystia Forge provides various topology templates, which can be used for demos, development or production applications.
 
 
 .. _topologies_elk_section:
@@ -207,6 +206,15 @@ Topologies for Flink
 | **flink** | *org/ystia/topologies/flink* |
 +-----------+------------------------------+
 
+Topologies for Studios for data scientists
+==========================================
+
++-------------+--------------------------------+
+| **jupiter** | *org/ystia/topologies/jupyter* |
++-------------+--------------------------------+
+| **rstudio** | *org/ystia/topologies/rstudio* |
++-------------+--------------------------------+
+
 
 .. *********************************************************************************************************************
 
@@ -220,22 +228,22 @@ Components
 Consensus systems
 =================
 
-+------------+--------------------+
-| **Consul** | *org/ystia/consul* |
-+------------+--------------------+
++------------+--------------------+---------------+
+| **Consul** | *org/ystia/consul* | version 0.5.2 |
++------------+--------------------+---------------+
 
 ELK components
 ==============
 
-+-------------------+---------------------------+
-| **Elasticsearch** | *org/ystia/elasticsearch* |
-+-------------------+---------------------------+
-| **Logstash**      | *org/ystia/logstash*      |
-+-------------------+---------------------------+
-| **Kibana**        | *org/ystia/kibana*        |
-+-------------------+---------------------------+
-| **Beats**         | *org/ystia/beats*         |
-+-------------------+---------------------------+
++-------------------+---------------------------+---------------+
+| **Elasticsearch** | *org/ystia/elasticsearch* | version 5.1.1 |
++-------------------+---------------------------+---------------+
+| **Logstash**      | *org/ystia/logstash*      | version 5.1.1 |
++-------------------+---------------------------+---------------+
+| **Kibana**        | *org/ystia/kibana*        | version 5.1.1 |
++-------------------+---------------------------+---------------+
+| **Beats**         | *org/ystia/beats*         | version 5.1.1 |
++-------------------+---------------------------+---------------+
 
 
 Geolocation components
@@ -257,51 +265,51 @@ Social network connectors
 Message brokers
 ===============
 
-+-----------+-------------------+
-| **Kafka** | *org/ystia/kafka* |
-+-----------+-------------------+
-| **Nifi**  | *org/ystia/nifi*  |
-+-----------+-------------------+
++-----------+-------------------+------------------------------+
+| **Kafka** | *org/ystia/kafka* | version 0.10.2.1 or 0.11.0.2 |
++-----------+-------------------+------------------------------+
+| **Nifi**  | *org/ystia/nifi*  | version 1.1.2                |
++-----------+-------------------+------------------------------+
 
 
 Stream & real-time processing
 =============================
 
-+-----------+-------------------+
-| **Flink** | *org/ystia/flink* |
-+-----------+-------------------+
++-----------+-------------------+---------------+
+| **Flink** | *org/ystia/flink* | version 1.1.3 |
++-----------+-------------------+---------------+
 
 
 Studios for data scientists
 ===========================
 
-+-------------+---------------------+
-| **Jupyter** | *org/ystia/jupyter* |
-+-------------+---------------------+
-| **RStudio** | *org/ystia/rstudio* |
-+-------------+---------------------+
++-------------+---------------------+-----------------+
+| **Jupyter** | *org/ystia/jupyter* | version 4.3     |
++-------------+---------------------+-----------------+
+| **RStudio** | *org/ystia/rstudio* | version 1.1.383 |
++-------------+---------------------+-----------------+
 
 
 Database Servers
 ================
 
-+-----------+-------------------+
-| **MySQL** | *org/ystia/mysql* |
-+-----------+-------------------+
++-----------+-------------------+-------------+
+| **MySQL** | *org/ystia/mysql* | version 5.6 |
++-----------+-------------------+-------------+
 
 
 Utilities
 =========
 
-+-------------+---------------------+
-| **HAProxy** | *org/ystia/haproxy* |
-+-------------+---------------------+
-| **Java**    | *org/ystia/java*    |
-+-------------+---------------------+
-| **Python**  | *org/ystia/python*  |
-+-------------+---------------------+
-| **XFS**     | *org/ystia/xfs*     |
-+-------------+---------------------+
++-------------+---------------------+----------------+
+| **HAProxy** | *org/ystia/haproxy* |                |
++-------------+---------------------+----------------+
+| **Java**    | *org/ystia/java*    |                |
++-------------+---------------------+----------------+
+| **Python**  | *org/ystia/python*  | version 2.7.14 |
++-------------+---------------------+----------------+
+| **XFS**     | *org/ystia/xfs*     |                |
++-------------+---------------------+----------------+
 
 
 
@@ -487,7 +495,5 @@ Alien4Cloud documentation
 Janus documentation
   https://TO_BE_COMPLETED
 
-
-**TO BE COMPLETED.....**
 
 
