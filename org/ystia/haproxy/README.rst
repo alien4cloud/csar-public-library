@@ -10,7 +10,7 @@ HA Proxies components
 
 HAProxy is a fast and reliable solution offering high availability, load balancing, and proxying for TCP and HTTP-based applications.
 
-There are 3 types of HAProxy components, all being packed in the same YSTIA CSAR
+There are 3 types of HAProxy components, all being packed in the same Ystia CSAR
 
 - HAProxy is only necessary to host HAProxyHTTP or HAProxyTCP
 - HAProxyHTTP provides proxying for HTTP

@@ -12,7 +12,7 @@ Logstash is a tool for receiving, processing and outputting logs. All kinds of l
 Logstash provides a powerful pipeline for storing, querying, and analyzing logs. It includes an arsenal of built-in inputs, filters, codecs, and outputs, that are integrated as plugins.
 See https://www.elastic.co/guide/en/logstash/5.1/index.html for details about all these plugins' configuration
 
-The YSTIA **Logstash** component is packed together with two other components that can be useful for Big Data applications development:
+The Ystia **Logstash** component is packed together with two other components that can be useful for Big Data applications development:
 
 - **GeoNames** component that provides geolocation for Big Data applications
 - **Twitter** connector that allows to connect Twitter to Logstash, and thus, to an ELK chain

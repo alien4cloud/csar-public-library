@@ -13,7 +13,7 @@ Import Components and Topology template
 
   This step may be skipped in case you use Alien4Cloud's git integration for CSARs management
 
-Upload the following YSTIA components' CSARs to the Alien4Cloud catalog, and respect the order in the list:
+Upload the following Ystia components' CSARs to the Alien4Cloud catalog, and respect the order in the list:
 
 #. **common**
 #. **consul**

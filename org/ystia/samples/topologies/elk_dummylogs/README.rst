@@ -4,7 +4,7 @@
 ELK_DUMMYLOGS
 *************
 
-This topology templates can be can be used to test an ELK chain with some generated log data. It uses the DummyLogs sample YSTIA components.
+This topology templates can be can be used to test an ELK chain with some generated log data. It uses the DummyLogs sample Ystia components.
 
 .. contents::
     :local:
@@ -16,7 +16,7 @@ Import Components and Topology template
 
   This step may be skipped in case you use Alien4Cloud's git integration for CSARs management
 
-Upload the following YSTIA components' CSARs to the Alien4Cloud catalog, and respect the order in the list:
+Upload the following Ystia components' CSARs to the Alien4Cloud catalog, and respect the order in the list:
 
 #. **common**
 #. **consul**
@@ -56,6 +56,6 @@ The application can be created via the Alien4Cloud GUI using the **elk_dummylogs
 Complete configuration
 ----------------------
 
-- You will need to upload a **Logstash** configuration file using **filter_conf** artifact. Use the logstash-dummylogs-filters.conf file, located the config repository of the Dummylogs YSTIA component.
+- You will need to upload a **Logstash** configuration file using **filter_conf** artifact. Use the logstash-dummylogs-filters.conf file, located the config repository of the Dummylogs Ystia component.
 
 Deploy application and when the application is running, connect to Kibana using the **url** output attribute, then open the DummyLogs_V5 dashboard.

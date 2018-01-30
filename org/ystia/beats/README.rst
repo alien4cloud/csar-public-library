@@ -10,7 +10,7 @@ Beat components
 
 Beat components are data shippers for sending different types of data to Logstash, or to Elasticsearch. These data can then be visualized in Kibana.
 
-Currently in YSTIA, the following Beats are available:
+Currently in Ystia, the following Beats are available:
 
 - **FileBeat** ships file contents (typically log files)
 - **MetricBeat** ships metrics about process/system/filesystem
@@ -71,7 +71,7 @@ Artifacts
 
 - **consul_scripts**: Scripts required by the Consul component.
 
-- **utils_scripts**: Common util scripts for whole YSTIA components.
+- **utils_scripts**: Common util scripts for whole Ystia components.
 
 
 MetricBeat
@@ -128,7 +128,7 @@ Artifacts
 
 - **consul_scripts**: Scripts required by the Consul component.
 
-- **utils_scripts**: Common util scripts for whole YSTIA components.
+- **utils_scripts**: Common util scripts for whole Ystia components.
 
 PacketBeat
 ----------
@@ -186,13 +186,13 @@ Artifacts
 
 - **consul_scripts**: Scripts required by the Consul component.
 
-- **utils_scripts**: Common util scripts for whole YSTIA components.
+- **utils_scripts**: Common util scripts for whole Ystia components.
 
 HeartBeat
 ----------
 
-The YSTIA HeartBeat component allows to monitor an application's services. It is able to get information about the services registered into Consul.
-That's why applications that need service monitoring have to use both Consul and HeartBeat YSTIA components.
+The Ystia HeartBeat component allows to monitor an application's services. It is able to get information about the services registered into Consul.
+That's why applications that need service monitoring have to use both Consul and HeartBeat Ystia components.
 
 The following figure shows a HeartBeat topology example.
 
@@ -250,4 +250,4 @@ Artifacts
 
 - **consul_scripts**: Scripts required by the Consul component.
 
-- **utils_scripts**: Common util scripts for whole YSTIA components.
+- **utils_scripts**: Common util scripts for whole Ystia components.

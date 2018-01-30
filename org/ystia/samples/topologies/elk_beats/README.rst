@@ -15,7 +15,7 @@ Import Components and Topology template
 
   This step may be skipped in case you use Alien4Cloud's git integration for CSARs management
 
-Upload the following YSTIA components' CSARs to the Alien4Cloud catalog, and respect the order in the list:
+Upload the following Ystia components' CSARs to the Alien4Cloud catalog, and respect the order in the list:
 
 #. **common**
 #. **consul**
@@ -60,7 +60,7 @@ The application can be created via the Alien4Cloud GUI using the **elk_beats** t
 Complete configuration
 ----------------------
 
-- You will need to upload a **Logstash** configuration file using **filter_conf** artifact. Use the logstash-dummylogs-filters.conf file, located the config repository of the Dummylogs YSTIA component.
+- You will need to upload a **Logstash** configuration file using **filter_conf** artifact. Use the logstash-dummylogs-filters.conf file, located the config repository of the Dummylogs Ystia component.
 
 - Deploy application and when the application is running, connect to the Kibana GUI using the component's **url** output attribute
 

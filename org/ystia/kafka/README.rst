@@ -222,7 +222,7 @@ Advanced Kafka Configuration
 Kafka exposes various configuration parameters, to tune Kafka precisely to your needs.
 However, this tuning is always a tradeoff between the lowest latency and the greatest level of durability.
 
-YSTIA ships different topology templates that are designed to address different applications. Kafka is used in two of those
+Ystia ships different topology templates that are designed to address different applications. Kafka is used in two of those
 templates:
 
 - **elk_broker**:

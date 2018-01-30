@@ -29,7 +29,7 @@ For more details on Flink concepts, see https://ci.apache.org/projects/flink/fli
 Flink Components
 ----------------
 
-**Flink_JobManager** and **Flink_TaskManager** are the YSTIA components providing the the Apache Flink software for stream processing application developers.
+**Flink_JobManager** and **Flink_TaskManager** are the Ystia components providing the the Apache Flink software for stream processing application developers.
 
 
 The following figure shows a Flink application with one JobManager and two TaskManagers linked to it.
