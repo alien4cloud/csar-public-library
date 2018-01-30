@@ -39,6 +39,8 @@ topology_template:
             type: linux
     Java:
       type: org.ystia.java.linux.bash.nodes.Java
+      properties:
+        jre: false
       requirements:
         - host:
             node: Compute
