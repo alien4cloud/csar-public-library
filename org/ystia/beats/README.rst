@@ -49,7 +49,7 @@ Requirements
 
 ****
 
-**Notes**
+**Notes**:
   FileBeat component should be connected to at least one of ElasticSearch or Logstash.
 
   If FileBeat component is connected to ElasticSearch, it should also be connected to Consul in order to discover the ElasticSearch cluster. Exception: if FileBeat is on the same compute than ElasticSearch, Consul is not mandatory.
@@ -108,7 +108,7 @@ Requirements
 
 ****
 
-**Notes**
+**Notes**:
   MetricBeat component should be connected to at least one of ElasticSearch or Logstash.
   If MetricBeat component is connected to ElasticSearch, it should also be connected to Consul in order to discover the ElasticSearch cluster. Exception: if TopBeat is on the same compute than ElasticSearch, Consul is not mandatory.
 
@@ -164,7 +164,7 @@ Requirements
 
 ****
 
-**Notes**
+**Notes**:
   PacketBeat component should be connected to at least one of ElasticSearch or Logstash.
   If PacketBeat component is connected to ElasticSearch, it should also be connected to Consul in order to discover the ElasticSearch cluster. Exception: if PacketBeat is on the same compute than ElasticSearch, Consul is not mandatory.
 
@@ -229,7 +229,7 @@ Requirements
 
 ****
 
-**Notes**
+**Notes**:
   HeartBeat component should be connected to at least one of ElasticSearch or Logstash
   HeartBeat component should be connected to Consul and to another application's components in order to obtain service availability information
 ****
