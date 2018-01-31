@@ -31,16 +31,16 @@ Each topic has its own configuration.
 Properties
 ^^^^^^^^^^
 
-- **component_version:** Version of the component.
+- **component_version**: Version of the component.
 
-- **scala_version:** Version of Scala used to build Kafka.
+- **scala_version**: Version of Scala used to build Kafka.
 
-- **repository** : Download repository for this component artifacts. Providing a different value allows to specify an alternative repository.
+- **repository**: Download repository for this component artifacts. Providing a different value allows to specify an alternative repository.
   It is your responsibility to provide an accessible download url and to store required artifacts on it. You should specify only the base
   repository url. Artifacts names will be appended to it, so this property could be shared among several components using the inputs
   feature.
 
-  - Default : "http://mirrors.standaloneinstaller.com/apache/"
+  - Default: "http://mirrors.standaloneinstaller.com/apache/"
 - **kf_heap_size**: Heap memory size allocated to Kafka java process. The same value is allocated to both initial and maximum values (ie -Xms and -Xmx java options).
 
   - Default: 1G
@@ -49,7 +49,7 @@ Properties
   - Default : 500M
 - **log_cleaner_enable**: Enable the default Kafka log cleaner. The default policy for the cleaner is to delete the log segments older than 7 days.
 
-  - Default : false
+  - Default: false
 
 
 Requirements

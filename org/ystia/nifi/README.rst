@@ -26,6 +26,8 @@ The following figure shows Nifi node configuration.
 Properties
 ^^^^^^^^^^
 
+- **component_version**: Version of the component.
+
 - **repository**: Download repository for this component artifacts. Providing a different value allows to specify an alternative repository.
 
 - **installation_directory**: Allows you to choose where to install **Nifi** binaries

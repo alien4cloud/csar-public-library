@@ -26,7 +26,8 @@ with the capability **org.ystia.java.pub.capabilities.JavaHosting**.
 Properties
 ^^^^^^^^^^
 
-- **component_version**: Version, available values may be 6, 7 or 8.
+- **component_version**: Version of the component.
+  Available values may be 6, 7 or 8.
 
   - Default: 8
 - **jre**: Boolean allowing to specify that a JRE is sufficient.

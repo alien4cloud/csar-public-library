@@ -24,7 +24,7 @@ A Python node is hosted on a Compute node. The components that need Python are h
 Properties
 ^^^^^^^^^^
 
-- **component_version**: The installed Python version
+- **component_version**: Version of the Python component.
 
 - **repository**: This property give the opportunity to specify an alternative download repository for Anaconda and the additionnal packages.
   It is your responsibility to provide an accessible download url and to store required artifacts on it.

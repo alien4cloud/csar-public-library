@@ -36,6 +36,8 @@ allowing respectively the failure of 1 or 2 nodes simultaneously.
 Properties
 ^^^^^^^^^^
 
+- **component_version**: Version of the component
+
 - **install_dnsmasq**: If dnsmasq is installed any .ystia DNS queries on local machine will be forwarded to Consul.
   Otherwise the Consul DNS interface is listening on port 8600. This feature must be enabled on **Consul Agents**.
 
