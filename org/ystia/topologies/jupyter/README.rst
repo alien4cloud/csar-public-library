@@ -36,13 +36,15 @@ The **jupyter** template contains:
 
 - A Jupyter hosted on Python and connected to the LinuxFileSystem.
 
+Attach a BlockStorage component to the compute and connect Jupyter to a LinuxFileSystem ensure data persistence even a VM failure,
+and so user's created notebooks will not be lost.
 
 Create and deploy an application
 --------------------------------
 Your application can be created via the Alien4Cloud GUI using the **jupyter** topology shown below:
 
 .. image:: docs/images/jupyter_topo.png
-   :name: elk_geonames_figure
+   :name: jupyter_topo_figure
    :scale: 100
    :align: center
 
