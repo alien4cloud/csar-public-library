@@ -1,7 +1,7 @@
 tosca_definitions_version: alien_dsl_1_4_0
 
 metadata:
-  template_name: org.ystia.tests.topologies.haproxy
+  template_name: org.ystia.topologies.haproxy
   template_version: 3.0-SNAPSHOT
   template_author: Ystia
 
@@ -13,7 +13,7 @@ imports:
   - org.ystia.haproxy.linux.bash:3.0-SNAPSHOT
 
 topology_template:
-  description: A test topology template with HAProxy, HAProxyHTTP and HAProxyTCP
+  description: A basic topology template with HAProxyHTTP and HAProxyTCP
 
   node_templates:
 
@@ -45,7 +45,7 @@ topology_template:
         - host:
             node: HAProxy_H
 
-    # VM for HAProxyHTTP
+    # VM for HAProxyTCP
 
     Compute_HAPtcp:
       type: tosca.nodes.Compute
