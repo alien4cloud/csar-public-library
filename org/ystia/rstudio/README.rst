@@ -8,9 +8,13 @@ RStudio
     :local:
     :depth: 3
 
+
 RStudio_ Server is a Web based integrated development environment (IDE) for R.
 It includes a console, syntax-highlighting editor that supports direct code execution, as well as tools for plotting,
 history, debugging and workspace management.
+
+RStudio component
+^^^^^^^^^^^^^^^^^
 
 A **RStudio** node is hosted on a Java node.
 
@@ -25,7 +29,7 @@ The following figure shows a RStudio node configuration
 
 
 Properties
-^^^^^^^^^^
+""""""""""
 
 - **component_version**: Version of the component.
 
@@ -37,13 +41,13 @@ Properties
   - Default: “”
 - **cran_mirror_to_use**: Mirror for R packages downloads to use. This allows you to setup and use your own mirror.
 
-    - Default: http://cran.r-project.org
+  - Default: http://cran.r-project.org
 - **user_to_create**: Name of the unix account to be created and used to connect to RStudio.
 
-    - Default: rstudio
+  - Default: rstudio
 - **password_to_create**: Password of the unix account to be created and used to connect to RStudio.
 
-    - Default: rstudio
+  - Default: rstudio
 - **repository**: Alternative download repository for this component artifacts.
   It is your responsibility to provide an accessible download url and to store required artifacts on it.
   You should specify only the base repository url. Artifacts names will be appended to it.
@@ -51,20 +55,20 @@ Properties
   - Default: “”
 
 Attributes
-^^^^^^^^^^
+""""""""""
 
 - **url**: The URL used to access the RStudio UI.
   This attribute is only valid if the Compute on which RStudio is hosted is connected to a public network.
 
 Requirements
-^^^^^^^^^^^^
+""""""""""""
 
 - **host**: RStudio requires to be hosted on Java component.
 
 - **filesystem_endpoint**: RStudio may be connected to a filesystem in order to store its runtime data on it.
 
 Artifacts
-^^^^^^^^^
+"""""""""
 
 - **scripts**: RStudio required scripts.
 
@@ -125,7 +129,7 @@ How to install new R packages
 
 ****
 
-**Notes**
+**Notes**:
   Some R packages need to be compiled at installation time. So sometimes when compiling an R package,
   a required system library may be missing, leading to an installation failure.
   In this case, you should manually install the required library on the system hosting RStudio
@@ -149,7 +153,7 @@ A package selection with auto-completion text box will allow you to select the p
 
 ****
 
-**Notes**
+**Notes**:
   Per-user packages are installed in the user’s home directory.
 
 ****
