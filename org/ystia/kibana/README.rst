@@ -44,7 +44,8 @@ These sections are reached by tabs on the top of the main interface.
 **Kibana Discover**
 
 The Discover page displays all of the Elastic Stack most recently received logs.
-Here, you can filter through and find specific log messages based on **search queries** then narrow the search results to a specific time range with the **time filter**.
+Here, you can filter through and find specific log messages based on **search queries** then narrow the search results
+to a specific time range with the **time filter**.
 
 **Kibana Visualize**
 
@@ -76,7 +77,8 @@ Kibana Component Configuration
 A Kibana node must be hosted on a Java node, which is hosted on a Compute node. The minimum version of Java is **JRE 8**.
 Kibana Dashboard nodes can be attached to the Kibana node using **dashboard_host** prerequisite.
 
-A Kibana node requires to be related to an Elasticsearch node. Use the **search_endpoint** prerequisite to establish the relation with an already created Elasticsearch node.
+A Kibana node requires to be related to an Elasticsearch node. Use the **search_endpoint** prerequisite to establish
+the relation with an already created Elasticsearch node.
 
 A Kibana node is related to a Consul agent hosted on its Compute node. This is required to perform Elasticsearch cluster discovery.
 Use **consul** prerequisite to connect Kibana to its Consul Agent, as shown in the following figure.
@@ -97,7 +99,8 @@ Properties
 
   - Default : https://www.elastic.co/downloads/kibana
   
-- **es_heap_size**: Heap memory that will be allocated to the java process of the Elasticsearch client node associated to Kibana. It allocates the same value to both initial and maximum values (ie -Xms and -Xmx java options).
+- **es_heap_size**: Heap memory that will be allocated to the java process of the Elasticsearch client node associated to Kibana.
+  It allocates the same value to both initial and maximum values (ie -Xms and -Xmx java options).
 
   - Default: 2G
 
@@ -114,7 +117,10 @@ Requirements
 Capabilities
 ^^^^^^^^^^^^
 
-- **host**: Kibana can be used as a **dashboard_host** by Dashboard components. The role of a **Dashboard** component is to carry a dashboard configuration (it has an artifact named **dashboard_file**). This configuration is described in a .JSON file. Several Dashboard components can be connected to a Kibana component by using their **dashboard_host** prerequisite.
+- **host**: Kibana can be used as a **dashboard_host** by Dashboard components.
+  The role of a **Dashboard** component is to carry a dashboard configuration (it has an artifact named **dashboard_file**).
+  This configuration is described in a .JSON file.
+  Several Dashboard components can be connected to a Kibana component by using their **dashboard_host** prerequisite.
 
 Artifacts
 ^^^^^^^^^

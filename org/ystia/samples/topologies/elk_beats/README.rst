@@ -11,7 +11,7 @@ This topology template allows for creating an example of Elastic Stack applicati
     :depth: 3
 
 Import Components and Topology template
-----------------------------------------
+---------------------------------------
 
   This step may be skipped in case you use Alien4Cloud's git integration for CSARs management
 
@@ -39,9 +39,11 @@ The **elk_beats** template provides the following configuration:
 
 - Consul allows Elasticsearch cluster discovery. I contains information about the application's services.
 
-- A compute hosting the DummyLogsGenerator component and a FileBeat component, both pre-configured to share the logs file. A relationship is created to connect FileBeat with Logstash.
+- A compute hosting the DummyLogsGenerator component and a FileBeat component, both pre-configured to share the logs file.
+  A relationship is created to connect FileBeat with Logstash.
 
-- A MetricBeat component is installed on each node hosting ELK components and on the node hosting the Consul server. It is connected to Elasticsearch.
+- A MetricBeat component is installed on each node hosting ELK components and on the node hosting the Consul server.
+  It is connected to Elasticsearch.
 
 - A PacketBeat component is installed on the Kibana and Elasticsearch nodes, and the relationship is created to connect them with Elasticsearch.
 
@@ -60,8 +62,13 @@ The application can be created via the Alien4Cloud GUI using the **elk_beats** t
 Complete configuration
 ----------------------
 
-- You will need to upload a **Logstash** configuration file using **filter_conf** artifact. Use the logstash-dummylogs-filters.conf file, located the config repository of the Dummylogs Ystia component.
+- You will need to upload a **Logstash** configuration file using **filter_conf** artifact.
+  Use the *logstash-dummylogs-filters.conf* file, located the config repository of the Dummylogs Ystia component.
 
 - Deploy application and when the application is running, connect to the Kibana GUI using the component's **url** output attribute
 
-- You may open the DummyLogs_V5 dashboard, the MetricBean and PacketBean dashboard. Because of a known issue with the MetricDashboard (https://github.com/elastic/kibana/issues/9571), it is necessary to reload some indexes : in the Management view, click to *Index Patterns*, select packetbeat-* index and refresh the field list using the dedicated icon.
+- You may open the DummyLogs_V5 dashboard, the MetricBean and PacketBean dashboard.
+  Because of a known issue with the MetricDashboard (https://github.com/elastic/kibana/issues/9571),
+  it is necessary to reload some indexes: in the *Management* view, click to *Index Patterns*, select packetbeat-* index
+  and refresh the field list using the dedicated icon.
+

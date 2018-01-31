@@ -8,9 +8,9 @@ Logstash
     :local:
     :depth: 3
 
-Logstash is a tool for receiving, processing and outputting logs. All kinds of logs are concerned: system logs, webserver logs, error logs, application logs, etc.
+Logstash is a tool for receiving, processing and outputting logs. All kinds of logs are concerned: system logs, webserver logs, error logs, application logs, etc...
 Logstash provides a powerful pipeline for storing, querying, and analyzing logs. It includes an arsenal of built-in inputs, filters, codecs, and outputs, that are integrated as plugins.
-See https://www.elastic.co/guide/en/logstash/5.1/index.html for details about all these plugins' configuration
+See https://www.elastic.co/guide/en/logstash/5.1/index.html for details about all these plugins' configuration.
 
 The Ystia **Logstash** component is packed together with two other components that can be useful for Big Data applications development:
 
@@ -115,7 +115,8 @@ In a more complex toolchain, a **broker** can be used to split the Logstash pipe
    :scale: 100
    :align: center
 
-When using Logstash in an Elastic Stack toolchain, it must be related to a Consul agent hosted on its Compute node as shown in the following figure. This is required for the discovery of the Elasticserach cluster.
+When using Logstash in an Elastic Stack toolchain, it must be related to a Consul agent hosted on its Compute node as shown in the following figure.
+This is required for the discovery of the Elasticserach cluster.
 
 .. image:: docs/images/logstashConsul.png
    :name: logstash_consul_figure
@@ -145,30 +146,23 @@ You can follow the process in the **events** tab.
 ****
 
 **Limitations**
-  If you have a cluster of Logstash, the reconfiguration is valid for all the Logstash instances of the cluster. However, in the case of scale up operation, the modifications will not be taken in account.
+  If you have a cluster of Logstash, the reconfiguration is valid for all the Logstash instances of the cluster.
+  However, in the case of scale up operation, the modifications will not be taken in account.
 
 ****
 
 Logstash Elasticity
 ^^^^^^^^^^^^^^^^^^^^
 
-The component **Logstash Indexer** is scalable. The scalability of this component allows Log Analysis applications to deal with a huge amount of logs incoming from the Kafka broker. It is possible to deploy initially a topology with one or more Logstash Indexer and it is possible to scale out (add) or scale in (remove) Logstash Indexer instances at runtime.
+The component **Logstash Indexer** is scalable.
+The scalability of this component allows Log Analysis applications to deal with a huge amount of logs incoming from the Kafka broker.
+It is possible to deploy initially a topology with one or more Logstash Indexer and it is possible to
+scale out (add) or scale in (remove) Logstash Indexer instances at runtime.
 
-Each Logstash Indexer instance is a consumer of the same Kafka topic but of a different partition of this topic. If there are more partitions of the Kafka topic than Logstash Indexer (consumer), some consumers will read several partitions. But if there are more consumers than partitions, some consumers will not be used. So, it is important to correlate these two values (the number of partitions of the Kafka topic and the number of maximum instances of Logstash Indexer).
-
-
-Logstash Resilience
-^^^^^^^^^^^^^^^^^^^
-
-Three cases of failures are considered:
-
-- Logstash process shutdown
-- VM shutdown
-- VM network failure
-
-In cluster mode (composed at least of two Logstash instances), Logstash is always resilient (no service interruption and no loss of data). The Cloudify manager should re-create a new VM and reconnect it to the Elastic Stack chain or just restart the service depending on the problem encountered. This process is automatic and takes between 1 and 5 minutes.
-
-On the other side, in a single instance mode, we cannot ensure the resilience since if the VM crashes, the service is lost for a short amount of time and all data sent during this interval of time are lost. However, this problem can be prevented by using a Kafka broker.
+Each Logstash Indexer instance is a consumer of the same Kafka topic but of a different partition of this topic.
+If there are more partitions of the Kafka topic than Logstash Indexer (consumer), some consumers will read several partitions.
+But if there are more consumers than partitions, some consumers will not be used.
+So, it is important to correlate these two values (the number of partitions of the Kafka topic and the number of maximum instances of Logstash Indexer).
 
 
 Data Management
@@ -213,7 +207,8 @@ The **GeoNames** component allows for loading geographical names from the **Geon
     :scale: 80
     :align: center
 
-Download the archive containing geolocation data necessary for your application from http://download.geonames.org/export/zip, and install it into a local repository accessible to your application's hosts.
+Download the archive containing geolocation data necessary for your application from http://download.geonames.org/export/zip,
+and install it into a local repository accessible to your application's hosts.
 
 Properties
 ^^^^^^^^^^
@@ -253,7 +248,7 @@ Artifacts
 
 Twitter Connector
 -----------------
-The **Twitter Connector** component allows you to connect Twitter to the ELK chain via Logstash, in order to get tweets, filtering them by keywords, language, etc.
+The **Twitter Connector** component allows you to connect Twitter to the ELK chain via Logstash, in order to get tweets, filtering them by keywords, language, etc...
 The following figure shows a Twitter node configuration.
 
 .. image:: docs/images/twitter-connector.png
@@ -288,11 +283,13 @@ Properties
 
   - Default: "false"
 
-- **proxy_address** : Address of the proxy to use. If use_proxy property is true, and no value is set for this property, then default environment proxy settings on the compute will be used.
+- **proxy_address** : Address of the proxy to use. If use_proxy property is true, and no value is set for this property,
+  then default environment proxy settings on the compute will be used.
 
   - Default: ""
 
-- **proxy_port** : Port of the proxy to use. If use_proxy property is true, and no value is set for this property, then default environment proxy settings on the compute will be used.
+- **proxy_port** : Port of the proxy to use. If use_proxy property is true, and no value is set for this property,
+  then default environment proxy settings on the compute will be used.
 
   - Default: ""
 
@@ -304,11 +301,13 @@ Properties
 
   - Default: ""
 
-- **languages** : An array of BCP 47 language identifiers corresponding to any of the languages listed on Twitter’s advanced search page will only return tweets that have been detected as being written in the specified languages. Example: [ "en", "fr" ].
+- **languages** : An array of BCP 47 language identifiers corresponding to any of the languages listed on Twitter’s advanced search page
+  will only return tweets that have been detected as being written in the specified languages. Example: [ "en", "fr" ].
 
   - Default: ""
 
-- **use_samples** : Returns a small random sample of all public statuses. If set to true, the **keywords**, **follows** and **languages** properties will be ignored.
+- **use_samples** : Returns a small random sample of all public statuses.
+  If set to true, the **keywords**, **follows** and **languages** properties will be ignored.
 
   - Default: "false"
 

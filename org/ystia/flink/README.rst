@@ -71,7 +71,8 @@ Properties
 Requirements
 ^^^^^^^^^^^^
 
-- **host**: A Flink_JobManager node must be hosted on a Java node, which is hosted itself on a compute node. The minimum version of Java is **JRE6**.
+- **host**: A Flink_JobManager node must be hosted on a Java node, which is hosted itself on a compute node.
+  The minimum version of Java is **JRE6**.
 
 - **consul**: A Flink_JobManager node must be related to a Consul agent hosted on its Compute node.
 
@@ -99,7 +100,8 @@ Attributes
 Flink TaskManager
 -----------------
 
-**Flink_TaskManager** is the worker process, which executes the tasks (or more specifically, the subtasks) of a dataflow, and buffers and exchanges the data streams.
+**Flink_TaskManager** is the worker process, which executes the tasks (or more specifically, the subtasks) of a dataflow,
+and buffers and exchanges the data streams.
 
 At least one Task Manager is required.
 
@@ -110,15 +112,20 @@ Properties
 
   - Default: 512
 
-- **taskmanager_numberOfTaskSlots**: Number of parallel operator or user function instances that a single TaskManager can run. This value is typically proportional to the number of physical CPU cores that the TaskManager’s machine has (for example, equal to the number of cores, or half the number of cores).
+- **taskmanager_numberOfTaskSlots**: Number of parallel operator or user function instances that a single TaskManager can run.
+  This value is typically proportional to the number of physical CPU cores that the TaskManager’s machine has
+  (for example, equal to the number of cores, or half the number of cores).
 
   - Default: 1
 
-- **parallelism_default**: Default parallelism to use for programs that have no parallelism specified. For setups that have no concurrent jobs running, setting this value to NumTaskManagers * NumSlotsPerTaskManager will cause the system to use all available execution resources for the program execution.
+- **parallelism_default**: Default parallelism to use for programs that have no parallelism specified.
+  For setups that have no concurrent jobs running, setting this value to NumTaskManagers * NumSlotsPerTaskManager
+  will cause the system to use all available execution resources for the program execution.
 
   - Default: 1
 
-- **taskmanager_tmp_dirs**: List of directories into which Flink writes temporary files when data do not fit into main memory. The directory paths must be separated by ‘:’ (colon character).
+- **taskmanager_tmp_dirs**: List of directories into which Flink writes temporary files when data do not fit into main memory.
+  The directory paths must be separated by ‘:’ (colon character).
 
   - Default: /tmp
 
