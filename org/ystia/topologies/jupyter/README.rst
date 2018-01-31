@@ -41,14 +41,15 @@ and so user's created notebooks will not be lost.
 
 Create and deploy an application
 --------------------------------
+
 Your application can be created via the Alien4Cloud GUI using the **jupyter** topology shown below:
 
 .. image:: docs/images/jupyter_topo.png
-   :name: jupyter_topo_figure
-   :scale: 100
-   :align: center
+    :name: jupyter_topo_figure
+    :scale: 100
+    :align: center
 
-Once deployed, used the output property **jupyter_url** to connect to Jupyter Notebook.
+Once deployed, uses the output property **jupyter_url** to connect to Jupyter Notebook.
 
 The following figure shows the initial Jupyter Notebook UI
 
