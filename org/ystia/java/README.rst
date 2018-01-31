@@ -41,8 +41,12 @@ Properties
 Capabilities
 ^^^^^^^^^^^^
 
-- **java_host**: Java component requires to be hosted on a Compute.
+- **java_host**: Allows other components to be host on a Java Virtual Machine.
 
+Requirements
+^^^^^^^^^^^^
+
+- **host**: Java component requires to be hosted on a Compute
 
 Artifacts
 ^^^^^^^^^
