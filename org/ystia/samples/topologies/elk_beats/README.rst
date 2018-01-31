@@ -48,7 +48,7 @@ The **elk_beats** template provides the following configuration:
 - The kibana node is hosting the DummyLogsDashboard but also a specific Dashboard allowing to show monitoring data shipped by the Beats components.
 
 
-Create en application
+Create an application
 ---------------------
 The application can be created via the Alien4Cloud GUI using the **elk_beats** topology shown below:
 

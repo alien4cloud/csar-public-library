@@ -44,7 +44,7 @@ The **elk_dummylogs** template provides the following configuration:
 - The kibana node is hosting the DummyLogsDashboard
 
 
-Create en application
+Create an application
 ---------------------
 The application can be created via the Alien4Cloud GUI using the **elk_dummylogs** topology shown below:
 

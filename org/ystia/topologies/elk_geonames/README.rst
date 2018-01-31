@@ -36,7 +36,7 @@ The **elk_geonames** template provides the following configuration:
 
 - GeoNames component is hosted by the Logstash node and is already configured (see the GeoNames component's Properties list in the README associated to the Logstash component).
 
-Create en application
+Create an application
 ---------------------
 Your application can be created via the Alien4Cloud GUI using the **elk_geonames** topology shown below:
 

@@ -44,7 +44,7 @@ The two instances are connected to a same retention queue provided by Kafka.
 
 ****
 
-Create en application
+Create an application
 ---------------------
 A Log Analysis application can be created via the Alien4Cloud GUI using the **elk_broker** topology shown below:
 

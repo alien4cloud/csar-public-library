@@ -33,7 +33,7 @@ The **elk_ha** topology template provides even higher resilience to Log Analysis
 It enriches this template by attaching a **BlockStorage** component to the Elasticsearch and Kafka instances Compute node.
 This ensures no data loss even in case all the Elasticsearch or Kafka cluster nodes go down.
 
-Create en application
+Create an application
 ---------------------
 A Log Analysis application can be created via the Alien4Cloud GUI using the **elk_ha** topology shown below:
 

@@ -40,7 +40,7 @@ The **elk_heartbeat** template provides the following configuration:
 - A HeartBeat component is installed on a dedicated compute nodes, and the relationship is created with Elasticsearch in order to ship into it the monitoring data. Moreover HeartBeat is connected to Compute node in order to obtain service availability information
 
 
-Create en application
+Create an application
 ---------------------
 The application can be created via the Alien4Cloud GUI using the **elk_heartbeat** topology shown below:
 

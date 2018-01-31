@@ -39,7 +39,7 @@ The **elk_basic** template provides the following configuration:
 The resilience of the Log Analysis applications created with the ELK-basic template is based on the resilience of the **Elasticsearch** component.
 
 
-Create en application
+Create an application
 ---------------------
 A Log Analysis application can be created via the Alien4Cloud GUI using the **elk_basic** topology shown below:
 

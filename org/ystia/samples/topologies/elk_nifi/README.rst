@@ -38,7 +38,7 @@ The template provides the following configuration:
 
 - Consul allows Elasticsearch cluster discovery.
 
-Create en application
+Create an application
 ---------------------
 The application can be created via the Alien4Cloud GUI using the **elk_nifi** topology shown below:
 

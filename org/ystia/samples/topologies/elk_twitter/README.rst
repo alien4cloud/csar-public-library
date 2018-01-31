@@ -36,7 +36,7 @@ The **elk_twitter** template provides the following configuration:
 
 - The twitter connector is hosted by the Logstash node
 
-Create en application
+Create an application
 ---------------------
 A Log Analysis application can be created via the Alien4Cloud GUI using the **elk_twitter** topology shown below:
 
