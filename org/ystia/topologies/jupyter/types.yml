@@ -7,6 +7,7 @@ metadata:
 
 imports:
   - tosca-normative-types:1.0.0-ALIEN14
+  - alien-extended-storage-types:1.4.1-SNAPSHOT
   - org.ystia.common:3.0-SNAPSHOT
   - org.ystia.python.pub:3.0-SNAPSHOT
   - org.ystia.python.linux.bash:3.0-SNAPSHOT
@@ -14,7 +15,7 @@ imports:
 
 
 topology_template:
-  description: A basic topology template with Jupyter
+  description: A topology template with Jupyter
 
   node_templates:
 
@@ -33,6 +34,10 @@ topology_template:
         - network:
             node: Network
             relationship: tosca.relationships.Network
+      capabilities:
+        os:
+          properties:
+            type: linux
     Python:
       type: org.ystia.python.linux.bash.nodes.Python
       properties:
@@ -43,6 +48,24 @@ topology_template:
       requirements:
         - host:
             node: Compute
+    BlockStorage:
+      type: tosca.nodes.BlockStorage
+      properties:
+        size: "10 GB"
+      requirements:
+        - attachment:
+            node: Compute
+            capability: tosca.capabilities.Attachment
+            relationship: tosca.relationships.AttachTo
+    LinuxFileSystem:
+      type: alien.nodes.LinuxFileSystem
+      properties:
+        location: "/mountedStorageNb"
+      requirements:
+        - host:
+            node: Compute
+        - partition:
+            node: BlockStorage
     Jupyter:
       type: org.ystia.jupyter.linux.bash.nodes.Jupyter
       properties:
@@ -54,6 +77,8 @@ topology_template:
       requirements:
         - host:
             node: Python
+        - filesystem_endpoint:
+            node: LinuxFileSystem
 
   # Output property for Jupyter URL
 
