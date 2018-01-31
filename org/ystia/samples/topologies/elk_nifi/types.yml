@@ -3,7 +3,7 @@ tosca_definitions_version: alien_dsl_1_4_0
 metadata:
   template_name: org.ystia.samples.topologies.elk_nifi
   template_version: 3.0-SNAPSHOT
-  template_author: Bull
+  template_author: Ystia
 
 
 imports:
