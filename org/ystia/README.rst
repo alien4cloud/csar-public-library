@@ -11,12 +11,9 @@ The Ystia Forge
 
 .. _introduction_section:
 
-************
-Introduction
-************
-
-Ystia Forge overview
-====================
+********
+Overview
+********
 
 **Ystia Forge** provides TOSCA Components and Topology templates to easily create Big Data application clusters on demand.
 
