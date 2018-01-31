@@ -26,15 +26,15 @@ Upload the **elk_nifi** topology archive to the Alien4Cloud Topology template ca
 
 Topology template
 -----------------
-The **elk_nifi** template allows to create a data flow processing application using Nifi. This application uses data input from Twitter and outputs data into Elasticsearch. Kibana can be used to
+The **elk_nifi** template allows to create a data flow processing application using NiFi. This application uses data input from Twitter and outputs data into Elasticsearch. Kibana can be used to
 display this data.
 The template provides the following configuration:
 
-- Relationships between Elasticsearch, Kibana and Nifi nodes are created
+- Relationships between Elasticsearch, Kibana and NiFi nodes are created
 
 - The components are designed to be deployed on Compute hosts and appropriate Java distribution.
 
-- Thi Nifi component is configured
+- Thi NiFi component is configured
 
 - Consul allows Elasticsearch cluster discovery.
 
@@ -52,8 +52,8 @@ Complete configuration
 
 - Deploy the application created at the previous step.
 
-- Connect to the Nifi User Interface to import a template. Use the **url** output attribute of the Nifi component to get the address of the GUI. Use the nifi-es5-demo-template.xml file, located the dataflows repository of this topology.
-  You can see https://nifi.apache.org/docs/nifi-docs/html/user-guide.html#templates for details about Nifi templates.
+- Connect to the NiFi User Interface to import a template. Use the **url** output attribute of the NiFi component to get the address of the GUI. Use the nifi-es5-demo-template.xml file, located the dataflows repository of this topology.
+  You can see https://nifi.apache.org/docs/nifi-docs/html/user-guide.html#templates for details about NiFi templates.
 
 - Configure the Twitter component - the GetTwitterWithProxy processor :
 
@@ -68,7 +68,7 @@ Complete configuration
    #. index: bigdata
    #. type: tweets
 
-Run the Nifi DataFlow
+Run the NiFi DataFlow
 ---------------------
 
 #. Select all processors ie hold down the shift-key and drag your mouse across the entire data flow

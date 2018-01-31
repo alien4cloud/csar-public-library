@@ -48,7 +48,7 @@ To simplify topology creation, Ystia Forge provides **topology templates** that 
 .. _MapR: https://mapr.com/
 .. _MongoDB: https://www.mongodb.com/
 .. _MySQL: http://www.mysql.com/
-.. _Nifi: https://nifi.apache.org/
+.. _NiFi: https://nifi.apache.org/
 .. _PostgreSQL: https://www.postgresql.org/
 .. _RStudio: https://www.rstudio.com/
 
@@ -268,7 +268,7 @@ Message brokers
 +-----------+-------------------+------------------------------+
 | **Kafka** | *org/ystia/kafka* | version 0.10.2.1 or 0.11.0.2 |
 +-----------+-------------------+------------------------------+
-| **Nifi**  | *org/ystia/nifi*  | version 1.1.2                |
+| **NiFi**  | *org/ystia/nifi*  | version 1.1.2                |
 +-----------+-------------------+------------------------------+
 
 
