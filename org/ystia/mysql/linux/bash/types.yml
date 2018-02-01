@@ -28,12 +28,14 @@ node_types:
         type: integer
         description: DBMS port
         default: 3306
-        required: false
+        constraints:
+          - equal: 3306
       component_version:
         type: version
         description: The optional MySQL component’s version.
         default: 5.6
-        required: false
+        constraints:
+          - equal: 5.6
       mysql_community_repo:
         type: string
         required: false
@@ -53,7 +55,6 @@ node_types:
         configure:
           inputs:
             DBMS_ROOT_PASSWORD: { get_property: [SELF, root_password]}
-            DBMS_PORT: { get_property: [SELF, port]}
           implementation: scripts/mysql_configure.sh
         start:
           implementation: scripts/mysql_start.sh
@@ -86,7 +87,8 @@ node_types:
         type: integer
         description: DBMS port
         default: 3306
-        required: true
+        constraints:
+          - equal: 3306
     capabilities:
       mysql_db_endpoint:
         type: org.ystia.mysql.pub.capabilities.Endpoint.MySQLDatabase
@@ -107,14 +109,12 @@ node_types:
           DB_NAME: { get_property: [SELF, name]}
           DB_USER: { get_property: [SELF, user]}
           DB_PASSWORD: { get_property: [SELF, password]}
-          DB_PORT: { get_property: [SELF, port]}
           DBMS_ROOT_PASSWORD : { get_property: [HOST, root_password]}
          implementation: scripts/mysql_db_create.sh
        configure:
          inputs:
           DB_NAME: { get_property: [SELF, name]}
           DB_USER: { get_property: [SELF, user]}
-          DB_PORT: { get_property: [SELF, port]}
           DB_PASSWORD: { get_property: [SELF, password]}
           DBMS_ROOT_PASSWORD : { get_property: [HOST, root_password]}
          implementation: scripts/mysql_db_configure.sh

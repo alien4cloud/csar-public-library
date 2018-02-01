@@ -18,16 +18,27 @@ topology_template:
   inputs:
     repository:
       type: string
-      required: false
       default: http://repo.mysql.com/yum/mysql-5.6-community/el/7/x86_64
-    name:
+    root_password:
       type: string
-      description: Database name
-      required: false
-    password:
+      description: DBMS root password
+      default: "mysql"
+    name1:
       type: string
-      description: Database user password
-      required: false
+      description: Database1 name
+      default: "DB1"
+    password1:
+      type: string
+      description: Database1 user password
+      default: "db1pwd"
+    name2:
+      type: string
+      description: Database2 name
+      default: "DB2"
+    password2:
+      type: string
+      description: Database2 user password
+      default: "db2pwd"
 
   node_templates:
 
@@ -50,14 +61,26 @@ topology_template:
       type: org.ystia.mysql.linux.bash.nodes.MySQLServer
       properties:
         mysql_community_repo: { get_input: repository }
+        root_password: { get_input: root_password }
       requirements:
         - host:
             node: Compute
-    MySQLDatabase:
+    MySQLDatabase1:
       type: org.ystia.mysql.linux.bash.nodes.MySQLDatabase
       properties:
-        name: { get_input: name }
-        password: { get_input: password }
+        name: { get_input: name1 }
+        user: { get_input: name1 }
+        password: { get_input: password1 }
       requirements:
         - host:
             node: MySQLServer
+    MySQLDatabase2:
+      type: org.ystia.mysql.linux.bash.nodes.MySQLDatabase
+      properties:
+        name: { get_input: name2 }
+        user: { get_input: name2 }
+        password: { get_input: password2 }
+      requirements:
+        - host:
+            node: MySQLServer
+
