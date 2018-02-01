@@ -19,7 +19,8 @@ Overview
 
 Deployment of Big Data applications can be done on a public Cloud (such as Amazon), or on a private cloud (such as OpenStack), on Bare-Metal or on HPC.
 
-The TOSCA Components and Topology templates currently contained in this repository which is also called the **Ystia Forge**, can be used to construct different application categories :
+The TOSCA Components and Topology templates currently contained in this repository which belongs to the **Ystia Forge**,
+can be used to construct different application categories :
 
 - **Log Analysis** applications based on Elastic_ components and on the Kafka_ message broker
 
@@ -57,12 +58,12 @@ To simplify topology creation, Ystia Forge provides **topology templates** that 
 Getting Started
 ***************
 
-    This section describes how to set up a basic application cluster using Ystia Forge components.
+This section describes how to set up a basic application cluster using Ystia Forge components.
 
 Ystia contains the following products:
 
-- Alien4Cloud_, provides the Ystia Studio for the end-users. It allows them to define application architectures and to deploy those applications on pre-configured locations.
-- Janus_, provides the Ystia Orchestrator, an engine allowing to orchestrate application deployment.
+- Alien4Cloud_, is the Ystia Studio for the end-users. It allows them to define application architectures and to deploy those applications on pre-configured locations.
+- Janus_, is the Ystia Orchestrator, an engine allowing to orchestrate application deployment.
 
 
 .. _Janus: http://TO_BE_COMPLETED/
@@ -87,7 +88,7 @@ How to import Ystia Forge components in the catalog
 
 There are two possibilities to import the Ystia Forge TOSCA components and topology templates in the catalog:
 
-#. Build a CSAR archive for every necessary components and topologies, then upload them in a precise order based on the possible dependencies between them.
+#. Build a CSAR archive for every necessary components and topologies, then import them in a precise order based on the possible dependencies between them.
 #. Import all the Ystia Forge components and topologies hosted in the present repository using the Alien4Cloud's *CSAR Git Integration*.
 
 For the first method, see the example provided below for the *Welcome* sample.
@@ -109,7 +110,7 @@ For the second method,
 
 Using this second method, dependencies are automatically resolved when importing CSARs with *Git integration*.
 
-Finally, you can browse the archives list, but also the components and the topologies list to check that all the Ystia Forge is uploaded.
+Finally, you can browse the archives list, but also the components and the topologies list to check that all the Ystia Forge is imported.
 
 .. _getting_started_samples_section:
 
@@ -128,7 +129,7 @@ Detailed information can be found under:
 To create the sample application you need to have in the Alien4Cloud catalog the CSARs for the welcome component and the welcome_basic topology.
 Moreover, some basic Ystia Forge TOSCA types have to be available in the catalog. These types are brought by the a component called **common**.
 
-Suppose that none of the necessary components, nor topology template are uploaded to the Alien4CLoud catalog.
+Suppose that none of the necessary components, nor topology template are imported to the Alien4CLoud catalog.
 You have to generate CSARs for :
 
 - common and welcome components
@@ -145,72 +146,18 @@ You have to generate CSARs for :
   $ zip -r welcome_basic-csar.zip *
 
 
-Then you have to upload the generated archives to the Alien4Cloud catalog by drag and drop respecting following order:
+Then you have to import the generated archives to the Alien4Cloud catalog by drag and drop respecting following order:
 
 #. **common-csar.zip**
 #. **welcome-csar.zip**
 #. **welcome_basic-csar.zip**
 
 
-Finally, you can browse the archives list, but also the components and the topologies list, to check that the uploaded elements are presented:
+Finally, you can browse the archives list, but also the components and the topologies list, to check that the imported elements are presented:
 
 - ``org.ystia.common`` ``Root``, ``SoftwareComponent``, ``DBMS`` and ``Database`` Components
 - ``org.ystia.samples.welcome.linux.bash.Welcome`` component
 - ``org.ystia.samples.welcome_basic`` topology
-
-.. *********************************************************************************************************************
-
-.. _topologies_section:
-
-**********
-Topologies
-**********
-
-    Ystia Forge provides various topology templates, which can be used for demos, development or production applications.
-
-
-.. _topologies_elk_section:
-
-Topologies for Log Analysis based on Elastic Stack
-==================================================
-
-+-------------------+----------------------------------------------+
-| **elk_basic**     | *org/ystia/topologies/elk_basic*             |
-+-------------------+----------------------------------------------+
-| **elk_broker**    | *org/ystia/topologies/elk_broker*            |
-+-------------------+----------------------------------------------+
-| **elk_ha**        | *org/ystia/topologies/elk_ha*                |
-+-------------------+----------------------------------------------+
-| **elk_geonames**  | *org/ystia/topologies/elk_geonames*          |
-+-------------------+----------------------------------------------+
-
-+-------------------+----------------------------------------------+
-| **elk_beats**     | *org/ystia/samples/topologies/elk_beats*     |
-+-------------------+----------------------------------------------+
-| **elk_heartbeat** | *org/ystia/samples/topologies/elk_heartbeat* |
-+-------------------+----------------------------------------------+
-| **elk_dummylogs** | *org/ystia/samples/topologies/elk_dummylogs* |
-+-------------------+----------------------------------------------+
-| **elk_nifi**      | *org/ystia/samples/topologies/elk_nifi*      |
-+-------------------+----------------------------------------------+
-| **elk_twitter**   | *org/ystia/samples/topologies/elk_twitter*   |
-+-------------------+----------------------------------------------+
-
-Topologies for Flink
-====================
-
-+-----------+------------------------------+
-| **flink** | *org/ystia/topologies/flink* |
-+-----------+------------------------------+
-
-Topologies for Studios for data scientists
-==========================================
-
-+-------------+--------------------------------+
-| **jupiter** | *org/ystia/topologies/jupyter* |
-+-------------+--------------------------------+
-| **rstudio** | *org/ystia/topologies/rstudio* |
-+-------------+--------------------------------+
 
 
 .. *********************************************************************************************************************
@@ -221,6 +168,7 @@ Topologies for Studios for data scientists
 Components
 **********
 
+This section lists the TOSCA components provided by Ystia Forge.
 
 Consensus systems
 =================
@@ -308,6 +256,60 @@ Utilities
 | **XFS**     | *org/ystia/xfs*     |                                  |
 +-------------+---------------------+----------------------------------+
 
+
+.. *********************************************************************************************************************
+
+.. _topologies_section:
+
+**********
+Topologies
+**********
+
+Ystia Forge provides various topology templates, which can be used for demos, development or production applications.
+
+
+.. _topologies_elk_section:
+
+Topologies for Log Analysis based on Elastic Stack
+==================================================
+
++-------------------+----------------------------------------------+
+| **elk_basic**     | *org/ystia/topologies/elk_basic*             |
++-------------------+----------------------------------------------+
+| **elk_broker**    | *org/ystia/topologies/elk_broker*            |
++-------------------+----------------------------------------------+
+| **elk_ha**        | *org/ystia/topologies/elk_ha*                |
++-------------------+----------------------------------------------+
+| **elk_geonames**  | *org/ystia/topologies/elk_geonames*          |
++-------------------+----------------------------------------------+
+
++-------------------+----------------------------------------------+
+| **elk_beats**     | *org/ystia/samples/topologies/elk_beats*     |
++-------------------+----------------------------------------------+
+| **elk_heartbeat** | *org/ystia/samples/topologies/elk_heartbeat* |
++-------------------+----------------------------------------------+
+| **elk_dummylogs** | *org/ystia/samples/topologies/elk_dummylogs* |
++-------------------+----------------------------------------------+
+| **elk_nifi**      | *org/ystia/samples/topologies/elk_nifi*      |
++-------------------+----------------------------------------------+
+| **elk_twitter**   | *org/ystia/samples/topologies/elk_twitter*   |
++-------------------+----------------------------------------------+
+
+Topologies for Flink
+====================
+
++-----------+------------------------------+
+| **flink** | *org/ystia/topologies/flink* |
++-----------+------------------------------+
+
+Topologies for Studios for data scientists
+==========================================
+
++-------------+--------------------------------+
+| **jupiter** | *org/ystia/topologies/jupyter* |
++-------------+--------------------------------+
+| **rstudio** | *org/ystia/topologies/rstudio* |
++-------------+--------------------------------+
 
 
 .. *********************************************************************************************************************
