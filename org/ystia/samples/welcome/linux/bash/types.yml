@@ -22,9 +22,10 @@ node_types:
     properties:
       component_version:
         type: version
-        default: 1.4.0-SNAPSHOT
+        description: The installed Welcome version
+        default: 1.4.0
         constraints:
-          - equal: 1.4.0-SNAPSHOT
+          - equal: 1.4.0
       port:
         type: integer
         description: |

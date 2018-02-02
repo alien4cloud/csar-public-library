@@ -29,9 +29,10 @@ node_types:
     properties:
       component_version:
         type: version
-        default: 1.4.0-SNAPSHOT
+        description: The installed DummyLogsGenerator version
+        default: 1.4.0
         constraints:
-          - equal: 1.4.0-SNAPSHOT
+          - equal: 1.4.0
       log_path:
         type: string
         required: true
