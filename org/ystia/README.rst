@@ -51,6 +51,9 @@ To simplify topology creation, Ystia Forge provides **topology templates** that 
 .. _RStudio: https://www.rstudio.com/
 
 
+The current version of **Ystia Forge** is **1.4.0**.
+
+
 .. *********************************************************************************************************************
 .. _getting_started_section:
 
@@ -62,11 +65,11 @@ This section describes how to set up a basic application cluster using Ystia For
 
 Ystia contains the following products:
 
-- Alien4Cloud_, is the Ystia Studio for the end-users. It allows them to define application architectures and to deploy those applications on pre-configured locations.
-- Janus_, is the Ystia Orchestrator, an engine allowing to orchestrate application deployment.
+- Alien4Cloud_, is the Ystia Studio for the end-users.
+  It allows them to define application architectures and to deploy those applications on pre-configured locations.
+- Ystia_Orchestrator_ is an engine allowing to orchestrate application deployment.
 
-
-.. _Janus: http://TO_BE_COMPLETED/
+.. _Ystia_Orchestrator: http://TODO_TO_BE_COMPLETED/
 .. _Alien4Cloud: http://alien4cloud.github.io/
 
 
@@ -77,9 +80,9 @@ Requirements
 
 To create and run application using Ystia Forge components require:
 
-- A running instance of **Alien4Cloud**
-- A running instance of **Janus**
-- The components and topology templates from **Ystia Forge** must be imported to the Alien4Cloud catalog.
+- A running instance of **Alien4Cloud** version **1.4.3.2**
+- A running instance of **Ystia Orchestrator** version **2.0.1**.
+- The components and topology templates from **Ystia Forge**, version **1.4.0**, must be imported to the Alien4Cloud catalog.
 
 .. _getting_started_build_section:
 
@@ -491,8 +494,8 @@ References
 Alien4Cloud documentation
   https://alien4cloud.github.io/#/documentation/1.4.0/index.html
 
-Janus documentation
-  https://TO_BE_COMPLETED
+Ystia Orchestrator documentation
+  https://TODO_TO_BE_COMPLETED
 
 
 
