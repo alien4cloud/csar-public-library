@@ -44,3 +44,5 @@ Your application can be created via the Alien4Cloud GUI using the **mysql_single
     :scale: 100
     :align: center
 
+Once the application is deployed, the two MySQL database *DB1* and *DB2* are available.
+

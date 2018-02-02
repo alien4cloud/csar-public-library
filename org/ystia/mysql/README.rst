@@ -76,7 +76,7 @@ Properties
   - Default value: *db1*
 - **password**: Usee password.
 
-  -Default value: *secret*
+  - Default value: *secret*
 - **port**: Database port.
 
   - Value: *3306*
