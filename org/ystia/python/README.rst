@@ -43,7 +43,7 @@ Properties
 Capabilities
 ^^^^^^^^^^^^
 
-- **python_host**: Allows other components (as Jupyter for example) to be host on Python.
+- **python_host**: Allows other components (as Jupyter for example) to be hosted on Python.
 
 
 Requirements
