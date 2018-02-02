@@ -2,16 +2,16 @@ tosca_definitions_version: alien_dsl_1_4_0
 
 metadata:
   template_name: org.ystia.beats.linux.bash
-  template_version: 3.0-SNAPSHOT
+  template_version: 1.4.0-SNAPSHOT
   template_author: Ystia
 
 description: Beats are data shippers for many types of data you want to enrich with Logstash, search and analyze in Elasticsearch, and visualize in Kibana.
 
 imports:
   - tosca-normative-types:1.0.0-ALIEN14
-  - org.ystia.consul.pub:3.0-SNAPSHOT
-  - org.ystia.elasticsearch.pub:3.0-SNAPSHOT
-  - org.ystia.logstash.pub:3.0-SNAPSHOT
+  - org.ystia.consul.pub:1.4.0-SNAPSHOT
+  - org.ystia.elasticsearch.pub:1.4.0-SNAPSHOT
+  - org.ystia.logstash.pub:1.4.0-SNAPSHOT
 
 node_types:
   org.ystia.beats.linux.bash.nodes.Beat:

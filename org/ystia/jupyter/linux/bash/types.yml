@@ -2,16 +2,16 @@ tosca_definitions_version: alien_dsl_1_4_0
 
 metadata:
   template_name: org.ystia.jupyter.linux.bash
-  template_version: 3.0-SNAPSHOT
+  template_version: 1.4.0-SNAPSHOT
   template_author: Ystia
 
 description: Jupyter notebook for linux system
 
 imports:
   - tosca-normative-types:1.0.0-ALIEN14
-  - org.ystia.common:3.0-SNAPSHOT
-  - org.ystia.python.pub:3.0-SNAPSHOT
-  - org.ystia.python.linux.bash:3.0-SNAPSHOT
+  - org.ystia.common:1.4.0-SNAPSHOT
+  - org.ystia.python.pub:1.4.0-SNAPSHOT
+  - org.ystia.python.linux.bash:1.4.0-SNAPSHOT
 
 
 node_types:

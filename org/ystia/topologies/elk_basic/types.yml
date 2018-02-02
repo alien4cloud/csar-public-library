@@ -2,23 +2,23 @@ tosca_definitions_version: alien_dsl_1_4_0
 
 metadata:
   template_name: org.ystia.topologies.elk_basic
-  template_version: 3.0-SNAPSHOT
+  template_version: 1.4.0-SNAPSHOT
   template_author: Ystia
 
 
 imports:
   - tosca-normative-types:1.0.0-ALIEN14
-  - org.ystia.common:3.0-SNAPSHOT
-  - org.ystia.java.pub:3.0-SNAPSHOT
-  - org.ystia.consul.pub:3.0-SNAPSHOT
-  - org.ystia.elasticsearch.pub:3.0-SNAPSHOT
-  - org.ystia.java.linux.bash:3.0-SNAPSHOT
-  - org.ystia.consul.linux.bash:3.0-SNAPSHOT
-  - org.ystia.elasticsearch.linux.bash:3.0-SNAPSHOT
-  - org.ystia.kibana.pub:3.0-SNAPSHOT
-  - org.ystia.kibana.linux.bash:3.0-SNAPSHOT
-  - org.ystia.logstash.pub:3.0-SNAPSHOT
-  - org.ystia.logstash.linux.bash:3.0-SNAPSHOT
+  - org.ystia.common:1.4.0-SNAPSHOT
+  - org.ystia.java.pub:1.4.0-SNAPSHOT
+  - org.ystia.consul.pub:1.4.0-SNAPSHOT
+  - org.ystia.elasticsearch.pub:1.4.0-SNAPSHOT
+  - org.ystia.java.linux.bash:1.4.0-SNAPSHOT
+  - org.ystia.consul.linux.bash:1.4.0-SNAPSHOT
+  - org.ystia.elasticsearch.linux.bash:1.4.0-SNAPSHOT
+  - org.ystia.kibana.pub:1.4.0-SNAPSHOT
+  - org.ystia.kibana.linux.bash:1.4.0-SNAPSHOT
+  - org.ystia.logstash.pub:1.4.0-SNAPSHOT
+  - org.ystia.logstash.linux.bash:1.4.0-SNAPSHOT
 
 topology_template:
   description: A topology template to connect Logstash, Elasticsearch and Kibana

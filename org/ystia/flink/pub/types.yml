@@ -2,7 +2,7 @@ tosca_definitions_version: alien_dsl_1_4_0
 
 metadata:
   template_name: org.ystia.flink.pub
-  template_version: 3.0-SNAPSHOT
+  template_version: 1.4.0-SNAPSHOT
   template_author: Ystia
 
 description: Public interface types for Flink support.

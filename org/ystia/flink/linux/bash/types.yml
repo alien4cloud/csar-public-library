@@ -2,17 +2,17 @@ tosca_definitions_version: alien_dsl_1_4_0
 
 metadata:
   template_name: org.ystia.flink.linux.bash
-  template_version: 3.0-SNAPSHOT
+  template_version: 1.4.0-SNAPSHOT
   template_author: Ystia
 
 description: Apache Flink is an open source platform for distributed stream and batch data processing.
 
 imports:
   - tosca-normative-types:1.0.0-ALIEN14
-  - org.ystia.common:3.0-SNAPSHOT
-  - org.ystia.java.pub:3.0-SNAPSHOT
-  - org.ystia.consul.pub:3.0-SNAPSHOT
-  - org.ystia.flink.pub:3.0-SNAPSHOT
+  - org.ystia.common:1.4.0-SNAPSHOT
+  - org.ystia.java.pub:1.4.0-SNAPSHOT
+  - org.ystia.consul.pub:1.4.0-SNAPSHOT
+  - org.ystia.flink.pub:1.4.0-SNAPSHOT
 
 node_types:
   org.ystia.flink.linux.bash.nodes.JobManager:
