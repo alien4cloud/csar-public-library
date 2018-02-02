@@ -22,7 +22,7 @@ Deployment of Big Data applications can be done on a public Cloud (such as Amazo
 The TOSCA Components and Topology templates currently contained in this repository which belongs to the **Ystia Forge**,
 can be used to construct different application categories :
 
-- **Log Analysis** applications based on Elastic_ components and on the Kafka_ message broker
+- Log Analysis applications based on Elastic_ components and on the Kafka_ message broker
 
 - Applications using MySQL_ database server,
 
@@ -80,8 +80,8 @@ Requirements
 
 To create and run application using Ystia Forge components require:
 
-- A running instance of **Alien4Cloud** version **1.4.3.2**
-- A running instance of **Ystia Orchestrator** version **2.0.1**.
+- A running instance of **Alien4Cloud**, version **1.4.3.2**.
+- A running instance of **Ystia Orchestrator**, version **2.0.1**.
 - The components and topology templates from **Ystia Forge**, version **1.4.0**, must be imported to the Alien4Cloud catalog.
 
 .. _getting_started_build_section:
@@ -96,13 +96,13 @@ There are two possibilities to import the Ystia Forge TOSCA components and topol
 
 For the first method, see the example provided below for the *Welcome* sample.
 
-For the second method,
+For the second method:
 
 - you need to configure a Git Location corresponding to the Ystia Forge in Alien4Cloud.
 
   - Repository URL: https://github.com/alien4cloud/csar-public-library.git
   - Credentials: *none*
-  - Tag: **TO BE DEFINED**
+  - Tag: **1.4.0**
   - Archive to import: **org/ystia**
 
 - and then execute the import operation.
@@ -313,6 +313,14 @@ Topologies for Studios for data scientists
 +-------------+--------------------------------+
 | **rstudio** | *org/ystia/topologies/rstudio* |
 +-------------+--------------------------------+
+
+
+Topologies for MySQL
+====================
+
++------------------+-------------------------------------+
+| **mysql_single** | *org/ystia/topologies/mysql_single* |
++------------------+-------------------------------------+
 
 
 .. *********************************************************************************************************************
