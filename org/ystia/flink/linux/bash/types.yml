@@ -50,7 +50,7 @@ node_types:
           repository url. Artifacts names will be appended to it, so this
           property could be shared among several components using the
           inputs feature.
-        required: false
+        required: true
         constraints:
           - pattern: ^(http|https|ftp)://.+/.*$
     attributes:

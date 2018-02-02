@@ -38,7 +38,7 @@ node_types:
           - equal: 5.6
       repository:
         type: string
-        required: false
+        required: true
         description: >
           This property give the opportunity to specify an alternative download repository for this component artifact.
           It is your responsibility to provide an accessible download url and to store required artifacts on it.
