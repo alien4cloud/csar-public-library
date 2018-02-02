@@ -60,7 +60,7 @@ topology_template:
     MySQLServer:
       type: org.ystia.mysql.linux.bash.nodes.MySQLServer
       properties:
-        mysql_community_repo: { get_input: repository }
+        repository: { get_input: repository }
         root_password: { get_input: root_password }
       requirements:
         - host:

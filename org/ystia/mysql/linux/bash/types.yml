@@ -36,7 +36,7 @@ node_types:
         default: 5.6
         constraints:
           - equal: 5.6
-      mysql_community_repo:
+      repository:
         type: string
         required: false
         description: >
@@ -50,7 +50,7 @@ node_types:
       Standard:
         create:
           inputs:
-            MYSQL_COMMUNITY_REPO: { get_property: [SELF, mysql_community_repo]}
+            MYSQL_REPO: { get_property: [SELF, repository]}
           implementation: scripts/mysql_create.sh
         configure:
           inputs:
@@ -72,12 +72,12 @@ node_types:
         type: string
         description: Database name
         required: true
-        default: "Jack"
+        default: "DB1"
       user:
         type: string
         description: DataBase user
         required: true
-        default: "mysql"
+        default: "db1"
       password:
         type: string
         description: DataBase user password
