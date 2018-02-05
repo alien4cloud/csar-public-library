@@ -53,6 +53,7 @@ To simplify topology creation, Ystia Forge provides **topology templates** that 
 
 The current version of **Ystia Forge** is **1.4.0**.
 
+
 .. *********************************************************************************************************************
 .. _getting_license_section:
 
@@ -510,6 +511,75 @@ The Jupyter component matches the **jupyter** systemd service.
 
 The **jupyter** service is not started at boot.
 
+
+.. *********************************************************************************************************************
+
+.. _monitoring_toubleshooting_section:
+
+******************************
+Monitoring and troubleshooting
+******************************
+
+Alien4Cloud
+===========
+
+Logs
+----
+
+Logs path depends on how you have started Alien4Cloud.
+
+For more information about Alien4Cloud Logs, refer to
+http://alien4cloud.github.io/#/documentation/1.4.0/admin_guide/installation_configuration.html
+
+Backup / Restore procedure
+--------------------------
+
+For more information about Alien4Cloud Backup/Restore, refer to
+http://alien4cloud.github.io/#/documentation/1.4.0/admin_guide/backup_restore.html
+
+
+Ystia Orchestrator
+==================
+
+**TO BE COMPLETED**
+
+
+Known issues
+============
+
+Elasticsearch: Limit of total fields in index may be exceeded
+-------------------------------------------------------------
+
+Using the TwitterConnector on Logstash and storing those events in Elasticsearch may causevthe exceeding of the limit
+of total fields in index.
+In this case, this log appears in *elasticsearch* Logstash output logs:
+
+      [WARN ][logstash.outputs.elasticsearch] Failed action. {:status=>400, :action=>[“index”, ...], :response=>{“index”=>{“_index”=>”logstash-2017.01.26”, ...,”reason”=>”Limit of total fields [1000] in index [logstash-2017.01.26] has been exceeded”}}}}
+
+
+**Workaround**
+
+See Elasticsearch documentation for details:
+
+- https://www.elastic.co/guide/en/elasticsearch/reference/5.1/mapping.html#mapping-limit-settings
+
+- https://www.elastic.co/guide/en/elasticsearch/reference/5.1/indices-templates.html
+
+You can update this limit after the index has been created as for example:
+
+      PUT my_index/_setting
+      {
+          "index.mapping.total_fields.limit": 2000
+      }
+
+or using index templates before the index creation as for example:
+
+      PUT _template/my_template
+      {
+          "template" : "logstash-*",
+          "order" : my_order,
+          "settings" : {"index.mapping.total_fields.limit": 2000 }
+      }
 
 
 .. *********************************************************************************************************************
