@@ -65,7 +65,9 @@ License
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
-You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
 
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
@@ -153,7 +155,7 @@ To create the sample application you need to have in the Alien4Cloud catalog the
 Moreover, some basic Ystia Forge TOSCA types have to be available in the catalog. These types are brought by the a component called **common**.
 
 Suppose that none of the necessary components, nor topology template are imported to the Alien4CLoud catalog.
-You have to generate CSARs for common and welcome components, and welcome_basic topology.::
+You have to generate CSARs for *common* and *welcome* components, and *welcome_basic* topology.::
 
   $ cd YOUR_SANDBOX/csar-public-library/org/ystia/common
   $ zip -r common-csar.zip *
@@ -165,15 +167,15 @@ You have to generate CSARs for common and welcome components, and welcome_basic 
 
 Then you have to import the generated archives to the Alien4Cloud catalog by drag and drop respecting following order:
 
-#. **common-csar.zip**
-#. **welcome-csar.zip**
-#. **welcome_basic-csar.zip**
+#. ``common-csar.zip``
+#. ``welcome-csar.zip``
+#. ``welcome_basic-csar.zip``
 
 Finally, you can browse the archives list, but also the components and the topologies list, to check that the imported elements are presented:
 
-- ``org.ystia.common`` ``Root``, ``SoftwareComponent``, ``DBMS`` and ``Database`` Components
-- ``org.ystia.samples.welcome.linux.bash.Welcome`` component
-- ``org.ystia.samples.welcome_basic`` topology
+- ``org.ystia.common`` ``Root``, ``SoftwareComponent``, ``DBMS`` and ``Database`` components,
+- ``org.ystia.samples.welcome.linux.bash.Welcome`` component,
+- ``org.ystia.samples.welcome_basic`` topology.
 
 
 .. *********************************************************************************************************************
@@ -281,7 +283,7 @@ Utilities
 Topologies
 **********
 
-Ystia Forge provides various topology templates, which can be used for demos, development or production applications.
+Ystia Forge provides various topology templates, which can be used for development, demos or production applications.
 
 
 .. _topologies_elk_section:
