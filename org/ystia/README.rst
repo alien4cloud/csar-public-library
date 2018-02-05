@@ -65,9 +65,7 @@ License
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
+You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
 
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
@@ -155,13 +153,7 @@ To create the sample application you need to have in the Alien4Cloud catalog the
 Moreover, some basic Ystia Forge TOSCA types have to be available in the catalog. These types are brought by the a component called **common**.
 
 Suppose that none of the necessary components, nor topology template are imported to the Alien4CLoud catalog.
-You have to generate CSARs for :
-
-- common and welcome components
-- welcome_basic topology
-
-
-::
+You have to generate CSARs for common and welcome components, and welcome_basic topology.::
 
   $ cd YOUR_SANDBOX/csar-public-library/org/ystia/common
   $ zip -r common-csar.zip *
@@ -176,7 +168,6 @@ Then you have to import the generated archives to the Alien4Cloud catalog by dra
 #. **common-csar.zip**
 #. **welcome-csar.zip**
 #. **welcome_basic-csar.zip**
-
 
 Finally, you can browse the archives list, but also the components and the topologies list, to check that the imported elements are presented:
 
@@ -353,10 +344,10 @@ Topologies for MySQL
 Recovery
 ********
 
-    This section describes how to recover manually Ystia components.
-    This will be useful, for example, after a reboot of VMs that host Ystia components.
+This section describes how to recover manually Ystia components.
+This will be useful, for example, after a reboot of VMs that host Ystia components.
 
-    The start/stop scripts of Ystia components are integrated as **services** into the Linux init system **systemd**.
+The start/stop scripts of Ystia components are integrated as **services** into the Linux init system **systemd**.
 
 Some Ystia components/services are automatically started at boot, while others are not.
 
@@ -487,8 +478,8 @@ For **elk-ha** topology:
 
 - Mount the **LinuxFileSystem** on the nodes of Elasticsearch cluster and Kafka cluster. For example::
 
-      $ sudo mount /dev/vdb1 /mountedStorageES
-      $ sudo mount /dev/vdb1 /mountedStorageKFK
+    $ sudo mount /dev/vdb1 /mountedStorageES
+    $ sudo mount /dev/vdb1 /mountedStorageKFK
 
 - Start services in the same order as for **elk-broker** topology except for Kafka cluster.
   Indeed, **zookeeper** services must be started first on all the nodes of the cluster,
@@ -541,7 +532,7 @@ http://alien4cloud.github.io/#/documentation/1.4.0/admin_guide/backup_restore.ht
 Ystia Orchestrator
 ==================
 
-**TO BE COMPLETED**
+**TODO: to be completed**
 
 
 Known issues
@@ -552,9 +543,9 @@ Elasticsearch: Limit of total fields in index may be exceeded
 
 Using the TwitterConnector on Logstash and storing those events in Elasticsearch may causevthe exceeding of the limit
 of total fields in index.
-In this case, this log appears in *elasticsearch* Logstash output logs:
+In this case, this log appears in *elasticsearch* Logstash output logs::
 
-      [WARN ][logstash.outputs.elasticsearch] Failed action. {:status=>400, :action=>[“index”, ...], :response=>{“index”=>{“_index”=>”logstash-2017.01.26”, ...,”reason”=>”Limit of total fields [1000] in index [logstash-2017.01.26] has been exceeded”}}}}
+  [WARN ][logstash.outputs.elasticsearch] Failed action. {:status=>400, :action=>[“index”, ...], :response=>{“index”=>{“_index”=>”logstash-2017.01.26”, ...,”reason”=>”Limit of total fields [1000] in index [logstash-2017.01.26] has been exceeded”}}}}
 
 
 **Workaround**
@@ -565,21 +556,21 @@ See Elasticsearch documentation for details:
 
 - https://www.elastic.co/guide/en/elasticsearch/reference/5.1/indices-templates.html
 
-You can update this limit after the index has been created as for example:
+You can update this limit after the index has been created as for example::
 
-      PUT my_index/_setting
-      {
-          "index.mapping.total_fields.limit": 2000
-      }
+    PUT my_index/_setting
+    {
+        "index.mapping.total_fields.limit": 2000
+    }
 
-or using index templates before the index creation as for example:
+or using index templates before the index creation as for example::
 
-      PUT _template/my_template
-      {
-          "template" : "logstash-*",
-          "order" : my_order,
-          "settings" : {"index.mapping.total_fields.limit": 2000 }
-      }
+    PUT _template/my_template
+    {
+        "template" : "logstash-*",
+        "order" : my_order
+        "settings" : {"index.mapping.total_fields.limit": 2000 }
+    }
 
 
 .. *********************************************************************************************************************
@@ -594,7 +585,6 @@ Alien4Cloud documentation
   https://alien4cloud.github.io/#/documentation/1.4.0/index.html
 
 Ystia Orchestrator documentation
-  https://TODO_TO_BE_COMPLETED
-
+  https://TODO_to_be_completed
 
 
