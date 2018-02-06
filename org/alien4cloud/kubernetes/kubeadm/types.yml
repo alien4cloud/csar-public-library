@@ -1,0 +1,118 @@
+tosca_definitions_version: alien_dsl_1_4_0
+
+metadata:
+  template_name: org.alien4cloud.kubernetes.kubeadm
+  template_version: 1.4.0-SNAPSHOT
+  template_author: alien4cloud
+
+description: Contains all types required to deploy a Kubernetes Cluster using kubeadm.
+
+imports:
+  - tosca-normative-types:1.0.0-ALIEN14
+
+node_types:
+
+  org.alien4cloud.kubernetes.kubeadm.nodes.DockerEngine:
+    derived_from: tosca.nodes.SoftwareComponent
+    description: >
+      The Docker Engine.
+    metadata:
+      icon: /images/icon.png
+    capabilities:
+      docker_host: org.alien4cloud.kubernetes.kubeadm.capabilities.DockerHost
+    requirements:
+      - host:
+          capability: tosca.capabilities.Container
+          node: tosca.nodes.Compute
+          relationship: tosca.relationships.HostedOn
+          occurrences: [1,1]
+          node_filter:
+            capabilities:
+              - tosca.capabilities.OperatingSystem:
+                  properties:
+                    - type: { equal: linux }
+                    - architecture: { equal: x86_64 }
+                    - distribution: { valid_values: [ centos ] }
+    interfaces:
+      Standard:
+        create: scripts/docker/create-docker.sh 
+        configure: scripts/docker/configure-docker.sh 
+        start: scripts/docker/start-docker.sh
+
+  org.alien4cloud.kubernetes.kubeadm.nodes.Kube:
+    abstract: true
+    derived_from: tosca.nodes.SoftwareComponent
+    metadata:
+      icon: images/hyperkube.png
+    properties:
+      component_version:
+        type: version
+        default: 1.2.1
+    requirements:
+      - host:
+          capability: org.alien4cloud.kubernetes.kubeadm.capabilities.DockerHost
+          node: org.alien4cloud.kubernetes.kubeadm.nodes.DockerEngine
+          relationship: org.alien4cloud.kubernetes.kubeadm.relationships.HostedOnDocker
+          occurrences: [1, 1]
+    interfaces:
+      Standard:
+        create: scripts/kubernetes/create-kubelet.sh
+
+  org.alien4cloud.kubernetes.kubeadm.nodes.KubeMaster:
+    description: >
+      Installs kubernetes master components.
+    derived_from: org.alien4cloud.kubernetes.kubeadm.nodes.Kube
+    metadata:
+      icon: images/kube_master.png
+    attributes:
+      kube_token:  { get_operation_output: [ SELF, Standard, start, KUBE_TOKEN ]}
+      kube_sha256: { get_operation_output: [ SELF, Standard, start, KUBE_SHA256 ]}
+      api_endpoint: { concat:  [  "https://",
+                                  get_attribute: [ HOST, public_ip_address ],
+                                  ":30000" ]}
+    capabilities:
+      - kube_master:
+          type: org.alien4cloud.kubernetes.kubeadm.capabilities.MasterCluster
+    interfaces:
+      Standard:
+        start:
+          implementation: scripts/kubernetes/start-master.sh
+
+  org.alien4cloud.kubernetes.kubeadm.nodes.KubeNode:
+    description: >
+      Installs the Hyperkube process and a proxy on the node host.
+    derived_from: org.alien4cloud.kubernetes.kubeadm.nodes.Kube
+    metadata:
+      icon: images/kube.png
+    requirements:
+      - join_master:
+          capability: org.alien4cloud.kubernetes.kubeadm.capabilities.MasterCluster
+          relationship: org.alien4cloud.kubernetes.kubeadm.relationships.JoinMaster
+          node: org.alien4cloud.kubernetes.kubeadm.nodes.KubeMaster
+          occurrences: [1, 1]
+
+capability_types:
+  org.alien4cloud.kubernetes.kubeadm.capabilities.DockerHost:
+    derived_from: tosca.capabilities.Root
+
+  org.alien4cloud.kubernetes.kubeadm.capabilities.MasterCluster:
+    derived_from: tosca.capabilities.Node
+
+relationship_types:
+
+  org.alien4cloud.kubernetes.kubeadm.relationships.HostedOnDocker:
+    derived_from: tosca.relationships.HostedOn
+    valid_target_types: [ org.alien4cloud.kubernetes.kubeadm.capabilities.DockerHost ]
+
+  org.alien4cloud.kubernetes.kubeadm.relationships.JoinMaster:
+    derived_from: tosca.relationships.ConnectsTo
+    valid_target_types: [ org.alien4cloud.kubernetes.kubeadm.capabilities.MasterCluster ]
+    interfaces:
+      configure:
+        post_configure_source:
+          implementation: scripts/kubernetes/join-master.sh
+          inputs:
+            MASTER_IP: { get_attribute: [TARGET, ip_address] }
+            KUBE_TOKEN: { get_attribute: [TARGET, kube_token] }
+            KUBE_SHA256: { get_attribute: [TARGET, kube_sha256] }
+
