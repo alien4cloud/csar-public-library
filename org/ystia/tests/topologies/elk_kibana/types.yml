@@ -1,4 +1,7 @@
+#
 # Add this first comment line to avoid this test topology will be imported in the A4C catalog
+#
+
 tosca_definitions_version: alien_dsl_1_4_0
 
 #
