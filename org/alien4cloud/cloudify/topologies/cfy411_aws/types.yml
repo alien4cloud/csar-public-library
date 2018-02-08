@@ -11,20 +11,20 @@ description: |
   Has been tested on a Centos ami-1f5dfe6c (t2.large).
 
 imports:
-  - org.alien4cloud.cloudify.hostpool.service:1.4.0
-  - org.alien4cloud.cloudify.hostpool.awsfeeder:1.4.0
-  - org.alien4cloud.cloudify.patches.pub:1.4.0
-  - org.alien4cloud.cloudify.manager.v4:1.4.0
-  - org.alien4cloud.cloudify.manager.pub:1.4.0
-  - org.alien4cloud.cloudify.patches.mgmtworker.tasks-py:1.4.0
+  - org.alien4cloud.cloudify.hostpool.service:2.0.0-SNAPSHOT
+  - org.alien4cloud.cloudify.hostpool.awsfeeder:2.0.0-SNAPSHOT
+  - org.alien4cloud.cloudify.patches.pub:2.0.0-SNAPSHOT
+  - org.alien4cloud.cloudify.manager.v4:2.0.0-SNAPSHOT
+  - org.alien4cloud.cloudify.manager.pub:2.0.0-SNAPSHOT
+  - org.alien4cloud.cloudify.patches.mgmtworker.tasks-py:2.0.0-SNAPSHOT
   - tosca-normative-types:1.0.0-ALIEN14
-  - org.alien4cloud.java.pub:1.4.0
-  - org.alien4cloud.elasticsearch.pub:1.4.0
-  - org.alien4cloud.cloudify.ansible:1.4.0
-  - org.alien4cloud.cloudify.hostpool.pub:1.4.0
-  - org.alien4cloud.postgresql.pub:1.4.0
-  - org.alien4cloud.rabbitmq.pub:1.4.0
-  - alien-base-types:1.4.0
+  - org.alien4cloud.java.pub:2.0.0-SNAPSHOT
+  - org.alien4cloud.elasticsearch.pub:2.0.0-SNAPSHOT
+  - org.alien4cloud.cloudify.ansible:2.0.0-SNAPSHOT
+  - org.alien4cloud.cloudify.hostpool.pub:2.0.0-SNAPSHOT
+  - org.alien4cloud.postgresql.pub:2.0.0-SNAPSHOT
+  - org.alien4cloud.rabbitmq.pub:2.0.0-SNAPSHOT
+  - alien-base-types:2.0.0-SNAPSHOT
 
 topology_template:
   inputs:
