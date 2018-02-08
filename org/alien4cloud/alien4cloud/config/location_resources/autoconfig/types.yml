@@ -2,13 +2,13 @@ tosca_definitions_version: alien_dsl_1_4_0
 
 metadata:
   template_name: org.alien4cloud.alien4cloud.config.location_resources.autoconfig
-  template_version: 1.4.0-SNAPSHOT
+  template_version: 1.4.0
   template_author: alien4cloud
 
 imports:
   - alien-base-types:1.4.0
-  - org.alien4cloud.alien4cloud.config.location:1.4.0-SNAPSHOT
-  - org.alien4cloud.cloudify.hostpool.pub:1.4.0-SNAPSHOT
+  - org.alien4cloud.alien4cloud.config.location:1.4.0
+  - org.alien4cloud.cloudify.hostpool.pub:1.4.0
   - tosca-normative-types:1.0.0-ALIEN14
 
 node_types:

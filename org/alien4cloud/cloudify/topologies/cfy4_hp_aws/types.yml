@@ -2,7 +2,7 @@ tosca_definitions_version: alien_dsl_1_4_0
 
 metadata:
   template_name: org.alien4cloud.cloudify.topologies.cfy4_hp_aws
-  template_version: 1.4.0-SNAPSHOT
+  template_version: 1.4.0
   template_author: alien4cloud
 
 description: >
@@ -13,25 +13,25 @@ description: >
   Has been tested on a Centos ami-4c4b003b (m4.large).
 
 imports:
-  - org.alien4cloud.cloudify.hostpool.service:1.4.0-SNAPSHOT
-  - org.alien4cloud.cloudify.hostpool.awsfeeder:1.4.0-SNAPSHOT
-  - org.alien4cloud.graphite.pub:1.4.0-SNAPSHOT
-  - org.alien4cloud.grafana.pub:1.4.0-SNAPSHOT
-  - org.alien4cloud.cloudify.manager.v4:1.4.0-SNAPSHOT
-  - org.alien4cloud.cloudify.manager.pub:1.4.0-SNAPSHOT
-  - org.alien4cloud.diamond.pub:1.4.0-SNAPSHOT
+  - org.alien4cloud.cloudify.hostpool.service:1.4.0
+  - org.alien4cloud.cloudify.hostpool.awsfeeder:1.4.0
+  - org.alien4cloud.graphite.pub:1.4.0
+  - org.alien4cloud.grafana.pub:1.4.0
+  - org.alien4cloud.cloudify.manager.v4:1.4.0
+  - org.alien4cloud.cloudify.manager.pub:1.4.0
+  - org.alien4cloud.diamond.pub:1.4.0
   - tosca-normative-types:1.0.0-ALIEN14
   - alien-base-types:1.4.0
-  - org.alien4cloud.java.pub:1.4.0-SNAPSHOT
-  - org.alien4cloud.diamond.collectors:1.4.0-SNAPSHOT
-  - org.alien4cloud.java.jmx.jolokia:1.4.0-SNAPSHOT
-  - org.alien4cloud.diamond.agent_linux:1.4.0-SNAPSHOT
-  - org.alien4cloud.elasticsearch.pub:1.4.0-SNAPSHOT
-  - org.alien4cloud.cloudify.ansible:1.4.0-SNAPSHOT
-  - org.alien4cloud.cloudify.hostpool.pub:1.4.0-SNAPSHOT
-  - org.alien4cloud.alien4cloud.pub:1.4.0-SNAPSHOT
-  - org.alien4cloud.postgresql.pub:1.4.0-SNAPSHOT
-  - org.alien4cloud.rabbitmq.pub:1.4.0-SNAPSHOT
+  - org.alien4cloud.java.pub:1.4.0
+  - org.alien4cloud.diamond.collectors:1.4.0
+  - org.alien4cloud.java.jmx.jolokia:1.4.0
+  - org.alien4cloud.diamond.agent_linux:1.4.0
+  - org.alien4cloud.elasticsearch.pub:1.4.0
+  - org.alien4cloud.cloudify.ansible:1.4.0
+  - org.alien4cloud.cloudify.hostpool.pub:1.4.0
+  - org.alien4cloud.alien4cloud.pub:1.4.0
+  - org.alien4cloud.postgresql.pub:1.4.0
+  - org.alien4cloud.rabbitmq.pub:1.4.0
 
 topology_template:
   description: >
