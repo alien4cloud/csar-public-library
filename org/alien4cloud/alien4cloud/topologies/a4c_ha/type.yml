@@ -2,7 +2,7 @@ tosca_definitions_version: alien_dsl_1_4_0
 
 metadata:
   template_name: org.alien4cloud.alien4cloud.topologies.a4c_ha
-  template_version: 1.4.0-SNAPSHOT
+  template_version: 1.4.0
   template_author: alien4cloud
 
 description: >
@@ -13,17 +13,17 @@ description: >
 
 
 imports:
-  - org.alien4cloud.java.jmx.jolokia:1.4.0-SNAPSHOT
-  - org.alien4cloud.samba.samba_sh:1.4.0-SNAPSHOT
-  - org.alien4cloud.alien4cloud.pub:1.4.0-SNAPSHOT
-  - org.alien4cloud.nginx.nginx_sh:1.4.0-SNAPSHOT
+  - org.alien4cloud.java.jmx.jolokia:1.4.0
+  - org.alien4cloud.samba.samba_sh:1.4.0
+  - org.alien4cloud.alien4cloud.pub:1.4.0
+  - org.alien4cloud.nginx.nginx_sh:1.4.0
   - tosca-normative-types:1.0.0-ALIEN14
-  - org.alien4cloud.elasticsearch.pub:1.4.0-SNAPSHOT
-  - org.alien4cloud.elasticsearch.ubuntu:1.4.0-SNAPSHOT
-  - org.alien4cloud.java.pub:1.4.0-SNAPSHOT
-  - org.alien4cloud.alien4cloud.webapp:1.4.0-SNAPSHOT
-  - org.alien4cloud.java.jdk.linux:1.4.0-SNAPSHOT
-  - org.alien4cloud.consul.consul_sh:1.4.0-SNAPSHOT
+  - org.alien4cloud.elasticsearch.pub:1.4.0
+  - org.alien4cloud.elasticsearch.ubuntu:1.4.0
+  - org.alien4cloud.java.pub:1.4.0
+  - org.alien4cloud.alien4cloud.webapp:1.4.0
+  - org.alien4cloud.java.jdk.linux:1.4.0
+  - org.alien4cloud.consul.consul_sh:1.4.0
 
 topology_template:
   inputs:

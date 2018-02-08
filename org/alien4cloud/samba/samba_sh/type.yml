@@ -2,13 +2,13 @@ tosca_definitions_version: alien_dsl_1_4_0
 
 metadata:
   template_name: org.alien4cloud.samba.samba_sh
-  template_version: 1.4.0-SNAPSHOT
+  template_version: 1.4.0
   template_author: alien4cloud
 
 imports:
   - tosca-normative-types:1.0.0-ALIEN14
-  - org.alien4cloud.samba.pub:1.4.0-SNAPSHOT
-  - org.alien4cloud.alien4cloud.webapp:1.4.0-SNAPSHOT
+  - org.alien4cloud.samba.pub:1.4.0
+  - org.alien4cloud.alien4cloud.webapp:1.4.0
 
 
 node_types:
