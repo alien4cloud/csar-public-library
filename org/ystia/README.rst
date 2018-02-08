@@ -531,12 +531,6 @@ For more information about Alien4Cloud Backup/Restore, refer to
 http://alien4cloud.github.io/#/documentation/1.4.0/admin_guide/backup_restore.html
 
 
-Ystia Orchestrator
-==================
-
-**TODO: to be completed**
-
-
 Known issues
 ============
 
