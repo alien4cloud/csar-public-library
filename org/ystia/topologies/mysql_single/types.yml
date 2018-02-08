@@ -8,13 +8,13 @@ tosca_definitions_version: alien_dsl_1_4_0
 
 metadata:
   template_name: org.ystia.topologies.mysql_single
-  template_version: 1.4.0
+  template_version: 2.0.0-SNAPSHOT
   template_author: Ystia
 
 imports:
   - tosca-normative-types:1.0.0-ALIEN14
-  - org.ystia.mysql.pub:1.4.0
-  - org.ystia.mysql.linux.bash:1.4.0
+  - org.ystia.mysql.pub:2.0.0-SNAPSHOT
+  - org.ystia.mysql.linux.bash:2.0.0-SNAPSHOT
 
 topology_template:
   description: A basic topology template for MySQL as a Single Server node

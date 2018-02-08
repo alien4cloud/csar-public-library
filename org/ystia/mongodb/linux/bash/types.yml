@@ -12,15 +12,15 @@ tosca_definitions_version: alien_dsl_1_4_0
 
 metadata:
   template_name: org.ystia.mongodb.linux.bash
-  template_version: 1.4.0
+  template_version: 2.0.0-SNAPSHOT
   template_author: Ystia
 
 description: MongoDB Cluster installation
 
 imports:
   - tosca-normative-types:1.0.0-ALIEN14
-  - org.ystia.common:1.4.0
-  - org.ystia.mongodb.pub:1.4.0
+  - org.ystia.common:2.0.0-SNAPSHOT
+  - org.ystia.mongodb.pub:2.0.0-SNAPSHOT
 
 node_types:
   org.ystia.mongodb.linux.bash.nodes.MongoRouter:

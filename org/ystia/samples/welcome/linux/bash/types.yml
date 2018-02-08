@@ -8,14 +8,14 @@ tosca_definitions_version: alien_dsl_1_4_0
 
 metadata:
   template_name: org.ystia.samples.welcome.linux.bash
-  template_version: 1.4.0
+  template_version: 2.0.0-SNAPSHOT
   template_author: Ystia
 
 description: Ystia Welcome Web server sample
 
 imports:
   - tosca-normative-types:1.0.0-ALIEN14
-  - org.ystia.common:1.4.0
+  - org.ystia.common:2.0.0-SNAPSHOT
 
 node_types:
   org.ystia.samples.welcome.linux.bash.nodes.Welcome:

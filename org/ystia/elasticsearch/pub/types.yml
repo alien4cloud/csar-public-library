@@ -8,14 +8,14 @@ tosca_definitions_version: alien_dsl_1_4_0
 
 metadata:
   template_name: org.ystia.elasticsearch.pub
-  template_version: 1.4.0
+  template_version: 2.0.0-SNAPSHOT
   template_author: Ystia
 
 description: Public interface types for Elasticsearch support.
 
 imports:
   - tosca-normative-types:1.0.0-ALIEN14
-  - org.ystia.common:1.4.0
+  - org.ystia.common:2.0.0-SNAPSHOT
 
 capability_types:
   org.ystia.elasticsearch.pub.capabilities.SearchEndpoint:
