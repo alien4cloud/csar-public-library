@@ -1,3 +1,4 @@
+# TODO: Add this first comment line to avoid this component (in progress) will be imported in the A4C catalog
 tosca_definitions_version: alien_dsl_1_4_0
 
 #
@@ -8,14 +9,14 @@ tosca_definitions_version: alien_dsl_1_4_0
 
 metadata:
   template_name: org.ystia.mysql.pub
-  template_version: 1.4.0-SNAPSHOT
+  template_version: 1.4.0
   template_author: Ystia
 
 description: Public interface types for MySql support.
 
 imports:
   - tosca-normative-types:1.0.0-ALIEN14
-  - org.ystia.common:1.4.0-SNAPSHOT
+  - org.ystia.common:1.4.0
 
 capability_types:
   org.ystia.mysql.pub.capabilities.Container.MySQLServer:

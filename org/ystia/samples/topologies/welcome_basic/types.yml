@@ -8,14 +8,14 @@ tosca_definitions_version: alien_dsl_1_4_0
 
 metadata:
   template_name: org.ystia.samples.topologies.welcome_basic
-  template_version: 1.4.0-SNAPSHOT
+  template_version: 1.4.0
   template_author: Ystia
 
 
 imports:
   - tosca-normative-types:1.0.0-ALIEN14
-  - org.ystia.common:1.4.0-SNAPSHOT
-  - org.ystia.samples.welcome.linux.bash:1.4.0-SNAPSHOT
+  - org.ystia.common:1.4.0
+  - org.ystia.samples.welcome.linux.bash:1.4.0
 
 topology_template:
   description: A basic topology template for the Welcome sample

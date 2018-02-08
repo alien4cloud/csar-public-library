@@ -8,19 +8,19 @@ tosca_definitions_version: alien_dsl_1_4_0
 
 metadata:
   template_name: org.ystia.logstash.linux.bash
-  template_version: 1.4.0-SNAPSHOT
+  template_version: 1.4.0
   template_author: Ystia
 
 description:
 
 imports:
   - tosca-normative-types:1.0.0-ALIEN14
-  - org.ystia.common:1.4.0-SNAPSHOT
-  - org.ystia.consul.pub:1.4.0-SNAPSHOT
-  - org.ystia.java.pub:1.4.0-SNAPSHOT
-  - org.ystia.kafka.pub:1.4.0-SNAPSHOT
-  - org.ystia.elasticsearch.pub:1.4.0-SNAPSHOT
-  - org.ystia.logstash.pub:1.4.0-SNAPSHOT
+  - org.ystia.common:1.4.0
+  - org.ystia.consul.pub:1.4.0
+  - org.ystia.java.pub:1.4.0
+  - org.ystia.kafka.pub:1.4.0
+  - org.ystia.elasticsearch.pub:1.4.0
+  - org.ystia.logstash.pub:1.4.0
 
 node_types:
   org.ystia.logstash.linux.bash.nodes.Logstash:

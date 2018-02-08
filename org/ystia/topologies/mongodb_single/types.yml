@@ -1,3 +1,4 @@
+# TODO: Add this first comment line to avoid this topology (in progress) will be imported in the A4C catalog
 tosca_definitions_version: alien_dsl_1_4_0
 
 #
@@ -8,12 +9,12 @@ tosca_definitions_version: alien_dsl_1_4_0
 
 metadata:
   template_name: org.ystia.topologies.mongodb_single
-  template_version: 1.4.0-SNAPSHOT
+  template_version: 1.4.0
   template_author: Ystia
 
 imports:
   - tosca-normative-types:1.0.0-ALIEN14
-  - org.ystia.mongodb.linux.bash:1.4.0-SNAPSHOT
+  - org.ystia.mongodb.linux.bash:1.4.0
 
 topology_template:
   description: A basic topology template for a MongoDB as a Single Server node

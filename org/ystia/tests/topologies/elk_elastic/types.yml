@@ -1,3 +1,4 @@
+# Add this first comment line to avoid this test topology will be imported in the A4C catalog
 tosca_definitions_version: alien_dsl_1_4_0
 
 #
@@ -8,19 +9,19 @@ tosca_definitions_version: alien_dsl_1_4_0
 
 metadata:
   template_name: org.ystia.tests.topologies.elk_elastic
-  template_version: 1.4.0-SNAPSHOT
+  template_version: 1.4.0
   template_author: Ystia
 
 
 imports:
   - tosca-normative-types:1.0.0-ALIEN14
-  - org.ystia.common:1.4.0-SNAPSHOT
-  - org.ystia.consul.pub:1.4.0-SNAPSHOT
-  - org.ystia.java.linux.bash:1.4.0-SNAPSHOT
-  - org.ystia.elasticsearch.pub:1.4.0-SNAPSHOT
-  - org.ystia.consul.linux.bash:1.4.0-SNAPSHOT
-  - org.ystia.java.pub:1.4.0-SNAPSHOT
-  - org.ystia.elasticsearch.linux.bash:1.4.0-SNAPSHOT
+  - org.ystia.common:1.4.0
+  - org.ystia.consul.pub:1.4.0
+  - org.ystia.java.linux.bash:1.4.0
+  - org.ystia.elasticsearch.pub:1.4.0
+  - org.ystia.consul.linux.bash:1.4.0
+  - org.ystia.java.pub:1.4.0
+  - org.ystia.elasticsearch.linux.bash:1.4.0
 
 topology_template:
   description: A basic topology template with Elasticsearch
