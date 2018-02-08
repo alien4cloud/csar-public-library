@@ -16,7 +16,6 @@ description: Extended Storage Ystia Component
 imports:
   - tosca-normative-types:1.0.0-ALIEN14
   - org.ystia.common:1.4.0
-  - org.ystia.xfs.pub:1.4.0
 
 node_types:
   org.ystia.xfs.linux.bash.nodes.XFS:
