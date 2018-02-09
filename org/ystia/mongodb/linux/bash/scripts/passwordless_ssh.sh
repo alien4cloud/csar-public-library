@@ -16,8 +16,8 @@ ensure_home_var_is_set
   # Setup password-less ssh for user root
   log info "Setup password-less ssh for user root"
   if [[ ! -e /root/.ssh/id_rsa ]]; then
-    log info "cp ${data}/id_rsa.txt /root/.ssh/id_rsa"
-    cp ${data}/id_rsa.txt /root/.ssh/id_rsa
+    log info "cp ${data}/id_rsa.pub /root/.ssh/id_rsa"
+    cp ${data}/id_rsa.pub /root/.ssh/id_rsa
     chown root:root /root/.ssh/id_rsa
     chmod 600 /root/.ssh/id_rsa
   fi
@@ -31,8 +31,8 @@ ensure_home_var_is_set
   current_user=$(whoami)
   log info "Setup password-less ssh for user ${current_user}"
   if [[ ! -e ${HOME}/.ssh/id_rsa ]]; then
-    log info "cp ${data}/id_rsa.txt ${HOME}/.ssh/id_rsa"
-    cp ${data}/id_rsa.txt ${HOME}/.ssh/id_rsa
+    log info "cp ${data}/id_rsa.pub ${HOME}/.ssh/id_rsa"
+    cp ${data}/id_rsa.pub ${HOME}/.ssh/id_rsa
     chown ${current_user}:${current_user} ${HOME}/.ssh/id_rsa
     chmod 600 ${HOME}/.ssh/id_rsa
   fi

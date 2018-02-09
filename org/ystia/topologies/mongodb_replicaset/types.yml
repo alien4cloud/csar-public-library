@@ -2,7 +2,7 @@
 # TODO: Add this first comment line to avoid this topology (in progress) will be imported in the A4C catalog
 #
 
-tosca_definitions_version: alien_dsl_1_4_0
+tosca_definitions_version: alien_dsl_2_0_0
 
 #
 # Ystia Forge
@@ -16,7 +16,7 @@ metadata:
   template_author: Ystia
 
 imports:
-  - tosca-normative-types:1.0.0-ALIEN14
+  - tosca-normative-types:1.0.0-ALIEN20
   - org.ystia.mongodb.pub:2.0.0-SNAPSHOT
   - org.ystia.mongodb.linux.bash:2.0.0-SNAPSHOT
 
@@ -74,8 +74,9 @@ topology_template:
             node: C_ReplicaMain
         - primary2secondary:
             node: MongoReplicaSlave1
-        - primary2secondary:
+        - primary2secondary_2:
             node: MongoReplicaSlave2
+            type_requirement: primary2secondary
 
     # VM for MongoDB Replica Slave 1
 

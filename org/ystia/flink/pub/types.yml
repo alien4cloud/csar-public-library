@@ -1,4 +1,4 @@
-tosca_definitions_version: alien_dsl_1_4_0
+tosca_definitions_version: alien_dsl_2_0_0
 
 #
 # Ystia Forge
@@ -14,7 +14,7 @@ metadata:
 description: Public interface types for Flink support.
 
 imports:
-  - tosca-normative-types:1.0.0-ALIEN14
+  - tosca-normative-types:1.0.0-ALIEN20
 
 capability_types:
   org.ystia.flink.pub.capabilities.JobManager:
