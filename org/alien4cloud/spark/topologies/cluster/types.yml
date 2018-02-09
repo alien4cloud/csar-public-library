@@ -1,0 +1,153 @@
+tosca_definitions_version: alien_dsl_2_0_0
+
+metadata:
+  template_name: org.alien4cloud.spark.topologies.cluster
+  template_version: 2.0.0-SNAPSHOT
+  template_author: alien4cloud
+
+description: ""
+
+imports:
+  - org.alien4cloud.spark.pub:2.0.0-SNAPSHOT
+  - org.alien4cloud.java.pub:2.0.0-SNAPSHOT
+  - org.alien4cloud.java.jdk.linux:2.0.0-SNAPSHOT
+  - tosca-normative-types:1.0.0-ALIEN20SM5
+  - org.alien4cloud.spark.linux_sh:2.0.0-SNAPSHOT
+
+topology_template:
+  node_templates:
+    SparkMaster:
+      type: org.alien4cloud.spark.linux_sh.nodes.SparkMaster
+      properties:
+        component_version: "2.2.1"
+        download_url: "http://mirror.ibcp.fr/pub/apache/spark/spark-2.2.1/spark-2.2.1-bin-hadoop2.7.tgz"
+        install_dir: "/opt/spark"
+      requirements:
+        - javaSoftwareHostedOnJdkOracleJdkJdk:
+            type_requirement: java
+            node: OracleJDKMaster
+            capability: org.alien4cloud.java.pub.capabilities.JDK
+            relationship: org.alien4cloud.java.pub.relationships.JavaSoftwareHostedOnJDK
+      capabilities:
+        spark_master:
+          properties:
+            port: 7077
+            protocol: spark
+            secure: false
+            network_name: PRIVATE
+            initiator: source
+        spark_ui:
+          properties:
+            port: 8080
+            protocol: tcp
+            secure: false
+            network_name: PRIVATE
+            initiator: source
+    SparkSlave:
+      type: org.alien4cloud.spark.linux_sh.nodes.SparkSlave
+      properties:
+        component_version: "2.2.1"
+        download_url: "http://mirror.ibcp.fr/pub/apache/spark/spark-2.2.1/spark-2.2.1-bin-hadoop2.7.tgz"
+        install_dir: "/opt/spark"
+      requirements:
+        - joinSparkClusterSparkMasterSpark_master:
+            type_requirement: spark_master
+            node: SparkMaster
+            capability: org.alien4cloud.spark.pub.capabilities.SparkMaster
+            relationship: org.alien4cloud.spark.linux_sh.relationships.JoinSparkCluster
+        - javaSoftwareHostedOnJdkOracleJdk2Jdk:
+            type_requirement: java
+            node: OracleJDKSlave
+            capability: org.alien4cloud.java.pub.capabilities.JDK
+            relationship: org.alien4cloud.java.pub.relationships.JavaSoftwareHostedOnJDK
+      capabilities:
+        spark_master:
+          properties:
+            port: 7077
+            protocol: spark
+            secure: false
+            network_name: PRIVATE
+            initiator: source
+    SparkMasterHost:
+      metadata:
+        a4c_edit_x: 410
+        a4c_edit_y: "-191"
+      type: tosca.nodes.Compute
+      capabilities:
+        scalable:
+          properties:
+            min_instances: 1
+            max_instances: 1
+            default_instances: 1
+        endpoint:
+          properties:
+            secure: true
+            protocol: tcp
+            network_name: PRIVATE
+            initiator: source
+    SparkSlaveHost:
+      metadata:
+        a4c_edit_x: 90
+        a4c_edit_y: "-189"
+      type: tosca.nodes.Compute
+      capabilities:
+        scalable:
+          properties:
+            min_instances: 1
+            max_instances: 4
+            default_instances: 2
+        endpoint:
+          properties:
+            secure: true
+            protocol: tcp
+            network_name: PRIVATE
+            initiator: source
+    SparkMasterSlave:
+      type: org.alien4cloud.spark.linux_sh.nodes.SparkSlave
+      properties:
+        component_version: "2.2.1"
+        download_url: "http://mirror.ibcp.fr/pub/apache/spark/spark-2.2.1/spark-2.2.1-bin-hadoop2.7.tgz"
+        install_dir: "/opt/spark"
+      requirements:
+        - joinSparkClusterSparkMasterSpark_master:
+            type_requirement: spark_master
+            node: SparkMaster
+            capability: org.alien4cloud.spark.pub.capabilities.SparkMaster
+            relationship: org.alien4cloud.spark.linux_sh.relationships.JoinSparkCluster
+        - javaSoftwareHostedOnJdkOracleJdkJdk:
+            type_requirement: java
+            node: OracleJDKMaster
+            capability: org.alien4cloud.java.pub.capabilities.JDK
+            relationship: org.alien4cloud.java.pub.relationships.JavaSoftwareHostedOnJDK
+      capabilities:
+        spark_master:
+          properties:
+            port: 7077
+            protocol: spark
+            secure: false
+            network_name: PRIVATE
+            initiator: source
+    OracleJDKMaster:
+      type: org.alien4cloud.java.jdk.linux.nodes.OracleJDK
+      properties:
+        java_url: "https://edelivery.oracle.com/otn-pub/java/jdk/8u131-b11/d54c1d3a095b4ff2b6607d096fa80163/jdk-8u131-linux-x64.tar.gz"
+        java_home: "/opt/java"
+        component_version: "1.8.0-131-b11"
+      requirements:
+        - hostedOnComputeHost:
+            type_requirement: host
+            node: SparkMasterHost
+            capability: tosca.capabilities.Container
+            relationship: tosca.relationships.HostedOn
+    OracleJDKSlave:
+      type: org.alien4cloud.java.jdk.linux.nodes.OracleJDK
+      properties:
+        java_url: "https://edelivery.oracle.com/otn-pub/java/jdk/8u131-b11/d54c1d3a095b4ff2b6607d096fa80163/jdk-8u131-linux-x64.tar.gz"
+        java_home: "/opt/java"
+        component_version: "1.8.0-131-b11"
+      requirements:
+        - hostedOnXdeSparkSlaveHost:
+            type_requirement: host
+            node: SparkSlaveHost
+            capability: tosca.capabilities.Container
+            relationship: tosca.relationships.HostedOn
