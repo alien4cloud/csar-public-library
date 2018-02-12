@@ -1,4 +1,4 @@
-tosca_definitions_version: alien_dsl_1_4_0
+tosca_definitions_version: alien_dsl_2_0_0
 
 metadata:
   template_name: org.alien4cloud.cloudify.hostpool.awsfeeder
@@ -9,7 +9,7 @@ metadata:
 # cd playbook && rm -f playbook.ansible && zip -r playbook.ansible * && cd .. && rm -f stuff.zip && zip -r stuff.zip *
 
 imports:
-  - tosca-normative-types:1.0.0-ALIEN14
+  - tosca-normative-types:1.0.0-ALIEN20
   - alien-base-types:2.0.0-SNAPSHOT
   - org.alien4cloud.cloudify.hostpool.pub:2.0.0-SNAPSHOT
 

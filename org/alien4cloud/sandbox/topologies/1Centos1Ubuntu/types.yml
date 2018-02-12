@@ -1,15 +1,15 @@
-tosca_definitions_version: alien_dsl_1_4_0
+tosca_definitions_version: alien_dsl_2_0_0
 
 metadata:
   template_name: org.alien4cloud.sandbox.topologies.1Centos1Ubuntu
   template_version: 2.0.0-SNAPSHOT
   template_author: alien4cloud
-tosca_definitions_version: alien_dsl_1_4_0
+tosca_definitions_version: alien_dsl_2_0_0
 
 description: "A medium centos and a nano ubuntu"
 
 imports:
-  - tosca-normative-types:1.0.0-ALIEN14
+  - tosca-normative-types:1.0.0-ALIEN20
 
 topology_template:
   description: "A medium centos and a nano ubuntu"

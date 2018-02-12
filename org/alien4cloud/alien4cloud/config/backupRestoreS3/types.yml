@@ -1,4 +1,4 @@
-tosca_definitions_version: alien_dsl_1_4_0
+tosca_definitions_version: alien_dsl_2_0_0
 
 metadata:
   template_name: org.alien4cloud.alien4cloud.config.BackupRestoreS3
@@ -8,7 +8,7 @@ metadata:
 imports:
   - org.alien4cloud.alien4cloud.pub:2.0.0-SNAPSHOT
   - org.alien4cloud.aws-cli.pub:2.0.0-SNAPSHOT
-  - tosca-normative-types:1.0.0-ALIEN14
+  - tosca-normative-types:1.0.0-ALIEN20
 
 relationship_types:
   org.alien4cloud.alien4cloud.config.backupRestoreS3.relationships.BackupRestoreS3DependsOnAwsCli:
@@ -92,7 +92,7 @@ node_types:
             REGION: { get_property: [SELF, region] }
             S3_URL: { get_property: [SELF, s3_url] }
             DATA_DIR: { get_property: [HOST, data_dir] }
-          implementation: scripts/restore.shtosca_definitions_version: alien_dsl_1_4_0
+          implementation: scripts/restore.shtosca_definitions_version: alien_dsl_2_0_0
 
 metadata:
   template_name: org.alien4cloud.alien4cloud.config.BackupRestoreS3
@@ -102,7 +102,7 @@ metadata:
 imports:
   - org.alien4cloud.alien4cloud.pub:2.0.0-SNAPSHOT
   - org.alien4cloud.aws-cli.pub:2.0.0-SNAPSHOT
-  - tosca-normative-types:1.0.0-ALIEN14
+  - tosca-normative-types:1.0.0-ALIEN20
 
 relationship_types:
   org.alien4cloud.alien4cloud.config.backupRestoreS3.relationships.BackupRestoreS3DependsOnAwsCli:

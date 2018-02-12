@@ -1,4 +1,4 @@
-tosca_definitions_version: alien_dsl_1_4_0
+tosca_definitions_version: alien_dsl_2_0_0
 
 metadata:
   template_name: org.alien4cloud.alien4cloud.topologies.load_tests_a4c
@@ -30,7 +30,7 @@ imports:
   - org.alien4cloud.apache.pub:2.0.0-SNAPSHOT
   - org.alien4cloud.alien4cloud.config.orchestrator.cfy:2.0.0-SNAPSHOT
   - org.alien4cloud.diamond.pub:2.0.0-SNAPSHOT
-  - tosca-normative-types:1.0.0-ALIEN14
+  - tosca-normative-types:1.0.0-ALIEN20
   - alien-base-types:2.0.0-SNAPSHOT
   - org.alien4cloud.diamond.collectors:2.0.0-SNAPSHOT
   - org.alien4cloud.java.jmx.jolokia:2.0.0-SNAPSHOT
