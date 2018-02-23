@@ -30,9 +30,9 @@ node_types:
       component_version:
         type: version
         description: The installed Elasticsearch version
-        default: 5.1.1
+        default: 6.2.2
         constraints:
-          - equal: 5.1.1
+          - valid_values: [5.1.1,6.2.2]
       repository:
         type: string
         description: >
@@ -49,7 +49,7 @@ node_types:
           - pattern: ^(http|https|ftp)://.+/.*$
       curator_repository_url:
         type: string
-        default: http://packages.elastic.co/curator/4/centos/7
+        default: https://packages.elastic.co/curator/5/centos/7
         description: >
           The yum repository to use to install the package elasticsearch-curator.
         required: false
@@ -57,7 +57,7 @@ node_types:
           - pattern: ^(http|https|ftp)://.+/.*$
       curator_repository_key_url:
         type: string
-        default: http://packages.elastic.co/GPG-KEY-elasticsearch
+        default: https://packages.elastic.co/GPG-KEY-elasticsearch
         description: >
           This property give the opportunity to specify an alternative
           URL to download public key used to install Elastic curator.
