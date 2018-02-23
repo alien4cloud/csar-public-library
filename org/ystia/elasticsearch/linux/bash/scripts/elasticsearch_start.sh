@@ -21,9 +21,9 @@ sleep 3
 # Configure shards and replicas
 TEMPLATE='http://localhost:9200/_template/template_all'
 CURL='/usr/bin/curl'
-OP='-XPUT'
+OP='-XPUT -H "Content-Type:application/json"'
 PAYLOAD="{\"template\" : \"*\", \"order\" : 0, \"settings\" : {\"number_of_shards\" : ${number_of_shards}, \"number_of_replicas\" : ${number_of_replicas} }}"
 log info "Command: $CURL $OP $TEMPLATE -d '${PAYLOAD}'"
-$CURL $OP $TEMPLATE -d "${PAYLOAD}" || error_exit "Failed executing Elasticsearch configuration with number_of_shards ${number_of_shards} and number_of_replicas ${number_of_replicas}" $?
+$CURL $OP $TEMPLATE -d '${PAYLOAD}' || error_exit "Failed executing Elasticsearch configuration with number_of_shards ${number_of_shards} and number_of_replicas ${number_of_replicas}" $?
 
 log end

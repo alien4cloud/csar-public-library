@@ -27,8 +27,15 @@ sudo yum -y install jq wget
 log debug "Elasticsearch installation from ${ES_DOWNLOAD_PATH}"
 wget ${ES_DOWNLOAD_PATH} -O ${HOME}/${ES_ZIP_NAME} || error_exit "ERROR: Failed to install Elasticsearch (download problem) !!!"
 tar xzf ${HOME}/${ES_ZIP_NAME} -C ${HOME} || error_exit "ERROR: Failed to install Elasticsearch (untar problem) !!!"
-wget ${ES_DOWNLOAD_PATH}.sha1 -O ${HOME}/${ES_ZIP_NAME}.sha1
-(cd ${HOME}; echo "$(cat ${ES_ZIP_NAME}.sha1) ${ES_ZIP_NAME}" | sha1sum -c) || error_exit "ERROR: Checksum validation failed for downloaded Elasticsearch binary"
+
+if [[ $(majorVersion ${ES_VERSION}) == 6 ]]
+then
+    wget ${ES_DOWNLOAD_PATH}.sha512 -O ${HOME}/${ES_ZIP_NAME}.sha512
+    (cd ${HOME}; sha512sum -c ${ES_ZIP_NAME}.sha512) || error_exit "ERROR: Checksum validation failed for downloaded Elasticsearch binary"
+else
+    wget ${ES_DOWNLOAD_PATH}.sha1 -O ${HOME}/${ES_ZIP_NAME}.sha1
+    (cd ${HOME}; echo "$(cat ${ES_ZIP_NAME}.sha1) ${ES_ZIP_NAME}" | sha1sum -c) || error_exit "ERROR: Checksum validation failed for downloaded Elasticsearch binary"
+fi
 
 # Curator installation
 log debug "Curator installation : ${CURATOR_REPO_URL} ${CURATOR_REPO_KEY_URL}"
