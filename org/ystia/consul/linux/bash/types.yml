@@ -72,6 +72,8 @@ node_types:
           inputs:
             INSTALL_DIR: { get_property: [SELF, installation_directory] }
           implementation: scripts/consul_stop.sh
+        delete:
+          implementation: scripts/consul_delete.sh
     artifacts:
       - scripts:
           type: tosca.artifacts.File
