@@ -87,6 +87,10 @@ node_types:
           implementation: scripts/kibana_start.sh
         stop:
           implementation: scripts/kibana_stop.sh
+        delete:
+          inputs:
+            KBN_VERSION: { get_property: [SELF, component_version] }
+          implementation: scripts/kibana_delete.sh
       custom:
         load_dashboard:
           inputs:
