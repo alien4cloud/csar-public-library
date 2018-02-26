@@ -34,9 +34,9 @@ node_types:
       component_version:
         type: version
         description: Version of the installed Kibana component
-        default: 5.1.1
+        default: 6.2.2
         constraints:
-          - equal: 5.1.1
+          - valid_values: [5.1.1,6.2.2]
       repository:
         type: string
         description: >
