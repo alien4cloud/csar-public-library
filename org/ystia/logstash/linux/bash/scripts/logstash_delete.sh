@@ -15,6 +15,6 @@ sudo rm -rf $HOME/logstash-${LS_VERSION}
 sudo rm -rf $HOME/logstash-${LS_VERSION}.tar.gz
 
 log info "Remove all flags to avoid error when reinstalling it on a node"
-sudo rm -rf ${HOME}/.ystia/.Logstash*
+sudo rm -rf ${HOME}/.ystia/*Logstash*
 
 log end
