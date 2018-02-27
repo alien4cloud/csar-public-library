@@ -16,5 +16,6 @@ sudo rm -rf ${HOME}/kibana-${KBN_VERSION}-linux-x86_64.tar.gz
 
 log info "Remove all flags to avoid error when reinstalling it on a node"
 sudo rm -rf ${HOME}/.ystia/.Kibana*
+sudo rm -rf ${HOME}/.ystia/kibana*
 
 log end
