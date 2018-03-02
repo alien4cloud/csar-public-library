@@ -22,7 +22,6 @@ log debug "$0: kibanaIp=${kibanaIp} and elasticsearchIp=${elasticsearchIp}"
 #
 ES_ZIP_NAME="elasticsearch-${ELASTICSEARCH_VERSION}.tar.gz"
 ES_DOWNLOAD_PATH="${ELASTICSEARCH_REPOSITORY}/${ES_ZIP_NAME}"
-ES_HASH_DOWNLOAD_PATH="${ES_DOWNLOAD_PATH}.sha1.txt"
 ES_INSTALL_DIR=${HOME}
 ES_UNZIP_FOLDER="elasticsearch-${ELASTICSEARCH_VERSION}"
 ES_HOME_DIR=${ES_INSTALL_DIR}/${ES_UNZIP_FOLDER}
