@@ -25,7 +25,7 @@ node_types:
     derived_from: org.ystia.consul.pub.nodes.ConsulUser
     description: Elasticsearch component for linux
     tags:
-      icon: /images/elasticsearch-icon.jpg
+      icon: /images/elasticsearch-icon.png
     properties:
       component_version:
         type: version
