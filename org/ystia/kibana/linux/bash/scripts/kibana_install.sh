@@ -58,6 +58,14 @@ sudo yum -y install unzip wget
 # Kibana installation
 log info "Installing Kibana on ${KIBANA_HOME_DIR}"
 ( cd ${INSTALL_DIR} && wget ${KBN_DOWNLOAD_PATH} ) || error_exit "ERROR: Failed to install Kibana (download problem) !!!"
+if [[ $(majorVersion ${KBN_VERSION}) == 6 ]]
+then
+    wget ${KBN_DOWNLOAD_PATH}.sha512 -O ${HOME}/${KBN_ZIP_NAME}.sha512
+    (cd ${HOME}; sha512sum -c ${KBN_ZIP_NAME}.sha512) || error_exit "ERROR: Checksum validation failed for downloaded Kibana binary"
+else
+    wget ${KBN_DOWNLOAD_PATH}.sha1 -O ${HOME}/${KBN_ZIP_NAME}.sha1
+    (cd ${HOME}; echo "$(cat ${KBN_ZIP_NAME}.sha1) ${KBN_ZIP_NAME}" | sha1sum -c) || error_exit "ERROR: Checksum validation failed for downloaded Kibana binary"
+fi
 tar -xzf ${INSTALL_DIR}/${KBN_ZIP_NAME} -C  ${INSTALL_DIR} || error_exit "ERROR: Failed to install Kibana (untar problem) !!!"
 
 #
