@@ -28,6 +28,10 @@ export JAVA_OPTS=${JAVA_OPTS_2}
 
 export LOGSTASH_CMD_OPTS="--log.level ${LOGSTASH_LOG_LEVEL}"
 if [[ "${AUTO_RELOAD}" == "true" ]]; then
+    if [[ $(majorVersion ${LS_VERSION}) == 6 ]]
+    then
+        RELOAD_INTERVAL=${RELOAD_INTERVAL}s
+    fi
     log info "Logstash configuration : auto_reload is set and reload_interval is ${RELOAD_INTERVAL}"
     export LOGSTASH_CMD_OPTS="--config.reload.automatic --config.reload.interval ${RELOAD_INTERVAL} ${LOGSTASH_CMD_OPTS}"
 fi
