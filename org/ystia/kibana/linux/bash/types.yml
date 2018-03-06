@@ -28,7 +28,7 @@ node_types:
     tags:
       icon: /images/kibana-icon.png
     attributes:
-      url: { concat: ["http://", get_attribute: [HOST, public_ip_address], ":5601/#/dashboard" ] }
+      url: { concat: ["http://", get_attribute: [HOST, public_ip_address], ":5601/app/kibana#/dashboards" ] }
       java_home: { get_operation_output: [ SELF, Configure, pre_configure_source, JAVA_HOME ] }
     properties:
       component_version:
