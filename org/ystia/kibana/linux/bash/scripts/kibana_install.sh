@@ -26,30 +26,21 @@ KIBANA_HOME_DIR=${INSTALL_DIR}/${KBN_UNZIP_FOLDER}
 echo "KIBANA_HOME=${KIBANA_HOME_DIR}" >${YSTIA_DIR}/kibana_env.sh
 
 KIBANA_PLUGIN_DIR=${KIBANA_HOME_DIR}/plugins
-#https://github.com/chenryn/kbn_sankey_vis/tree/kibana5
-SANKEY_VERSION="55aae65"
-SANKEY_ZIP_NAME="kbn_sankey_vis-${SANKEY_VERSION}.zip"
+
+if [[ $(majorVersion ${KBN_VERSION}) == 6 ]]
+then
+    NETWORK_VERSION="v6_2017_12_14"
+    HEALTH_METRIC_VERSION="6.2.2"
+    SWIMLANE_VERSION="6.2.2"
+else
+    NETWORK_VERSION="v56_2017_10_27_patched"
+fi
 #https://github.com/dlumbrer/kbn_network
-NETWORK_VERSION="3bfc88d"
-NETWORK_ZIP_NAME="kbn_network-${NETWORK_VERSION}.zip"
-#https://github.com/snuids/heatmap
-HEATMAP_VERSION="f9e4961"
-HEATMAP_ZIP_NAME="kbn_heatmap-${HEATMAP_VERSION}.zip"
-#https://github.com/raystorm-place/kibana-slider-plugin/pull/12
-SLIDER_VERSION="ef68bc7"
-SLIDER_ZIP_NAME="kbn_slider-${SLIDER_VERSION}.zip"
-#https://github.com/mstoyano/kbn_c3js_vis
-C3_CHARTS_VERSION="62194ef"
-C3_CHARTS_ZIP_NAME="kbn_c3_charts-${C3_CHARTS_VERSION}.zip"
+NETWORK_ZIP_NAME="kbn_network_vis-${NETWORK_VERSION}.zip"
 #https://github.com/clamarque/Kibana_health_metric_vis
-HEALTH_METRIC_VERSION="f95effe"
-HEALTH_METRIC_ZIP_NAME="kbn_health_metric-${HEALTH_METRIC_VERSION}.zip"
-#https://github.com/fermiumlabs/mathlion/releases/tag/v0.2.3
-MATHLION_VERSION="0.2.3"
-MATHLION_ZIP_NAME="kbn_mathlion-${MATHLION_VERSION}.zip"
+HEALTH_METRIC_ZIP_NAME="kbn_health_metric_vis-${HEALTH_METRIC_VERSION}.zip"
 #https://github.com/prelert/kibana-swimlane-vis
-SWIMLANE_VERSION="020bf27"
-SWIMLANE_ZIP_NAME="kbn_swimlane-${SWIMLANE_VERSION}.zip"
+SWIMLANE_ZIP_NAME="kbn_swimlane_vis-${SWIMLANE_VERSION}.zip"
 
 
 #Install dependencies
@@ -68,6 +59,7 @@ else
 fi
 tar -xzf ${INSTALL_DIR}/${KBN_ZIP_NAME} -C  ${INSTALL_DIR} || error_exit "ERROR: Failed to install Kibana (untar problem) !!!"
 
+
 #
 # Kibana plugins installation
 #
@@ -81,29 +73,16 @@ function install_plugin {
     sudo unzip ${KIBANA_PLUGIN_DIR}/${2} -d ${KIBANA_PLUGIN_DIR}
 }
 
-# Sankey plugin installation
-install_plugin "Sankey" ${SANKEY_ZIP_NAME}
-
 # Network plugin installation
 install_plugin "Network" ${NETWORK_ZIP_NAME}
+if [[ $(majorVersion ${KBN_VERSION}) == 6 ]]
+then
+    # Health Metric plugin installation
+    install_plugin "Health_Metric" ${HEALTH_METRIC_ZIP_NAME}
+    # Swimlane plugin installation
+    install_plugin "SwimLane" ${SWIMLANE_ZIP_NAME}
+fi
 
-# Heatmap plugin installation
-install_plugin "Heatmap" ${HEATMAP_ZIP_NAME}
-
-# Slider plugin installation
-install_plugin "Slider" ${SLIDER_ZIP_NAME}
-
-# C3 Charts plugin installation
-install_plugin "C3_Charts" ${C3_CHARTS_ZIP_NAME}
-
-# Health Metric plugin installation
-install_plugin "Health_Metric" ${HEALTH_METRIC_ZIP_NAME}
-
-# Mathlion plugin installation
-install_plugin "Mathlion" ${MATHLION_ZIP_NAME}
-
-# Swimlane plugin installation
-install_plugin "SwimLane" ${SWIMLANE_ZIP_NAME}
 
 # Installation end
 setServiceInstalled
