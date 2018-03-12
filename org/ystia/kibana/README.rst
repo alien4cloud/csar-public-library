@@ -16,16 +16,16 @@ It is a part of the **Elastic Stack**, which includes **Elasticsearch**, **Logst
 
 A complete documentation is available at https://www.elastic.co/guide/en/kibana/5.1/index.html.
 
-In addition of default visualisations provided by Kibana , we support natively some plugins like:
+In addition of default visualisations provided by Kibana , we support natively the plugin :
 
-- **Sankey**: those charts are ideal for displaying the material, energy and cost flows.
-- **Heatmap**: this is a graphical representation of data where the individual values contained in a matrix are represented as colors.
-- **Slider**: useful for filtering data by sliding one or more data fields values.
 - **Network**: displays a network node that link two fields that have been selected.
+
+for Kibana versions 5 and 6, and :
+
 - **Health Color Metric**: allows to change color/health of the visualization depending of a metric aggregation.
-- **C3 charts**:  allows to represent on the same chart  up to 5 different metrics.
-- **SwimLane**: displays the behavior of a metric value over time across a field using lanes.
-- **Mathlion**: a Kibana extension that enables equation parsing and advanced math under Timelion.
+- **Health Color Metric**: allows to change color/health of the visualization depending of a metric aggregation.
+
+for Kibana version 6.
 
 Kibana Interface
 ^^^^^^^^^^^^^^^^
@@ -161,5 +161,11 @@ If you have already deployed the topology, you may test a JSON dashboard file by
 Kibana Dashboards Format
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
-A Kibana dashboard JSON file may be obtained by an **Export Everything** operation available in the **Saved Objects** tab
-of the **Management** menu of Kibana. The main object types to keep in the dashboard JSON file are *dashboard*, *visualization* and *search*.
+A Kibana dashboard JSON file may be obtained by using the *export API* for Kibana dashboards.
+There is two API endpoints at */api/kibana/dashboards/export* and */api/kibana/dashboards/import*.
+
+You can POST to the *export* end point an array of dashboard IDs.
+The response will contain ALL (searches, index patterns, visualizations, etc) the objects needed for that dashboard in an object with a version.
+
+To import a dashboard (an all of it's supporting objects) the Ystia Kibana component POST the same object returned from the export endpoint to the import endpoint.
+The import endpoint will check the version and try and upgrade the objects if they are from a previous version; and import them into the *.kibana* index; skipping existing objects.
