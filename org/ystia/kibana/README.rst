@@ -23,7 +23,7 @@ In addition of default visualisations provided by Kibana , we support natively t
 for Kibana versions 5 and 6, and :
 
 - **Health Color Metric**: allows to change color/health of the visualization depending of a metric aggregation.
-- **Health Color Metric**: allows to change color/health of the visualization depending of a metric aggregation.
+- **SwimLane**: displays the behavior of a metric value over time across a field using lanes.
 
 for Kibana version 6.
 
@@ -162,7 +162,8 @@ Kibana Dashboards Format
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
 A Kibana dashboard JSON file may be obtained by using the *export API* for Kibana dashboards.
-There is two API endpoints at */api/kibana/dashboards/export* and */api/kibana/dashboards/import*.
+
+There is two API endpoints at **/api/kibana/dashboards/export** and **/api/kibana/dashboards/import**.
 
 You can POST to the *export* end point an array of dashboard IDs.
 The response will contain ALL (searches, index patterns, visualizations, etc) the objects needed for that dashboard in an object with a version.
