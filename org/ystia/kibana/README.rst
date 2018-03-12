@@ -161,9 +161,9 @@ If you have already deployed the topology, you may test a JSON dashboard file by
 Kibana Dashboards Format
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
-A Kibana dashboard JSON file may be obtained by using the *export API* for Kibana dashboards.
-
 There is two API endpoints at **/api/kibana/dashboards/export** and **/api/kibana/dashboards/import**.
+
+A Kibana dashboard JSON file may be obtained by using the *export API* for Kibana dashboards.
 
 You can POST to the *export* end point an array of dashboard IDs.
 The response will contain ALL (searches, index patterns, visualizations, etc) the objects needed for that dashboard in an object with a version.
