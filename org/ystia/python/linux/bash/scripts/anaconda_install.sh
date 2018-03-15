@@ -30,7 +30,7 @@ fi
 
 
 INSTALL_DIR=$HOME/anaconda2
-ANACONDA_INSTALLER_NAME="Anaconda2-5.0.1-Linux-x86_64.sh"
+ANACONDA_INSTALLER_NAME="Anaconda2-5.1.0-Linux-x86_64.sh"
 
 
 # Install bzip2 for anaconda and wget
@@ -71,7 +71,7 @@ if [[ -n "${REPOSITORY}" ]] && [[ "${REPOSITORY}" != "DEFAULT" ]] && [[ "${REPOS
     if [[ "${DATAVIZ}" == "true" ]]
     then
         sudo yum install -y python-qt4
-        for PACKAGE in seaborn-0.8.1-py27_0.tar.bz2 plotly-2.2.2-py27_0.tar.bz2
+        for PACKAGE in seaborn-0.8.1-py27_0.tar.bz2 plotly-2.4.1-py27_0.tar.bz2
         do
             install_pkg_in_mode_off ${REPOSITORY} ${PACKAGE}
         done
@@ -80,7 +80,7 @@ if [[ -n "${REPOSITORY}" ]] && [[ "${REPOSITORY}" != "DEFAULT" ]] && [[ "${REPOS
 
     if [[ "${DATAFORMAT}" == "true" ]]
     then
-        for PACKAGE in csvkit-1.0.2-py27_0.tar.bz2 configparser-3.5.0b2-py27_0.tar.bz2
+        for PACKAGE in csvkit-1.0.3-py27_0.tar.bz2 configparser-3.5.0b2-py27_0.tar.bz2
         do
             install_pkg_in_mode_off ${REPOSITORY} ${PACKAGE}
         done
