@@ -19,7 +19,7 @@ fi
 install_dir=${HOME}/${NODE}
 config_file=${install_dir}/heartbeat.yml
 
-sed -i -e "s/schedule:.*$/schedule: '@every ${SCHEDULE}s'/g" ${config_file}
+sudo sed -i -e "s/schedule: '@every.*$/schedule: '@every ${SCHEDULE}s'/g" ${config_file}
 
 setServiceConfigured
 log end
