@@ -19,8 +19,8 @@ fi
 install_dir=${HOME}/${NODE}
 config_file=${install_dir}/filebeat.yml
 
-if [[ "$(grep -c "#FILES_PLACEHOLDER#" ${config_file})" != "0" ]]; then
-    sed -i -e '/#FILES_PLACEHOLDER#/ a \
+if [[ "$(sudo grep -c "#FILES_PLACEHOLDER#" ${config_file})" != "0" ]]; then
+    sudo sed -i -e '/#FILES_PLACEHOLDER#/ a \
         - '"$(echo "${FILES}"| sed -e 's/,/\\\n        - /')" ${config_file}
 fi
 

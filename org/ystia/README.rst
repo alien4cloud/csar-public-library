@@ -205,9 +205,15 @@ ELK components
 +-------------------+---------------------------+-----------------------+
 | **Kibana**        | *org/ystia/kibana*        | versions 5.6.8, 6.2.2 |
 +-------------------+---------------------------+-----------------------+
-| **Beats**         | *org/ystia/beats*         | version 5.1.1         |
+| **Beats**         | *org/ystia/beats*         | versions 5.6.8, 6.2.2 |
 +-------------------+---------------------------+-----------------------+
 
+****
+
+**Note**:
+  In a topology, choose the same version for all these ELK components.
+
+****
 
 Geolocation components
 ======================

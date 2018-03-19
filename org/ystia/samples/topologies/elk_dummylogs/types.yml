@@ -32,6 +32,12 @@ topology_template:
   description: A topology template to connect the Ystia DummyLogs sample to the ELK stack
 
   inputs:
+    bt_repository:
+      type: string
+      required: false
+      default: "https://www.elastic.co/downloads/past-releases"
+      constraints:
+        - pattern: ^(http|https|ftp)://.+/.*$
     es_repository:
       type: string
       required: false
@@ -217,6 +223,7 @@ topology_template:
     FileBeat:
       type: org.ystia.beats.linux.bash.nodes.FileBeat
       properties:
+        repository: { get_input: bt_repository }
         files: { get_input: dl_log_path }
       requirements:
         - host:

@@ -26,8 +26,8 @@ config_file=${install_dir}/*beat.yml
 #uncomment logstash output
 sudo sed -i "s/#output.logstash/output.logstash/g" ${config_file}
 
-if [[ "$(grep -c "#LOGSTASH_OUTPUT_PLACEHOLDER#" ${config_file})" != "0" ]]; then
-    sed -i -e '/#LOGSTASH_OUTPUT_PLACEHOLDER#/ a \
+if [[ "$(sudo grep -c "#LOGSTASH_OUTPUT_PLACEHOLDER#" ${config_file})" != "0" ]]; then
+    sudo sed -i -e '/#LOGSTASH_OUTPUT_PLACEHOLDER#/ a \
     hosts: ["'"$(get_multi_instances_attribute "TARGET_IP_ADDRESS" "TARGET" | sed -e ':a;N;$!ba;s/\n/:5044","/g')"':5044"]\
     loadbalance: true' ${config_file}
 fi

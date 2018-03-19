@@ -150,7 +150,7 @@ node_types:
           file: scripts
           type: tosca.artifacts.File
       - dashboards_zip:
-          file: dashboards/import_beats-dashboards-5.1.1.zip
+          file: dashboards/beats_dashboards.zip
           type: tosca.artifacts.File
 
 relationship_types:
