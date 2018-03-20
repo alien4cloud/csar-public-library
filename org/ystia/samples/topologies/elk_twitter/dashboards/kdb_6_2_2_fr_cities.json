@@ -59,6 +59,22 @@
       }
     },
     {
+      "id": "739b3ba0-2c27-11e8-8730-1f101ce8789f",
+      "type": "visualization",
+      "updated_at": "2018-03-20T10:28:09.386Z",
+      "version": 2,
+      "attributes": {
+        "title": "Languages",
+        "visState": "{\"aggs\":[{\"enabled\":true,\"id\":\"1\",\"params\":{},\"schema\":\"metric\",\"type\":\"count\"},{\"enabled\":true,\"id\":\"2\",\"params\":{\"filters\":[{\"input\":{\"query\":\"lang:\\\"de\\\"\"},\"label\":\"de\"},{\"input\":{\"query\":\"lang:\\\"en\\\"\"},\"label\":\"en\"},{\"input\":{\"query\":\"lang:\\\"es\\\"\"},\"label\":\"es\"},{\"input\":{\"query\":\"lang:\\\"it\\\"\"},\"label\":\"it\"},{\"input\":{\"query\":\"lang:\\\"fr\\\"\"},\"label\":\"fr\"}]},\"schema\":\"segment\",\"type\":\"filters\"}],\"params\":{\"addLegend\":true,\"addTimeMarker\":false,\"addTooltip\":true,\"categoryAxes\":[{\"id\":\"CategoryAxis-1\",\"labels\":{\"rotate\":0,\"show\":true,\"truncate\":100},\"position\":\"bottom\",\"scale\":{\"type\":\"linear\"},\"show\":true,\"style\":{},\"title\":{},\"type\":\"category\"}],\"grid\":{\"categoryLines\":false,\"style\":{\"color\":\"#eee\"},\"valueAxis\":\"ValueAxis-1\"},\"legendPosition\":\"right\",\"radiusRatio\":51,\"seriesParams\":[{\"data\":{\"id\":\"1\",\"label\":\"Count\"},\"drawLinesBetweenPoints\":true,\"mode\":\"stacked\",\"show\":\"true\",\"showCircles\":true,\"type\":\"histogram\",\"valueAxis\":\"ValueAxis-1\"}],\"times\":[],\"type\":\"histogram\",\"valueAxes\":[{\"id\":\"ValueAxis-1\",\"labels\":{\"filter\":false,\"rotate\":0,\"show\":true,\"truncate\":100},\"name\":\"LeftAxis-1\",\"position\":\"left\",\"scale\":{\"mode\":\"normal\",\"type\":\"linear\"},\"show\":true,\"style\":{},\"title\":{\"text\":\"Count\"},\"type\":\"value\"}]},\"title\":\"Languages\",\"type\":\"histogram\"}",
+        "uiStateJSON": "{\"vis\":{\"colors\":{\"Count\":\"#64B0C8\"},\"legendOpen\":false}}",
+        "description": "",
+        "version": 1,
+        "kibanaSavedObjectMeta": {
+          "searchSourceJSON": "{\"index\":\"88fc6ce0-2b81-11e8-8730-1f101ce8789f\",\"filter\":[],\"query\":{\"language\":\"lucene\",\"query\":\"\"}}"
+        }
+      }
+    },
+    {
       "id": "88fc6ce0-2b81-11e8-8730-1f101ce8789f",
       "type": "index-pattern",
       "updated_at": "2018-03-19T14:29:18.352Z",
@@ -72,18 +88,18 @@
     {
       "id": "754d2a40-2b8b-11e8-8730-1f101ce8789f",
       "type": "dashboard",
-      "updated_at": "2018-03-19T15:37:40.324Z",
-      "version": 1,
+      "updated_at": "2018-03-20T10:28:56.140Z",
+      "version": 3,
       "attributes": {
         "title": "FR cities",
         "hits": 0,
         "description": "",
-        "panelsJSON": "[{\"panelIndex\":\"1\",\"gridData\":{\"x\":0,\"y\":0,\"w\":12,\"h\":4,\"i\":\"1\"},\"version\":\"6.2.2\",\"type\":\"visualization\",\"id\":\"4ae0a7e0-2b82-11e8-8730-1f101ce8789f\"},{\"panelIndex\":\"2\",\"gridData\":{\"x\":0,\"y\":4,\"w\":5,\"h\":2,\"i\":\"2\"},\"version\":\"6.2.2\",\"type\":\"visualization\",\"id\":\"12f418d0-2b82-11e8-8730-1f101ce8789f\"},{\"panelIndex\":\"3\",\"gridData\":{\"x\":0,\"y\":6,\"w\":12,\"h\":4,\"i\":\"3\"},\"version\":\"6.2.2\",\"type\":\"search\",\"id\":\"fdaf4da0-2b81-11e8-8730-1f101ce8789f\"}]",
-        "optionsJSON": "{\"darkTheme\":false,\"useMargins\":true,\"hidePanelTitles\":false}",
+        "panelsJSON": "[{\"gridData\":{\"h\":4,\"i\":\"1\",\"w\":12,\"x\":0,\"y\":0},\"id\":\"4ae0a7e0-2b82-11e8-8730-1f101ce8789f\",\"panelIndex\":\"1\",\"type\":\"visualization\",\"version\":\"6.2.2\"},{\"gridData\":{\"h\":4,\"i\":\"2\",\"w\":5,\"x\":0,\"y\":4},\"id\":\"12f418d0-2b82-11e8-8730-1f101ce8789f\",\"panelIndex\":\"2\",\"type\":\"visualization\",\"version\":\"6.2.2\"},{\"gridData\":{\"h\":4,\"i\":\"3\",\"w\":12,\"x\":0,\"y\":8},\"id\":\"fdaf4da0-2b81-11e8-8730-1f101ce8789f\",\"panelIndex\":\"3\",\"type\":\"search\",\"version\":\"6.2.2\"},{\"gridData\":{\"h\":4,\"i\":\"4\",\"w\":7,\"x\":5,\"y\":4},\"id\":\"739b3ba0-2c27-11e8-8730-1f101ce8789f\",\"panelIndex\":\"4\",\"type\":\"visualization\",\"version\":\"6.2.2\"}]",
+        "optionsJSON": "{\"darkTheme\":false,\"hidePanelTitles\":false,\"useMargins\":true}",
         "version": 1,
         "timeRestore": false,
         "kibanaSavedObjectMeta": {
-          "searchSourceJSON": "{\"query\":{\"query\":\"\",\"language\":\"lucene\"},\"filter\":[],\"highlightAll\":true,\"version\":true}"
+          "searchSourceJSON": "{\"query\":{\"language\":\"lucene\",\"query\":\"\"},\"filter\":[],\"highlightAll\":true,\"version\":true}"
         }
       }
     }
