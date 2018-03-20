@@ -39,6 +39,7 @@ then
 
     ./import_dashboards -dir packetbeat/
     ./import_dashboards -dir metricbeat/
+    ./import_dashboards -dir heartbeat/
 
     log info "Beats dashboards loaded."
 else
