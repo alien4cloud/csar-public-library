@@ -20,7 +20,7 @@ install_dir=${HOME}/${NODE}
 config_file=${install_dir}/packetbeat.yml
 
 if [[ -n "${DEVICE}" ]]; then
-    sed -i -e "s/device:.*$/device: ${DEVICE}/g" ${config_file}
+    sudo sed -i -e "s/device:.*$/device: ${DEVICE}/g" ${config_file}
 fi
 
 setServiceConfigured

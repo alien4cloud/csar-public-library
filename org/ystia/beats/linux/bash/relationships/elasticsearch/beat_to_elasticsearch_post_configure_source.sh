@@ -6,7 +6,6 @@
 #
 
 
-
 source ${utils_scripts}/utils.sh
 
 log begin
@@ -34,17 +33,16 @@ if host elasticsearch.service.ystia > /dev/null 2>&1 ; then
     elastic_host="elasticsearch.service.ystia"
 fi
 
-beatname=${template_file##*/}
-beatname=${beatname%%.*}
-
 if [[ "$(sudo grep -c "#ELASTIC_SEARCH_OUTPUT_PLACEHOLDER#" ${config_file})" != "0" ]]; then
-
+    beatname=${template_file##*/}
+    beatname=${beatname%%.*}
     es_output='  \
     # Array of hosts to connect to.\
     # Scheme and port can be left out and will be set to the default (http and 9200)\
     hosts: ["'"${elastic_host}"'"]'
-    if [[ -f ${template_file} ]] ; then
-        es_output="${es_output}"'\
+    if [[ -f ${template_file} && $(majorVersion ${BT_VERSION}) == 5 ]] ; then
+        # By default, Beat version 6, automatically loads the recommended template file, fields.yml, if the Elasticsearch output is enabled.
+         es_output="${es_output}"'\
     template:\
       name: "'"${beatname}"'"\
       path: "'"${template_file}"'"\
@@ -54,8 +52,7 @@ if [[ "$(sudo grep -c "#ELASTIC_SEARCH_OUTPUT_PLACEHOLDER#" ${config_file})" != 
 '"${es_output}" ${config_file}
 fi
 
-# load template directly
-#curl -XPUT "http://${elastic_host}:9200/_template/${beatname}" -d@${template_file}
+
 
 touch ${YSTIA_DIR}/.${SOURCE_NODE}-postconfigureElasticsearchFlag
 log end

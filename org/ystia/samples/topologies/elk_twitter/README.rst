@@ -48,6 +48,9 @@ A Log Analysis application can be created via the Alien4Cloud GUI using the **el
 Complete configuration
 ----------------------
 
-- Create a **Kibana Dashboard** to present the specific data items corresponding to the application needs. You can find in the dashboards repository of this topology two Kibana dashboard samples : "fr_elections_2017.json" and "us_elections_2017.json"
+- Create a **Kibana Dashboard** to present the specific data items corresponding to the application needs.
+  You can find in the dashboards repository of this topology the Kibana dashboard twitter sample : "kdb_fr_cities.json"
 
-- Configure the Twitter connector by setting values for properties consumer_key, consumer_secret, oauth_token, oauth_token_secret, use_proxy, proxy_address, proxy_port (sse README file in the Logstash component's source code)
+- Configure the Twitter connector by setting values for properties *consumer_key*, *consumer_secret*, *oauth_token*, *oauth_token_secret*,
+  *use_proxy*, *proxy_address*, *proxy_port* (sse README file in the Logstash component's source code).
+

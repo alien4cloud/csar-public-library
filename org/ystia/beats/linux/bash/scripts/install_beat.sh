@@ -16,21 +16,40 @@ if isServiceInstalled; then
     exit 0
 fi
 
+
+if [[ $(majorVersion ${BT_VERSION}) == 6 ]]
+then
+    BEAT_CONFIG=${beat_v6_config}
+else
+    BEAT_CONFIG=${beat_v5_config}
+fi
+SERVICE_NAME=$(basename -s .yml ${BEAT_CONFIG})
+log info "SERVICE_NAME=${SERVICE_NAME} , BEAT_CONFIG=${BEAT_CONFIG}"
+BT_ZIP_NAME="${SERVICE_NAME}-${BT_VERSION}-linux-x86_64.tar.gz"
+BT_DOWNLOAD_PATH="${REPOSITORY}/${BT_ZIP_NAME}"
+
+# Install dependencies
+sudo yum -y install wget
+
+# Beat installation
 tmpdir=$(mktemp -d)
 install_dir=${HOME}/${NODE}
 mkdir -p ${install_dir}
 
-tar xzf ${beat_bin} -C ${tmpdir}
+wget ${BT_DOWNLOAD_PATH} -O ${HOME}/${BT_ZIP_NAME} || error_exit "ERROR: Failed to install ${SERVICE_NAME} (download problem) !!!"
+tar xzf ${HOME}/${BT_ZIP_NAME} -C ${tmpdir}
 
-find ${tmpdir} -type f -exec mv -f {} ${install_dir} \;
+mv ${tmpdir}/*/* ${install_dir}
 
 rm -fr ${tmpdir}
 
-cp ${beat_config} ${install_dir}
+cp ${BEAT_CONFIG} ${install_dir}
+
+# Config files must be owned by root !
+sudo chgrp -R root ${install_dir}/*
+sudo chown -R root ${install_dir}/*
 
 # Set environment variable used for systemd
-SERVICE_NAME=$(basename -s .yml ${beat_config})
-log info "SERVICE_NAME=${SERVICE_NAME}"
 DEBUG_ARGS=""
 if [[ "${DEBUG_LOGS}" == "true" ]]; then
     DEBUG_ARGS="-e -d '*'"

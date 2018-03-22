@@ -32,6 +32,24 @@ topology_template:
   description: A topology template for Beats components with the Ystia DummyLogs sample connected to the ELK stack
 
   inputs:
+    fbt_repository:
+      type: string
+      required: false
+      default: "https://artifacts.elastic.co/downloads/beats/filebeat"
+      constraints:
+        - pattern: ^(http|https|ftp)://.+/.*$
+    mbt_repository:
+      type: string
+      required: false
+      default: "https://artifacts.elastic.co/downloads/beats/metricbeat"
+      constraints:
+        - pattern: ^(http|https|ftp)://.+/.*$
+    pbt_repository:
+      type: string
+      required: false
+      default: "https://artifacts.elastic.co/downloads/beats/packetbeat"
+      constraints:
+        - pattern: ^(http|https|ftp)://.+/.*$
     es_repository:
       type: string
       required: false
@@ -84,6 +102,10 @@ topology_template:
 
     Compute_CS:
       type: tosca.nodes.Compute
+      requirements:
+        - network:
+            node: Network
+            relationship: tosca.relationships.Network
     Consul_Server:
       type: org.ystia.consul.linux.bash.nodes.Consul
       requirements:
@@ -91,6 +113,8 @@ topology_template:
             node: Compute_CS
     MetricBeat_CS:
       type: org.ystia.beats.linux.bash.nodes.MetricBeat
+      properties:
+        repository: { get_input: mbt_repository }
       requirements:
         - host:
             node: Compute_CS
@@ -134,6 +158,8 @@ topology_template:
             node: Consul_ES
     MetricBeat_ES:
       type: org.ystia.beats.linux.bash.nodes.MetricBeat
+      properties:
+        repository: { get_input: mbt_repository }
       requirements:
         - host:
             node: Compute_ES
@@ -144,6 +170,7 @@ topology_template:
     PacketBeat_ES:
       type: org.ystia.beats.linux.bash.nodes.PacketBeat
       properties:
+        repository: { get_input: pbt_repository }
         device: "any"
       requirements:
         - host:
@@ -197,6 +224,8 @@ topology_template:
             node: Kibana
     MetricBeat_KBN:
       type: org.ystia.beats.linux.bash.nodes.MetricBeat
+      properties:
+        repository: { get_input: mbt_repository }
       requirements:
         - host:
             node: Compute_KBN
@@ -207,6 +236,7 @@ topology_template:
     PacketBeat_KBN:
       type: org.ystia.beats.linux.bash.nodes.PacketBeat
       properties:
+        repository: { get_input: pbt_repository }
         device: "any"
       requirements:
         - host:
@@ -255,6 +285,8 @@ topology_template:
 #            type: tosca.artifacts.File
     MetricBeat_LS:
       type: org.ystia.beats.linux.bash.nodes.MetricBeat
+      properties:
+        repository: { get_input: mbt_repository }
       requirements:
         - host:
             node: Compute_LS
@@ -289,6 +321,7 @@ topology_template:
     FileBeat:
       type: org.ystia.beats.linux.bash.nodes.FileBeat
       properties:
+        repository: { get_input: fbt_repository }
         files: { get_input: dl_log_path }
       requirements:
         - host:
@@ -297,6 +330,8 @@ topology_template:
             node: Logstash
     MetricBeat_DL:
       type: org.ystia.beats.linux.bash.nodes.MetricBeat
+      properties:
+        repository: { get_input: mbt_repository }
       requirements:
         - host:
             node: Compute_DL

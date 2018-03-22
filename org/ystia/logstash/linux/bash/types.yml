@@ -35,9 +35,9 @@ node_types:
       component_version:
         type: version
         description: Version of the installed Logstash component
-        default: 5.1.1
+        default: 6.2.2
         constraints:
-          - valid_values: [5.1.1]
+          - valid_values: [5.6.8,6.2.2]
       repository:
          type: string
          description: >
@@ -109,6 +109,7 @@ node_types:
             implementation: scripts/logstash_install.sh
           configure:
             inputs:
+              LS_VERSION: { get_property: [SELF, component_version] }
               STDOUT: { get_property: [SELF, stdout] }
               LOGSTASH_HEAP_SIZE: { get_property: [SELF, heap_size] }
               JAVA_HOME: { get_attribute: [SELF, java_home] }

@@ -34,7 +34,7 @@ class BDCFImportDashboard:
             db = json.load(data_file)
         # print "--> db: ", db
 
-        headerInfo = {'Accept' : 'text/plain', 'content-type': 'text/plain' }
+        headerInfo = {'Accept' : 'text/plain', 'content-type': 'application/json' }
         for elt in db:
             print "-->", elt["_type"], ":", elt["_id"]
             if ((elt["_type"] == "config") or (elt["_type"] == "index-pattern") or (elt["_type"] == "dashboard") or (elt["_type"] == "visualization") or (elt["_type"] == "search")):

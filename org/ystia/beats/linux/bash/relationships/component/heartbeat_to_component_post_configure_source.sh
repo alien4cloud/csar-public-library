@@ -70,7 +70,7 @@ do
  	    done
  		log info "Component $key has been added to heartbeat yaml file"
  		#if [[ $key = "elasticsearch" ]]; then
- 		#	sed -i -e "s/hosts: \[\"localhost:9200/hosts: \[\"$service:9200/g" ${config_file}
+ 		#	sudo sed -i -e "s/hosts: \[\"localhost:9200/hosts: \[\"$service:9200/g" ${config_file}
  		#fi
  		flag=true
 

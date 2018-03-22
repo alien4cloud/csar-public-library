@@ -13,7 +13,7 @@ log begin
 
 ensure_home_var_is_set
 
-SERVICE_NAME=$(basename -s .yml ${beat_config})
+SERVICE_NAME=$(basename -s .yml ${beat_v6_config})
 log info "SERVICE_NAME=${SERVICE_NAME}"
 
 sudo systemctl start ${SERVICE_NAME}.service

@@ -42,6 +42,7 @@ sudo systemctl daemon-reload
 JVM_OPTIONS_FILE=${CONFIG_PATH}/jvm.options
 sed -i -e "s/^-Xms.*$/-Xms${ELASTICSEARCH_HEAP_SIZE}/g" -e "s/^-Xmx.*$/-Xmx${ELASTICSEARCH_HEAP_SIZE}/g" ${JVM_OPTIONS_FILE}
 
+cp ${CONFIG_PATH}/elasticsearch.yml ${CONFIG_PATH}/elasticsearch.yml.original_backup
 cp ${config_file} "${CONFIG_PATH}/elasticsearch.yml"
 
 # Take into account elk-all-in-one topo. Is consul agent present ?

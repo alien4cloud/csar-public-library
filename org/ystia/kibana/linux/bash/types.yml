@@ -28,15 +28,15 @@ node_types:
     tags:
       icon: /images/kibana-icon.png
     attributes:
-      url: { concat: ["http://", get_attribute: [HOST, public_ip_address], ":5601/#/dashboard" ] }
+      url: { concat: ["http://", get_attribute: [HOST, public_ip_address], ":5601/app/kibana#/dashboards" ] }
       java_home: { get_operation_output: [ SELF, Configure, pre_configure_source, JAVA_HOME ] }
     properties:
       component_version:
         type: version
         description: Version of the installed Kibana component
-        default: 5.1.1
+        default: 6.2.2
         constraints:
-          - equal: 5.1.1
+          - valid_values: [5.6.8,6.2.2]
       repository:
         type: string
         description: >
@@ -150,7 +150,7 @@ node_types:
           file: scripts
           type: tosca.artifacts.File
       - dashboards_zip:
-          file: dashboards/import_beats-dashboards-5.1.1.zip
+          file: dashboards/beats_dashboards.zip
           type: tosca.artifacts.File
 
 relationship_types:

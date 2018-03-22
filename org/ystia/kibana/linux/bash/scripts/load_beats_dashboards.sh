@@ -9,6 +9,8 @@
 set -e
 
 source ${utils_scripts}/utils.sh
+# To set KIBANA_VERSION
+source ${YSTIA_DIR}/kibana_env.sh
 
 bash ${utils_scripts}/install-components.sh unzip
 
@@ -18,14 +20,29 @@ tmpdir=$(mktemp -d)
 
 unzip ${dashboards_zip} -d ${tmpdir}
 
-cd $(dirname $(find ${tmpdir} -name "import_*_dashboards"))
 
-log info "Loading beats dashboards..."
+log info "Loading beats dashboards (version ${KIBANA_VERSION})..."
 
-chmod u+x import_metricbeat_dashboards
-chmod u+x import_packetbeat_dashboards
+if [[ "${KIBANA_VERSION}" = "6.2.2" ]]
+then
+    DB6_DIR=${tmpdir}/${KIBANA_VERSION}
+    for JSON_FILE in $(find ${DB6_DIR}/index-pattern ${DB6_DIR}/dashboard)
+    do
+        curl -XPOST "http://localhost:5601/api/kibana/dashboards/import" -H 'Content-type:application/json' -H 'kbn-xsrf:true' -d@${JSON_FILE}
+    done
 
-./import_packetbeat_dashboards -dir packetbeat/
-./import_metricbeat_dashboards -dir metricbeat/
+    log info "Beats dashboards loaded."
+elif [[ "${KIBANA_VERSION}" = "5.6.8" ]]
+then
+    cd $(dirname $(find ${tmpdir} -name "import_dashboards"))
+    chmod u+x import_dashboards
 
-log info "Beats dashboards loaded."
+    ./import_dashboards -dir packetbeat/
+    ./import_dashboards -dir metricbeat/
+    ./import_dashboards -dir heartbeat/
+
+    log info "Beats dashboards loaded."
+else
+    log info "WARNING: Beats dashboards CANNOT BE LOADED, unknown version ${KIBANA_VERSION} !!!"
+fi
+

@@ -338,6 +338,14 @@ unlock() {
     flock -u ${fd}
 }
 
+# Get major version number from a given version string
+
+majorVersion() {
+    version=$1
+    echo $(echo $version | cut -d "." -f1)
+}
+
+
 # Need sudo + chown on centos (not on ubuntu)
 lock_dir=/var/lock/ystia
 sudo mkdir -p $lock_dir
