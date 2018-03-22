@@ -33,20 +33,6 @@ node_types:
         default: 6.2.2
         constraints:
           - valid_values: [5.6.8,6.2.2]
-      repository:
-        type: string
-        description: >
-          This property give the opportunity to specify an alternative
-          download repository for this component artifacts.  It is your
-          responsibility to provide an accessible download url and to store
-          required artifacts on it. You should specify only the base
-          repository url. Artifacts names will be appended to it, so this
-          property could be shared among several components using the
-          inputs feature.
-        required: true
-        default: https://www.elastic.co/downloads/past-releases
-        constraints:
-          - pattern: ^(http|https|ftp)://.+/.*$
       debug:
         type: boolean
         default: false
@@ -77,6 +63,20 @@ node_types:
     tags:
       icon: /images/file-icon.png
     properties:
+      repository:
+        type: string
+        description: >
+          This property give the opportunity to specify an alternative
+          download repository for this component artifacts.  It is your
+          responsibility to provide an accessible download url and to store
+          required artifacts on it. You should specify only the base
+          repository url. Artifacts names will be appended to it, so this
+          property could be shared among several components using the
+          inputs feature.
+        required: true
+        default: https://artifacts.elastic.co/downloads/beats/filebeat
+        constraints:
+          - pattern: ^(http|https|ftp)://.+/.*$
       # Cannot use 'list of string' type because causes a syntax error in the FileBeat configuration file
       files:
         type: string
@@ -105,6 +105,20 @@ node_types:
     tags:
       icon: /images/metric-icon.png
     properties:
+      repository:
+        type: string
+        description: >
+          This property give the opportunity to specify an alternative
+          download repository for this component artifacts.  It is your
+          responsibility to provide an accessible download url and to store
+          required artifacts on it. You should specify only the base
+          repository url. Artifacts names will be appended to it, so this
+          property could be shared among several components using the
+          inputs feature.
+        required: true
+        default: https://artifacts.elastic.co/downloads/beats/metricbeat
+        constraints:
+          - pattern: ^(http|https|ftp)://.+/.*$
       period:
         type: integer
         default: 10
@@ -132,6 +146,20 @@ node_types:
     tags:
       icon: /images/packet-icon.png
     properties:
+      repository:
+        type: string
+        description: >
+          This property give the opportunity to specify an alternative
+          download repository for this component artifacts.  It is your
+          responsibility to provide an accessible download url and to store
+          required artifacts on it. You should specify only the base
+          repository url. Artifacts names will be appended to it, so this
+          property could be shared among several components using the
+          inputs feature.
+        required: true
+        default: https://artifacts.elastic.co/downloads/beats/packetbeat
+        constraints:
+          - pattern: ^(http|https|ftp)://.+/.*$
       device:
         type: string
         default: any
@@ -159,6 +187,20 @@ node_types:
     tags:
       icon: /images/heartbeat-icon.png
     properties:
+      repository:
+        type: string
+        description: >
+          This property give the opportunity to specify an alternative
+          download repository for this component artifacts.  It is your
+          responsibility to provide an accessible download url and to store
+          required artifacts on it. You should specify only the base
+          repository url. Artifacts names will be appended to it, so this
+          property could be shared among several components using the
+          inputs feature.
+        required: true
+        default: https://artifacts.elastic.co/downloads/beats/heartbeat
+        constraints:
+          - pattern: ^(http|https|ftp)://.+/.*$
       schedule:
         type: integer
         default: 5

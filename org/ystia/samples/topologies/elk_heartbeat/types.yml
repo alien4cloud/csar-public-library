@@ -29,10 +29,10 @@ topology_template:
   description: A topology template for HeartBeat component with Elasticsearch and Kibana
 
   inputs:
-    bt_repository:
+    hbt_repository:
       type: string
       required: false
-      default: "https://www.elastic.co/downloads/past-releases"
+      default: "https://artifacts.elastic.co/downloads/beats/heartbeat"
       constraints:
         - pattern: ^(http|https|ftp)://.+/.*$
     es_repository:
@@ -153,6 +153,11 @@ topology_template:
       requirements:
         - host:
             node: Kibana
+    BeatsDashboards:
+      type: org.ystia.kibana.linux.bash.nodes.BeatsDashboards
+      requirements:
+        - host:
+            node: Kibana
 
     # VM for HeartBeat
 
@@ -172,7 +177,7 @@ topology_template:
     HeartBeat:
       type: org.ystia.beats.linux.bash.nodes.HeartBeat
       properties:
-        repository: { get_input: bt_repository }
+        repository: { get_input: hbt_repository }
 
       requirements:
         - host:

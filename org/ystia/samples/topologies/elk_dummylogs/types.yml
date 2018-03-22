@@ -32,10 +32,10 @@ topology_template:
   description: A topology template to connect the Ystia DummyLogs sample to the ELK stack
 
   inputs:
-    bt_repository:
+    fbt_repository:
       type: string
       required: false
-      default: "https://www.elastic.co/downloads/past-releases"
+      default: "https://artifacts.elastic.co/downloads/beats/filebeat"
       constraints:
         - pattern: ^(http|https|ftp)://.+/.*$
     es_repository:
@@ -90,6 +90,10 @@ topology_template:
 
     Compute_CS:
       type: tosca.nodes.Compute
+      requirements:
+        - network:
+            node: Network
+            relationship: tosca.relationships.Network
     Consul_Server:
       type: org.ystia.consul.linux.bash.nodes.Consul
       requirements:
@@ -223,7 +227,7 @@ topology_template:
     FileBeat:
       type: org.ystia.beats.linux.bash.nodes.FileBeat
       properties:
-        repository: { get_input: bt_repository }
+        repository: { get_input: fbt_repository }
         files: { get_input: dl_log_path }
       requirements:
         - host:
