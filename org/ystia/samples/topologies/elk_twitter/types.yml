@@ -26,15 +26,6 @@ imports:
   - org.ystia.logstash.pub:2.0.0-SNAPSHOT
   - org.ystia.logstash.linux.bash:2.0.0-SNAPSHOT
 
-#
-# For US_Elections_2016 sample:
-# - languages: [fr, en]
-# - keywords: [trump, clinton]
-# For FR_Elections_2017 sample:
-# - languages: [fr, en, de, it, es]
-# - keywords: [le pen, fillon, macron, hamon, melenchon]
-#
-
 
 topology_template:
   description: A topology template to ingest tweets in an ELK toolchain
@@ -86,7 +77,7 @@ topology_template:
       entry_schema:
         type: string
       required: false
-      default: [le pen, fillon, macron, hamon, melenchon]
+      default: [paris, lyon, marseille, toulouse, strasbourg]
     proxy_address:
       type: string
       required: false
@@ -124,6 +115,10 @@ topology_template:
 
     Compute_CS:
       type: tosca.nodes.Compute
+      requirements:
+        - network:
+            node: Network
+            relationship: tosca.relationships.Network
     Consul_Server:
       type: org.ystia.consul.linux.bash.nodes.Consul
       requirements:

@@ -19,7 +19,7 @@ fi
 install_dir=${HOME}/${NODE}
 config_file=${install_dir}/metricbeat.yml
 
-sed -i -e "s/period:.*$/period: ${PERIOD}/g" ${config_file}
+sudo sed -i -e "s/period:.*$/period: ${PERIOD}s/g" ${config_file}
 
 setServiceConfigured
 log end

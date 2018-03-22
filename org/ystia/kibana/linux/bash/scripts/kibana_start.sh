@@ -20,7 +20,7 @@ log info "Starting Kibana..."
 sudo systemctl start kibana.service
 
 sleep 3
-wait_for_port_to_be_open "127.0.0.1" "5601" 240 || error_exit "Cannot open port 5601"
+wait_for_port_to_be_open "127.0.0.1" "5601" 300 || error_exit "Cannot open port 5601"
 if [[ ! -z "${ELASTICSEARCH_HOME}" ]]
 then
     wait_for_port_to_be_open 127.0.0.1 9200 120 10 || error_exit "Unable to start the ElasticSearch Client Node"

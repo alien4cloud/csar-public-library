@@ -18,10 +18,19 @@ else
     TEMPLATE_NAME="all"
 fi
 
-TEMPLATE="http://localhost:9200/_template/${TEMPLATE_NAME}"
+TEMPLATE_INDEX="http://localhost:9200/_template/${TEMPLATE_NAME}"
+TEMPLATE_JSON_FILE=${YSTIA_DIR}/${NODE}-${TEMPLATE_NAME}.json
 CURL='/usr/bin/curl'
 OP='-XPUT'
-PAYLOAD="{\"template\" : \"${index}\", \"order\" : ${order}, \"settings\" : {\"number_of_shards\" : ${number_of_shards}, \"number_of_replicas\" : ${nb_replicas} }}"
-log info "Command: $CURL $OP $TEMPLATE -d '${PAYLOAD}'"
-$CURL $OP $TEMPLATE -d "${PAYLOAD}" || error_exit "Failed executing Elasticsearch update with nb_replicas ${nb_replicas}, index ${index}and order ${order}" $?
+cat > ${TEMPLATE_JSON_FILE} << EOF
+{
+  "template" : "${index}",
+  "order" : ${order},
+  "settings" : {
+    "number_of_shards" : ${number_of_shards},
+    "number_of_replicas" : ${nb_replicas}
+  }
+}
+EOF
+$CURL $OP -H 'Content-Type: application/json' $TEMPLATE_INDEX -d @${TEMPLATE_JSON_FILE} || error_exit "Failed executing Elasticsearch update with nb_replicas ${nb_replicas}, index ${index}and order ${order}" $?
 log end
