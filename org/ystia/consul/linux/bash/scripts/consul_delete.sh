@@ -8,6 +8,8 @@ log begin
 
 ensure_home_var_is_set
 
+INSTALL_DIR=$(eval readlink -f "${INSTALL_DIR}")
+
 # TODO : DnsMasq uninstall ??
 
 log info "Remove systemd service"
