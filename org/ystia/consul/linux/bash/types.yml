@@ -73,6 +73,8 @@ node_types:
             INSTALL_DIR: { get_property: [SELF, installation_directory] }
           implementation: scripts/consul_stop.sh
         delete:
+          inputs:
+            INSTALL_DIR: { get_property: [SELF, installation_directory] }
           implementation: scripts/consul_delete.sh
     artifacts:
       - scripts:
