@@ -81,13 +81,6 @@ function ubuntu_install_oracle_jdk () {
     export YSTIA_JAVA_HOME=${YSTIA_JAVA_HOME}
 }
 
-# If java component already installed, nothing to do
-if is_java_already_installed "${NODE}"
-then
-    echo "Java component '${NODE}' already installed"
-    exit
-fi
-
 os_distribution="$(get_os_distribution)"
 YSTIA_JAVA_HOME=""
 case "${os_distribution}" in
