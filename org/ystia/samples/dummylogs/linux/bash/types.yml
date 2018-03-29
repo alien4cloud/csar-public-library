@@ -54,6 +54,7 @@ node_types:
         default: 1
     interfaces:
       Standard:
+        create: scripts/dummylogs_install.sh
         start:
           inputs:
             LOG_PATH: { get_property: [SELF, log_path] }
