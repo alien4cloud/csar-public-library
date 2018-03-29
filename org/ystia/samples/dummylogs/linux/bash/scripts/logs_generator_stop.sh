@@ -9,9 +9,14 @@ source ${utils_scripts}/utils.sh
 log begin
 ensure_home_var_is_set
 
-log "Stoping DummyLogs Generator..."
-STOP_FLAG="${HOME}/${YSTIA_DIR}/.${SELF}-stop"
+STOP_FLAG="${YSTIA_DIR}/.${NODE}-stop"
 mkdir -p $(dirname ${STOP_FLAG})
 touch ${STOP_FLAG}
+
+log info "Stopping DummyLogsGenerator..."
+PID_FILE="${YSTIA_DIR}/.${NODE}.pid"
+[[ -r ${PID_FILE} ]] && kill -15 $(cat ${PID_FILE}) || log info "WARNING: Error when stopping DummyLogsGenerator"
+rm -f ${PID_FILE}
+
 log end
 exit 0

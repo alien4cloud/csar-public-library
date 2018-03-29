@@ -6,15 +6,13 @@
 #
 
 source ${utils_scripts}/utils.sh
-
-source ${utils_scripts}/utils.sh
 log begin
 ensure_home_var_is_set
 
 [ $# -ne 3 ] && exit 1
 
-STOP_FLAG="${HOME}/${YSTIA_DIR}/.${SELF}-stop"
-STOPPED_FLAG="${HOME}/${YSTIA_DIR}/.${SELF}-stopped"
+STOP_FLAG="${YSTIA_DIR}/.${NODE}-stop"
+STOPPED_FLAG="${YSTIA_DIR}/.${NODE}-stopped"
 
 LOG_PATH=$1
 TOTAL_LOGS_NB=$2
