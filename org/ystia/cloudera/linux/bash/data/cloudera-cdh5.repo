@@ -1,0 +1,4 @@
+[cloudera-cdh5]
+name = Cloudera CDH, Version 5.8.0
+baseurl = @CDH_REPO@
+gpgcheck = 0
