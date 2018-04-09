@@ -8,7 +8,7 @@ source ${scripts}/cloudera.properties
 
 # Prevent interference between ClouderaServer and ClouderaAgent installation
 lock "cloudera_prepare_host"
-PREPARE_HOST_IS_DONE=${STARLINGS_DIR}/.cloudera-prepareHostFlag
+PREPARE_HOST_IS_DONE=${YSTIA_DIR}/.cloudera-prepareHostFlag
 # Already Done ?
 if [ -e  ${PREPARE_HOST_IS_DONE} ]; then
     log info "prepare_host.sh for Cloudera already done"
