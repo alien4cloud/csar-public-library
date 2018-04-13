@@ -124,7 +124,7 @@ For the second method:
 
   - Repository URL: https://github.com/alien4cloud/csar-public-library.git
   - Credentials: *none*
-  - Tag: **1.4.0**
+  - Tag: **v1.4.0**
   - Archive to import: **org/ystia**
 
 - and then execute the import operation.
