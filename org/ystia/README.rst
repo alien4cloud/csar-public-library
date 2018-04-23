@@ -51,7 +51,7 @@ To simplify topology creation, Ystia Forge provides **topology templates** that 
 .. _RStudio: https://www.rstudio.com/
 
 
-The current version of **Ystia Forge** is **1.4.0**.
+The current version of **Ystia Forge** is **2.0.0**.
 
 
 .. *********************************************************************************************************************
@@ -102,9 +102,9 @@ Requirements
 
 To create and run application using Ystia Forge components require:
 
-- A running instance of **Alien4Cloud**, version **1.4.3.2**.
-- A running instance of **Ystia Orchestrator**, version **2.0.1**.
-- The components and topology templates from **Ystia Forge**, version **1.4.0**, must be imported to the Alien4Cloud catalog.
+- A running instance of **Alien4Cloud**, version **2.0.0**.
+- A running instance of **Ystia Orchestrator**, version **3.0.0**.
+- The components and topology templates from **Ystia Forge**, version **2.0.0**, must be imported to the Alien4Cloud catalog.
 
 .. _getting_started_build_section:
 
@@ -124,7 +124,7 @@ For the second method:
 
   - Repository URL: https://github.com/alien4cloud/csar-public-library.git
   - Credentials: *none*
-  - Tag: **v1.4.0**
+  - Tag: **v2.0.0**
   - Archive to import: **org/ystia**
 
 - and then execute the import operation.
@@ -528,13 +528,13 @@ Logs
 Logs path depends on how you have started Alien4Cloud.
 
 For more information about Alien4Cloud Logs, refer to
-http://alien4cloud.github.io/#/documentation/1.4.0/admin_guide/installation_configuration.html
+http://alien4cloud.github.io/#/documentation/2.0.0/admin_guide/installation_configuration.html
 
 Backup / Restore procedure
 --------------------------
 
 For more information about Alien4Cloud Backup/Restore, refer to
-http://alien4cloud.github.io/#/documentation/1.4.0/admin_guide/backup_restore.html
+http://alien4cloud.github.io/#/documentation/2.0.0/admin_guide/backup_restore.html
 
 
 Known issues
@@ -584,7 +584,7 @@ References
 **********
 
 Alien4Cloud documentation
-  https://alien4cloud.github.io/#/documentation/1.4.0/index.html
+  https://alien4cloud.github.io/#/documentation/2.0.0/index.html
 
 Ystia Orchestrator documentation
   https://TODO_to_be_completed

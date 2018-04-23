@@ -29,6 +29,8 @@ node_types:
           occurrences: [0,1]
     tags:
       icon: /images/consul-icon.png
+    attributes:
+      dnsmask_previous: { get_operation_output: [SELF, Standard, create, YSTIA_DNSMASK_PREVIOUS] }
     properties:
       install_dnsmasq:
         type: boolean
@@ -72,6 +74,12 @@ node_types:
           inputs:
             INSTALL_DIR: { get_property: [SELF, installation_directory] }
           implementation: scripts/consul_stop.sh
+        delete:
+          inputs:
+            INSTALL_DNSMASQ: { get_property: [SELF, install_dnsmasq] }
+            INSTALL_DIR: { get_property: [SELF, installation_directory] }
+            DNSMASQ_PREVIOUS: { get_attribute: [SELF, dnsmask_previous] }
+          implementation: scripts/consul_delete.sh
     artifacts:
       - scripts:
           type: tosca.artifacts.File

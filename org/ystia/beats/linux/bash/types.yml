@@ -56,6 +56,10 @@ node_types:
           implementation: scripts/install_beat.sh
         start: scripts/start_beat.sh
         stop: scripts/stop_beat.sh
+        delete:
+          inputs:
+            BT_VERSION: { get_property: [SELF, component_version] }
+          implementation: scripts/delete_beat.sh
 
   org.ystia.beats.linux.bash.nodes.FileBeat:
     derived_from: org.ystia.beats.linux.bash.nodes.Beat

@@ -6,10 +6,12 @@
 #
 
 
-
 . ${utils_scripts}/utils.sh
 log begin
 ensure_home_var_is_set
+
+. ${scripts}/java_utils.sh
+
 
 function install_from_url () {
     YSTIA_JAVA_HOME=${1}
@@ -39,6 +41,12 @@ function install_from_url () {
 }
 
 function ubuntu_install_openjdk () {
+    ALREADY_INSTALL=1
+    dpkg -l | grep "${packages}" >/dev/null
+    if [[ $? -eq 0 ]]
+    then
+        ALREADY_INSTALL=0
+    fi
     if [[ "${JAVA_IS_JRE}" == "true" ]]
     then
         packages="${packages}-jre"
@@ -52,6 +60,7 @@ function ubuntu_install_openjdk () {
     bash ${utils_scripts}/apt-install-components.sh ${packages} || {
         error_exit "Failed to install java packages: \"${packages}\" using apt-get"
     }
+    add_a_java_install ${JAVA_VERSION} ${ALREADY_INSTALL}
 
     YSTIA_JAVA_HOME="/usr/lib/jvm/java-${JAVA_VERSION}-openjdk-$(dpkg --print-architecture)"
     if [[ "${JAVA_IS_JRE}" == "true" ]]
@@ -63,6 +72,13 @@ function ubuntu_install_openjdk () {
 
 function ubuntu_install_oracle_jdk () {
 
+    ALREADY_INSTALL=1
+    dpkg -l | grep "oracle-java${JAVA_VERSION}" >/dev/null
+    if [[ $? -eq 0 ]]
+    then
+        ALREADY_INSTALL=0
+    fi
+
     echo oracle-java6-installer shared/accepted-oracle-license-v1-1 select true | sudo /usr/bin/debconf-set-selections
     echo oracle-java7-installer shared/accepted-oracle-license-v1-1 select true | sudo /usr/bin/debconf-set-selections
     echo oracle-java8-installer shared/accepted-oracle-license-v1-1 select true | sudo /usr/bin/debconf-set-selections
@@ -73,6 +89,7 @@ function ubuntu_install_oracle_jdk () {
     bash ${utils_scripts}/apt-install-components.sh ${packages} || {
         error_exit "Failed to install java packages: \"${packages}\" using apt-get"
     }
+    add_a_java_install ${JAVA_VERSION} ${ALREADY_INSTALL}
     YSTIA_JAVA_HOME="/usr/lib/jvm/java-${JAVA_VERSION}-oracle"
     if [[ "${JAVA_IS_JRE}" == "true" ]]
     then
@@ -80,13 +97,6 @@ function ubuntu_install_oracle_jdk () {
     fi
     export YSTIA_JAVA_HOME=${YSTIA_JAVA_HOME}
 }
-
-# If java component already installed, nothing to do
-if is_java_already_installed "${NODE}"
-then
-    echo "Java component '${NODE}' already installed"
-    exit
-fi
 
 os_distribution="$(get_os_distribution)"
 YSTIA_JAVA_HOME=""
@@ -119,6 +129,8 @@ case "${os_distribution}" in
             install_from_url "${YSTIA_JAVA_HOME}"
         else
             packages="java-1.${JAVA_VERSION}.0-openjdk"
+            ALREADY_INSTALL=1
+            yum list installed ${packages} >/dev/null 2>&1 && ALREADY_INSTALL=0
             if (( "${JAVA_VERSION}" >= "8" )) && [[ "${JAVA_IS_JRE}" == "true" ]] && [[ "${JAVA_IS_HEADLESS}" == "true" ]]
             then
                 packages="${packages}-headless"
@@ -130,6 +142,7 @@ case "${os_distribution}" in
             sudo yum install -y ${packages}   || {
                 error_exit "Failed to install java packages: \"${packages}\" using yum"
             }
+            add_a_java_install ${JAVA_VERSION} ${ALREADY_INSTALL}
             if [[ "${JAVA_IS_JRE}" == "true" ]]
             then
                 YSTIA_JAVA_HOME="/usr/lib/jvm/jre-1.${JAVA_VERSION}.0-openjdk"
@@ -142,7 +155,6 @@ case "${os_distribution}" in
             fi
         fi
         ;;
-
     *)
         error_exit  "Unsupported Operating System: ${os_distribution}"
         ;;

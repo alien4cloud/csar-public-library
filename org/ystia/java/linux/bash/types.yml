@@ -65,6 +65,11 @@ node_types:
             JAVA_IS_HEADLESS: { get_property: [SELF, headless] }
             JAVA_DOWNLOAD_URL: { get_property: [SELF, download_url] }
           implementation: scripts/java_install.sh
+        delete:
+          inputs:
+            JAVA_VERSION: { get_property: [SELF, component_version] }
+            JAVA_HOME: { get_attribute: [SELF, java_home] }
+          implementation: scripts/java_uninstall.sh
     artifacts:
       - scripts:
           type: tosca.artifacts.File

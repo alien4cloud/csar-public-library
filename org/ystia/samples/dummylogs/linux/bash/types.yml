@@ -62,9 +62,11 @@ node_types:
             DELAY_S: { get_property: [SELF, delay_s] }
           implementation: scripts/logs_generator_start.sh
         stop:
+          implementation: scripts/logs_generator_stop.sh
+        delete:
           inputs:
             LOG_PATH: { get_property: [SELF, log_path] }
-          implementation: scripts/logs_generator_stop.sh
+          implementation: scripts/dummylogs_delete.sh
     artifacts:
       - scripts:
           type: tosca.artifacts.File
