@@ -26,24 +26,6 @@ topology_template:
   # Inputs properties
 
   inputs:
-    routermain_port:
-      type: integer
-      required: true
-      default: 27017
-      constraints:
-        - in_range: [8000, 65535]
-    configsvr_port:
-      type: integer
-      required: true
-      default: 27200
-      constraints:
-        - in_range: [8000, 65535]
-    rep1_port:
-      type: integer
-      required: true
-      default: 27017
-      constraints:
-        - in_range: [8000, 65535]
     mongo_repo:
       type: string
       required: false
@@ -78,17 +60,19 @@ topology_template:
     MongoReplicaMain:
       type: org.ystia.mongodb.linux.bash.nodes.MongoReplicaMain
       properties:
-        db_port: { get_input: rep1_port }
+        db_port: 27017
         mongo_repo: { get_input: mongo_repo }
         replica_set: { get_input: replica_set }
         shard: { get_input: shard }
       requirements:
         - host:
             node: C_ShardMain
-        - primary2secondary:
+        - primary2secondary_1:
             node: MongoReplicaSlave2
-        - primary2secondary:
+            type_requirement: primary2secondary
+        - primary2secondary_2:
             node: MongoReplicaSlave1
+            type_requirement: primary2secondary
 
     # VM for MongoDB Replica Slave 1 Server
 
@@ -101,7 +85,7 @@ topology_template:
     MongoReplicaSlave1:
       type: org.ystia.mongodb.linux.bash.nodes.MongoReplicaSlave
       properties:
-        db_port: { get_input: rep1_port }
+        db_port: 27017
         mongo_repo: { get_input: mongo_repo }
         replica_set: { get_input: replica_set }
         shard: { get_input: shard }
@@ -120,7 +104,7 @@ topology_template:
     MongoReplicaSlave2:
       type: org.ystia.mongodb.linux.bash.nodes.MongoReplicaSlave
       properties:
-        db_port: { get_input: rep1_port }
+        db_port: 27017
         mongo_repo: { get_input: mongo_repo }
         replica_set: { get_input: replica_set }
         shard: { get_input: shard }
@@ -139,7 +123,7 @@ topology_template:
     ConfigServer1:
       type: org.ystia.mongodb.linux.bash.nodes.MongoConfigServer
       properties:
-        db_port: { get_input: configsvr_port }
+        db_port: 27200
         mongo_repo: { get_input: mongo_repo }
       requirements:
         - host:
@@ -147,19 +131,22 @@ topology_template:
     MongoRouter:
       type: org.ystia.mongodb.linux.bash.nodes.MongoRouter
       properties:
-        db_port: { get_input: routermain_port }
+        db_port: 27017
         mongo_repo: { get_input: mongo_repo }
       requirements:
         - host:
             node: C_Router1
         - router2replicaset:
             node: MongoReplicaMain
-        - router2config:
+        - router2config_1:
             node: ConfigServer1
-        - router2config:
+            type_requirement: router2config
+        - router2config_2:
             node: ConfigServer2
-        - router2config:
+            type_requirement: router2config
+        - router2config_3:
             node: ConfigServer3
+            type_requirement: router2config
 
     # VM for MongoDB Config Server 2
 
@@ -172,7 +159,7 @@ topology_template:
     ConfigServer2:
       type: org.ystia.mongodb.linux.bash.nodes.MongoConfigServer
       properties:
-        db_port: { get_input: configsvr_port }
+        db_port: 27200
         mongo_repo: { get_input: mongo_repo }
       requirements:
         - host:
@@ -189,7 +176,7 @@ topology_template:
     ConfigServer3:
       type: org.ystia.mongodb.linux.bash.nodes.MongoConfigServer
       properties:
-        db_port: { get_input: configsvr_port }
+        db_port: 27200
         mongo_repo: { get_input: mongo_repo }
       requirements:
         - host:
