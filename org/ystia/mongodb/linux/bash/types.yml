@@ -39,6 +39,12 @@ node_types:
     tags:
       icon: /images/mongodb.jpg
     properties:
+      component_version:
+        type: version
+        description: Version of Mongo Router component
+        default: 3.2
+        constraints:
+          - equal: 3.2
       db_port:
         type: integer
         default: 27017
@@ -88,6 +94,12 @@ node_types:
     tags:
       icon: /images/mongodb.jpg
     properties:
+      component_version:
+        type: version
+        description: Version of Mongo Config Server component
+        default: 3.2
+        constraints:
+          - equal: 3.2
       db_port:
         type: integer
         default: 27017
@@ -143,6 +155,12 @@ node_types:
     tags:
       icon: /images/mongodb.jpg
     properties:
+      component_version:
+        type: version
+        description: Version of Mongo Replica Main Server component
+        default: 3.2
+        constraints:
+          - equal: 3.2
       db_port:
         type: integer
         default: 27017
@@ -206,6 +224,12 @@ node_types:
     tags:
       icon: /images/mongodb.jpg
     properties:
+      component_version:
+        type: version
+        description: Version of Mongo Replica Server component
+        default: 3.2
+        constraints:
+          - equal: 3.2
       db_port:
         type: integer
         default: 27017
@@ -270,6 +294,12 @@ node_types:
     tags:
       icon: /images/mongodb.jpg
     properties:
+      component_version:
+        type: version
+        description: Version of Mongo Single Server component
+        default: 3.2
+        constraints:
+          - equal: 3.2
       db_port:
         type: integer
         default: 27017
