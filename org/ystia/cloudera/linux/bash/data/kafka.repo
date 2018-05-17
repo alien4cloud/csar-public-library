@@ -1,0 +1,6 @@
+[Kafka]
+name = Kafka, Version 2.0.2
+baseurl = @KAFKA_REPO@
+gpgcheck = 0
+
+

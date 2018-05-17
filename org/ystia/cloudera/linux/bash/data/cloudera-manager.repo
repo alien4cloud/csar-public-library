@@ -1,0 +1,4 @@
+[cloudera-manager]
+name = Cloudera Manager, Version 5.8.1
+baseurl = @CLOUDERA_MANAGER_REPO@
+gpgcheck = 0

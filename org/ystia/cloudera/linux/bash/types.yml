@@ -1,0 +1,171 @@
+tosca_definitions_version: alien_dsl_2_0_0
+
+#
+# Ystia Forge
+# Copyright (C) 2018 Bull S. A. S. - Bull, Rue Jean Jaures, B.P.68, 78340, Les Clayes-sous-Bois, France.
+# Use of this source code is governed by Apache 2 LICENSE that can be found in the LICENSE file.
+#
+
+metadata:
+  template_name: org.ystia.cloudera.linux.bash
+  template_version: 2.0.0-SNAPSHOT
+  template_author: Ystia
+
+description: Cloudera big data distribution for Linux system
+
+
+imports:
+  - tosca-normative-types:1.0.0-ALIEN20
+  - org.ystia.common:2.0.0-SNAPSHOT
+  - org.ystia.consul.pub:2.0.0-SNAPSHOT
+  - org.ystia.cloudera.pub:2.0.0-SNAPSHOT
+
+node_types:
+  org.ystia.cloudera.linux.bash.nodes.ClouderaServer:
+    derived_from: org.ystia.consul.pub.nodes.ConsulUser
+    description: Cloudera Manager Server (including the embedded PostgreSQL database).
+    tags:
+      icon: /images/cloudera-icon.png
+    attributes:
+      url: { concat: ["http://", get_attribute: [HOST, public_ip_address], ":7180/" ] }
+    properties:
+      component_version:
+        type: version
+        description: Version of Cloudera Manager Server component
+        default: 5.14.1
+        constraints:
+          - equal: 5.14.1
+      cloudera_manager_repository:
+        type: string
+        default: "https://archive.cloudera.com/cm5/redhat/7/x86_64/cm/5.14.1/"
+        description: |
+          This property give the opportunity to specify an alternative download repository for Cloudera Manager Server.
+          By default, the value is 'https://archive.cloudera.com/cm5/redhat/7/x86_64/cm/5.14.1/'.
+        required: false
+        constraints:
+          - pattern: ^(http|https|ftp)://.+/.*$
+      ntp_server:
+        type: string
+        description: >
+          The hostname on an NTP server.
+          By default, the valueis 'fr.pool.ntp.org'.
+        default: "fr.pool.ntp.org"
+        required: false
+    capabilities:
+      cloudera_server_endpoint: org.ystia.cloudera.pub.capabilities.ClouderaServerEndpoint
+    interfaces:
+      Standard:
+        create:
+          inputs:
+            CLOUDERA_MANAGER_REPO: { get_property: [SELF, cloudera_manager_repository] }
+            NTP_SERVER: { get_property: [SELF, ntp_server] }
+          implementation: scripts/clouderamanager_install.sh
+        configure:
+          implementation: scripts/clouderamanager_config.sh
+        start:
+          implementation: scripts/clouderamanager_start.sh
+        stop:
+          implementation: scripts/clouderamanager_stop.sh
+    artifacts:
+      - data:
+          type: tosca.artifacts.File
+          file:  data
+      - scripts:
+          type: tosca.artifacts.File
+          file: scripts
+
+  org.ystia.cloudera.linux.bash.nodes.ClouderAgent:
+    derived_from: org.ystia.consul.pub.nodes.ConsulUser
+    description: Cloudera Manager Agent (including Cloudera Distribution Hadoop CDH).
+    tags:
+      icon: /images/cloudera-icon.png
+    properties:
+      component_version:
+        type: version
+        description: Version of Cloudera Manager Agent component
+        default: 5.14.1
+        constraints:
+          - equal: 5.14.1
+      cdh_version:
+        type: version
+        description: Version of Cloudera Distribution Hadoop (CDH).
+        default: 5.14.0
+        constraints:
+          - equal: 5.14.0
+      cloudera_manager_repository:
+        type: string
+        default: "https://archive.cloudera.com/cm5/redhat/7/x86_64/cm/5.14.1/"
+        description: |
+          This property give the opportunity to specify an alternative download repository for Cloudera Manager Server.
+          By default, the value is 'https://archive.cloudera.com/cm5/redhat/7/x86_64/cm/5.14.1/'.
+        required: false
+        constraints:
+          - pattern: ^(http|https|ftp)://.+/.*$
+      cdh_repository:
+        type: string
+        default: "https://archive.cloudera.com/cdh5/redhat/7/x86_64/cdh/5/"
+        description: |
+          This property give the opportunity to specify an alternative download repository for Cloudera Distribution Hadoop (CDH).
+          If you do not specify any value, it's set as 'https://archive.cloudera.com/cdh5/redhat/7/x86_64/cdh/5/'.
+        required: false
+        constraints:
+          - pattern: ^(http|https|ftp)://.+/.*$
+      cdh_kafka_repository:
+        type: string
+        default: "http://archive.cloudera.com/kafka/redhat/7/x86_64/kafka/3.0.0/"
+        description: |
+          This property give the opportunity to specify an alternative download repository for Kafka Cloudera Distribution Hadoop (CDH).
+          If you do not specify any value, it's set as 'http://archive.cloudera.com/kafka/redhat/7/x86_64/kafka/3.0.0/'.
+        required: false
+        constraints:
+          - pattern: ^(http|https|ftp)://.+/.*$
+      ntp_server:
+        type: string
+        description: >
+          The hostname on an NTP server.
+          By default, the valueis 'fr.pool.ntp.org'.
+        default: "fr.pool.ntp.org"
+        required: false
+    requirements:
+      - server_endpoint:
+           capability: org.ystia.cloudera.pub.capabilities.ClouderaServerEndpoint
+           relationship: org.ystia.cloudera.linux.bash.relationships.ClouderaAgentConnectsToClouderaServer
+           occurrences: [1,1]
+    interfaces:
+      Standard:
+        create:
+          inputs:
+            CDH_REPO: { get_property: [SELF, cdh_repository] }
+            KAFKA_REPO: { get_property: [SELF, cdh_kafka_repository] }
+            CLOUDERA_MANAGER_REPO: { get_property: [SELF, cloudera_manager_repository] }
+            NTP_SERVER: { get_property: [SELF, ntp_server] }
+          implementation: scripts/clouderaagent_install.sh
+        start:
+          implementation: scripts/clouderaagent_start.sh
+        stop:
+          implementation: scripts/clouderaagent_stop.sh
+    artifacts:
+      - data:
+          type: tosca.artifacts.File
+          file:  data
+      - scripts:
+          type: tosca.artifacts.File
+          file: scripts
+
+relationship_types:
+  org.ystia.cloudera.linux.bash.relationships.ClouderaAgentConnectsToClouderaServer:
+    derived_from: org.ystia.relationships.ConnectsTo
+    description: >
+       Connects a Cloudera Manager Agent to its Cloudera Manager Server
+    valid_target_types: [ org.ystia.cloudera.pub.capabilities.ClouderaServerEndpoint ]
+    interfaces:
+      configure:
+        pre_configure_source:
+          inputs:
+            IP_ADDRESS: { get_attribute: [SOURCE, ip_address] }
+            TARGET_IP: { get_attribute: [TARGET, ip_address] }
+          implementation: scripts/clouderaagent_to_server.sh
+    artifacts:
+      - scripts:
+          type: tosca.artifacts.File
+          file: scripts
