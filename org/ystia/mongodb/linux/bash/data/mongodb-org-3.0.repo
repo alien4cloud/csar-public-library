@@ -1,5 +1,0 @@
-[mongodb-org-3.0] 
-name=MongoDB Repository 
-baseurl=replacemonurl 
-gpgcheck=0 
-enabled=1
