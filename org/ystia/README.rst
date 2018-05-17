@@ -22,6 +22,8 @@ Deployment of Big Data applications can be done on a public Cloud (such as Amazo
 The TOSCA Components and Topology templates currently contained in this repository which belongs to the **Ystia Forge**,
 can be used to construct different application categories :
 
+- Hadoop applications based on Cloudera_
+
 - Log Analysis applications based on Elastic_ components and on the Kafka_ message broker
 
 - Applications using MySQL_ database server,
@@ -195,6 +197,13 @@ Consensus systems
 | **Consul** | *org/ystia/consul* | version 0.5.2 |
 +------------+--------------------+---------------+
 
+Cloudera Hadoop components
+==========================
+
++--------------+----------------------+----------------+
+| **Cloudera** | *org/ystia/cloudera* | version 5.14.1 |
++--------------+----------------------+----------------+
+
 ELK components
 ==============
 
@@ -292,6 +301,13 @@ Topologies
 Ystia Forge provides various topology templates, which can be used for development, demos or production applications.
 
 
+Topologies for Cloudera
+=======================
+
++--------------------+---------------------------------------+
+| **cloudera-basic** | *org/ystia/topologies/cloudera-basic* |
++--------------------+---------------------------------------+
+
 .. _topologies_elk_section:
 
 Topologies for Log Analysis based on Elastic Stack
@@ -334,7 +350,6 @@ Topologies for Studios for data scientists
 +-------------+--------------------------------+
 | **rstudio** | *org/ystia/topologies/rstudio* |
 +-------------+--------------------------------+
-
 
 Topologies for MySQL
 ====================
