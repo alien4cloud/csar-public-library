@@ -16,12 +16,12 @@ lock "shard"
   log info "sh.addShard(\"${REPLICA_SET}/${TARGET_IP}:${DB_PORT}\") to be added to shard file"
   
   if [[ ! -f ~/replica ]]; then
-    echo "sh.status()" >>~linux/bashard
-    echo "sh.addShard(\"${REPLICA_SET}/${TARGET_IP}:${DB_PORT}\")" >>~/shard
-    echo "sh.status()" >>~/shard
+    echo "sh.status()" >>${YSTIA_DIR}/mongodb_shard
+    echo "sh.addShard(\"${REPLICA_SET}/${TARGET_IP}:${DB_PORT}\")" >${YSTIA_DIR}/mongodb_shard
+    echo "sh.status()" >>${YSTIA_DIR}/mongodb_shard
   else
-    echo "sh.addShard(\"${REPLICA_SET}/${TARGET_IP}:${DB_PORT}\")" >>~/shard
-    echo "sh.status()" >>~/shard
+    echo "sh.addShard(\"${REPLICA_SET}/${TARGET_IP}:${DB_PORT}\")" >>${YSTIA_DIR}/mongodb_shard
+    echo "sh.status()" >>${YSTIA_DIR}/mongodb_shard
   fi
 unlock "shard"
 

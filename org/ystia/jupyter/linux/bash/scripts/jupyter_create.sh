@@ -190,7 +190,7 @@ fi
 [[ -r /etc/profile.d/proxy.sh ]] && (cat /etc/profile.d/proxy.sh | sed -e "s|export||" >>${ENV_JUPYTER_FILE})
 # Setup systemd service
 sudo cp ${scripts}/systemd/jupyter.service /etc/systemd/system/jupyter.service
-sudo sed -i -e "s/{{USER}}/${USER}/g" -e "s@{{CMD_JUPYTER}}@$(whereis jupyter| awk '{ print $2 }')@g" /etc/systemd/system/jupyter.service
+sudo sed -i -e "s/{{USER}}/${USER}/g" -e "s@{{CMD_JUPYTER}}@$(which jupyter)@g" /etc/systemd/system/jupyter.service
 if [[ -r ${ENV_JUPYTER_FILE} ]]
 then
   sudo sed -i -e "s@{{ENVIRONMENTFILE}}@EnvironmentFile=${ENV_JUPYTER_FILE}@g" /etc/systemd/system/jupyter.service
