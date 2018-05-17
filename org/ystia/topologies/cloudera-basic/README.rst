@@ -89,8 +89,8 @@ Steps to do are:
   *url* attribute of *ClouderaServer* ::
 
   http://<Compute_S_IP>:7180/
-  user: admin
-  password: admin
+    user: admin
+    password: admin
 
 
 - And finally, configure and deploy a CDH Cluster with the services you choose using the Cloudera Manager Admin Console.
