@@ -87,7 +87,14 @@ else
     CRON_SERVICE_NAME="crond"
 fi
 
-sudo useradd curator
+userAddReturnCode=$(sudo useradd curator; echo $?)
+
+if [[ $userAddReturnCode != 0 && $userAddReturnCode != 9 ]]
+then
+    log error "Unable to create user curator"
+    exit 1
+fi
+
 
 if [[ -s ${curator_cron_tab} ]]
 then

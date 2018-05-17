@@ -126,6 +126,10 @@ node_types:
             inputs:
               LOGSTASH_HOME: { get_attribute: [SELF, ls_home] }
             implementation: scripts/logstash_stop.sh
+          delete:
+            inputs:
+              LS_VERSION: { get_property: [SELF, component_version] }
+            implementation: scripts/logstash_delete.sh
       custom:
           change_input:
             inputs:

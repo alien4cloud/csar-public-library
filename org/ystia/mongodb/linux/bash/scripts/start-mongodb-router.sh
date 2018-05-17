@@ -27,9 +27,9 @@ function RestartReplicas {
   OIFS=$IFS
   IFS=','
   
-  cp ~/shard ~/shardx
+  cp ${YSTIA_DIR}/mongodb_shard ${YSTIA_DIR}/mongodb_shardx
   
-  c_shard=`sed -n "/^sh.addShard/{p;q;}" ~/shardx`
+  c_shard=`sed -n "/^sh.addShard/{p;q;}" ${YSTIA_DIR}/mongodb_shardx`
   while [[ ! -z "$c_shard" ]]; do
     echo "<<<$c_shard>>>"
     rs_name=`expr match "$c_shard" '.*\"\(.*\)/'`
@@ -44,8 +44,8 @@ function RestartReplicas {
       ssh -o StrictHostKeyChecking=no -o LogLevel=Error $x sudo systemctl status mongod
     done
     
-    sed -i "0,/sh.addShard/{//d;}" ~/shardx
-    c_shard=`sed -n "/^sh.addShard/{p;q;}" ~/shardx`
+    sed -i "0,/sh.addShard/{//d;}" ${YSTIA_DIR}/mongodb_shardx
+    c_shard=`sed -n "/^sh.addShard/{p;q;}" ${YSTIA_DIR}/mongodb_shardx`
   done
   
   IFS=$OIFS
@@ -81,7 +81,7 @@ log info "Program mongos Router start request issued"
 WaitPort $DB_PORT
 
 log info "Issue the commands from file \"shard\" to connect to the database shards"
-mongo ${DB_IP}:${DB_PORT} < ~/shard
+mongo ${DB_IP}:${DB_PORT} < ${YSTIA_DIR}/mongodb_shard
 
 log info "sleep 60"
 sleep 60

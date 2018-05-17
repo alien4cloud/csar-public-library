@@ -173,6 +173,10 @@ node_types:
           implementation: scripts/elasticsearch_start.sh
         stop:
           implementation: scripts/elasticsearch_stop.sh
+        delete:
+          inputs:
+            ES_VERSION: { get_property: [SELF, component_version] }
+          implementation: scripts/elasticsearch_delete.sh
       custom:
         update_replicas:
           inputs:

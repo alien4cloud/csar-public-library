@@ -14,7 +14,7 @@ metadata:
 
 imports:
   - tosca-normative-types:1.0.0-ALIEN20
-  - alien-extended-storage-types:2.0.0-SNAPSHOT
+  - alien-extended-storage-types:2.0.0
 
   - org.ystia.common:2.0.0-SNAPSHOT
   - org.ystia.java.pub:2.0.0-SNAPSHOT

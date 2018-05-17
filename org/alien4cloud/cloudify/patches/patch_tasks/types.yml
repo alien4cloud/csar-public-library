@@ -19,10 +19,12 @@ node_types:
     derived_from: org.alien4cloud.cloudify.patches.pub.nodes.CloudifyPatch
     description: |
       Patch /opt/mgmtworker/env/lib/python2.7/site-packages/script_runner/tasks.py to fix the temporary folder deletion.
+    artifacts:
+      - safe_clean_patch:
+          file: artifact/safe_clean_patch.sh
+          type: tosca.artifacts.File
+          description: This script to patch the cloudify manager
     interfaces:
       Standard:
         create:
-          inputs:
-            ANSIBLE_VERBOSE: false
-            PLAYBOOK_ENTRY: create.yml
-          implementation: playbook/playbook.ansible
+          implementation: scripts/apply_patch.sh
