@@ -84,7 +84,7 @@ Requirements
 Capabilities
 ^^^^^^^^^^^^
 
-- **cloudera_server_endpoint**: Allows Cloudera agents to connect to this ClouderaServer
+- **cloudera_server_endpoint**: Allows ClouderaAgent to connect to this ClouderaServer
 
 Artifacts
 ^^^^^^^^^

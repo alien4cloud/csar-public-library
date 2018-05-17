@@ -70,7 +70,8 @@ The minimum size for each node type is as follows:
 How to deploy a Cloudera Hadoop cluster
 ---------------------------------------
 
-To deploy a CDH cluster, you need to
+To deploy a CDH cluster, you need to:
+
 #. create, configure and deploy an application using the **cloudera-basic** topology, and
 #. then configure and deploy a CDH Cluster with the services you choose, using the Cloudera Manager Admin Console.
 
@@ -89,7 +90,8 @@ To deploy a CDH cluster, you need to
     user: admin
     password: admin
 
-- And finally configure and deploy a CDH Cluster with the services you choose using the Cloudera Manager Admin Console.
+
+- And finally, configure and deploy a CDH Cluster with the services you choose using the Cloudera Manager Admin Console.
 
 ****
 
