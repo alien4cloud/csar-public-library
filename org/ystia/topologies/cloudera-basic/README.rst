@@ -75,6 +75,8 @@ To deploy a CDH cluster, you need to:
 #. create, configure and deploy an application using the **cloudera-basic** topology, and
 #. then configure and deploy a CDH Cluster with the services you choose, using the Cloudera Manager Admin Console.
 
+Steps to do are:
+
 - Create an application using the **cloudera-basic** topology.
 
 - You may change the number of **Compute_A** nodes. The default value is 3.
@@ -84,11 +86,11 @@ To deploy a CDH cluster, you need to:
 
 - Once the application is deployed by Alien4Cloud, a cluster of nodes is available with Cloudera Manager ready to deploy CDH Cluster.
   Then connect to the Cloudera Manager Admin Console dashboard on the Compute_S node using the output property
-  *url* attribute of *ClouderaServer*::
+  *url* attribute of *ClouderaServer* ::
 
   http://<Compute_S_IP>:7180/
-    user: admin
-    password: admin
+  user: admin
+  password: admin
 
 
 - And finally, configure and deploy a CDH Cluster with the services you choose using the Cloudera Manager Admin Console.
