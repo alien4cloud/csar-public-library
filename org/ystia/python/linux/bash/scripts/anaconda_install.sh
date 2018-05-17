@@ -93,6 +93,16 @@ if [[ -n "${REPOSITORY}" ]] && [[ "${REPOSITORY}" != "DEFAULT" ]] && [[ "${REPOS
         log info "pybrain installed"
     fi
 
+    if [[ "${ML}" == "true" ]]
+    then
+        for PACKAGE in pandas-0.23.0-py27h637b7d7_0.tar.bz2 scikit-learn-0.19.1-py27_nomklh6479e79_0.tar.bz2
+        do
+            install_pkg_in_mode_off ${REPOSITORY} ${PACKAGE}
+        done
+
+        log info "pandas and scikit-learn installed"
+    fi
+
 else
     # MODE ONLINE
 
@@ -125,6 +135,14 @@ else
         log info "pybrain installed"
     fi
 
+    if [[ "${ML}" == "true" ]]
+    then
+        conda install -y pandas
+        log info "pandas installed"
+
+        conda install -y scikit-learn
+        log info "scikit-learn installed"
+    fi
 fi
 
 
