@@ -1,7 +1,7 @@
 .. _cloudera_basic_section:
 
 **************
-CLOUDERA_BASIC
+CLOUDERA-BASIC
 **************
 
 .. contents::
@@ -70,8 +70,9 @@ The minimum size for each node type is as follows:
 How to deploy a Cloudera Hadoop cluster
 ---------------------------------------
 
-To deploy a CDH cluster, you need to create, configure and deploy an application using the **cloudera-basic** topology,
-and then configure and deploy a CDH Cluster with the services you choose, using the Cloudera Manager Admin Console.
+To deploy a CDH cluster, you need to
+#. create, configure and deploy an application using the **cloudera-basic** topology, and
+#. then configure and deploy a CDH Cluster with the services you choose, using the Cloudera Manager Admin Console.
 
 - Create an application using the **cloudera-basic** topology.
 
@@ -81,16 +82,14 @@ and then configure and deploy a CDH Cluster with the services you choose, using 
 - You may change the input properties to replace the public repositories with local repositories, and the NTP server used.
 
 - Once the application is deployed by Alien4Cloud, a cluster of nodes is available with Cloudera Manager ready to deploy CDH Cluster.
-
-- Connect to the Cloudera Manager Admin Console dashboard on the Compute_S node using the output property
-  *url* attribute of *ClouderaServer*
+  Then connect to the Cloudera Manager Admin Console dashboard on the Compute_S node using the output property
+  *url* attribute of *ClouderaServer*::
 
   http://<Compute_S_IP>:7180/
     user: admin
     password: admin
 
-- And then configure and deploy a CDH Cluster with the services you choose.
-
+- And finally configure and deploy a CDH Cluster with the services you choose using the Cloudera Manager Admin Console.
 
 ****
 

@@ -9,7 +9,7 @@ Cloudera
     :depth: 3
 
 Cloudera Overview
-------------------
+-----------------
 
 **Cloudera Manager** is an end-to-end application for easily deploying and managing **Cloudera Distribution Hadoop (CDH)** clusters
 (complete CDH stack and other managed services).
@@ -42,14 +42,14 @@ The Cloudera Manager Server uses the following components:
 
 Ystia provides two components for Cloudera, both being packed in the same Ystia CSAR:
 
-#. **Cloudera Server**, which includes the Cloudera Manager Server and an embedded database, and runs on the main node.
-#. **Cloudera Agent**, which includes the Cloudera Manager Agent, and runs on each cluster node.
+#. **ClouderaServer**, which includes the Cloudera Manager Server and an embedded database, and runs on the main node.
+#. **ClouderaAgent**, which includes the Cloudera Manager Agent, and runs on each cluster node.
 
 
-Cloudera Server Component
--------------------------
+ClouderaServer Component
+------------------------
 
-Cloudera Server provides the Cloudera Manager Server with an embedded PostgreSQL database. It requires a CentOS 7 Linux system.
+*ClouderaServer* provides the Cloudera Manager Server with an embedded PostgreSQL database. It requires a CentOS 7 Linux system.
 
 .. image:: docs/images/cloudera_server.png
     :scale: 80
@@ -77,30 +77,29 @@ Properties
 Requirements
 ^^^^^^^^^^^^
 
-- **host**: Cloudera Server requires to be hosted on a Compute with **linux** type and **centos** distribution.
+- **host**: ClouderaServer requires to be hosted on a Compute with **linux** type and **centos** distribution.
 
-- **consul**: Cloudera Server must be connected to a Consul agent hosted on the same Compute.
-  discovery.
+- **consul**: ClouderaServer must be connected to a Consul agent hosted on the same Compute.
 
 Capabilities
 ^^^^^^^^^^^^
 
-- **cloudera_server_endpoint**: Allows Cloudera agents to connect to this Cloudera server
+- **cloudera_server_endpoint**: Allows Cloudera agents to connect to this ClouderaServer
 
 Artifacts
 ^^^^^^^^^
 
 - **data**: Data files for setting up the yum repositories files.
 
-- **scripts**: Cloudera Server required scripts.
+- **scripts**: ClouderaServer required scripts.
 
 - **utils_scripts**: Common util scripts for whole Ystia components.
 
 
-Cloudera Agent Component
-------------------------
+ClouderaAgent Component
+-----------------------
 
-Cloudera Agent provides the Cloudera Manager Agent. It requires a CentOS 7 Linux system.
+ClouderaAgent provides the Cloudera Manager Agent. It requires a CentOS 7 Linux system.
 
 .. image:: docs/images/cloudera_agent.png
     :scale: 80
@@ -132,18 +131,18 @@ Properties
 Requirements
 ^^^^^^^^^^^^
 
-- **host**: Cloudera Agent requires to be hosted on a Compute with **linux** type and **centos** distribution.
+- **host**: ClouderaAgent requires to be hosted on a Compute with **linux** type and **centos** distribution.
 
-- **consul**: Cloudera Agent must be connected to a Consul agent hosted on the same Compute.
+- **consul**: ClouderaAgent must be connected to a Consul agent hosted on the same Compute.
 
-- **server_endpoint**: Cloudera Agent must be connected to a Consul agent hosted on the same Compute.
+- **server_endpoint**: ClouderaAgent must be connected to a ClouderaServer.
 
 Artifacts
 ^^^^^^^^^
 
 - **data**: Data files for setting up the yum repositories files.
 
-- **scripts**: Cloudera Agent required scripts.
+- **scripts**: ClouderaAgent required scripts.
 
 - **utils_scripts**: Common util scripts for whole Ystia components.
 
