@@ -29,7 +29,7 @@ Properties
 - **repository**: This property give the opportunity to specify an alternative download repository for Anaconda and the additionnal packages.
   It is your responsibility to provide an accessible download url and to store required artifacts on it.
   The repository must contain the Anaconda install script (.sh) and optionnal additonnal packaged as tar.bz2
-  (oauthlib, requests-oauthlib, nltk, twython, seaborn, plotly, csvkit, configparser, pybrain).
+  (oauthlib, requests-oauthlib, nltk, twython, seaborn, plotly, csvkit, configparser, pybrain, pandas, scikit-learn).
 
 - **nlp_twitter**: If checked, installs additional packages for Natural Language Processing and twitter API (nltk, twython).
 
@@ -38,6 +38,8 @@ Properties
 - **dataformat**: If checked, installs additional packages for data formatting (csvkit, configparser).
 
 - **pybrain**: If checked, installs Python-based reinforcement learning, artificial intelligence and neural network library (pybrain).
+
+- **ml**: If checked, installs additionnal package for machine learning topics (pandas and scikit-learn).
 
 
 Capabilities

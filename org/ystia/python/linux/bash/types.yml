@@ -60,7 +60,7 @@ node_types:
         default: false
       ml:
         type: boolean
-        description: Install additionnal package for machine learning topics (numpy, scipy and scikit-learn)
+        description: Install additionnal package for machine learning topics (pandas and scikit-learn)
         default: false
     capabilities:
       python_host:
