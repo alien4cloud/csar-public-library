@@ -42,36 +42,12 @@ node_types:
         default: 3.6
         constraints:
           - equal: 3.6
-      repository:
-        type: string
-        required: true
-        description: >
-          This property give the opportunity to specify an alternative download repository for this component artifact.
-          It is your responsibility to provide an accessible download url and to store required artifacts on it.
-        default:
     capabilities:
       host:
         type: org.ystia.mongodb.pub.capabilities.Container.MongoDB
      interfaces:
       Standard:
-        inputs:
-          INSTALL_DIR: { get_property: [SELF, install_dir] }
-          CONFIG_DIR: { get_property: [SELF, config_dir] }
-          MODE: { get_property: [SELF, mode] }
-          DATA_DIR: { get_property: [SELF, data_dir] }
-          WEB_UI: { get_property: [SELF, web_ui] }
         create:
           description: MongoDB installation step
-          inputs:
-            DOWNLOAD_URL: { get_property: [SELF, download_url] }
           implementation: playbooks/mongodb_install.yaml
-        configure:
-          inputs:
-            IP_ADDRESS: { get_attribute: [HOST, private_address] }
-            WAN_ADDRESS: { get_attribute: [HOST, public_address] }
-          implementation: playbooks/mongodb_configure.yaml
-        start:
-          implementation: playbooks/mongodb_start.yml
-        stop:
-          implementation: playbooks/mongodb_stop.yaml
 
