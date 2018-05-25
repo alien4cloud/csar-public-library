@@ -21,6 +21,7 @@ imports:
 
 node_types:
   org.ystia.mongodb.linux.ansible.nodes.MongoDB:
+    derived_from: org.ystia.nodes.DBMS
     description: MongoDB component for linux
     tags:
       icon: /images/mongodb.jpg
@@ -45,10 +46,8 @@ node_types:
     capabilities:
       host:
         type: org.ystia.mongodb.pub.capabilities.Container.MongoDB
-     interfaces:
+    interfaces:
       Standard:
         create:
           description: MongoDB installation step
           implementation: playbooks/mongodb_install.yaml
-
-
