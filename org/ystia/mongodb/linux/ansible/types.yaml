@@ -15,12 +15,12 @@ description: MongoBD Component
 
 imports:
   - tosca-normative-types:1.0.0-ALIEN20
+  - yorc-types:1.0.0
   - org.ystia.common:2.0.0-SNAPSHOT
   - org.ystia.mongodb.pub:2.0.0-SNAPSHOT
 
 node_types:
   org.ystia.mongodb.linux.ansible.nodes.MongoDB:
-    derived_from: org.ystia.nodes.DBMS
     description: MongoDB component for linux
     tags:
       icon: /images/mongodb.jpg
@@ -50,4 +50,5 @@ node_types:
         create:
           description: MongoDB installation step
           implementation: playbooks/mongodb_install.yaml
+
 
