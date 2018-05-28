@@ -1,0 +1,10 @@
+- name: Install consul
+  hosts: all
+  strategy: free
+  become: true
+  become_method: sudo
+  tasks:
+    - name: Install MongoDB using a 3rd party role
+      import_role:
+        name: undergreen.ansible-role-mongodb
+
