@@ -43,9 +43,22 @@
     owner: "{{ mongodb_user }}"
     recurse: yes
   
-- sefcontext: Allow MongoDB to create files in database
-    target: "{{ mongodb_storage_dbpath }}"
-    setype: mongod_var_lib_t
+- name: Set selinux policy for dbpath directory
+  sefcontext:
+   target: '{{ mongodb_storage_dbpath }}(/.*)?'
+   setype: "mongod_var_lib_t"
+   reload: True
+   state: present
+  register: filecontext
+
+- name: Run restore context to reload selinux
+  shell: restorecon -v {{ mongodb_storage_dbpath }}
+
+- name: Allow MongoDB to listen on tcp port 27017
+  seport:
+    ports: 27017
+    proto: tcp
+    setype: mongod_port_t
     state: present
 
 - name: Configure mongodb
