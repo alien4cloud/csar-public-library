@@ -42,6 +42,11 @@
     state: directory
     owner: "{{ mongodb_user }}"
     recurse: yes
+  
+- sefcontext: Allow MongoDB to create files in database
+    target: "{{ mongodb_storage_dbpath }}"
+    setype: mongod_var_lib_t
+    state: present
 
 - name: Configure mongodb
   template: src=mongod.conf.j2 dest=/etc/mongod.conf backup=yes owner=root group=root mode=0644
