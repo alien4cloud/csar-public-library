@@ -26,28 +26,43 @@ node_types:
     tags:
       icon: /images/mongodb.jpg
     properties:
-      root_password:
-        type: string
-        description: DBMS root password
-        default: "mongodb"
-        required: false
-      port:
-        type: integer
-        description: DBMS port
-        default: 3306
-        constraints:
-          - equal: 3306
       component_version:
         type: version
-        description: The optional MongoDB component’s version.
+        description: Version of the installed MongoDB component
         default: 3.6
         constraints:
-          - equal: 3.6
+          - valid_values: [3.2,3.4,3.6]
+      port:
+        type: integer
+        description: MongoDB port
+        default: 27017
+        required: true
+      db_path:
+        type: string
+        description: Path of the database
+        default: /var/lib/mongo
+        required: true
+      quota_enforced:
+        type: boolean
+        description: Limits each database to a certain number of files
+        default: false
+        required: true
+      quota_maxfiles:
+        type: integer
+        description: Number of quota files per DB
+        default: 8
+        required: true
     capabilities:
       host:
         type: org.ystia.mongodb.pub.capabilities.Container.MongoDB
     interfaces:
       Standard:
         create:
+          inputs:
+            MONGODB_VERSION: { get_property: [SELF, component_version] }
+            MONGODB_PORT: { get_property: [SELF, port] }
+            MONGODB_DB_PATH: { get_property: [SELF, db_path] }
+            MONGODB_QUOTA_ENFORCED { get_property: [SELF, quota_enforced] }
+            MONGODB_QUOTA_MAXFILES { get_property: [SELF, quota_maxfiles] }
           description: MongoDB installation step
           implementation: playbooks/mongodb_install.yaml
