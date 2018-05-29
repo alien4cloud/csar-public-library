@@ -63,6 +63,6 @@ node_types:
             MONGODB_VERSION: { get_property: [SELF, component_version] }
             MONGODB_PORT: { get_property: [SELF, port] }
             MONGODB_DB_PATH: { get_property: [SELF, db_path] }
-            MONGODB_QUOTA_ENFORCED { get_property: [SELF, quota_enforced] }
-            MONGODB_QUOTA_MAXFILES { get_property: [SELF, quota_maxfiles] }
+            MONGODB_QUOTA_ENFORCED: { get_property: [SELF, quota_enforced] }
+            MONGODB_QUOTA_MAXFILES: { get_property: [SELF, quota_maxfiles] }
           implementation: playbooks/mongodb_install.yaml
