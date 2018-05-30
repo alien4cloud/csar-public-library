@@ -21,7 +21,7 @@ imports:
 
 node_types:
   org.ystia.mongodb.linux.ansible.nodes.MongoDB:
-    #derived_from: org.ystia.nodes.DBMS
+    derived_from: org.ystia.nodes.SoftwareComponent
     description: MongoDB component for linux
     tags:
       icon: /images/mongodb.jpg
