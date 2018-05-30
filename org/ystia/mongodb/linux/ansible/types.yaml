@@ -25,6 +25,8 @@ node_types:
     description: MongoDB component for linux
     tags:
       icon: /images/mongodb.jpg
+    attributes:
+      url: { concat: ["http://", get_attribute: [HOST, public_ip_address], ":28017" ] }
     properties:
       component_version:
         type: version
@@ -60,6 +62,7 @@ node_types:
         create:
           description: MongoDB installation step
           inputs:
+            IP_ADDRESS: { get_attribute: [HOST, private_address] }
             MONGODB_VERSION: { get_property: [SELF, component_version] }
             MONGODB_PORT: { get_property: [SELF, port] }
             MONGODB_DB_PATH: { get_property: [SELF, db_path] }
