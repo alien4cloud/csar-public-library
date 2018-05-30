@@ -1,4 +1,4 @@
-- name: Install consul
+- name: Install MongoDB
   hosts: all
   strategy: free
   become: true
