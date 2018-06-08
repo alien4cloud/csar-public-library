@@ -27,23 +27,18 @@ The following figure shows a MongoDB node configuration:
 Properties
 ^^^^^^^^^^
 
-- **component_version**: Version of the component.
+- **component_version**: Version of MongoDB to install. Versions 3.2, 3.4, 3.6 available.
   - Default: 3.6
-- **download_url**: If you need a specific MongoDB version, URL from which it can be downloaded.
-
-Capabilities
-^^^^^^^^^^^^
-
+- **port**: TCP port MongoDB.
+  - Default: 2707
+- **db_path**: Path the DB is stored on.
+  - Default: /var/lib/mongo
+- **quota_enforced**:  Limits each database to a certain number of files.
+  - Default: false
+- **quota_maxfiles**:  Number of quota files per DB.
+  - Default: 8
 
 Requirements
 ^^^^^^^^^^^^
 
 - **host**: MongoDB component requires to be hosted on a Compute
-
-Artifacts
-^^^^^^^^^
-
-- **scripts**: MongoDB required scripts.
-
-- **utils_scripts**: Common util scripts for whole Ystia components.
-
