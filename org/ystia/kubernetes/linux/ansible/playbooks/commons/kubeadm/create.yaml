@@ -1,0 +1,106 @@
+#
+# Ystia Forge
+# Copyright (C) 2018 Bull S. A. S. - Bull, Rue Jean Jaures, B.P.68, 78340, Les Clayes-sous-Bois, France.
+# Use of this source code is governed by Apache 2 LICENSE that can be found in the LICENSE file.
+#
+
+- name: Install Kubeadm, Kubelet & Kubectl
+  hosts: all
+  strategy: linear
+  become: true
+  tasks:
+    - name: Kubernetes YUM repo
+      template:
+        src: kubernetes.repo.j2
+        dest: "/etc/yum.repos.d/kubernetes.repo"
+        mode: "u=rw,g=rw,o=r"
+    
+    - name: Disable SELinux
+      selinux:
+        state: disabled
+
+    - name: restart the system
+      shell: "sleep 5 && systemctl reboot"
+      async: 1
+      poll: 0
+      ignore_errors: yes
+
+    - name: wait for the system to reboot
+      wait_for_connection:
+        connect_timeout: 20
+        sleep: 5
+        delay: 5
+        timeout: 300
+    
+    - name: set hostname
+      blockinfile:
+        path: /etc/hosts
+        block: |
+          127.0.0.1 {{ ansible_hostname }} {{ ansible_fqdn }}
+          {% for host in ansible_play_hosts %}
+          {{ hostvars[host]['PRIVATE_IP'] }} {{ hostvars[host]['ansible_hostname'] }} {{ hostvars[host]['ansible_fqdn'] }}
+          {% endfor %}
+    
+    - name: Set net_mask fact
+      set_fact:
+        net_mask: "{{ ansible_default_ipv4.network }}/{{ ansible_default_ipv4.netmask }}"
+    
+    - name: Set net cidr fact
+      set_fact:
+        net_cidr:  "{{ net_mask | ipaddr('net') }}"
+
+    - name: set no proxy
+      blockinfile:
+        path: /etc/profile.d/ZZZ_kube_http_noproxy.sh
+        create: yes
+        block: |
+          export NO_PROXY="{{net_cidr}},{% for host in ansible_play_hosts %}{{ hostvars[host]['PRIVATE_IP'] }},{{ hostvars[host]['ansible_hostname'] }},{{ hostvars[host]['ansible_fqdn'] }},{% endfor %}${NO_PROXY}"
+          export no_proxy="{{net_cidr}},{% for host in ansible_play_hosts %}{{ hostvars[host]['PRIVATE_IP'] }},{{ hostvars[host]['ansible_hostname'] }},{{ hostvars[host]['ansible_fqdn'] }},{% endfor %}${no_proxy}"
+    
+    - name: Import GPG keys
+      rpm_key:
+        state: present
+        key: "{{item}}"
+      with_items: "{{KUBE_YUM_REPO_GPG_KEYS.split(' ')}}"
+      when: KUBE_YUM_REPO_GPG_KEYS != ""
+      register: setup_repo
+
+    - name: run make cache to actually import gpg key
+      command: "yum -q makecache -y --disablerepo='*' --enablerepo='kubernetes'"
+      when: setup_repo.changed
+    
+    - name: Install Kube packages
+      yum:
+        name: "{{item}}"
+        state: present
+        update_cache: yes
+        enablerepo: kubernetes 
+      with_items:
+        - kubelet
+        - kubeadm
+        - kubectl
+
+    - name: Extra config for Kubelet
+      template:
+        src: 01-kubeadm-extra-args.conf.j2
+        dest: "/etc/systemd/system/kubelet.service.d/01-kubeadm-extra-args.conf"
+        mode: "u=rw,g=rw,o=r"
+
+    - name: Get docker cgroup driver
+      shell: "docker info | grep -i cgroup | awk -F': ' '{print $2}'"
+      register: docker_cgroups
+    
+    - name: setup kubelet cgroup config
+      lineinfile:
+        path: /etc/systemd/system/kubelet.service.d/10-kubeadm.conf
+        line: "Environment=\"KUBELET_CGROUP_ARGS=--cgroup-driver={{docker_cgroups['stdout_lines'][0]}} --runtime-cgroups=/systemd/system.slice --kubelet-cgroups=/systemd/system.slice\""
+        regexp: "KUBELET_CGROUP_ARGS=--cgroup-driver"
+        
+    - name: Start Kubelet
+      systemd:
+        name: kubelet
+        state: restarted
+        enabled: yes
+        daemon_reload: yes
+  
+

@@ -1,0 +1,11 @@
+{#
+#
+# Ystia Forge
+# Copyright (C) 2018 Bull S. A. S. - Bull, Rue Jean Jaures, B.P.68, 78340, Les Clayes-sous-Bois, France.
+# Use of this source code is governed by Apache 2 LICENSE that can be found in the LICENSE file.
+#
+#}
+[Service]    
+Environment="HTTP_PROXY={% if ansible_env['HTTP_PROXY'] is defined %}{{ansible_env['HTTP_PROXY']}}{%elif ansible_env['http_proxy'] is defined %}{{ansible_env['http_proxy']}}{%endif%}"
+Environment="HTTPS_PROXY={% if ansible_env['HTTPS_PROXY'] is defined %}{{ansible_env['HTTPS_PROXY']}}{%elif ansible_env['https_proxy'] is defined %}{{ansible_env['https_proxy']}}{%endif%}"
+Environment="NO_PROXY={% if ansible_env['NO_PROXY'] is defined %}{{ansible_env['NO_PROXY']}}{%elif ansible_env['no_proxy'] is defined %}{{ansible_env['no_proxy']}}{%endif%}"

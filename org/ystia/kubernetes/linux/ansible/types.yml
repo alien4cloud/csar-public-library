@@ -1,0 +1,238 @@
+tosca_definitions_version: alien_dsl_2_0_0
+
+#
+# Ystia Forge
+# Copyright (C) 2018 Bull S. A. S. - Bull, Rue Jean Jaures, B.P.68, 78340, Les Clayes-sous-Bois, France.
+# Use of this source code is governed by Apache 2 LICENSE that can be found in the LICENSE file.
+#
+
+metadata:
+  template_name: org.ystia.kubernetes.linux.ansible
+  template_version: 2.0.0-SNAPSHOT
+  template_author: Ystia
+
+description: |
+  Ansible implementation of a Kubernetes Cluster
+
+imports:
+  - tosca-normative-types:1.0.0-ALIEN20
+  - yorc-types:1.0.0
+  - org.ystia.kubernetes.pub:2.0.0-SNAPSHOT
+
+
+node_types:
+  org.ystia.kubernetes.linux.ansible.nodes.KubernetesMaster:
+    derived_from: org.ystia.kubernetes.pub.nodes.KubernetesMaster
+    tags:
+      icon: /images/kubernetes-master-icon.png
+    properties:
+      pod_network:
+        type: string
+        default: calico
+        constraints:
+          - valid_values: [calico, canal, flannel, romana, weave]
+      cfssl_download_url:
+        type: string
+        default: "https://pkg.cfssl.org/R1.2"
+      ca_certificate:
+        type: string
+        default: ""
+        required: false
+        description: |
+          This property should contains a PEM-encoded Certificate Authority (CA) certificate.
+          If not provided along with a ca_key a self-signed certificate and key will be automatically created.
+          It should allows to sign clients, servers and peers certification requests.
+          It will be used a Root CA for etcd and the Kubernetes API server.
+      ca_key:
+        type: string
+        default: ""
+        required: false
+        description: |
+          This property should contains a PEM-encoded Certificate Authority (CA) key.
+          If not provided along with a ca_certificate a self-signed certificate and key will be automatically created.
+          It should allows to sign clients, servers and peers certification requests.
+          It will be used a Root CA for etcd and the Kubernetes API server.
+      hosts_pods:
+        type: boolean
+        default: false
+        required: false
+        description: >
+          Whever or not a Kubernetes master node can hosts PODs. This is useful when deploying a test cluster with only one node,
+          but this is not recommended for production.
+      kube_yum_repo:
+        type: string
+        default: https://packages.cloud.google.com/yum/repos/kubernetes-el7-x86_64
+        required: true
+      kube_yum_repo_gpg_keys:
+        type: string
+        default: "https://packages.cloud.google.com/yum/doc/yum-key.gpg https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg"
+        required: true
+    attributes:
+      admin_token: { get_operation_output: [SELF, Standard, configure, ADMIN_TOKEN]}
+      ca_cert_hash: { get_operation_output: [SELF, Standard, configure, CA_CERT_HASH]}
+      pods_cidr: { get_operation_output: [SELF, Standard, configure, POD_CIDR]}
+      node_name: { get_operation_output: [SELF, Standard, configure, node_name]}
+    requirements:
+      # currently support only RHEL familly
+      - host:
+          capability: tosca.capabilities.Container
+          node: tosca.nodes.Compute
+          relationship: tosca.relationships.HostedOn
+          occurrences: [1,1]
+          node_filter:
+            capabilities:
+              - tosca.capabilities.OperatingSystem:
+                  properties:
+                    - type: { equal: linux }
+                    - architecture: { equal: x86_64 }
+                    - distribution: { valid_values: [ centos, rhel ] }
+    interfaces:
+      Standard:
+        inputs:
+          PRIVATE_IP: {get_attribute: [HOST, private_address]}
+          PUBLIC_IP: {get_attribute: [HOST, public_address]}
+        create: 
+          inputs:
+            CFSSL_DOWNLOAD_URL: {get_property: [SELF, cfssl_download_url]}
+            CA_CERT: {get_property: [SELF, ca_certificate]}
+            CA_KEY: {get_property: [SELF, ca_key]}
+            KUBE_YUM_REPO: {get_property: [SELF, kube_yum_repo]}
+            KUBE_YUM_REPO_GPG_KEYS: {get_property: [SELF, kube_yum_repo_gpg_keys]}
+          implementation: playbooks/master/create.yaml
+        configure: 
+          inputs:
+            API_SERVER_PORT: {get_property: [SELF, api_server, port]}
+            pod_network: {get_property: [SELF, pod_network]}
+            hosts_pods: {get_property: [SELF, hosts_pods]}
+          implementation: playbooks/master/configure.yaml
+        start: 
+          implementation: playbooks/master/start.yaml
+        stop: 
+          implementation: playbooks/commons/kubeadm/stop.yaml
+        delete: 
+          implementation: playbooks/commons/kubeadm/delete.yaml
+
+  org.ystia.kubernetes.linux.ansible.nodes.KubernetesWorker:
+    derived_from: org.ystia.kubernetes.pub.nodes.KubernetesWorker
+    tags:
+      icon: /images/kubernetes-master-icon.png
+    properties:
+      kube_yum_repo:
+        type: string
+        default: https://packages.cloud.google.com/yum/repos/kubernetes-el7-x86_64
+        required: true
+      kube_yum_repo_gpg_keys:
+        type: string
+        default: "https://packages.cloud.google.com/yum/doc/yum-key.gpg https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg"
+        required: true
+    attributes:
+      node_name: { get_operation_output: [SELF, Standard, create, node_name]}
+    requirements:
+      # currently support only RHEL familly
+      - host:
+          capability: tosca.capabilities.Container
+          node: tosca.nodes.Compute
+          relationship: tosca.relationships.HostedOn
+          occurrences: [1,1]
+          node_filter:
+            capabilities:
+              - tosca.capabilities.OperatingSystem:
+                  properties:
+                    - type: { equal: linux }
+                    - architecture: { equal: x86_64 }
+                    - distribution: { valid_values: [ centos, rhel ] }
+      - api_server:   
+          capability: org.ystia.kubernetes.pub.capabilities.KubernetesAPIServer
+          node: org.ystia.kubernetes.linux.ansible.nodes.KubernetesMaster
+          relationship: org.ystia.kubernetes.linux.ansible.relationships.JoinCluster
+          occurrences: [ 1, 1 ]
+    interfaces:
+      Standard:
+        inputs:
+          PRIVATE_IP: {get_attribute: [HOST, private_address]}
+        create: 
+          inputs:
+            KUBE_YUM_REPO: {get_property: [SELF, kube_yum_repo]}
+            KUBE_YUM_REPO_GPG_KEYS: {get_property: [SELF, kube_yum_repo_gpg_keys]}
+          implementation: playbooks/worker/create.yaml
+        start: 
+          implementation: playbooks/commons/kubeadm/start.yaml
+        stop: 
+          implementation: playbooks/commons/kubeadm/stop.yaml
+        delete: 
+          implementation: playbooks/commons/kubeadm/delete.yaml
+
+  org.ystia.kubernetes.linux.ansible.nodes.KubernetesDashBoard:
+    derived_from: org.ystia.kubernetes.linux.ansible.nodes.KubernetesApp
+    tags:
+      icon: /images/kubernetes-dashboard-icon.png
+    properties:
+      specs:
+        type: list
+        description: >
+          List of URLs that will be applied in order using 'kubectl apply -f <url>'
+        required: true
+        entry_schema:
+          type: string
+        default: 
+          - https://raw.githubusercontent.com/kubernetes/dashboard/v1.8.3/src/deploy/recommended/kubernetes-dashboard.yaml
+          - https://gist.githubusercontent.com/loicalbertin/1a7c1bebf1854924bf285f0553cde268/raw/0477ee67905122c16f85f43d66d3c0235e7c669d/KubernetesDashboardAdminUserSA.yaml
+      service_type:
+        type: string
+        default: default
+        description: >
+          How the dashboard service is exposed
+        constraints:
+          - valid_values: [default, NodePort, LoadBalancer]
+      expose_admin_token:
+        type: boolean
+        default: false
+        required: false
+    attributes:
+      admin_token: {get_operation_output: [SELF, Standard, start, admin_token]}
+      url: {get_operation_output: [SELF, Standard, start, url]}
+    interfaces:
+      Standard:
+        inputs:
+          specs: {get_property: [SELF, specs]}
+          MASTER_PRIVATE_IP: {get_attribute: [HOST, private_address]}
+          MASTER_PUBLIC_IP: {get_attribute: [HOST, public_address]}  
+        create: playbooks/apps/dashboard/create.yaml
+        start: 
+          inputs:
+            service_type: {get_property: [SELF, service_type]}
+            expose_admin_token: {get_property: [SELF, expose_admin_token]}
+          implementation: playbooks/apps/dashboard/start.yaml
+
+  org.ystia.kubernetes.linux.ansible.nodes.KubernetesApp:
+    derived_from: org.ystia.kubernetes.pub.nodes.KubernetesApp
+    tags:
+      icon: /images/kubernetes-app-icon.png
+    properties:
+    interfaces:
+      Standard:
+        inputs:
+          specs: {get_property: [SELF, specs]}
+          MASTER_PRIVATE_IP: {get_attribute: [HOST, private_address]}
+          MASTER_PUBLIC_IP: {get_attribute: [HOST, public_address]}  
+        # App installation is done at the configure phase to let subtypes do some stuff before (create) and after it (start)
+        configure: playbooks/apps/commons/configure.yaml
+        delete: playbooks/apps/commons/delete.yaml
+
+relationship_types:
+  org.ystia.kubernetes.linux.ansible.relationships.JoinCluster:
+    derived_from: tosca.relationships.ConnectsTo
+    interfaces:
+      Configure:
+        post_configure_source:
+          inputs:
+            JOIN_URL: {concat: [get_attribute: [TARGET, ip_address], ":", get_attribute: [TARGET, api_server, port]]}
+            ADMIN_TOKEN: {get_attribute: [TARGET, admin_token]}
+            CA_CERT_HASH: {get_attribute: [TARGET, ca_cert_hash]}
+            MASTER_PRIVATE_IP: { get_attribute: [TARGET, ip_address] }
+            POD_CIDR: { get_attribute: [TARGET, pods_cidr] }
+          implementation: playbooks/worker/post_configure.yaml
+        delete_source:
+          inputs:
+            node_name: {get_attribute: [SOURCE, node_name]}
+          implementation: playbooks/master/remove_worker.yaml

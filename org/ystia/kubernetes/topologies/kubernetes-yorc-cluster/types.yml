@@ -1,0 +1,144 @@
+tosca_definitions_version: alien_dsl_2_0_0
+
+metadata:
+  template_name: Kubernetes-Yorc-Cluster
+  template_version: 2.0.0-SNAPSHOT
+  template_author: admin
+
+description: "Setup a Kubernetes Cluster plus some specific credentials to make it manageable by Yorc"
+
+imports:
+  - tosca-normative-types:1.0.0-ALIEN20
+  - org.ystia.kubernetes.pub:2.0.0-SNAPSHOT
+  - org.ystia.kubernetes.linux.ansible:2.0.0-SNAPSHOT
+  - yorc-types:1.0.0
+
+topology_template:
+  node_templates:
+    Network:
+      metadata:
+        a4c_edit_x: 68
+        a4c_edit_y: "-48"
+      type: tosca.nodes.Network
+      properties:
+        ip_version: 4
+    KubernetesMaster:
+      type: org.ystia.kubernetes.linux.ansible.nodes.KubernetesMaster
+      properties:
+        pod_network: calico
+        cfssl_download_url: "https://pkg.cfssl.org/R1.2"
+        hosts_pods: false
+        kube_yum_repo: "https://packages.cloud.google.com/yum/repos/kubernetes-el7-x86_64"
+        kube_yum_repo_gpg_keys: "https://packages.cloud.google.com/yum/doc/yum-key.gpg https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg"
+        component_version: "1.10-stable"
+      requirements:
+        - hostedOnComputeHost:
+            type_requirement: host
+            node: ComputeKubeMaster
+            capability: tosca.capabilities.Container
+            relationship: tosca.relationships.HostedOn
+      capabilities:
+        api_server:
+          properties:
+            port: 6443
+            protocol: tcp
+            secure: false
+            network_name: PRIVATE
+            initiator: source
+    KubernetesDashBoard:
+      type: org.ystia.kubernetes.linux.ansible.nodes.KubernetesDashBoard
+      properties:
+        specs: 
+          - "https://raw.githubusercontent.com/kubernetes/dashboard/v1.8.3/src/deploy/recommended/kubernetes-dashboard.yaml"
+          - "https://gist.githubusercontent.com/loicalbertin/1a7c1bebf1854924bf285f0553cde268/raw/0477ee67905122c16f85f43d66d3c0235e7c669d/KubernetesDashboardAdminUserSA.yaml"
+        service_type: NodePort
+        expose_admin_token: true
+      requirements:
+        - hostedOnKubernetesMasterApp_host:
+            type_requirement: app_host
+            node: KubernetesMaster
+            capability: org.ystia.kubernetes.pub.capabilities.AppHosting
+            relationship: tosca.relationships.HostedOn
+    ComputeKubeMaster:
+      metadata:
+        a4c_edit_x: "-11"
+        a4c_edit_y: "-3"
+      type: tosca.nodes.Compute
+      requirements:
+        - networkNetworkConnection:
+            type_requirement: network
+            node: Network
+            capability: tosca.capabilities.Connectivity
+            relationship: tosca.relationships.Network
+      capabilities:
+        os:
+          properties:
+            architecture: "x86_64"
+            type: linux
+            distribution: centos
+        scalable:
+          properties:
+            min_instances: 1
+            max_instances: 3
+            default_instances: 1
+        endpoint:
+          properties:
+            secure: true
+            protocol: tcp
+            network_name: PRIVATE
+            initiator: source
+    ComputeKubeWorker:
+      metadata:
+        a4c_edit_x: "-298"
+        a4c_edit_y: 3
+      type: tosca.nodes.Compute
+      capabilities:
+        os:
+          properties:
+            architecture: "x86_64"
+            type: linux
+            distribution: centos
+        scalable:
+          properties:
+            min_instances: 1
+            max_instances: 10
+            default_instances: 1
+        endpoint:
+          properties:
+            secure: true
+            protocol: tcp
+            network_name: PRIVATE
+            initiator: source
+    KubernetesWorker:
+      type: org.ystia.kubernetes.linux.ansible.nodes.KubernetesWorker
+      properties:
+        kube_yum_repo: "https://packages.cloud.google.com/yum/repos/kubernetes-el7-x86_64"
+        kube_yum_repo_gpg_keys: "https://packages.cloud.google.com/yum/doc/yum-key.gpg https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg"
+        component_version: "1.10-stable"
+      requirements:
+        - hostedOnComputeKubeWorkerHost:
+            type_requirement: host
+            node: ComputeKubeWorker
+            capability: tosca.capabilities.Container
+            relationship: tosca.relationships.HostedOn
+        - joinClusterKubernetesMasterApi_server:
+            type_requirement: api_server
+            node: KubernetesMaster
+            capability: org.ystia.kubernetes.pub.capabilities.KubernetesAPIServer
+            relationship: org.ystia.kubernetes.linux.ansible.relationships.JoinCluster
+    YorcClusterRole:
+      type: org.ystia.kubernetes.linux.ansible.nodes.KubernetesApp
+      properties:
+        specs: 
+          - "https://gist.githubusercontent.com/loicalbertin/1c48a4dc5204e1826e1e059ec8b7017e/raw/9b178bcfadb150fbbf38086711f5af14fb7f9424/KubeYorcClusterRole.yaml"
+      requirements:
+        - hostedOnKubernetesMasterApp_host:
+            type_requirement: app_host
+            node: KubernetesMaster
+            capability: org.ystia.kubernetes.pub.capabilities.AppHosting
+            relationship: tosca.relationships.HostedOn
+  outputs:
+    KubernetesDashBoard_url:
+      value: { get_attribute: [ KubernetesDashBoard, url ] }
+    KubernetesDashBoard_admin_token:
+      value: { get_attribute: [ KubernetesDashBoard, admin_token ] }

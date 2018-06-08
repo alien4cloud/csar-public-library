@@ -1,0 +1,36 @@
+#
+# Ystia Forge
+# Copyright (C) 2018 Bull S. A. S. - Bull, Rue Jean Jaures, B.P.68, 78340, Les Clayes-sous-Bois, France.
+# Use of this source code is governed by Apache 2 LICENSE that can be found in the LICENSE file.
+#
+
+
+- name: Connects Worker to Master
+  hosts: all
+  strategy: linear
+  become: true
+  vars:
+    masters: []
+  tasks:
+
+    - name: compute Masters Private IP
+      set_fact: 
+        masters: "{{ masters }} + [ '{{ hostvars[inventory_hostname][item] }}' ]"
+      with_items: "{{ hostvars[inventory_hostname]  }}"
+      when: item | match(TARGET_NODE+'_.*_MASTER_PRIVATE_IP')
+
+    - name: set Masters no proxy
+      blockinfile:
+        path: /etc/profile.d/ZZZ_kube_masters_http_noproxy.sh
+        create: yes
+        block: |
+          export NO_PROXY="{{POD_CIDR}},{% for host in masters %}{{host}},{% endfor %}${NO_PROXY}"
+          export no_proxy="{{POD_CIDR}},{% for host in masters %}{{host}},{% endfor %}${no_proxy}"
+    
+
+    - name: Join Kubernetes cluster
+      shell: >
+        source /etc/profile; 
+        kubeadm join "{{JOIN_URL}}" --token "{{ADMIN_TOKEN}}" --discovery-token-ca-cert-hash "{{CA_CERT_HASH}}" | tee /root/kubeadmjoin.log
+      
+        

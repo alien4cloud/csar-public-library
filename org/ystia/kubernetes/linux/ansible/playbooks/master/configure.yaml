@@ -1,0 +1,199 @@
+#
+# Ystia Forge
+# Copyright (C) 2018 Bull S. A. S. - Bull, Rue Jean Jaures, B.P.68, 78340, Les Clayes-sous-Bois, France.
+# Use of this source code is governed by Apache 2 LICENSE that can be found in the LICENSE file.
+#
+
+- name: Configure Cluster
+  hosts: all
+  strategy: linear
+  become: true
+  tasks:
+    - name: Create manifests directories
+      file:
+        path: "/etc/kubernetes/manifests"
+        state: directory
+        owner: root
+        group: root
+        mode: "u=rwx,g=rx,o=rx"
+
+    - name: Etcd POD config
+      template: 
+        src: etcd.yaml.j2
+        dest: "/etc/kubernetes/manifests/etcd.yaml"
+        mode: "u=rw,g=r,o=r"
+
+    - name: Generate Kubeadm Token
+      shell: >
+        kubeadm token generate
+      register: tokenResult
+      run_once: true
+      when: inventory_hostname == ansible_play_hosts[0]
+
+    - name: Expose bootstrap token
+      set_fact:
+        ADMIN_TOKEN: "{{ tokenResult['stdout_lines'][0] }}"
+
+    - name: Get discovery-token-ca-cert-hash
+      shell: >
+        openssl x509 -pubkey -in /etc/kubernetes/pki/ca.crt | openssl rsa -pubin -outform der 2>/dev/null | openssl dgst -sha256 -hex | sed 's/^.* //'
+      register: caCertHashResult
+      run_once: true
+      when: inventory_hostname == ansible_play_hosts[0]
+
+    - name: Expose discovery-token-ca-cert-hash
+      set_fact:
+        CA_CERT_HASH: "sha256:{{ caCertHashResult['stdout_lines'][0] }}"
+
+    - name: Set default POD CIDR
+      set_fact:
+        POD_CIDR: "`10.233.64.0/18"
+
+    - name: Set POD CIDR for Calico
+      set_fact:
+        POD_CIDR: "192.168.0.0/16"
+      when: pod_network == "calico"
+
+    - name: Set POD CIDR for Flanel
+      set_fact:
+        POD_CIDR: "10.244.0.0/16"
+      when: (pod_network == "canal" or pod_network == "flanel")
+
+    - name: setup no_proxy
+      set_fact:
+        NO_PROXY: "{{POD_CIDR}},{% for host in ansible_play_hosts %}{{ hostvars[host]['ansible_hostname'] }},{{ hostvars[host]['ansible_fqdn'] }},{{ hostvars[host]['PRIVATE_IP'] }},{{ hostvars[host]['PUBLIC_IP'] }},{% endfor %}{{ansible_env['NO_PROXY']}}"
+        no_proxy: "{{POD_CIDR}},{% for host in ansible_play_hosts %}{{ hostvars[host]['ansible_hostname'] }},{{ hostvars[host]['ansible_fqdn'] }},{{ hostvars[host]['PRIVATE_IP'] }},{{ hostvars[host]['PUBLIC_IP'] }},{% endfor %}{{ansible_env['no_proxy']}}"
+
+    - name: set POD CIDR no proxy
+      blockinfile:
+        path: /etc/profile.d/ZZZ_kube_pod_cidr_http_noproxy.sh
+        create: yes
+        block: |
+          export NO_PROXY="{{POD_CIDR}},${NO_PROXY}"
+          export no_proxy="{{POD_CIDR}},${no_proxy}"
+
+    - name: Generate Kubeadm init config
+      template: 
+        src: kubeadm-init-config.yaml.j2
+        dest: "/etc/kubernetes/config.yaml"
+        mode: "u=rw,g=r,o=r"
+
+    - name: Pregenerate SA keypair
+      shell: >
+        kubeadm alpha phase certs sa --config=/etc/kubernetes/config.yaml 2>&1 | tee /root/kubeadm-gensa.log 
+      when: inventory_hostname == ansible_play_hosts[0]
+
+    - name: slurp SA certs
+      slurp: src={{ item }}
+      with_items:
+        - /etc/kubernetes/pki/sa.pub
+      register: sa_pki_certs
+      run_once: true
+      when: inventory_hostname == ansible_play_hosts[0]
+    
+    - name: write out SA certs
+      copy:
+        dest: "{{ item['source'] }}"
+        content: "{{ item['content'] | b64decode }}"
+        owner: root
+        group: root
+        mode: 0644
+      with_items: "{{ sa_pki_certs.results }}"
+      when: inventory_hostname != ansible_play_hosts[0]
+          
+    - name: slurp SA keys
+      slurp: src={{ item }}
+      with_items:
+        - /etc/kubernetes/pki/sa.key
+      register: sa_pki_keys
+      run_once: true
+      when: inventory_hostname == ansible_play_hosts[0]
+    
+    - name: write out SA keys
+      copy:
+        dest: "{{ item['source'] }}"
+        content: "{{ item['content'] | b64decode }}"
+        owner: root
+        group: root
+        mode: 0600
+      with_items: "{{ sa_pki_keys.results }}"
+      when: inventory_hostname != ansible_play_hosts[0]
+
+    - name: Run kubeadm init
+      shell: > 
+        kubeadm init --ignore-preflight-errors=FileAvailable--etc-kubernetes-manifests-etcd.yaml,ExternalEtcdVersion --config=/etc/kubernetes/config.yaml 2>&1 | tee /root/kubeinit.log
+      environment:
+        NO_PROXY: "{{NO_PROXY}}"
+        no_proxy: "{{no_proxy}}"
+
+
+    - name: Create config directory
+      file:
+        path: "/root/.kube"
+        state: directory
+        owner: root
+        group: root
+        mode: "u=rwx,g=rx,o=rx"
+    
+    - name: Create config directory
+      shell:
+        ln -s /etc/kubernetes/admin.conf /root/.kube/config
+
+    - name: Create Calico Network
+      shell: >
+        kubectl apply -f https://docs.projectcalico.org/v3.0/getting-started/kubernetes/installation/hosted/kubeadm/1.7/calico.yaml
+      when: pod_network == "calico"  
+      environment:
+        NO_PROXY: "{{NO_PROXY}}"
+        no_proxy: "{{no_proxy}}"
+
+
+    - name: Create Canal Network
+      shell: >
+        kubectl apply -f https://raw.githubusercontent.com/projectcalico/canal/master/k8s-install/1.7/rbac.yaml;
+        kubectl apply -f https://raw.githubusercontent.com/projectcalico/canal/master/k8s-install/1.7/canal.yaml
+      when: pod_network == "canal"    
+      environment:
+        NO_PROXY: "{{NO_PROXY}}"
+        no_proxy: "{{no_proxy}}"
+
+
+    - name: Create Flannel Network
+      shell: >
+        kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/v0.10.0/Documentation/kube-flannel.yml
+      when: pod_network == "flannel"    
+      environment:
+        NO_PROXY: "{{NO_PROXY}}"
+        no_proxy: "{{no_proxy}}"
+
+    - name: Create Romana Network
+      shell: >
+        kubectl apply -f https://raw.githubusercontent.com/romana/romana/master/containerize/specs/romana-kubeadm.yml
+      when: pod_network == "romana"    
+      environment:
+        NO_PROXY: "{{NO_PROXY}}"
+        no_proxy: "{{no_proxy}}"
+
+    - name: Create Weave Network
+      shell: >
+        export kubever=$(kubectl version | base64 | tr -d '\n');
+        kubectl apply -f "https://cloud.weave.works/k8s/net?k8s-version=$kubever"
+      when: pod_network == "weave"    
+      environment:
+        NO_PROXY: "{{NO_PROXY}}"
+        no_proxy: "{{no_proxy}}"
+         
+    - name: Allow to schedule containers on master nodes
+      shell: >
+        kubectl taint nodes --all node-role.kubernetes.io/master-
+      when: 
+        - hosts_pods is defined
+        - hosts_pods == "true"    
+      environment:
+        NO_PROXY: "{{NO_PROXY}}"
+        no_proxy: "{{no_proxy}}"
+
+    - name: Set node name
+      set_fact:
+        node_name: "{{ansible_hostname}}"
+        
