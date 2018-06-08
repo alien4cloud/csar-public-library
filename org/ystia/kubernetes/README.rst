@@ -11,7 +11,7 @@ Kubernetes
 Kubernetes
 ----------
 
-**Kubernetes** is an ...
+**Kubernetes** is an open-source system for automating deployment, scaling, and management of containerized applications.
 
 A complete documentation is available at https://kubernetes.io/docs.
 
