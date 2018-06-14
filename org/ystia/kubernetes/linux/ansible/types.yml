@@ -68,6 +68,7 @@ node_types:
         default: "https://packages.cloud.google.com/yum/doc/yum-key.gpg https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg"
         required: true
     attributes:
+      api_url: {get_operation_output: [SELF, Standard, configure, API_URL]}
       admin_token: { get_operation_output: [SELF, Standard, configure, ADMIN_TOKEN]}
       ca_cert_hash: { get_operation_output: [SELF, Standard, configure, CA_CERT_HASH]}
       pods_cidr: { get_operation_output: [SELF, Standard, configure, POD_CIDR]}

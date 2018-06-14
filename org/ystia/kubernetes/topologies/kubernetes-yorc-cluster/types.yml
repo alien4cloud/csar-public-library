@@ -138,6 +138,8 @@ topology_template:
             capability: org.ystia.kubernetes.pub.capabilities.AppHosting
             relationship: tosca.relationships.HostedOn
   outputs:
+    KubernetesMaster_url:
+      value: { get_attribute: [ KubernetesMaster, api_url ] }
     KubernetesDashBoard_url:
       value: { get_attribute: [ KubernetesDashBoard, url ] }
     KubernetesDashBoard_admin_token:

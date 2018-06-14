@@ -196,4 +196,15 @@
     - name: Set node name
       set_fact:
         node_name: "{{ansible_hostname}}"
+
+    - name: Set private API URL fact
+      set_fact:
+        API_URL: "https://{{PRIVATE_IP}}:{{API_SERVER_PORT}}"
+    
+    - name: Set public API URL fact
+      set_fact:
+        API_URL: "https://{{PUBLIC_IP}}:{{API_SERVER_PORT}}"
+      # Below when construct is a shorthand for PUBLIC_IP is defined and not empty
+      when: PUBLIC_IP|default("") != "" 
         
+    
