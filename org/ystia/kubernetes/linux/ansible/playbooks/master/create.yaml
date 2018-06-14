@@ -1,0 +1,143 @@
+#
+# Ystia Forge
+# Copyright (C) 2018 Bull S. A. S. - Bull, Rue Jean Jaures, B.P.68, 78340, Les Clayes-sous-Bois, France.
+# Use of this source code is governed by Apache 2 LICENSE that can be found in the LICENSE file.
+#
+
+- import_playbook: ../commons/docker/create.yaml
+
+- import_playbook: ../commons/kubeadm/create.yaml
+
+- name: Generate certificates
+  hosts: all
+  strategy: linear
+  become: true
+  tasks:
+    - name: Download cfssl
+      get_url:
+        url: "{{CFSSL_DOWNLOAD_URL}}/cfssl_linux-amd64"
+        dest: /usr/local/bin/cfssl
+        mode: 0755
+
+    - name: Download cfssljson
+      get_url:
+        url: "{{CFSSL_DOWNLOAD_URL}}/cfssljson_linux-amd64"
+        dest: /usr/local/bin/cfssljson
+        mode: 0755
+
+    - name: Create pki directories
+      file:
+        path: "/etc/kubernetes/pki/etcd"
+        state: directory
+        owner: root
+        group: root
+        mode: "u=rwx,g=rx,o=rx"
+    
+    - name: Copy ca-config
+      copy:
+        src: "files/ca-config.json"
+        dest: "/etc/kubernetes/pki/etcd/ca-config.json"
+      when: inventory_hostname == ansible_play_hosts[0]
+
+    - name: Copy CA certificate
+      copy:
+        content: "{{CA_CERT}}"
+        dest: "/etc/kubernetes/pki/etcd/ca.crt"
+      when: 
+        - CA_CERT != ""
+        - CA_KEY != ""
+        - inventory_hostname == ansible_play_hosts[0]
+
+    - name: Copy CA key
+      copy:
+        content: "{{CA_KEY}}"
+        dest: "/etc/kubernetes/pki/etcd/ca.key"
+      when: 
+        - CA_CERT != ""
+        - CA_KEY != ""
+        - inventory_hostname == ansible_play_hosts[0]
+    
+    - name: Copy etcd-csr
+      copy:
+        src: "files/etcd-csr.json"
+        dest: "/etc/kubernetes/pki/etcd/etcd-csr.json"
+      when: inventory_hostname == ansible_play_hosts[0]
+    
+    - name: Copy etcd-client-csr
+      copy:
+        src: "files/client.json"
+        dest: "/etc/kubernetes/pki/etcd/client.json"
+      when: inventory_hostname == ansible_play_hosts[0]
+    
+    # Generate certificates only on one host
+    # they will be transfered on others
+    - name: Generate ca
+      shell: >
+        cd /etc/kubernetes/pki/etcd; /usr/local/bin/cfssl gencert -initca etcd-csr.json | /usr/local/bin/cfssljson -bare ca - && mv ca.pem ca.crt && mv ca-key.pem ca.key
+      when:
+        - (CA_CERT == "" or CA_KEY == "")
+        - inventory_hostname == ansible_play_hosts[0]
+
+    - name: Generate client certs
+      shell: >
+        cd /etc/kubernetes/pki/etcd; /usr/local/bin/cfssl gencert -ca=ca.crt -ca-key=ca.key -config=ca-config.json -profile=client client.json | /usr/local/bin/cfssljson -bare client && mv client.pem client.crt && mv client-key.pem client.key;
+        cd /etc/kubernetes/pki/etcd; /usr/local/bin/cfssl gencert -ca=ca.crt -ca-key=ca.key -config=ca-config.json -profile=client client.json | /usr/local/bin/cfssljson -bare client && mv client.pem healthcheck-client.crt && mv client-key.pem healthcheck-client.key
+      when: inventory_hostname == ansible_play_hosts[0]
+          
+    - name: slurp certs
+      slurp: src={{ item }}
+      with_items:
+        - /etc/kubernetes/pki/etcd/ca.crt
+        - /etc/kubernetes/pki/etcd/ca-config.json
+        - /etc/kubernetes/pki/etcd/client.crt
+        - /etc/kubernetes/pki/etcd/healthcheck-client.crt
+      register: pki_certs
+      run_once: true
+      when: inventory_hostname == ansible_play_hosts[0]
+    
+    - name: write out certs
+      copy:
+        dest: "{{ item['source'] }}"
+        content: "{{ item['content'] | b64decode }}"
+        owner: root
+        group: root
+        mode: 0644
+      with_items: "{{ pki_certs.results }}"
+      when: inventory_hostname != ansible_play_hosts[0]
+          
+    - name: slurp keys
+      slurp: src={{ item }}
+      with_items:
+        - /etc/kubernetes/pki/etcd/ca.key
+        - /etc/kubernetes/pki/etcd/client.key
+        - /etc/kubernetes/pki/etcd/healthcheck-client.key
+      register: pki_keys
+      run_once: true
+      when: inventory_hostname == ansible_play_hosts[0]
+    
+    - name: write out keys
+      copy:
+        dest: "{{ item['source'] }}"
+        content: "{{ item['content'] | b64decode }}"
+        owner: root
+        group: root
+        mode: 0600
+      with_items: "{{ pki_keys.results }}"
+      when: inventory_hostname != ansible_play_hosts[0]
+
+    - name: Server certificates config
+      template: 
+        src: server-cert.json.j2
+        dest: "/etc/kubernetes/pki/etcd/config.json"
+        mode: "u=rw,g=r,o=r"
+    
+    - name: Generate server certs
+      shell: >
+        cd /etc/kubernetes/pki/etcd; 
+        /usr/local/bin/cfssl gencert -ca=ca.crt -ca-key=ca.key -config=ca-config.json -profile=server config.json | /usr/local/bin/cfssljson -bare server && mv server.pem server.crt && mv server-key.pem server.key;  
+        /usr/local/bin/cfssl gencert -ca=ca.crt -ca-key=ca.key -config=ca-config.json -profile=peer config.json | /usr/local/bin/cfssljson -bare peer && mv peer.pem peer.crt && mv peer-key.pem peer.key
+
+    - name: Copy CA certs
+      shell: >
+        cp /etc/kubernetes/pki/etcd/ca.crt /etc/kubernetes/pki/ca.crt;
+        cp /etc/kubernetes/pki/etcd/ca.key /etc/kubernetes/pki/ca.key

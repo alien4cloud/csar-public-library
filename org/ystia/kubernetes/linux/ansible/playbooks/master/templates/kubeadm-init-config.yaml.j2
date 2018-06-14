@@ -1,0 +1,47 @@
+{#
+#
+# Ystia Forge
+# Copyright (C) 2018 Bull S. A. S. - Bull, Rue Jean Jaures, B.P.68, 78340, Les Clayes-sous-Bois, France.
+# Use of this source code is governed by Apache 2 LICENSE that can be found in the LICENSE file.
+#
+#}
+apiVersion: kubeadm.k8s.io/v1alpha1
+kind: MasterConfiguration
+api:
+  advertiseAddress: {{PRIVATE_IP}}
+  bindPort: {{API_SERVER_PORT}}
+etcd:
+  endpoints:
+{% for host in ansible_play_hosts %}
+  - https://{{ hostvars[host]['PRIVATE_IP'] }}:2379
+{% endfor %}
+  caFile: /etc/kubernetes/pki/etcd/ca.crt
+  certFile: /etc/kubernetes/pki/etcd/client.crt
+  keyFile: /etc/kubernetes/pki/etcd/client.key
+  serverCertSANs:
+  - {{ansible_hostname}}
+  - {{PRIVATE_IP}}
+{% if PUBLIC_IP is defined %}
+  - {{PUBLIC_IP}}
+{% endif %}
+  - 127.0.0.1
+  - localhost
+kubeProxy:
+  config:
+    bindAddress: 0.0.0.0
+networking:
+  podSubnet: {{ POD_CIDR }}
+nodeName: {{ansible_hostname}}
+token: {{ADMIN_TOKEN}}
+tokenTTL: "0s"
+apiServerCertSANs:
+- {{ansible_hostname}}
+- {{PRIVATE_IP}}
+{% if PUBLIC_IP is defined %}
+- {{PUBLIC_IP}}
+{% endif %}
+- 127.0.0.1
+- localhost
+apiServerExtraArgs:
+  endpoint-reconciler-type: lease
+  client-ca-file: /etc/kubernetes/pki/ca.crt

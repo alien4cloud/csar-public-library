@@ -1,0 +1,36 @@
+#
+# Ystia Forge
+# Copyright (C) 2018 Bull S. A. S. - Bull, Rue Jean Jaures, B.P.68, 78340, Les Clayes-sous-Bois, France.
+# Use of this source code is governed by Apache 2 LICENSE that can be found in the LICENSE file.
+#
+
+- name: Create Dashboard
+  hosts: all
+  strategy: linear
+  become: true
+  vars:
+    masters_private_IPs: []
+    masters_public_IPs: []
+  tasks:
+
+    - name: Create manifests directory
+      file:
+        path: "{{ansible_env['HOME']}}/kube-manifests/{{NODE}}"
+        state: directory
+
+
+    - name: Get specifications
+      get_url:
+        url: "{{item}}"
+        dest: "{{ansible_env['HOME']}}/kube-manifests/{{NODE}}/{{item|basename}}"
+        mode: 0644
+      with_items: "{{specs}}"
+
+
+    - name: Apply configurations
+      shell: >
+        source /etc/profile;
+        kubectl apply -f "{{ansible_env['HOME']}}/kube-manifests/{{NODE}}/{{item|basename}}"
+      with_items: "{{specs}}"
+      when: inventory_hostname == ansible_play_hosts[0]
+      

@@ -1,0 +1,59 @@
+#
+# Ystia Forge
+# Copyright (C) 2018 Bull S. A. S. - Bull, Rue Jean Jaures, B.P.68, 78340, Les Clayes-sous-Bois, France.
+# Use of this source code is governed by Apache 2 LICENSE that can be found in the LICENSE file.
+#
+
+- name: Install docker
+  hosts: all
+  strategy: linear
+  become: true
+  tasks:
+
+    - name: Docker install
+      yum:
+        name: docker
+        state: present
+        update_cache: yes
+    - name: Docker systemd dir
+      file:  
+        path: "/etc/systemd/system/docker.service.d"
+        state: directory
+        owner: root
+        group: root
+        mode: "u=rwx,g=rx,o=rx"
+            
+    - name: Docker proxy config
+      template:
+        src: http-proxy.conf.j2
+        dest: "/etc/systemd/system/docker.service.d/http-proxy.conf"
+        mode: "u=rw,g=rw,o=r"
+
+    - name: Add the br_netfilter module
+      modprobe:
+        name: br_netfilter
+        state: present
+        
+    - name: Sysctl config
+      sysctl:
+        name: "{{item.name}}"
+        value: "{{item.value}}"
+        sysctl_set: yes
+        reload: yes
+        state: present
+      with_items:
+        - { name: "net.bridge.bridge-nf-call-ip6tables", value: 1}       
+        - { name: "net.bridge.bridge-nf-call-iptables", value: 1}       
+
+    - name: Replace Cgroup driver
+      replace:
+        path: /usr/lib/systemd/system/docker.service
+        regexp: 'native\.cgroupdriver=\w+'
+        replace: 'native.cgroupdriver=cgroupfs'
+
+    - name: Start Docker
+      systemd:
+        name: docker
+        state: restarted
+        enabled: yes
+        daemon_reload: yes
