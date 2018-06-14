@@ -33,6 +33,7 @@ networking:
   podSubnet: {{ POD_CIDR }}
 nodeName: {{ansible_hostname}}
 token: {{ADMIN_TOKEN}}
+tokenTTL: "0s"
 apiServerCertSANs:
 - {{ansible_hostname}}
 - {{PRIVATE_IP}}
