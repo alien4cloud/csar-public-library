@@ -26,6 +26,39 @@ sudo sed -i -e "s/{{USER}}/${USER}/g" -e "s@{{NIFI_HOME}}@${NIFI_HOME}@g" -e "s@
 sudo systemctl daemon-reload
 #sudo systemctl enable nifi.service
 
+# Follow Nifi configuration Best practices: https://nifi.apache.org/docs/nifi-docs/html/administration-guide.html#configuration-best-practices
+
+#
+# Updates a configuration option (comment it out if already defined)
+# params:
+#   1- attribute name
+#   2- attribute value
+#   3- file to update
+#   4- separator
+update_config_option () {
+    # first comment out explicit auto topic creation parameter if any
+    sed -i -e "s/^\s*${1}=/#&/g" ${3}
+    # then explicitly set it to selected value
+    echo "${1} ${4} ${2}" >> ${3}
+}
+
+# Maximum File Handles
+update_config_option "* hard nofile" "50000" "/etc/security/limits.conf" " "
+update_config_option "* soft nofile" "50000" "/etc/security/limits.conf" " "
+
+# Maximum Forked Processes
+update_config_option "* hard nproc" "10000" "/etc/security/limits.conf" " "
+update_config_option "* soft nproc" "10000" "/etc/security/limits.conf" " "
+update_config_option "* soft nproc" "10000" "/etc/security/limits.d/20-nproc.conf" " "
+
+# Increase the number of TCP socket ports available
+sudo sysctl -w net.ipv4.ip_local_port_range="10000 65000"
+
+# Set how long sockets stay in a TIMED_WAIT state when closed
+#sudo sysctl -w net.ipv4.netfilter.ip_conntrack_tcp_timeout_time_wait="1"
+
+# Tell Linux you never want NiFi to swap
+update_config_option "vm.swappiness" "0" "/etc/sysctl.conf" "="
 
 # Is consul agent present ?
 if is_port_open "127.0.0.1" "8500"
