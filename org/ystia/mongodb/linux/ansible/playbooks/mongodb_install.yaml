@@ -1,0 +1,19 @@
+- name: Install MongoDB
+  hosts: all
+  strategy: free
+  become: true
+  become_method: sudo
+  tasks:
+    - name: Install MongoDB using a 3rd party role
+      import_role:
+        name: undergreen.ansible-role-mongodb
+      vars:
+        mongodb_version: "{{ MONGODB_VERSION }}"
+        mongodb_net_bindip: "{{ IP_ADDRESS }}"
+        mongodb_net_http_enabled: true
+        mongodb_net_port: "{{ MONGODB_PORT }}"
+        mongodb_storage_dbpath: "{{ MONGODB_DB_PATH }}"
+        mongodb_storage_quota_enforced: "{{ MONGODB_QUOTA_ENFORCED }}"
+        mongodb_storage_quota_maxfiles: "{{ MONGODB_QUOTA_MAXFILES }}"
+        mongodb_storage_smallfiles: true
+
