@@ -5,7 +5,6 @@
 # Use of this source code is governed by Apache 2 LICENSE that can be found in the LICENSE file.
 #
 
-
 . ${utils_scripts}/utils.sh
 log begin
 ensure_home_var_is_set
@@ -42,9 +41,7 @@ function install_from_url () {
 
 function ubuntu_install_openjdk () {
     ALREADY_INSTALL=1
-    dpkg -l | grep "${packages}" >/dev/null
-    if [[ $? -eq 0 ]]
-    then
+    if [[ "$(dpkg -l | grep \"${packages}\" | wc -l)" != "0" ]]; then
         ALREADY_INSTALL=0
     fi
     if [[ "${JAVA_IS_JRE}" == "true" ]]
@@ -73,9 +70,7 @@ function ubuntu_install_openjdk () {
 function ubuntu_install_oracle_jdk () {
 
     ALREADY_INSTALL=1
-    dpkg -l | grep "oracle-java${JAVA_VERSION}" >/dev/null
-    if [[ $? -eq 0 ]]
-    then
+    if [[ "$(dpkg -l | grep \"oracle-java${JAVA_VERSION}\" | wc -l)" != "0" ]]; then
         ALREADY_INSTALL=0
     fi
 
