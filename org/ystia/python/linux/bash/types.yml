@@ -58,6 +58,10 @@ node_types:
         type: boolean
         description: Install Python-Based Reinforcement Learning, Artificial Intelligence and Neural Network Library (pybrain)
         default: false
+      ml:
+        type: boolean
+        description: Install additionnal package for machine learning topics (pandas and scikit-learn)
+        default: false
     capabilities:
       python_host:
         type: org.ystia.python.pub.capabilities.PythonHosting
@@ -71,6 +75,7 @@ node_types:
             DATAVIZ: { get_property: [SELF, dataviz] }
             DATAFORMAT: { get_property: [SELF, dataformat] }
             PYBRAIN: { get_property: [SELF, pybrain] }
+            ML: { get_property: [SELF, ml] }
           implementation: scripts/anaconda_install.sh
     artifacts:
       - scripts:
