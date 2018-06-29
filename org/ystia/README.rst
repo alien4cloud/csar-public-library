@@ -2,4 +2,4 @@
 The Ystia Forge
 ###############
 
-.. caution:: Content has noved to https://github.com/ystia/forge
+.. caution:: Content has moved to https://github.com/ystia/forge
