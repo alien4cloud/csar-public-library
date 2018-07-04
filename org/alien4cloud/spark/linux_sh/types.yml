@@ -77,5 +77,5 @@ relationship_types:
           inputs:
             SPARK_INSTALL_DIR: { get_property: [SOURCE, install_dir] }
             SPARK_MASTER_ADDRESS: { get_attribute: [TARGET, ip_address] }
-            SPARK_MASTER_PORT: { get_attribute: [TARGET, port] }
+            SPARK_MASTER_PORT: { get_attribute: [TARGET, spark_master, port] }
           implementation: scripts/join_spark_cluster.sh
