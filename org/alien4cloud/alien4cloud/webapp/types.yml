@@ -99,7 +99,8 @@ node_types:
       Standard:
         create:
           inputs:
-            APPLICATION_URL: { get_property: [SELF, alien_url] }
+            # Commented because not used & broken
+            # APPLICATION_URL: { get_property: [SELF, alien_url] }
             ALIEN_VERSION: { get_property: [SELF, component_version] }
             DATA_DIR: { get_property: [SELF, data_dir] }
           implementation: scripts/alien/install_alien.sh
@@ -109,9 +110,10 @@ node_types:
             ALIEN_PORT: { get_property: [SELF, rest, port] }
             DATA_DIR: { get_property: [SELF, data_dir] }
             TLS_ENABLED: { get_property: [SELF, consul, tls_enabled] }
-            KEY_STORE_PATH: { get_property: [SELF, consul, key_store_path] }
-            TRUST_STORE_PATH: { get_property: [SELF, consul, trust_store_path] }
-            KEYSTORE_PWD: { get_property: [SELF, consul, keystore_pwd] }
+            # Commented because not used & broken
+            # KEY_STORE_PATH: { get_property: [SELF, consul, key_store_path] }
+            # TRUST_STORE_PATH: { get_property: [SELF, consul, trust_store_path] }
+            # KEYSTORE_PWD: { get_property: [SELF, consul, keystore_pwd] }
             SERVER_PROTOCOL: { get_property: [SELF, rest, protocol] }
             ADMIN_USERNAME: { get_property: [SELF, rest, user] }
             ADMIN_PASSWORD: { get_property: [SELF, rest, password] }
