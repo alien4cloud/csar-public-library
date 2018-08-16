@@ -72,7 +72,7 @@ capability_types:
     description: >
       A consul agent (server or client) exposes this capability.
     properties:
-      api_port:
+      port:
         type: integer
         description: Port for http/https API.
         required: true

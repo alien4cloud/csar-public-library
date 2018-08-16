@@ -70,7 +70,7 @@ topology_template:
       capabilities:
         consul_agent:
           properties:
-            api_port: 8500
+            port: 8500
     Alien4Cloud:
       type: org.alien4cloud.alien4cloud.webapp.nodes.Alien4Cloud
       properties:
@@ -136,7 +136,7 @@ topology_template:
       capabilities:
         consul_agent:
           properties:
-            api_port: 8500
+            port: 8500
     AlienCompute:
       type: tosca.nodes.Compute
       capabilities:
@@ -213,7 +213,7 @@ topology_template:
       capabilities:
         consul_agent:
           properties:
-            api_port: 8500
+            port: 8500
     ConsulTemplate4Nginx:
       type: org.alien4cloud.nginx.nginx_sh.nodes.ConsulTemplate4Nginx
       properties:

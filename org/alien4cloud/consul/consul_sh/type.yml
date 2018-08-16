@@ -78,7 +78,7 @@ node_types:
             CONSUL_AGENT_MODE: { get_property: [SELF, agent_mode] }
             CONSUL_DATA_DIR: { get_property: [SELF, data_dir] }
             CONSUL_BIND_ADDRESS: { get_attribute: [HOST, ip_address] }
-            CONSUL_API_PORT: { get_property: [SELF, consul_agent, api_port] }
+            CONSUL_API_PORT: { get_property: [SELF, consul_agent, port] }
             TLS_ENABLED: { get_property: [SELF, tls_enabled] }
             CA_PASSPHRASE: { get_property: [SELF, ca_passphrase] }
             ENCRYPT_KEY: { get_property: [SELF, encrypt_key] }
@@ -125,7 +125,7 @@ node_types:
             CONSUL_AGENT_MODE: { get_property: [SELF, agent_mode] }
             CONSUL_DATA_DIR: { get_property: [SELF, data_dir] }
             CONSUL_BIND_ADDRESS: { get_attribute: [HOST, ip_address] }
-            CONSUL_API_PORT: { get_property: [SELF, consul_agent, api_port] }
+            CONSUL_API_PORT: { get_property: [SELF, consul_agent, port] }
             TLS_ENABLED: { get_property: [SELF, tls_enabled] }
             CA_PASSPHRASE: { get_property: [SELF, ca_passphrase] }
             ENCRYPT_KEY: { get_property: [SELF, encrypt_key] }

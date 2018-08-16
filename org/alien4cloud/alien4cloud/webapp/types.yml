@@ -164,7 +164,7 @@ relationship_types:
             TLS_ENABLED: { get_property: [SOURCE, consul, tls_enabled] }
             CA_PASSPHRASE: { get_property: [SOURCE, consul, ca_passphrase] }
             AGENT_IP: { get_attribute: [TARGET, ip_address] }
-            AGENT_API_PORT: { get_property: [TARGET, consul_agent, api_port] }
+            AGENT_API_PORT: { get_property: [TARGET, consul_agent, port] }
           implementation: scripts/ConnectToConsulAgent/pre_configure_source.sh
     artifacts:
       - ssl:
