@@ -2,14 +2,14 @@ tosca_definitions_version: alien_dsl_2_0_0
 
 metadata:
   template_name: org.alien4cloud.php.debian_sh
-  template_version: 2.0.0
+  template_version: 2.1.0-SNAPSHOT
   template_author: alien4cloud
 
 description: This archive contains debian installation of php.
 
 imports:
   - tosca-normative-types:1.0.0-ALIEN20
-  - org.alien4cloud.php.pub:2.0.0
+  - org.alien4cloud.php.pub:2.1.0-SNAPSHOT
 
 node_types:
   org.alien4cloud.php.debian_sh.nodes.PHP:
