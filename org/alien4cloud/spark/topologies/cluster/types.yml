@@ -19,8 +19,8 @@ topology_template:
     SparkMaster:
       type: org.alien4cloud.spark.linux_sh.nodes.SparkMaster
       properties:
-        component_version: "2.2.1"
-        download_url: "http://mirror.ibcp.fr/pub/apache/spark/spark-2.2.1/spark-2.2.1-bin-hadoop2.7.tgz"
+        component_version: "2.2.2"
+        download_url: "http://mirror.ibcp.fr/pub/apache/spark/spark-2.2.2/spark-2.2.2-bin-hadoop2.7.tgz"
         install_dir: "/opt/spark"
       requirements:
         - javaSoftwareHostedOnJdkOracleJdkJdk:
@@ -46,8 +46,8 @@ topology_template:
     SparkSlave:
       type: org.alien4cloud.spark.linux_sh.nodes.SparkSlave
       properties:
-        component_version: "2.2.1"
-        download_url: "http://mirror.ibcp.fr/pub/apache/spark/spark-2.2.1/spark-2.2.1-bin-hadoop2.7.tgz"
+        component_version: "2.2.2"
+        download_url: "http://mirror.ibcp.fr/pub/apache/spark/spark-2.2.2/spark-2.2.2-bin-hadoop2.7.tgz"
         install_dir: "/opt/spark"
       requirements:
         - joinSparkClusterSparkMasterSpark_master:
@@ -105,8 +105,8 @@ topology_template:
     SparkMasterSlave:
       type: org.alien4cloud.spark.linux_sh.nodes.SparkSlave
       properties:
-        component_version: "2.2.1"
-        download_url: "http://mirror.ibcp.fr/pub/apache/spark/spark-2.2.1/spark-2.2.1-bin-hadoop2.7.tgz"
+        component_version: "2.2.2"
+        download_url: "http://mirror.ibcp.fr/pub/apache/spark/spark-2.2.2/spark-2.2.2-bin-hadoop2.7.tgz"
         install_dir: "/opt/spark"
       requirements:
         - joinSparkClusterSparkMasterSpark_master:

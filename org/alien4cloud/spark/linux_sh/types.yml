@@ -21,14 +21,14 @@ node_types:
     properties:
       component_version:
         type: version
-        default: 2.2.1
+        default: 2.2.2
         constraints:
-          - equal: 2.2.1
+          - equal: 2.2.2
       download_url:
         type: string
-        default: http://mirror.ibcp.fr/pub/apache/spark/spark-2.2.1/spark-2.2.1-bin-hadoop2.7.tgz
+        default: http://mirror.ibcp.fr/pub/apache/spark/spark-2.2.2/spark-2.2.2-bin-hadoop2.7.tgz
         constraints:
-          - equal: http://mirror.ibcp.fr/pub/apache/spark/spark-2.2.1/spark-2.2.1-bin-hadoop2.7.tgz
+          - equal: http://mirror.ibcp.fr/pub/apache/spark/spark-2.2.2/spark-2.2.2-bin-hadoop2.7.tgz
       install_dir:
         type: string
         default: /opt/spark
