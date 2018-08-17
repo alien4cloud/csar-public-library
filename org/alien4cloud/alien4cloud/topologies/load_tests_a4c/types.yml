@@ -2,7 +2,7 @@ tosca_definitions_version: alien_dsl_2_0_0
 
 metadata:
   template_name: org.alien4cloud.alien4cloud.topologies.load_tests_a4c
-  template_version: 2.0.0-SNAPSHOT
+  template_version: 2.0.0
   template_author: alien4cloud
 
 description: >
@@ -15,32 +15,32 @@ description: >
 
 
 imports:
-  - org.alien4cloud.graphite.pub:2.0.0-SNAPSHOT
-  - org.alien4cloud.grafana.pub:2.0.0-SNAPSHOT
-  - org.alien4cloud.elasticsearch.ubuntu:2.0.0-SNAPSHOT
-  - org.alien4cloud.cloudify.manager.pub:2.0.0-SNAPSHOT
-  - org.alien4cloud.alien4cloud.config.csar:2.0.0-SNAPSHOT
-  - org.alien4cloud.java.pub:2.0.0-SNAPSHOT
-  - org.alien4cloud.alien4cloud.config.pub:2.0.0-SNAPSHOT
-  - org.alien4cloud.apache.linux_sh:2.0.0-SNAPSHOT
-  - org.alien4cloud.cloudify.hostpool.pub:2.0.0-SNAPSHOT
-  - org.alien4cloud.cloudify.config.offline_plugin:2.0.0-SNAPSHOT
-  - org.alien4cloud.alien4cloud.config.location:2.0.0-SNAPSHOT
-  - org.alien4cloud.postgresql.pub:2.0.0-SNAPSHOT
-  - org.alien4cloud.apache.pub:2.0.0-SNAPSHOT
-  - org.alien4cloud.alien4cloud.config.orchestrator.cfy:2.0.0-SNAPSHOT
-  - org.alien4cloud.diamond.pub:2.0.0-SNAPSHOT
+  - org.alien4cloud.graphite.pub:2.0.0
+  - org.alien4cloud.grafana.pub:2.0.0
+  - org.alien4cloud.elasticsearch.ubuntu:2.0.0
+  - org.alien4cloud.cloudify.manager.pub:2.0.0
+  - org.alien4cloud.alien4cloud.config.csar:2.0.0
+  - org.alien4cloud.java.pub:2.0.0
+  - org.alien4cloud.alien4cloud.config.pub:2.0.0
+  - org.alien4cloud.apache.linux_sh:2.0.0
+  - org.alien4cloud.cloudify.hostpool.pub:2.0.0
+  - org.alien4cloud.cloudify.config.offline_plugin:2.0.0
+  - org.alien4cloud.alien4cloud.config.location:2.0.0
+  - org.alien4cloud.postgresql.pub:2.0.0
+  - org.alien4cloud.apache.pub:2.0.0
+  - org.alien4cloud.alien4cloud.config.orchestrator.cfy:2.0.0
+  - org.alien4cloud.diamond.pub:2.0.0
   - tosca-normative-types:1.0.0-ALIEN20
-  - alien-base-types:2.0.0-SNAPSHOT
-  - org.alien4cloud.diamond.collectors:2.0.0-SNAPSHOT
-  - org.alien4cloud.java.jmx.jolokia:2.0.0-SNAPSHOT
-  - org.alien4cloud.alien4cloud.webapp:2.0.0-SNAPSHOT
-  - org.alien4cloud.diamond.agent_linux:2.0.0-SNAPSHOT
-  - org.alien4cloud.java.jdk.linux:2.0.0-SNAPSHOT
-  - org.alien4cloud.elasticsearch.pub:2.0.0-SNAPSHOT
-  - org.alien4cloud.alien4cloud.config.location_resources.cfy_byon:2.0.0-SNAPSHOT
-  - org.alien4cloud.alien4cloud.pub:2.0.0-SNAPSHOT
-  - org.alien4cloud.rabbitmq.pub:2.0.0-SNAPSHOT
+  - alien-base-types:2.0.0
+  - org.alien4cloud.diamond.collectors:2.0.0
+  - org.alien4cloud.java.jmx.jolokia:2.0.0
+  - org.alien4cloud.alien4cloud.webapp:2.0.0
+  - org.alien4cloud.diamond.agent_linux:2.0.0
+  - org.alien4cloud.java.jdk.linux:2.0.0
+  - org.alien4cloud.elasticsearch.pub:2.0.0
+  - org.alien4cloud.alien4cloud.config.location_resources.cfy_byon:2.0.0
+  - org.alien4cloud.alien4cloud.pub:2.0.0
+  - org.alien4cloud.rabbitmq.pub:2.0.0
 
 topology_template:
   description: >
