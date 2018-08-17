@@ -2,15 +2,15 @@ tosca_definitions_version: alien_dsl_2_0_0
 
 metadata:
   template_name: org.alien4cloud.apache.linux_ans
-  template_version: 2.0.0
+  template_version: 2.0.1-SNAPSHOT
   template_author: alien4cloud
 
 description: This archive contains an Apache webserver node installed through ansible scripts.
 
 imports:
   - tosca-normative-types:1.0.0-ALIEN20
-  - alien-base-types:2.0.0
-  - org.alien4cloud.apache.pub:2.0.0
+  - alien-base-types:2.0.1-SNAPSHOT
+  - org.alien4cloud.apache.pub:2.0.1-SNAPSHOT
 
 node_types:
   org.alien4cloud.apache.linux_ans.nodes.Apache:

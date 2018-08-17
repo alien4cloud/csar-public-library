@@ -2,15 +2,15 @@ tosca_definitions_version: alien_dsl_2_0_0
 
 metadata:
   template_name: org.alien4cloud.diamond.agent_linux
-  template_version: 2.0.0
+  template_version: 2.0.1-SNAPSHOT
   template_author: alien4cloud
 
 imports:
   - tosca-normative-types:1.0.0-ALIEN20
-  - alien-base-types:2.0.0
-  - org.alien4cloud.graphite.pub:2.0.0
-  - org.alien4cloud.grafana.pub:2.0.0
-  - org.alien4cloud.diamond.pub:2.0.0
+  - alien-base-types:2.0.1-SNAPSHOT
+  - org.alien4cloud.graphite.pub:2.0.1-SNAPSHOT
+  - org.alien4cloud.grafana.pub:2.0.1-SNAPSHOT
+  - org.alien4cloud.diamond.pub:2.0.1-SNAPSHOT
 
 node_types:
   org.alien4cloud.diamond.agent_linux.nodes.DiamondLinuxAgent:

@@ -2,12 +2,12 @@ tosca_definitions_version: alien_dsl_2_0_0
 
 metadata:
   template_name: org.alien4cloud.elasticsearch.pub
-  template_version: 2.0.0
+  template_version: 2.0.1-SNAPSHOT
   template_author: alien4cloud
 
 imports:
   - tosca-normative-types:1.0.0-ALIEN20
-  - org.alien4cloud.java.pub:2.0.0
+  - org.alien4cloud.java.pub:2.0.1-SNAPSHOT
 
 node_types:
 
