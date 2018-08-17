@@ -2,12 +2,12 @@ tosca_definitions_version: alien_dsl_2_0_0
 
 metadata:
   template_name: org.alien4cloud.alien4cloud.config.applications
-  template_version: 2.0.0-SNAPSHOT
+  template_version: 2.0.0
   template_author: alien4cloud
 
 imports:
-  - alien-base-types:2.0.0-SNAPSHOT
-  - org.alien4cloud.alien4cloud.config.csar:2.0.0-SNAPSHOT
+  - alien-base-types:2.0.0
+  - org.alien4cloud.alien4cloud.config.csar:2.0.0
   - tosca-normative-types:1.0.0-ALIEN20
 
 relationship_types:
