@@ -1,0 +1,98 @@
+tosca_definitions_version: alien_dsl_2_0_0
+
+metadata:
+  template_name: org.alien4cloud.monitoring.topologies.monitored_centos
+  template_version: 2.0.0
+  template_author: alien4cloud
+
+description: |
+  Just a monitored compute (centos).
+
+imports:
+  - org.alien4cloud.grafana.pub:2.0.0
+  - org.alien4cloud.graphite.pub:2.0.0
+  - org.alien4cloud.cloudify.manager.pub:2.0.0
+  - tosca-normative-types:1.0.0-ALIEN20
+  - org.alien4cloud.diamond.agent_linux:2.0.0
+  - alien-base-types:2.0.0
+  - org.alien4cloud.java.pub:2.0.0
+  - org.alien4cloud.diamond.pub:2.0.0
+  - org.alien4cloud.java.jmx.jolokia:2.0.0
+  - org.alien4cloud.elasticsearch.pub:2.0.0
+  - org.alien4cloud.alien4cloud.pub:2.0.0
+  - org.alien4cloud.postgresql.pub:2.0.0
+  - org.alien4cloud.rabbitmq.pub:2.0.0
+
+topology_template:
+  description: |
+    Just a monitored compute (centos).
+
+  node_templates:
+    DiamondLinuxAgent:
+      type: org.alien4cloud.diamond.agent_linux.nodes.DiamondLinuxAgent
+      properties:
+        datasource_name: "Graphite_DS"
+        collectors_path: "/opt/ansible_diamond/env/share/diamond/collectors"
+        collectors_conf_path: "/etc/ansible_diamond/collectors"
+      requirements:
+        - data_endpoint:
+            node: GraphiteService
+            capability: org.alien4cloud.graphite.pub.capabilities.GraphiteDataEndpoint
+            relationship: org.alien4cloud.diamond.agent_linux.relationships.DiamondLinuxAgentConnectsToGraphite
+        - host:
+            node: MonitoredCentosMedium
+            capability: tosca.capabilities.Container
+            relationship: tosca.relationships.HostedOn
+        - grafana:
+            node: GrafanaService
+            capability: org.alien4cloud.grafana.pub.capabilities.GrafanaHttpEndpoint
+            relationship: org.alien4cloud.diamond.agent_linux.relationships.DiamondLinuxAgentConnectsToGrafana
+    GrafanaService:
+      type: org.alien4cloud.grafana.pub.nodes.GrafanaService
+      capabilities:
+        http_endpoint:
+          properties:
+            user: admin
+            password: admin
+            protocol: tcp
+            secure: false
+            network_name: PRIVATE
+            initiator: source
+    GraphiteService:
+      type: org.alien4cloud.graphite.pub.nodes.GraphiteService
+      capabilities:
+        data_endpoint:
+          properties:
+            protocol: tcp
+            secure: false
+            network_name: PRIVATE
+            initiator: source
+        http_endpoint:
+          properties:
+            protocol: tcp
+            secure: false
+            network_name: PRIVATE
+            initiator: source
+    MonitoredCentosMedium:
+      type: tosca.nodes.Compute
+      capabilities:
+        host:
+          properties:
+            num_cpus: 1
+            mem_size: "2 GIB"
+        os:
+          properties:
+            architecture: "x86_64"
+            type: linux
+            distribution: centos
+        scalable:
+          properties:
+            min_instances: 1
+            max_instances: 1
+            default_instances: 1
+        endpoint:
+          properties:
+            secure: true
+            protocol: tcp
+            network_name: PRIVATE
+            initiator: source

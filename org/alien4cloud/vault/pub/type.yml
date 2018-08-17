@@ -1,0 +1,50 @@
+tosca_definitions_version: alien_dsl_2_0_0
+
+metadata:
+  template_name: org.alien4cloud.vault.pub
+  template_version: 2.0.0
+  template_author: alien4cloud
+
+imports:
+  - tosca-normative-types:1.0.0-ALIEN20
+
+node_types:
+  org.alien4cloud.vault.pub.nodes.VaultServer:
+    abstract: true
+    derived_from: tosca.nodes.SoftwareComponent
+    description: >
+      Vault server installation.
+    tags:
+      icon: /images/vault.png
+    capabilities:
+      consul_server:
+        type: org.alien4cloud.vault.pub.capabilities.VaultServer
+        valid_source_types: [org.alien4cloud.vault.pub.capabilities.ConsulClient]
+  org.alien4cloud.vault.pub.Policy:
+    abstract: true
+    derived_from: tosca.nodes.Root
+    description: >
+      Represent the vault policy
+    tags:
+      icon: /images/vault.png
+    requirements:
+      - vault:
+          capability: org.alien4cloud.vault.pub.capabilities.VaultServer
+          relationship: org.alien4cloud.vault.pub.relationships.PolicyHostedOnVaultServer
+          occurrences: [ 0, 1 ]
+
+capability_types:
+  org.alien4cloud.vault.pub.capabilities.VaultServer:
+    derived_from: tosca.capabilities.Root
+    description: >
+      Exposed by a vault server agent.
+  org.alien4cloud.vault.pub.capabilities.VaultClient:
+    derived_from: tosca.capabilities.Endpoint
+    description: >
+      The capability to connect to a vault client using the vault API.
+
+relationship_types:
+  org.alien4cloud.vault.pub.relationships.PolicyHostedOnVaultServer:
+    derived_from: tosca.relationships.HostedOn
+    description: Relationship use to describe that the vault policy is hosted on the vault server.
+    valid_target_types: [ org.alien4cloud.vault.pub.capabilities.VaultServer ]

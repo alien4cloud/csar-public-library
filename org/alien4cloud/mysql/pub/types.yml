@@ -1,0 +1,50 @@
+tosca_definitions_version: alien_dsl_2_0_0
+
+metadata:
+  template_name: org.alien4cloud.mysql.pub
+  template_version: 2.0.0
+  template_author: alien4cloud
+
+description: MySQL RDBMS installation , tested with ami-ed82e39e (t2.medium)
+
+imports:
+  - tosca-normative-types:1.0.0-ALIEN20
+
+node_types:
+  org.alien4cloud.mysql.pub.nodes.Mysql:
+    derived_from: tosca.nodes.Database
+    abstract: true
+    description: A node that provides a mysql endpoint.
+    metadata:
+      icon: /images/mysql.png
+    capabilities:
+      database_endpoint: org.alien4cloud.mysql.pub.capabilities.MysqlDatabaseEndpoint
+    requirements:
+      - host:
+          capability: tosca.capabilities.Container
+          node: tosca.nodes.Compute
+          relationship: tosca.relationships.HostedOn
+    metadata:
+      icon: /images/mysql.png
+    properties:
+      port:
+        type: integer
+        default: 3306
+        description: The port on which the underlying database service will listen to data. </p>
+      name:
+        type: string
+        required: true
+        default: wordpress
+        description: The logical name of the database.
+      user:
+        type: string
+        default: pass
+        description: The special user account used for database administration.
+      password:
+        type: string
+        default: pass
+        description: The password associated with the user account provided in the ‘db_user’ property.</p>
+
+capability_types:
+  org.alien4cloud.mysql.pub.capabilities.MysqlDatabaseEndpoint:
+      derived_from: tosca.capabilities.Endpoint.Database

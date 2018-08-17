@@ -1,0 +1,296 @@
+tosca_definitions_version: alien_dsl_2_0_0
+
+metadata:
+  template_name: org.alien4cloud.alien4cloud.topologies.a4c_mon
+  template_version: 2.0.0
+  template_author: alien4cloud
+
+description: >
+  A monitored A4C configured with repositories, samples, connected to a Cloudify4 manager through service.
+  Has been tested on a Ubuntu ami-47a23a30 (t2.medium).
+
+
+imports:
+  - org.alien4cloud.graphite.pub:2.0.0
+  - org.alien4cloud.grafana.pub:2.0.0
+  - org.alien4cloud.elasticsearch.ubuntu:2.0.0
+  - org.alien4cloud.alien4cloud.config.orchestrator.cfy:2.0.0
+  - org.alien4cloud.cloudify.manager.pub:2.0.0
+  - org.alien4cloud.diamond.pub:2.0.0
+  - tosca-normative-types:1.0.0-ALIEN20
+  - org.alien4cloud.alien4cloud.config.location_resources.on_demand:2.0.0
+  - org.alien4cloud.alien4cloud.config.csar:2.0.0
+  - alien-base-types:2.0.0
+  - org.alien4cloud.java.pub:2.0.0
+  - org.alien4cloud.diamond.collectors:2.0.0
+  - org.alien4cloud.java.jmx.jolokia:2.0.0
+  - org.alien4cloud.alien4cloud.config.pub:2.0.0
+  - org.alien4cloud.alien4cloud.webapp:2.0.0
+  - org.alien4cloud.diamond.agent_linux:2.0.0
+  - org.alien4cloud.java.jdk.linux:2.0.0
+  - org.alien4cloud.elasticsearch.pub:2.0.0
+  - org.alien4cloud.cloudify.hostpool.pub:2.0.0
+  - org.alien4cloud.alien4cloud.config.location:2.0.0
+  - org.alien4cloud.alien4cloud.pub:2.0.0
+  - org.alien4cloud.postgresql.pub:2.0.0
+  - org.alien4cloud.rabbitmq.pub:2.0.0
+  - org.alien4cloud.alien4cloud.config.repository:2.0.0
+
+topology_template:
+  description: >
+    A monitored A4C configured with repositories, samples, connected to a Cloudify4 manager through service.
+    Has been tested on a Ubuntu ami-47a23a30 (t2.medium).
+
+  input_artifacts:
+    alien_dist:
+        type: tosca.artifacts.File
+    resources_repositories:
+        type: tosca.artifacts.File
+    resources_location:
+        type: tosca.artifacts.File
+  substitution_mappings:
+    node_type: org.alien4cloud.alien4cloud.pub.nodes.Alien4CloudService
+    capabilities:
+      rest: [ Alien4Cloud, rest ]
+  node_templates:
+    GraphiteService:
+      type: org.alien4cloud.graphite.pub.nodes.GraphiteService
+      capabilities:
+        data_endpoint:
+          properties:
+            protocol: tcp
+            secure: false
+            network_name: PRIVATE
+            initiator: source
+        http_endpoint:
+          properties:
+            protocol: tcp
+            secure: false
+            network_name: PRIVATE
+            initiator: source
+    OracleJDK:
+      type: org.alien4cloud.java.jdk.linux.nodes.OracleJDK
+      properties:
+        java_url: "https://edelivery.oracle.com/otn-pub/java/jdk/8u131-b11/d54c1d3a095b4ff2b6607d096fa80163/jdk-8u131-linux-x64.tar.gz"
+        java_home: "/opt/java"
+        component_version: "1.8.0-131-b11"
+      requirements:
+        - host:
+            node: _A4cCompute
+            capability: tosca.capabilities.Container
+            relationship: tosca.relationships.HostedOn
+    GrafanaService:
+      type: org.alien4cloud.grafana.pub.nodes.GrafanaService
+      capabilities:
+        http_endpoint:
+          properties:
+            user: admin
+            password: admin
+            protocol: tcp
+            secure: false
+            network_name: PRIVATE
+            initiator: source
+    Alien4Cloud:
+      type: org.alien4cloud.alien4cloud.webapp.nodes.Alien4Cloud
+      properties:
+        context_root: "/"
+        component_version: "1.4.0"
+        data_dir: "/opt/alien4cloud/data"
+      requirements:
+        - java:
+            node: OracleJDK
+            capability: org.alien4cloud.java.pub.capabilities.JDK
+            relationship: org.alien4cloud.java.pub.relationships.JavaSoftwareHostedOnJDK
+      capabilities:
+        jolokia:
+          properties:
+            port: 8778
+        http:
+          properties:
+            port: 9200
+            protocol: http
+            secure: false
+            network_name: PRIVATE
+            initiator: source
+        rest:
+          properties:
+            user: admin
+            password: admin
+            port: 8080
+            protocol: http
+            secure: false
+            network_name: PRIVATE
+            initiator: source
+      artifacts:
+        alien_dist:
+          file: { get_input_artifact: alien_dist }
+          type: tosca.artifacts.File
+    _A4cCompute:
+      type: tosca.nodes.Compute
+      capabilities:
+        os:
+          properties:
+            architecture: "x86_64"
+            type: linux
+            distribution: ubuntu
+        scalable:
+          properties:
+            min_instances: 1
+            max_instances: 1
+            default_instances: 1
+        endpoint:
+          properties:
+            secure: true
+            protocol: tcp
+            network_name: PRIVATE
+            initiator: source
+    dmdA4c:
+      type: org.alien4cloud.diamond.agent_linux.nodes.DiamondLinuxAgent
+      properties:
+        datasource_name: "Graphite_DS"
+        collectors_path: "/opt/ansible_diamond/env/share/diamond/collectors"
+        collectors_conf_path: "/etc/ansible_diamond/collectors"
+      requirements:
+        - data_endpoint:
+            node: GraphiteService
+            capability: org.alien4cloud.graphite.pub.capabilities.GraphiteDataEndpoint
+            relationship: org.alien4cloud.diamond.agent_linux.relationships.DiamondLinuxAgentConnectsToGraphite
+        - grafana:
+            node: GrafanaService
+            capability: org.alien4cloud.grafana.pub.capabilities.GrafanaHttpEndpoint
+            relationship: org.alien4cloud.diamond.agent_linux.relationships.DiamondLinuxAgentConnectsToGrafana
+        - host:
+            node: _A4cCompute
+            capability: tosca.capabilities.Container
+            relationship: tosca.relationships.HostedOn
+    A4CCollector:
+      type: org.alien4cloud.diamond.collectors.nodes.A4CCollector
+      requirements:
+        - diamond:
+            node: dmdA4c
+            capability: org.alien4cloud.diamond.pub.capabilities.DiamondCollectorContainer
+            relationship: org.alien4cloud.diamond.agent_linux.relationships.DiamondCollectorHostedOnAgent
+        - collec_jolokia:
+            node: Alien4Cloud
+            capability: org.alien4cloud.alien4cloud.pub.capabilities.JolokiaA4CEndpoint
+            relationship: org.alien4cloud.diamond.collectors.relationships.DiamondA4CCollector
+    ElasticSearchCollector:
+      type: org.alien4cloud.diamond.collectors.nodes.ElasticSearchCollector
+      requirements:
+        - diamond:
+            node: dmdA4c
+            capability: org.alien4cloud.diamond.pub.capabilities.DiamondCollectorContainer
+            relationship: org.alien4cloud.diamond.agent_linux.relationships.DiamondCollectorHostedOnAgent
+        - collec_elasticsearch:
+            node: ElasticSearch
+            capability: org.alien4cloud.elasticsearch.pub.capabilities.ElasticSearchRestAPI
+            relationship: org.alien4cloud.diamond.collectors.relationships.DiamondCollectElasticSearch
+    ElasticSearch:
+      type: org.alien4cloud.elasticsearch.ubuntu.nodes.ElasticSearch
+      properties:
+        component_version: "1.7.0"
+        elasticsearch_url: "https://download.elastic.co/elasticsearch/elasticsearch/elasticsearch-1.7.0.deb"
+        cluster_name: escluster
+      requirements:
+        - java:
+            node: OracleJDK
+            capability: org.alien4cloud.java.pub.capabilities.JDK
+            relationship: org.alien4cloud.java.pub.relationships.JavaSoftwareHostedOnJDK
+      capabilities:
+        elasticsearch:
+          properties:
+            port: 9300
+            protocol: tcp
+            secure: false
+            network_name: PRIVATE
+            initiator: source
+        http:
+          properties:
+            port: 9200
+            protocol: http
+            secure: false
+            network_name: PRIVATE
+            initiator: source
+    FCRepositories:
+      type: org.alien4cloud.alien4cloud.config.repository.nodes.ArtifactRepositoriesConfigurator
+      requirements:
+        - host:
+            node: Alien4Cloud
+            capability: org.alien4cloud.alien4cloud.pub.capabilities.AlienConfigContainer
+            relationship: org.alien4cloud.alien4cloud.pub.relationships.AlienConfiguratorHostedOnAlien
+      artifacts:
+        resources_file_artifact:
+          file: { get_input_artifact: resources_repositories }
+          type: tosca.artifacts.File
+    AddSamplesTypes:
+      type: org.alien4cloud.alien4cloud.config.csar.nodes.AddCsarFromGit
+      properties:
+        repositoryUrl: "https://github.com/alien4cloud/samples"
+        branchId: master
+      requirements:
+        - dependency:
+            node: FCRepositories
+            capability: tosca.capabilities.Node
+            relationship: tosca.relationships.DependsOn
+        - host:
+            node: Alien4Cloud
+            capability: org.alien4cloud.alien4cloud.pub.capabilities.AlienConfigContainer
+            relationship: org.alien4cloud.alien4cloud.pub.relationships.AlienConfiguratorHostedOnAlien
+        - dependency:
+            node: AddExtendedTypes
+            capability: tosca.capabilities.Node
+            relationship: tosca.relationships.DependsOn
+    CfyOrchestratorConfigurator:
+      type: org.alien4cloud.alien4cloud.config.orchestrator.cfy.nodes.CfyOrchestratorConfigurator
+      properties:
+        disableDiamondMonitorAgent: true
+        name: CloudifyManager
+        discriminator: YourInitials
+        pluginId: "alien-cloudify-4-orchestrator-premium"
+        pluginBean: "cloudify-orchestrator"
+      requirements:
+        - cfy:
+            node: CloudifyManagerService
+            capability: org.alien4cloud.cloudify.manager.pub.capabilities.CloudifyAPIv3
+            relationship: org.alien4cloud.alien4cloud.config.orchestrator.cfy.relationships.ConnectsToCfy
+        - host:
+            node: Alien4Cloud
+            capability: org.alien4cloud.alien4cloud.pub.capabilities.AlienConfigContainer
+            relationship: org.alien4cloud.alien4cloud.pub.relationships.AlienConfiguratorHostedOnAlien
+    OnDemandLocationResourcesConfigurator:
+      type: org.alien4cloud.alien4cloud.config.location_resources.on_demand.nodes.OnDemandLocationResourcesConfigurator
+      properties:
+        name: "AWS_EC2"
+        type: amazon
+      requirements:
+        - orchestrator:
+            node: CfyOrchestratorConfigurator
+            capability: org.alien4cloud.alien4cloud.config.pub.capabilities.OrchestratorConfigurator
+            relationship: org.alien4cloud.alien4cloud.config.pub.relationships.LocationHostedOnOrchestrator
+      artifacts:
+        resources_file_artifact:
+          file: { get_input_artifact: resources_location }
+          type: tosca.artifacts.File
+    CloudifyManagerService:
+      type: org.alien4cloud.cloudify.manager.pub.nodes.CloudifyManagerService
+      capabilities:
+        cloudify_api_v3:
+          properties:
+            protocol: https
+            port: 443
+            secure: false
+            network_name: PRIVATE
+            initiator: source
+    AddExtendedTypes:
+      type: org.alien4cloud.alien4cloud.config.csar.nodes.AddCsarFromGit
+      properties:
+        repositoryUrl: "https://github.com/alien4cloud/alien4cloud-extended-types"
+        branchId: master
+      requirements:
+        - host:
+            node: Alien4Cloud
+            capability: org.alien4cloud.alien4cloud.pub.capabilities.AlienConfigContainer
+            relationship: org.alien4cloud.alien4cloud.pub.relationships.AlienConfiguratorHostedOnAlien
+  outputs:
+    Alien4Cloud_alien_url:
+      value: { get_attribute: [ Alien4Cloud, alien_url ] }

@@ -1,0 +1,84 @@
+tosca_definitions_version: alien_dsl_2_0_0
+
+metadata:
+  template_name: org.alien4cloud.terraform.openstack.topology.TerraformSampleTopology
+  template_version: 2.0.0
+  template_author: alien4cloud
+
+description: |
+      Sample topology to deploy a Compute with a new security group leveraging terraform.
+
+imports:
+  - tosca-normative-types:1.0.0-ALIEN20
+  - org.alien4cloud.terraform.openstack:2.0.0
+
+topology_template:
+  inputs:
+    agent_config:
+      type: org.alien4cloud.terraform.openstack.datatypes.AgentConfig
+      required: true
+    openstack_config:
+      type: org.alien4cloud.terraform.openstack.datatypes.OpenstackConfig
+      required: true
+    secgroup_ids:
+      type: list
+      required: true
+      entry_schema:
+        type: string
+    nb_instances:
+      type: integer
+      required: false
+      default: 1
+      description: |
+        An optional property that indicates the requested default number of instances that should be the starting number of instances a TOSCA orchestrator should attempt to allocate. Note: The value for this property MUST be in the range between the values set for ‘min_instances’ and ‘max_instances’ properties.
+    floating_ips:
+      type: list
+      required: false
+      entry_schema:
+        type: string
+    pool_name:
+      type: string
+      required: false
+  node_templates:
+    TerraInstance:
+      type: org.alien4cloud.terraform.openstack.nodes.TerraInstance
+      properties:
+        agent_config: { get_input: agent_config }
+        openstack_config: { get_input: openstack_config }
+        image_id: "02ddfcbb-9534-44d7-974d-5cfd36dfbcab"
+        flavor_id: 2
+        key_name: havana
+        openstack_prefix: "a4c_"
+        external_network_name: "alien4cloud-management-network"
+        internal_network_name: "alien4cloud-private-network"
+        metadata: 
+          key: value
+        floating_ips: { get_input: floating_ips }
+        pool_name: { get_input: pool_name }
+        internal_secgroup_ids: { get_input: secgroup_ids }
+        external_secgroup_ids: { get_input: secgroup_ids }
+        TF_LOG: DEBUG
+        OS_DEBUG: 1
+      capabilities:
+        scalable:
+          properties:
+            min_instances: 1
+            max_instances: 1
+            default_instances: { get_input: nb_instances }
+        endpoint:
+          properties:
+            secure: true
+            protocol: tcp
+            network_name: PRIVATE
+            initiator: source
+    CustomSecurityGroup:
+      type: org.alien4cloud.terraform.openstack.nodes.CustomSecurityGroup
+      properties:
+        openstack_config: { get_input: openstack_config }
+        TF_LOG: INFO
+        OS_DEBUG: 0
+      requirements:
+        - secgroup:
+            node: TerraInstance
+            capability: org.alien4cloud.terraform.openstack.capabilities.SecurityGroup
+            relationship: org.alien4cloud.terraform.openstack.relationships.SecurityGroup

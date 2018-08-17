@@ -1,0 +1,109 @@
+tosca_definitions_version: alien_dsl_2_0_0
+
+metadata:
+  template_name: vault_topology_in_production
+  template_version: 2.0.0
+  template_author: alien4cloud
+
+description: "It's a topology designed to deploy a vault service in production mode. It contains a service vault with a Consul backend."
+
+imports:
+  - tosca-normative-types:1.0.0-ALIEN20
+  - org.alien4cloud.vault.vault_sh:2.0.0
+  - org.alien4cloud.consul.consul_sh:2.0.0
+  - org.alien4cloud.consul.pub:2.0.0
+  - org.alien4cloud.vault.pub:2.0.0
+
+topology_template:
+
+  input_artifacts:
+    tls_cert_file:
+      type: tosca.artifacts.File
+    tls_key_file:
+      type: tosca.artifacts.File
+    ldap_config:
+      type: tosca.artifacts.File
+  node_templates:
+    Compute_Consul:
+      type: tosca.nodes.Compute
+      capabilities:
+        scalable:
+          properties:
+            min_instances: 1
+            max_instances: 3
+            default_instances: 1
+        endpoint:
+          properties:
+            secure: true
+            protocol: tcp
+            network_name: PRIVATE
+            initiator: source
+    ConsulServer:
+      type: org.alien4cloud.consul.consul_sh.nodes.ConsulServer
+      properties:
+        agent_mode: server
+        download_url: "https://releases.hashicorp.com/consul/0.6.4/consul_0.6.4_linux_amd64.zip"
+        data_dir: "/var/consul"
+        tls_enabled: false
+      requirements:
+        - host:
+            node: Compute_Consul
+            capability: tosca.capabilities.Container
+            relationship: tosca.relationships.HostedOn
+      capabilities:
+        consul_agent:
+          properties:
+            port: 8500
+            protocol: tcp
+            secure: true
+            network_name: PRIVATE
+            initiator: source
+    Compute_Vault:
+      type: tosca.nodes.Compute
+      capabilities:
+        scalable:
+          properties:
+            min_instances: 1
+            max_instances: 1
+            default_instances: 1
+        endpoint:
+          properties:
+            secure: true
+            protocol: tcp
+            network_name: PRIVATE
+            initiator: source
+    VaultServer:
+      type: org.alien4cloud.vault.vault_sh.nodes.VaultServer
+      properties:
+        port: 8200
+        download_url: "https://releases.hashicorp.com/vault/0.8.3/vault_0.8.3_linux_amd64.zip"
+        install_dir: "/var/vault"
+        auto_unsealed: true
+        ldap_enable: true
+      requirements:
+        - consul:
+            node: ConsulServer
+            capability: org.alien4cloud.consul.pub.capabilities.ConsulAgent
+            relationship: org.alien4cloud.vault.relationships.ConnectToConsulAgent
+        - host:
+            node: Compute_Vault
+            capability: tosca.capabilities.Container
+            relationship: tosca.relationships.HostedOn
+      artifacts:
+        ldap_config:
+            file: { get_input_artifact: ldap_config }
+            type: tosca.artifacts.File
+    Policy:
+      type: org.alien4cloud.vault.vault_sh.Policy
+      requirements:
+        - vault:
+            node: VaultServer
+            capability: org.alien4cloud.vault.pub.capabilities.VaultServer
+            relationship: org.alien4cloud.vault.vault_sh.relationships.PolicyHostedOnVaultServer
+      artifacts:
+        policy_definition_file:
+          type: tosca.artifacts.File
+  outputs:
+    vault_url:
+      value: { get_attribute: [ Compute_Vault, ip_address ] }
+      description: "The url of Compute where the Vault is installed."

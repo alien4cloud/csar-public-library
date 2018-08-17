@@ -1,0 +1,36 @@
+server:
+  port: {{ SERVER_PORT }}
+
+## SSL Options. You might want t change the server.port value too ##
+## See server.http.port below also.
+  ssl:
+    enabled: true
+    key-store: {{ A4C_LOG_DIR }}/ssl/server-keystore.jks
+    key-store-password: changeit
+    key-password: changeit
+  ## For mutual authentication
+#    trust-store: ssl/server-truststore.jks
+#    trust-store-password: *****
+#    client-auth: need
+
+## if ssl enabled, some endpoints are not secured. Thus this server should serve both HTTP and HTTPS protocol
+## Configure here the port on which HTTP protocol runs
+  http:
+    port: {{ HTTP_PORT }}
+
+# Directory in which data is stored
+home_directory: ${user.home}/.a4ccfylogs
+
+# Parameters to control the buffer size and flush timeout
+buffer:
+  size: 1000
+  timeout_sec: 10
+
+alien_registration:
+  # In case multiple alien4cloud connect to a manager, you can allow the alien's to be expired
+  # (in such situation if they don't contact the log server during some time the logs will be removed from disk)
+  is_leased: true
+  # Duration before the manager consider the alien4cloud instance as expired since the last contact (get request etc).
+  lease_duration_sec: 259200
+  # Duration between validation of leases for expirations
+  lease_expiration_frequency_sec: 86400

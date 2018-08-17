@@ -1,0 +1,420 @@
+tosca_definitions_version: alien_dsl_2_0_0
+
+metadata:
+  template_name: org.alien4cloud.cloudify.topologies.hostpool_as_a_service
+  template_version: 2.0.0
+  template_author: alien4cloud
+
+description: >
+  A Hostpool and a AWS feeder.
+  Has been tested on a Centos ami-4c4b003b (t2.small).
+
+imports:
+  - org.alien4cloud.cloudify.hostpool.service:2.0.0
+  - org.alien4cloud.cloudify.hostpool.awsfeeder:2.0.0
+  - org.alien4cloud.cloudify.manager.pub:2.0.0
+  - tosca-normative-types:1.0.0-ALIEN20
+  - org.alien4cloud.cloudify.hostpool.pub:2.0.0
+  - alien-base-types:2.0.0
+
+topology_template:
+  inputs:
+    aws_region:
+      type: string
+      required: true
+      default: "eu-west-1"
+      description: "The aws region to use to start aws instances."
+    aws_access_key:
+      type: string
+      required: true
+      description: "The aws access key of the account to use to start aws instances."
+    aws_secret_key:
+      type: string
+      required: true
+      description: "The aws secret key of the account to use to start aws instances."
+    aws_keypair_name:
+      type: string
+      required: false
+      description: "Optional name of the key as known by the iaas (in case of iaas key)."
+    agent_security_groups:
+      type: string
+      required: true
+      default: "sg-cffd98b6"
+      description: "Comma separated list of security groups to use for agents."
+    component_version:
+      type: version
+      required: false
+      description: "The optional software component’s version."
+    instance_name:
+      type: string
+      required: true
+      default: HostpoolInstance
+      description: "The AWS instance name"
+    aws_key_content:
+      type: string
+      required: true
+      description: "The AWS key"
+  input_artifacts:
+    hostpool_service_archive:
+        type: tosca.artifacts.File
+  substitution_mappings:
+    node_type: org.alien4cloud.cloudify.hostpool.pub.nodes.HostPoolService
+    capabilities:
+      cloudify_hostpool: [ HostPool, cloudify_hostpool ]
+  node_templates:
+    HostPool:
+      type: org.alien4cloud.cloudify.hostpool.service.nodes.HostPool
+      requirements:
+        - host:
+            node: HostPoolCompute
+            capability: tosca.capabilities.Container
+            relationship: tosca.relationships.HostedOn
+      capabilities:
+        cloudify_hostpool:
+          properties:
+            protocol: http
+            port: 8080
+            secure: false
+            network_name: PRIVATE
+            initiator: source
+      artifacts:
+        archive:
+          file: { get_input_artifact: hostpool_service_archive }
+          type: tosca.artifacts.File
+    AWSHostpoolFeeder:
+      type: org.alien4cloud.cloudify.hostpool.awsfeeder.nodes.AWSHostpoolFeeder
+      properties:
+        aws_access_key: { get_input: aws_access_key }
+        aws_secret_key: { get_input: aws_secret_key }
+        key_name: { get_input: aws_keypair_name }
+        key_content: { get_input: aws_key_content }
+        region: { get_input: aws_region }
+        instance_groups: { get_input: agent_security_groups }
+        instance_username: ubuntu
+        instance_type: "t2.nano"
+        instance_image: "ami-47a23a30"
+        instance_count: 0
+        host_per_instance: 1
+        instance_name: { get_input: instance_name }
+        instance_os: linux
+      requirements:
+        - hostpool:
+            node: HostPool
+            capability: org.alien4cloud.cloudify.hostpool.pub.capabilities.HostPoolServiceApi
+            relationship: org.alien4cloud.cloudify.hostpool.awsfeeder.relationships.HostpoolFeederConnectToHostpool
+        - host:
+            node: HostPoolCompute
+            capability: tosca.capabilities.Container
+            relationship: tosca.relationships.HostedOn
+    HostPoolCompute:
+      type: tosca.nodes.Compute
+      capabilities:
+        host:
+          properties:
+            num_cpus: 4
+            mem_size: "4 GIB"
+        os:
+          properties:
+            architecture: "x86_64"
+            type: linux
+            distribution: centos
+        scalable:
+          properties:
+            min_instances: 1
+            max_instances: 1
+            default_instances: 1
+        endpoint:
+          properties:
+            secure: true
+            protocol: tcp
+            network_name: PRIVATE
+            initiator: source
+  workflows:
+    install:
+      steps:
+        Compute_install:
+          target: HostPoolCompute
+          activities:
+            - delegate: install
+          on_success:
+            - HostPool_initial
+            - AWSHostpoolFeeder_initial
+        HostPool_initial:
+          target: HostPool
+          activities:
+            - set_state: initial
+          on_success:
+            - HostPool_creating
+        HostPool_creating:
+          target: HostPool
+          activities:
+            - set_state: creating
+          on_success:
+            - create_HostPool
+        create_HostPool:
+          target: HostPool
+          activities:
+            - call_operation: tosca.interfaces.node.lifecycle.Standard.create
+          on_success:
+            - HostPool_created
+        HostPool_created:
+          target: HostPool
+          activities:
+            - set_state: created
+          on_success:
+            - HostPool_configuring
+            - AWSHostpoolFeeder_initial
+        HostPool_configuring:
+          target: HostPool
+          activities:
+            - set_state: configuring
+          on_success:
+            - configure_HostPool
+        configure_HostPool:
+          target: HostPool
+          activities:
+            - call_operation: tosca.interfaces.node.lifecycle.Standard.configure
+          on_success:
+            - HostPool_configured
+        HostPool_configured:
+          target: HostPool
+          activities:
+            - set_state: configured
+          on_success:
+            - HostPool_starting
+        HostPool_starting:
+          target: HostPool
+          activities:
+            - set_state: starting
+          on_success:
+            - start_HostPool
+        start_HostPool:
+          target: HostPool
+          activities:
+            - call_operation: tosca.interfaces.node.lifecycle.Standard.start
+          on_success:
+            - HostPool_started
+        HostPool_started:
+          target: HostPool
+          activities:
+            - set_state: started
+          on_success:
+            - AWSHostpoolFeeder_configuring
+        AWSHostpoolFeeder_initial:
+          target: AWSHostpoolFeeder
+          activities:
+            - set_state: initial
+          on_success:
+            - AWSHostpoolFeeder_creating
+        AWSHostpoolFeeder_creating:
+          target: AWSHostpoolFeeder
+          activities:
+            - set_state: creating
+          on_success:
+            - AWSHostpoolFeeder_created
+        AWSHostpoolFeeder_created:
+          target: AWSHostpoolFeeder
+          activities:
+            - set_state: created
+          on_success:
+            - HostPool_configuring
+            - AWSHostpoolFeeder_configuring
+        AWSHostpoolFeeder_configuring:
+          target: AWSHostpoolFeeder
+          activities:
+            - set_state: configuring
+          on_success:
+            - configure_AWSHostpoolFeeder
+        configure_AWSHostpoolFeeder:
+          target: AWSHostpoolFeeder
+          activities:
+            - call_operation: tosca.interfaces.node.lifecycle.Standard.configure
+          on_success:
+            - AWSHostpoolFeeder_configured
+        AWSHostpoolFeeder_configured:
+          target: AWSHostpoolFeeder
+          activities:
+            - set_state: configured
+          on_success:
+            - AWSHostpoolFeeder_starting
+        AWSHostpoolFeeder_starting:
+          target: AWSHostpoolFeeder
+          activities:
+            - set_state: starting
+          on_success:
+            - start_AWSHostpoolFeeder
+        start_AWSHostpoolFeeder:
+          target: AWSHostpoolFeeder
+          activities:
+            - call_operation: tosca.interfaces.node.lifecycle.Standard.start
+          on_success:
+            - AWSHostpoolFeeder_started
+        AWSHostpoolFeeder_started:
+          target: AWSHostpoolFeeder
+          activities:
+            - set_state: started
+    uninstall:
+      steps:
+        Compute_uninstall:
+          target: HostPoolCompute
+          activities:
+            - delegate: uninstall
+        HostPool_stopping:
+          target: HostPool
+          activities:
+            - set_state: stopping
+          on_success:
+            - stop_HostPool
+        stop_HostPool:
+          target: HostPool
+          activities:
+            - call_operation: tosca.interfaces.node.lifecycle.Standard.stop
+          on_success:
+            - HostPool_stopped
+        HostPool_stopped:
+          target: HostPool
+          activities:
+            - set_state: stopped
+          on_success:
+            - HostPool_deleting
+        HostPool_deleting:
+          target: HostPool
+          activities:
+            - set_state: deleting
+          on_success:
+            - delete_HostPool
+        delete_HostPool:
+          target: HostPool
+          activities:
+            - call_operation: tosca.interfaces.node.lifecycle.Standard.delete
+          on_success:
+            - HostPool_deleted
+        HostPool_deleted:
+          target: HostPool
+          activities:
+            - set_state: deleted
+          on_success:
+            - Compute_uninstall
+        AWSHostpoolFeeder_stopping:
+          target: AWSHostpoolFeeder
+          activities:
+            - set_state: stopping
+          on_success:
+            - stop_AWSHostpoolFeeder
+        stop_AWSHostpoolFeeder:
+          target: AWSHostpoolFeeder
+          activities:
+            - call_operation: tosca.interfaces.node.lifecycle.Standard.stop
+          on_success:
+            - AWSHostpoolFeeder_stopped
+        AWSHostpoolFeeder_stopped:
+          target: AWSHostpoolFeeder
+          activities:
+            - set_state: stopped
+          on_success:
+            - HostPool_stopping
+            - AWSHostpoolFeeder_deleting
+        AWSHostpoolFeeder_deleting:
+          target: AWSHostpoolFeeder
+          activities:
+            - set_state: deleting
+          on_success:
+            - delete_AWSHostpoolFeeder
+        delete_AWSHostpoolFeeder:
+          target: AWSHostpoolFeeder
+          activities:
+            - call_operation: tosca.interfaces.node.lifecycle.Standard.delete
+          on_success:
+            - AWSHostpoolFeeder_deleted
+        AWSHostpoolFeeder_deleted:
+          target: AWSHostpoolFeeder
+          activities:
+            - set_state: deleted
+          on_success:
+            - Compute_uninstall
+            - HostPool_stopping
+    start:
+      steps:
+        CFY_Compute_start:
+          target: HostPoolCompute
+          activities:
+            - delegate: start
+          on_success:
+            - AWSHostpoolFeeder_starting
+            - HostPool_starting
+        HostPool_starting:
+          target: HostPool
+          activities:
+            - set_state: starting
+          on_success:
+            - start_HostPool
+        start_HostPool:
+          target: HostPool
+          activities:
+            - call_operation: tosca.interfaces.node.lifecycle.Standard.start
+          on_success:
+            - HostPool_started
+        HostPool_started:
+          target: HostPool
+          activities:
+            - set_state: started
+          on_success:
+            - AWSHostpoolFeeder_starting
+        AWSHostpoolFeeder_starting:
+          target: AWSHostpoolFeeder
+          activities:
+            - set_state: starting
+          on_success:
+            - start_AWSHostpoolFeeder
+        start_AWSHostpoolFeeder:
+          target: AWSHostpoolFeeder
+          activities:
+            - call_operation: tosca.interfaces.node.lifecycle.Standard.start
+          on_success:
+            - AWSHostpoolFeeder_started
+        AWSHostpoolFeeder_started:
+          target: AWSHostpoolFeeder
+          activities:
+            - set_state: started
+    stop:
+      steps:
+        CFY_Compute_stop:
+          target: HostPoolCompute
+          activities:
+            - delegate: stop
+        HostPool_stopping:
+          target: HostPool
+          activities:
+            - set_state: stopping
+          on_success:
+            - stop_HostPool
+        stop_HostPool:
+          target: HostPool
+          activities:
+            - call_operation: tosca.interfaces.node.lifecycle.Standard.stop
+          on_success:
+            - HostPool_stopped
+        HostPool_stopped:
+          target: HostPool
+          activities:
+            - set_state: stopped
+          on_success:
+            - CFY_Compute_stop
+        AWSHostpoolFeeder_stopping:
+          target: AWSHostpoolFeeder
+          activities:
+            - set_state: stopping
+          on_success:
+            - stop_AWSHostpoolFeeder
+        stop_AWSHostpoolFeeder:
+          target: AWSHostpoolFeeder
+          activities:
+            - call_operation: tosca.interfaces.node.lifecycle.Standard.stop
+          on_success:
+            - AWSHostpoolFeeder_stopped
+        AWSHostpoolFeeder_stopped:
+          target: AWSHostpoolFeeder
+          activities:
+            - set_state: stopped
+          on_success:
+            - CFY_Compute_stop

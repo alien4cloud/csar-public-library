@@ -1,0 +1,81 @@
+tosca_definitions_version: alien_dsl_2_0_0
+
+metadata:
+  template_name: org.alien4cloud.spark.linux_sh
+  template_version: 2.0.0
+  template_author: alien4cloud
+
+description: |
+  Install Spark cluster.
+
+imports:
+  - tosca-normative-types:1.0.0-ALIEN20
+  - org.alien4cloud.java.pub:2.0.0
+  - org.alien4cloud.spark.pub:2.0.0
+
+node_types:
+
+  org.alien4cloud.spark.linux_sh.nodes.SparkNode:
+    abstract: true
+    derived_from: org.alien4cloud.java.pub.nodes.JavaSoftware
+    properties:
+      component_version:
+        type: version
+        default: 2.2.2
+        constraints:
+          - equal: 2.2.2
+      download_url:
+        type: string
+        default: http://mirror.ibcp.fr/pub/apache/spark/spark-2.2.2/spark-2.2.2-bin-hadoop2.7.tgz
+        constraints:
+          - equal: http://mirror.ibcp.fr/pub/apache/spark/spark-2.2.2/spark-2.2.2-bin-hadoop2.7.tgz
+      install_dir:
+        type: string
+        default: /opt/spark
+    interfaces:
+      Standard:
+        create:
+          inputs:
+            SPARK_DOWNLOAD_URL: { get_property: [SELF, download_url] }
+            SPARK_INSTALL_DIR: { get_property: [SELF, install_dir] }
+          implementation: scripts/install_spark.sh
+
+  org.alien4cloud.spark.linux_sh.nodes.SparkMaster:
+    derived_from: org.alien4cloud.spark.linux_sh.nodes.SparkNode
+    capabilities:
+      spark_master:
+        type: org.alien4cloud.spark.pub.capabilities.SparkMaster
+      spark_ui:
+        type: org.alien4cloud.spark.pub.capabilities.SparkMasterUI
+    attributes:
+      spark_ui: { concat: [get_attribute: [ SELF, spark_ui, protocol ], "://", get_attribute: [ SELF, public_ip_address ], ":", get_attribute: [ SELF, spark_ui, port ]] }
+    interfaces:
+      Standard:
+        start:
+          inputs:
+            SPARK_INSTALL_DIR: { get_property: [SELF, install_dir] }
+          implementation: scripts/start_master.sh
+
+  org.alien4cloud.spark.linux_sh.nodes.SparkSlave:
+    derived_from: org.alien4cloud.spark.linux_sh.nodes.SparkNode
+    capabilities:
+      spark_master:
+        type: org.alien4cloud.spark.pub.capabilities.SparkMaster
+    requirements:
+      - spark_master:
+          capability: org.alien4cloud.spark.pub.capabilities.SparkMaster
+          relationship: org.alien4cloud.spark.linux_sh.relationships.JoinSparkCluster
+
+relationship_types:
+
+  org.alien4cloud.spark.linux_sh.relationships.JoinSparkCluster:
+    derived_from: tosca.relationships.ConnectsTo
+    valid_target_types: [org.alien4cloud.spark.linux_sh.nodes.SparkMaster]
+    interfaces:
+      Configure:
+        add_target:
+          inputs:
+            SPARK_INSTALL_DIR: { get_property: [SOURCE, install_dir] }
+            SPARK_MASTER_ADDRESS: { get_attribute: [TARGET, ip_address] }
+            SPARK_MASTER_PORT: { get_attribute: [TARGET, spark_master, port] }
+          implementation: scripts/join_spark_cluster.sh

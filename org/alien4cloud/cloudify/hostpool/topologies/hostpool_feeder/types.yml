@@ -1,0 +1,116 @@
+tosca_definitions_version: alien_dsl_2_0_0
+
+metadata:
+  template_name: org.alien4cloud.cloudify.hostpool.topologies.hostpool_feeder
+  template_version: 2.0.0
+  template_author: alien4cloud
+
+description: >
+  A Hostpool with a AWS Hostpool feeder.
+  Should work on a Centos (ami-4c4b003b) t2.small.
+
+
+imports:
+  - org.alien4cloud.cloudify.hostpool.awsfeeder:2.0.0
+  - org.alien4cloud.cloudify.hostpool.service:2.0.0
+  - tosca-normative-types:1.0.0-ALIEN20
+  - org.alien4cloud.cloudify.hostpool.pub:2.0.0
+  - alien-base-types:2.0.0
+
+topology_template:
+  description: >
+    A Hostpool with a AWS Hostpool feeder.
+    Should work on a Centos (ami-4c4b003b) t2.small.
+
+  inputs:
+    key_name:
+      type: string
+      required: true
+      description: "The AWS key name"
+    aws_access_key:
+      type: string
+      required: true
+      description: "The AWS access key"
+    key_content:
+      type: string
+      required: true
+      description: "The AWS key"
+    instance_groups:
+      type: string
+      required: true
+      description: "Security groups the instances will be associated with"
+    aws_secret_key:
+      type: string
+      required: true
+      description: "The AWS secret key"
+  input_artifacts:
+    hostpool_service_archive:
+        type: tosca.artifacts.File
+  substitution_mappings:
+    node_type: org.alien4cloud.cloudify.hostpool.pub.nodes.HostPoolService
+    capabilities:
+      cloudify_hostpool: [ HostPool, cloudify_hostpool ]
+  node_templates:
+    AWSHostpoolFeeder:
+      type: org.alien4cloud.cloudify.hostpool.awsfeeder.nodes.AWSHostpoolFeeder
+      properties:
+        aws_access_key: { get_input: aws_access_key }
+        aws_secret_key: { get_input: aws_secret_key }
+        key_name: { get_input: key_name }
+        key_content: { get_input: key_content }
+        region: "eu-west-1"
+        instance_groups: { get_input: instance_groups }
+        instance_username: ubuntu
+        instance_type: "t2.nano"
+        instance_image: "ami-47a23a30"
+        instance_count: 0
+        host_per_instance: 1
+        instance_name: HostpoolInstance
+        instance_os: linux
+      requirements:
+        - host:
+            node: Compute_Hostpool
+            capability: tosca.capabilities.Container
+            relationship: tosca.relationships.HostedOn
+        - hostpool:
+            node: HostPool
+            capability: org.alien4cloud.cloudify.hostpool.pub.capabilities.HostPoolServiceApi
+            relationship: org.alien4cloud.cloudify.hostpool.awsfeeder.relationships.HostpoolFeederConnectToHostpool
+    HostPool:
+      type: org.alien4cloud.cloudify.hostpool.service.nodes.HostPool
+      requirements:
+        - host:
+            node: Compute_Hostpool
+            capability: tosca.capabilities.Container
+            relationship: tosca.relationships.HostedOn
+      capabilities:
+        cloudify_hostpool:
+          properties:
+            protocol: http
+            port: 8080
+            secure: false
+            network_name: PRIVATE
+            initiator: source
+      artifacts:
+        archive:
+          file: { get_input_artifact: hostpool_service_archive }
+          type: tosca.artifacts.File
+    Compute_Hostpool:
+      type: tosca.nodes.Compute
+      capabilities:
+        os:
+          properties:
+            architecture: "x86_64"
+            type: linux
+            distribution: centos
+        scalable:
+          properties:
+            min_instances: 1
+            max_instances: 1
+            default_instances: 1
+        endpoint:
+          properties:
+            secure: true
+            protocol: tcp
+            network_name: PRIVATE
+            initiator: source

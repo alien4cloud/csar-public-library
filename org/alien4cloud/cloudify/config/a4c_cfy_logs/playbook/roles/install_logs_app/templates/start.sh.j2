@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+cd `dirname $0`
+workdir=$PWD
+
+if type -p java; then
+    echo "found java executable in PATH"
+    _java=java
+elif [[ -n "$JAVA_HOME" ]] && [[ -x "$JAVA_HOME/bin/java" ]];  then
+    echo "found java executable in ${JAVA_HOME}"
+    _java="$JAVA_HOME/bin/java"
+elif [ ! -d "$workdir/java" ]; then
+    echo "JAVA is required for the log application to run"
+    exit 1
+fi
+
+$_java $JAVA_OPTIONS -jar alien4cloud-cfy-logs*.war

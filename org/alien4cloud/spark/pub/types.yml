@@ -1,0 +1,50 @@
+tosca_definitions_version: alien_dsl_2_0_0
+
+metadata:
+  template_name: org.alien4cloud.spark.pub
+  template_version: 2.0.0
+  template_author: alien4cloud
+
+description: |
+  Install Spark cluster.
+
+imports:
+  - tosca-normative-types:1.0.0-ALIEN20
+
+capability_types:
+
+  org.alien4cloud.spark.pub.capabilities.SparkMaster:
+    derived_from: tosca.capabilities.Endpoint
+    description: >
+      A spark master exposes this capability.
+    properties:
+      port:
+        type: integer
+        default: 7077
+      protocol:
+        type: string
+        default: spark
+
+  org.alien4cloud.spark.pub.capabilities.SparkMasterUI:
+    derived_from: tosca.capabilities.Endpoint
+    description: >
+      A spark master exposes this capability.
+    properties:
+      port:
+        type: integer
+        required: true
+        default: 8080
+      protocol:
+        type: string
+        required: true
+        default: http
+
+  org.alien4cloud.spark.pub.capabilities.SparkREST:
+    derived_from: tosca.capabilities.Endpoint
+    description: >
+      A spark master exposes this capability.
+    properties:
+      port:
+        type: integer
+        required: true
+        default: 6066

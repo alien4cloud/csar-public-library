@@ -1,0 +1,244 @@
+tosca_definitions_version: alien_dsl_2_0_0
+
+metadata:
+  template_name: org.alien4cloud.alien4cloud.topologies.a4c_aws_byon
+  template_version: 2.0.0
+  template_author: alien4cloud
+
+description: >
+  A ready to use A4C configured with repositories, an orchesrator configured and started and an AWS location configured with default sample resources, anonther one connected to a hostpool (byon location).
+  Has been tested on a Ubuntu ami-47a23a30 (t2.medium).
+
+
+imports:
+  - org.alien4cloud.alien4cloud.config.csar:2.0.0
+  - org.alien4cloud.cloudify.manager.pub:2.0.0
+  - tosca-normative-types:1.0.0-ALIEN20
+  - alien-base-types:2.0.0
+  - org.alien4cloud.alien4cloud.config.location:2.0.0
+  - org.alien4cloud.java.pub:2.0.0
+  - org.alien4cloud.java.jmx.jolokia:2.0.0
+  - org.alien4cloud.alien4cloud.webapp:2.0.0
+  - org.alien4cloud.java.jdk.linux:2.0.0
+  - org.alien4cloud.alien4cloud.config.location_resources.cfy_byon:2.0.0
+  - org.alien4cloud.alien4cloud.config.orchestrator.cfy:2.0.0
+  - org.alien4cloud.elasticsearch.pub:2.0.0
+  - org.alien4cloud.alien4cloud.config.location_resources.on_demand:2.0.0
+  - org.alien4cloud.alien4cloud.config.repository:2.0.0
+  - org.alien4cloud.cloudify.hostpool.pub:2.0.0
+  - org.alien4cloud.alien4cloud.pub:2.0.0
+  - org.alien4cloud.alien4cloud.config.pub:2.0.0
+
+topology_template:
+  inputs:
+    component_version:
+      type: version
+      required: true
+      description: "The version of A4C (important in create stage)."
+    discriminator:
+      type: string
+      required: true
+      default: YourInitials
+      description: "a prefix for all deployments"
+  input_artifacts:
+    alien_dist:
+        type: tosca.artifacts.File
+    repositories_file_artifact:
+        type: tosca.artifacts.File
+    aws_resources_file_artifact:
+        type: tosca.artifacts.File
+  node_templates:
+    OracleJDK:
+      type: org.alien4cloud.java.jdk.linux.nodes.OracleJDK
+      properties:
+        java_url: "https://edelivery.oracle.com/otn-pub/java/jdk/8u131-b11/d54c1d3a095b4ff2b6607d096fa80163/jdk-8u131-linux-x64.tar.gz"
+        java_home: "/opt/java"
+        component_version: "1.8.0-131-b11"
+      requirements:
+        - host:
+            node: _A4cCompute
+            capability: tosca.capabilities.Container
+            relationship: tosca.relationships.HostedOn
+    Alien4Cloud:
+      type: org.alien4cloud.alien4cloud.webapp.nodes.Alien4Cloud
+      properties:
+        context_root: "/"
+        component_version: { get_input: component_version }
+        data_dir: "/opt/alien4cloud/data"
+      requirements:
+        - java:
+            node: OracleJDK
+            capability: org.alien4cloud.java.pub.capabilities.JDK
+            relationship: org.alien4cloud.java.pub.relationships.JavaSoftwareHostedOnJDK
+      capabilities:
+        jolokia:
+          properties:
+            port: 8778
+        http:
+          properties:
+            port: 9200
+            protocol: http
+            secure: false
+            network_name: PRIVATE
+            initiator: source
+        rest:
+          properties:
+            user: admin
+            password: admin
+            port: 8080
+            protocol: http
+            secure: false
+            network_name: PRIVATE
+            initiator: source
+      artifacts:
+        alien_dist:
+          file: { get_input_artifact: alien_dist }
+          type: tosca.artifacts.File
+    CfyOrchestratorConfigurator:
+      type: org.alien4cloud.alien4cloud.config.orchestrator.cfy.nodes.CfyOrchestratorConfigurator
+      properties:
+        disableDiamondMonitorAgent: true
+        name: MyByon
+        discriminator: { get_input: discriminator }
+        pluginId: "alien-cloudify-4-orchestrator-premium"
+        pluginBean: "cloudify-orchestrator"
+      requirements:
+        - cfy:
+            node: CloudifyManagerService
+            capability: org.alien4cloud.cloudify.manager.pub.capabilities.CloudifyAPIv3
+            relationship: org.alien4cloud.alien4cloud.config.orchestrator.cfy.relationships.ConnectsToCfy
+        - host:
+            node: Alien4Cloud
+            capability: org.alien4cloud.alien4cloud.pub.capabilities.AlienConfigContainer
+            relationship: org.alien4cloud.alien4cloud.pub.relationships.AlienConfiguratorHostedOnAlien
+    ByonLocationResourcesConfigurator:
+      type: org.alien4cloud.alien4cloud.config.location_resources.cfy_byon.nodes.ByonLocationResourcesConfigurator
+      properties:
+        type: byon
+        resourceType: "alien.cloudify.byon.nodes.LinuxCompute"
+        resourceName: MyResource
+        resourceArchiveName: "cloudify-byon-types"
+        resourceArchiveVersion: "1.4.0"
+        resourceAgentInstallMethod: none
+        name: MyLocation
+      requirements:
+        - hostpool:
+            node: HostPoolService
+            capability: org.alien4cloud.cloudify.hostpool.pub.capabilities.HostPoolServiceApi
+            relationship: org.alien4cloud.alien4cloud.config.location_resources.cfy_byon.LocationConnectsToHostpool
+        - orchestrator:
+            node: CfyOrchestratorConfigurator
+            capability: org.alien4cloud.alien4cloud.config.pub.capabilities.OrchestratorConfigurator
+            relationship: org.alien4cloud.alien4cloud.config.pub.relationships.LocationHostedOnOrchestrator
+    HostPoolService:
+      type: org.alien4cloud.cloudify.hostpool.pub.nodes.HostPoolService
+      capabilities:
+        cloudify_hostpool:
+          properties:
+            protocol: tcp
+            secure: false
+            network_name: PRIVATE
+            initiator: source
+    CloudifyManagerService:
+      type: org.alien4cloud.cloudify.manager.pub.nodes.CloudifyManagerService
+      capabilities:
+        cloudify_api_v3:
+          properties:
+            protocol: https
+            port: 443
+            secure: false
+            network_name: PRIVATE
+            initiator: source
+    CfyOrchestratorConfigurator_2:
+      type: org.alien4cloud.alien4cloud.config.orchestrator.cfy.nodes.CfyOrchestratorConfigurator
+      properties:
+        disableDiamondMonitorAgent: true
+        name: MyCfy4
+        discriminator: { get_input: discriminator }
+        pluginId: "alien-cloudify-4-orchestrator-premium"
+        pluginBean: "cloudify-orchestrator"
+      requirements:
+        - cfy:
+            node: CloudifyManagerService
+            capability: org.alien4cloud.cloudify.manager.pub.capabilities.CloudifyAPIv3
+            relationship: org.alien4cloud.alien4cloud.config.orchestrator.cfy.relationships.ConnectsToCfy
+        - host:
+            node: Alien4Cloud
+            capability: org.alien4cloud.alien4cloud.pub.capabilities.AlienConfigContainer
+            relationship: org.alien4cloud.alien4cloud.pub.relationships.AlienConfiguratorHostedOnAlien
+    OnDemandLocationResourcesConfigurator:
+      type: org.alien4cloud.alien4cloud.config.location_resources.on_demand.nodes.OnDemandLocationResourcesConfigurator
+      properties:
+        name: MyEC2Location
+        type: amazon
+      requirements:
+        - orchestrator:
+            node: CfyOrchestratorConfigurator_2
+            capability: org.alien4cloud.alien4cloud.config.pub.capabilities.OrchestratorConfigurator
+            relationship: org.alien4cloud.alien4cloud.config.pub.relationships.LocationHostedOnOrchestrator
+      artifacts:
+        resources_file_artifact:
+          file: { get_input_artifact: aws_resources_file_artifact }
+          type: tosca.artifacts.File
+    AddSamplesTypes:
+      type: org.alien4cloud.alien4cloud.config.csar.nodes.AddCsarFromGit
+      properties:
+        repositoryUrl: "https://github.com/alien4cloud/samples"
+        branchId: master
+        subPath: "org/alien4cloud"
+      requirements:
+        - dependency:
+            node: AddExtendedTypes
+            capability: tosca.capabilities.Node
+            relationship: tosca.relationships.DependsOn
+        - host:
+            node: Alien4Cloud
+            capability: org.alien4cloud.alien4cloud.pub.capabilities.AlienConfigContainer
+            relationship: org.alien4cloud.alien4cloud.pub.relationships.AlienConfiguratorHostedOnAlien
+    FCRepositories:
+      type: org.alien4cloud.alien4cloud.config.repository.nodes.ArtifactRepositoriesConfigurator
+      requirements:
+        - host:
+            node: Alien4Cloud
+            capability: org.alien4cloud.alien4cloud.pub.capabilities.AlienConfigContainer
+            relationship: org.alien4cloud.alien4cloud.pub.relationships.AlienConfiguratorHostedOnAlien
+      artifacts:
+        resources_file_artifact:
+          file: { get_input_artifact: repositories_file_artifact }
+          type: tosca.artifacts.File
+    _A4cCompute:
+      type: tosca.nodes.Compute
+      capabilities:
+        host:
+          properties:
+            num_cpus: 2
+            mem_size: "4 GB"
+        os:
+          properties:
+            architecture: "x86_64"
+            type: linux
+            distribution: ubuntu
+        scalable:
+          properties:
+            min_instances: 1
+            max_instances: 1
+            default_instances: 1
+        endpoint:
+          properties:
+            secure: true
+            protocol: tcp
+            network_name: PRIVATE
+            initiator: source
+    AddExtendedTypes:
+      type: org.alien4cloud.alien4cloud.config.csar.nodes.AddCsarFromGit
+      properties:
+        repositoryUrl: "https://github.com/alien4cloud/tosca-normative-types.git"
+        branchId: master
+      requirements:
+        - host:
+            node: Alien4Cloud
+            capability: org.alien4cloud.alien4cloud.pub.capabilities.AlienConfigContainer
+            relationship: org.alien4cloud.alien4cloud.pub.relationships.AlienConfiguratorHostedOnAlien
+  outputs:
+    Alien4Cloud_alien_url:
+      value: { get_attribute: [ Alien4Cloud, alien_url ] }
