@@ -92,6 +92,6 @@ capability_types:
         description: the passphrase for the CA certificate
         required: false
   org.alien4cloud.consul.pub.capabilities.ConsulServer:
-    derived_from: tosca.capabilities.Root
+    derived_from: org.alien4cloud.consul.pub.capabilities.ConsulAgent
     description: >
       Exposed by a consul server agent.
