@@ -14,7 +14,7 @@ imports:
   - org.alien4cloud.alien4cloud.config.csar:2.1.0-SNAPSHOT
   - org.alien4cloud.cloudify.manager.pub:2.1.0-SNAPSHOT
   - tosca-normative-types:1.0.0-ALIEN20
-  - alien-base-types:2.1.0-SNAPSHOT
+  - alien-base-types:2.1.0-SM6
   - org.alien4cloud.alien4cloud.config.location:2.1.0-SNAPSHOT
   - org.alien4cloud.java.pub:2.1.0-SNAPSHOT
   - org.alien4cloud.java.jmx.jolokia:2.1.0-SNAPSHOT

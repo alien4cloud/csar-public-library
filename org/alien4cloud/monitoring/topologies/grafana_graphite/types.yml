@@ -17,7 +17,7 @@ imports:
   - tosca-normative-types:1.0.0-ALIEN20
   - org.alien4cloud.grafana.linux_ans:2.1.0-SNAPSHOT
   - org.alien4cloud.diamond.agent_linux:2.1.0-SNAPSHOT
-  - alien-base-types:2.1.0-SNAPSHOT
+  - alien-base-types:2.1.0-SM6
   - org.alien4cloud.java.pub:2.1.0-SNAPSHOT
   - org.alien4cloud.java.jmx.jolokia:2.1.0-SNAPSHOT
   - org.alien4cloud.diamond.pub:2.1.0-SNAPSHOT
