@@ -2,7 +2,7 @@ tosca_definitions_version: alien_dsl_2_0_0
 
 metadata:
   template_name: org.alien4cloud.cloudify.hostpool.awsfeeder
-  template_version: 2.1.0-SNAPSHOT
+  template_version: 2.1.0-SM6
   template_author: alien4cloud
 
 # build command:
@@ -11,7 +11,7 @@ metadata:
 imports:
   - tosca-normative-types:1.0.0-ALIEN20
   - alien-base-types:2.1.0-SM6
-  - org.alien4cloud.cloudify.hostpool.pub:2.1.0-SNAPSHOT
+  - org.alien4cloud.cloudify.hostpool.pub:2.1.0-SM6
 
 node_types:
   org.alien4cloud.cloudify.hostpool.awsfeeder.nodes.AWSHostpoolFeeder:

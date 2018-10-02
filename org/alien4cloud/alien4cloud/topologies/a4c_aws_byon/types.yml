@@ -2,7 +2,7 @@ tosca_definitions_version: alien_dsl_2_0_0
 
 metadata:
   template_name: org.alien4cloud.alien4cloud.topologies.a4c_aws_byon
-  template_version: 2.1.0-SNAPSHOT
+  template_version: 2.1.0-SM6
   template_author: alien4cloud
 
 description: >
@@ -11,23 +11,23 @@ description: >
 
 
 imports:
-  - org.alien4cloud.alien4cloud.config.csar:2.1.0-SNAPSHOT
-  - org.alien4cloud.cloudify.manager.pub:2.1.0-SNAPSHOT
+  - org.alien4cloud.alien4cloud.config.csar:2.1.0-SM6
+  - org.alien4cloud.cloudify.manager.pub:2.1.0-SM6
   - tosca-normative-types:1.0.0-ALIEN20
   - alien-base-types:2.1.0-SM6
-  - org.alien4cloud.alien4cloud.config.location:2.1.0-SNAPSHOT
-  - org.alien4cloud.java.pub:2.1.0-SNAPSHOT
-  - org.alien4cloud.java.jmx.jolokia:2.1.0-SNAPSHOT
-  - org.alien4cloud.alien4cloud.webapp:2.1.0-SNAPSHOT
-  - org.alien4cloud.java.jdk.linux:2.1.0-SNAPSHOT
-  - org.alien4cloud.alien4cloud.config.location_resources.cfy_byon:2.1.0-SNAPSHOT
-  - org.alien4cloud.alien4cloud.config.orchestrator.cfy:2.1.0-SNAPSHOT
-  - org.alien4cloud.elasticsearch.pub:2.1.0-SNAPSHOT
-  - org.alien4cloud.alien4cloud.config.location_resources.on_demand:2.1.0-SNAPSHOT
-  - org.alien4cloud.alien4cloud.config.repository:2.1.0-SNAPSHOT
-  - org.alien4cloud.cloudify.hostpool.pub:2.1.0-SNAPSHOT
-  - org.alien4cloud.alien4cloud.pub:2.1.0-SNAPSHOT
-  - org.alien4cloud.alien4cloud.config.pub:2.1.0-SNAPSHOT
+  - org.alien4cloud.alien4cloud.config.location:2.1.0-SM6
+  - org.alien4cloud.java.pub:2.1.0-SM6
+  - org.alien4cloud.java.jmx.jolokia:2.1.0-SM6
+  - org.alien4cloud.alien4cloud.webapp:2.1.0-SM6
+  - org.alien4cloud.java.jdk.linux:2.1.0-SM6
+  - org.alien4cloud.alien4cloud.config.location_resources.cfy_byon:2.1.0-SM6
+  - org.alien4cloud.alien4cloud.config.orchestrator.cfy:2.1.0-SM6
+  - org.alien4cloud.elasticsearch.pub:2.1.0-SM6
+  - org.alien4cloud.alien4cloud.config.location_resources.on_demand:2.1.0-SM6
+  - org.alien4cloud.alien4cloud.config.repository:2.1.0-SM6
+  - org.alien4cloud.cloudify.hostpool.pub:2.1.0-SM6
+  - org.alien4cloud.alien4cloud.pub:2.1.0-SM6
+  - org.alien4cloud.alien4cloud.config.pub:2.1.0-SM6
 
 topology_template:
   inputs:

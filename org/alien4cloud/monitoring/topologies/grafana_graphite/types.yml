@@ -2,7 +2,7 @@ tosca_definitions_version: alien_dsl_2_0_0
 
 metadata:
   template_name: org.alien4cloud.monitoring.topologies.grafana_graphite
-  template_version: 2.1.0-SNAPSHOT
+  template_version: 2.1.0-SM6
   template_author: alien4cloud
 
 description: |
@@ -10,22 +10,22 @@ description: |
   Tested on a Centos ami-4c4b003b (t2.small).
 
 imports:
-  - org.alien4cloud.monitoring.pub:2.1.0-SNAPSHOT
-  - org.alien4cloud.graphite.pub:2.1.0-SNAPSHOT
-  - org.alien4cloud.grafana.pub:2.1.0-SNAPSHOT
-  - org.alien4cloud.cloudify.manager.pub:2.1.0-SNAPSHOT
+  - org.alien4cloud.monitoring.pub:2.1.0-SM6
+  - org.alien4cloud.graphite.pub:2.1.0-SM6
+  - org.alien4cloud.grafana.pub:2.1.0-SM6
+  - org.alien4cloud.cloudify.manager.pub:2.1.0-SM6
   - tosca-normative-types:1.0.0-ALIEN20
-  - org.alien4cloud.grafana.linux_ans:2.1.0-SNAPSHOT
-  - org.alien4cloud.diamond.agent_linux:2.1.0-SNAPSHOT
+  - org.alien4cloud.grafana.linux_ans:2.1.0-SM6
+  - org.alien4cloud.diamond.agent_linux:2.1.0-SM6
   - alien-base-types:2.1.0-SM6
-  - org.alien4cloud.java.pub:2.1.0-SNAPSHOT
-  - org.alien4cloud.java.jmx.jolokia:2.1.0-SNAPSHOT
-  - org.alien4cloud.diamond.pub:2.1.0-SNAPSHOT
-  - org.alien4cloud.elasticsearch.pub:2.1.0-SNAPSHOT
-  - org.alien4cloud.alien4cloud.pub:2.1.0-SNAPSHOT
-  - org.alien4cloud.postgresql.pub:2.1.0-SNAPSHOT
-  - org.alien4cloud.rabbitmq.pub:2.1.0-SNAPSHOT
-  - org.alien4cloud.graphite.linux_ans:2.1.0-SNAPSHOT
+  - org.alien4cloud.java.pub:2.1.0-SM6
+  - org.alien4cloud.java.jmx.jolokia:2.1.0-SM6
+  - org.alien4cloud.diamond.pub:2.1.0-SM6
+  - org.alien4cloud.elasticsearch.pub:2.1.0-SM6
+  - org.alien4cloud.alien4cloud.pub:2.1.0-SM6
+  - org.alien4cloud.postgresql.pub:2.1.0-SM6
+  - org.alien4cloud.rabbitmq.pub:2.1.0-SM6
+  - org.alien4cloud.graphite.linux_ans:2.1.0-SM6
 
 topology_template:
   description: |
