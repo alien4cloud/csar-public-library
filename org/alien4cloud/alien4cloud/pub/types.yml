@@ -58,7 +58,7 @@ capability_types:
         type: integer
         description: The port of the alien HTTP endpoint.
         required: true
-        default: 8080
+        default: 8088
         constraints:
           - in_range: [ 1, 65535 ]
       protocol:
