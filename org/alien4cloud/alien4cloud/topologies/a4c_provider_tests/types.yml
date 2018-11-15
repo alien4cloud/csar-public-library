@@ -2,23 +2,23 @@ tosca_definitions_version: alien_dsl_2_0_0
 
 metadata:
   template_name: org.alien4cloud.alien4cloud.topologies.a4c_provider_tests
-  template_version: 2.1.0-SNAPSHOT
+  template_version: 2.1.0-SM7
   template_author: alient4cloud
 
 description: "Enclosing archive for topology Topology for alien4cloud provider tests"
 
 imports:
-  - org.alien4cloud.java.jmx.jolokia:2.1.0-SNAPSHOT
-  - org.alien4cloud.alien4cloud.webapp:2.1.0-SNAPSHOT
-  - org.alien4cloud.java.jdk.linux:2.1.0-SNAPSHOT
-  - org.alien4cloud.cloudify.manager.pub:2.1.0-SNAPSHOT
-  - org.alien4cloud.cloudify.manager.v4:2.1.0-SNAPSHOT
-  - org.alien4cloud.elasticsearch.pub:2.1.0-SNAPSHOT
+  - org.alien4cloud.java.jmx.jolokia:2.1.0-SM7
+  - org.alien4cloud.alien4cloud.webapp:2.1.0-SM7
+  - org.alien4cloud.java.jdk.linux:2.1.0-SM7
+  - org.alien4cloud.cloudify.manager.pub:2.1.0-SM7
+  - org.alien4cloud.cloudify.manager.v4:2.1.0-SM7
+  - org.alien4cloud.elasticsearch.pub:2.1.0-SM7
   - tosca-normative-types:1.0.0-ALIEN20
-  - org.alien4cloud.alien4cloud.pub:2.1.0-SNAPSHOT
-  - org.alien4cloud.postgresql.pub:2.1.0-SNAPSHOT
-  - org.alien4cloud.rabbitmq.pub:2.1.0-SNAPSHOT
-  - org.alien4cloud.java.pub:2.1.0-SNAPSHOT
+  - org.alien4cloud.alien4cloud.pub:2.1.0-SM7
+  - org.alien4cloud.postgresql.pub:2.1.0-SM7
+  - org.alien4cloud.rabbitmq.pub:2.1.0-SM7
+  - org.alien4cloud.java.pub:2.1.0-SM7
 
 repositories:
   fastconnect-staging:
@@ -175,6 +175,6 @@ topology_template:
             port: 8778
       artifacts:
         alien_dist:
-          file: alien4cloud:alien4cloud-premium-dist:2.1.0-SNAPSHOT:dist@tar.gz
+          file: alien4cloud:alien4cloud-premium-dist:2.1.0-SM7:dist@tar.gz
           type: tosca.artifacts.File
           repository: fastconnect-staging

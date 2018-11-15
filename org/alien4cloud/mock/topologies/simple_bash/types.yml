@@ -2,15 +2,15 @@ tosca_definitions_version: alien_dsl_2_0_0
 
 metadata:
   template_name: org.alien4cloud.mock.topologies.simple_bash
-  template_version: 2.1.0-SNAPSHOT
+  template_version: 2.1.0-SM7
   template_author: alien4cloud
 
 description: |
   An topology that do nothing but sleeping and generating some logs, used for load tests
 
 imports:
-  - org.alien4cloud.mock.bash:2.1.0-SNAPSHOT
-  - org.alien4cloud.mock.pub:2.1.0-SNAPSHOT
+  - org.alien4cloud.mock.bash:2.1.0-SM7
+  - org.alien4cloud.mock.pub:2.1.0-SM7
   - tosca-normative-types:1.0.0-ALIEN20
 
 topology_template:
