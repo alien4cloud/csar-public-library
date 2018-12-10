@@ -54,6 +54,7 @@ node_types:
         start:
           inputs:
             SPARK_INSTALL_DIR: { get_property: [SELF, install_dir] }
+            SPARK_MASTER_ADDRESS: { get_attribute: [HOST, ip_address] }
           implementation: scripts/start_master.sh
 
   org.alien4cloud.spark.linux_sh.nodes.SparkSlave:
@@ -77,5 +78,6 @@ relationship_types:
           inputs:
             SPARK_INSTALL_DIR: { get_property: [SOURCE, install_dir] }
             SPARK_MASTER_ADDRESS: { get_attribute: [TARGET, ip_address] }
+            SPARK_SLAVE_ADDRESS: { get_attribute: [SOURCE, ip_address] }
             SPARK_MASTER_PORT: { get_attribute: [TARGET, spark_master, port] }
           implementation: scripts/join_spark_cluster.sh
