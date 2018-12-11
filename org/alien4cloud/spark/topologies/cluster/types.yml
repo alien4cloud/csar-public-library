@@ -39,7 +39,7 @@ topology_template:
         spark_ui:
           properties:
             port: 8080
-            protocol: tcp
+            protocol: http
             secure: false
             network_name: PRIVATE
             initiator: source

@@ -28,7 +28,7 @@ node_types:
         type: string
         default: http://mirror.ibcp.fr/pub/apache/spark/spark-2.2.2/spark-2.2.2-bin-hadoop2.7.tgz
         constraints:
-          - equal: http://mirror.ibcp.fr/pub/apache/spark/spark-2.2.2/spark-2.2.2-bin-hadoop2.7.tgz
+          - pattern: "https?://.+/spark-2.2.2-bin-hadoop2.7.tgz"
       install_dir:
         type: string
         default: /opt/spark
@@ -45,16 +45,22 @@ node_types:
     capabilities:
       spark_master:
         type: org.alien4cloud.spark.pub.capabilities.SparkMaster
+      spark_rest:
+        type: org.alien4cloud.spark.pub.capabilities.SparkREST
       spark_ui:
         type: org.alien4cloud.spark.pub.capabilities.SparkMasterUI
     attributes:
       spark_ui: { concat: [get_attribute: [ SELF, spark_ui, protocol ], "://", get_attribute: [ SELF, public_ip_address ], ":", get_attribute: [ SELF, spark_ui, port ]] }
+      spark_rest_port: { get_attribute: [ SELF, spark_rest, port ] }
     interfaces:
       Standard:
         start:
           inputs:
             SPARK_INSTALL_DIR: { get_property: [SELF, install_dir] }
             SPARK_MASTER_ADDRESS: { get_attribute: [HOST, ip_address] }
+            SPARK_UI_PORT: {get_property: [ SELF, spark_ui, port ]}
+            SPARK_MASTER_PORT: {get_property: [ SELF, spark_master, port ]}
+            SPARK_MASTER_REST_PORT: {get_property: [ SELF, spark_rest, port ]}
           implementation: scripts/start_master.sh
 
   org.alien4cloud.spark.linux_sh.nodes.SparkSlave:

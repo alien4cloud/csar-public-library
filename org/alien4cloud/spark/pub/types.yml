@@ -48,3 +48,6 @@ capability_types:
         type: integer
         required: true
         default: 6066
+      protocol:
+        type: string
+        default: spark
