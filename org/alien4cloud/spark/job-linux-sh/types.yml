@@ -1,0 +1,101 @@
+tosca_definitions_version: alien_dsl_2_0_0
+
+metadata:
+  template_name: org.alien4cloud.spark.jobs-linux-sh
+  template_version: 2.1.0-SNAPSHOT
+  template_author: alien4cloud
+
+description: |
+  Install Spark cluster.
+
+imports:
+  - tosca-normative-types:1.0.0-ALIEN20
+  - org.alien4cloud.spark.pub:2.1.0-SNAPSHOT
+  - alien-base-types:2.1.0-SNAPSHOT
+
+data_types:
+  org.alien4cloud.spark.jobs-linux-sh.datatypes.SubmissionProperties:
+    derived_from: tosca.datatypes.Root
+    properties:
+      app_name:
+        type: string
+        required: true
+      cores_max:
+        type: integer
+        required: false
+      executor_memory:
+        type: string
+        default: ""
+        required: false
+      executor_cores:
+        type: integer
+        required: false
+      driver_memory:
+        type: string
+        default: ""
+        required: false
+      driver_cores:
+        type: integer
+        required: false
+      driver_supervise:
+        type: string
+        default: "false"
+        required: false
+      jars:
+        type: string
+        required: false
+  org.alien4cloud.spark.jobs-linux-sh.datatypes.Submission:
+    derived_from: tosca.datatypes.Root
+    properties:
+      submit_props:
+        type: org.alien4cloud.spark.jobs-linux-sh.datatypes.SubmissionProperties
+        required: true
+      main_class:
+        type: string
+        required: true
+      app_args:
+        type: list
+        entry_schema:
+          type: string
+      app_resource:
+        type: string
+        required: false
+
+
+
+node_types:
+  org.alien4cloud.spark.jobs-linux-sh.nodes.SparkJob:
+    derived_from: org.alien4cloud.nodes.Job
+    properties:
+      submission:
+        type: org.alien4cloud.spark.jobs-linux-sh.datatypes.Submission
+      jar_download:
+        type: string
+        required: false
+      jar_install_path:
+        type: string
+        required: false
+    requirements:
+      - spark_rest_api: 
+          capability: org.alien4cloud.spark.pub.capabilities.SparkREST
+          relationship: tosca.relationships.ConnectsTo
+      - host:
+          capability: tosca.capabilities.Container
+          node: tosca.nodes.Compute
+          relationship: tosca.relationships.HostedOn
+          occurrences: [0, 1] 
+    interfaces:
+      tosca.interfaces.node.lifecycle.Runnable:
+        inputs: 
+          SPARK_IP: {get_attribute: [REQ_TARGET, spark_rest_api, ip_address]}
+          SPARK_REST_PORT: {get_attribute: [REQ_TARGET, spark_rest_api, spark_rest_port]}
+        submit:
+          inputs: 
+            SUBMIT_PROPS: {get_property: [SELF, submission, submit_props]}
+            MAIN_CLASS: {get_property: [SELF, submission, main_class]}
+            APP_ARGS: {get_property: [SELF, submission, app_args]}
+            JAR_DOWNLOAD: {get_property: [SELF, jar_download]}
+            JAR_INSTALL_PATH: {get_property: [SELF, jar_install_path]}
+          implementation: scripts/submit.sh
+        run: scripts/run.sh
+        cancel: scripts/cancel.sh
