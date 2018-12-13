@@ -2,17 +2,17 @@ tosca_definitions_version: alien_dsl_2_0_0
 
 metadata:
   template_name: org.alien4cloud.spark.topologies.cluster
-  template_version: 2.1.0-SNAPSHOT
+  template_version: 2.1.0-RC1
   template_author: alien4cloud
 
 description: ""
 
 imports:
-  - org.alien4cloud.spark.pub:2.1.0-SNAPSHOT
-  - org.alien4cloud.java.pub:2.1.0-SNAPSHOT
-  - org.alien4cloud.java.jdk.linux:2.1.0-SNAPSHOT
+  - org.alien4cloud.spark.pub:2.1.0-RC1
+  - org.alien4cloud.java.pub:2.1.0-RC1
+  - org.alien4cloud.java.jdk.linux:2.1.0-RC1
   - tosca-normative-types:1.0.0-ALIEN20
-  - org.alien4cloud.spark.linux_sh:2.1.0-SNAPSHOT
+  - org.alien4cloud.spark.linux_sh:2.1.0-RC1
 
 topology_template:
   node_templates:
