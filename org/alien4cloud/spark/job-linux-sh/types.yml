@@ -11,7 +11,7 @@ description: |
 imports:
   - tosca-normative-types:1.0.0-ALIEN20
   - org.alien4cloud.spark.pub:2.2.0-SNAPSHOT
-  - alien-base-types:2.2.0-SNAPSHOT
+  - alien-base-types:2.1.0
 
 data_types:
   org.alien4cloud.spark.jobs-linux-sh.datatypes.SubmissionProperties:
