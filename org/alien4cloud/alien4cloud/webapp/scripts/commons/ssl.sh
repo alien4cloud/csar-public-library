@@ -28,6 +28,9 @@ generateKeyAndStore() {
 	KEYSTORE_PWD=$3
 	IP=$4
 
+    CA_PEM_FILE=${CA_PEM:-$ssl/ca.pem}
+    CA_KEY_FILE=${CA_KEY:-$ssl/ca-key.pem}
+
 	TEMP_DIR=`mktemp -d`
 
 	# echo "Generate client key"
@@ -43,7 +46,7 @@ generateKeyAndStore() {
   	sudo echo "subjectAltName = IP:${IP}" >> ${TEMP_DIR}/extfile.cnf
 	fi
 	openssl x509 -req -days 365 -sha256 \
-	        -in ${TEMP_DIR}/${NAME}.csr -CA $ssl/ca.pem -CAkey $ssl/ca-key.pem \
+	        -in ${TEMP_DIR}/${NAME}.csr -CA ${CA_PEM_FILE} -CAkey ${CA_KEY_FILE} \
 	        -CAcreateserial -out ${TEMP_DIR}/${NAME}-cert.pem \
 	        -passin pass:$CA_PASSPHRASE \
 	        -extfile ${TEMP_DIR}/extfile.cnf -extensions ssl_client
@@ -53,11 +56,11 @@ generateKeyAndStore() {
 	openssl pkcs12 -export -name ${NAME} \
 			-in ${TEMP_DIR}/${NAME}-cert.pem -inkey ${TEMP_DIR}/${NAME}-key.pem \
 			-out ${TEMP_DIR}/${NAME}-keystore.p12 -chain \
-			-CAfile $ssl/ca.pem -caname root \
+			-CAfile ${CA_PEM_FILE} -caname root \
 			-password pass:$KEYSTORE_PWD
 
-	cp $ssl/ca.pem ${TEMP_DIR}/ca.pem
-	openssl x509 -outform der -in $ssl/ca.pem -out ${TEMP_DIR}/ca.csr
+	cp ${CA_PEM_FILE} ${TEMP_DIR}/ca.pem
+	openssl x509 -outform der -in ${CA_PEM_FILE} -out ${TEMP_DIR}/ca.csr
 
 	# return the directory
 	echo ${TEMP_DIR}
