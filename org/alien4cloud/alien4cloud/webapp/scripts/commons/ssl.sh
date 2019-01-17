@@ -28,9 +28,20 @@ generateKeyAndStore() {
 	KEYSTORE_PWD=$3
 	IP=$4
 
-    CA_PEM_FILE=${CA_PEM:-$ssl/ca.pem}
-    CA_KEY_FILE=${CA_KEY:-$ssl/ca-key.pem}
+    if [ -z "${CA_PEM}" ]; then
+        CA_PEM_FILE=${TEMP_DIR}/${NAME}-ca.pem
+        echo "${CA_PEM}" > ${CA_PEM_FILE}
+    else
+        CA_PEM_FILE=$ssl/ca.pem
+    fi
 
+   if [ -z "${CA_KEY}" ]; then
+        CA_KEY_FILE=${TEMP_DIR}/${NAME}-ca-key.pem
+        echo "${CA_KEY}" > ${CA_KEY_FILE}
+    else
+        CA_KEY_FILE=$ssl/ca-key.pem
+    fi
+	
 	TEMP_DIR=`mktemp -d`
 
 	# echo "Generate client key"
