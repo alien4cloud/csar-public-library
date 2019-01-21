@@ -20,7 +20,7 @@ sudo sed -i "s/username: admin/username: ${ADMIN_USERNAME}/g" ${A4C_CONFIG}
 if [ "$SERVER_PROTOCOL" == "https" ]; then
   echo "Activating ssl endpoint for Alien webapp"
   # enable SSL
-  sudo sed -i -e "s/#  ssl\:/ssl\:/g" ${A4C_CONFIG}
+  sudo sed -i -e "s/#  ssl\:/  ssl\:/g" ${A4C_CONFIG}
 
   # FIXME: can't be different !!! some confusion somewhere ?
   SERVER_KEYSTORE_PWD="changeit"
@@ -38,9 +38,9 @@ if [ "$SERVER_PROTOCOL" == "https" ]; then
 
   sudo rm -rf $TMP_SSL_DIR
 
-  sudo sed -i -e "s@#    key-store\: \(.*\)@  key-store\: \"$AC4_SSL_DIR/server-keystore.jks\"@g" ${A4C_CONFIG}
-  sudo sed -i -e "s/#    key-store-password\: \(.*\)/  key-store-password\: \"$SERVER_KEYSTORE_PWD\"/g" ${A4C_CONFIG}
-  sudo sed -i -e "s/#    key-password\: \(.*\)/  key-password\: \"$KEY_PWD\"/g" ${A4C_CONFIG}
+  sudo sed -i -e "s@#    key-store\: \(.*\)@    key-store\: \"$AC4_SSL_DIR/server-keystore.jks\"@g" ${A4C_CONFIG}
+  sudo sed -i -e "s/#    key-store-password\: \(.*\)/    key-store-password\: \"$SERVER_KEYSTORE_PWD\"/g" ${A4C_CONFIG}
+  sudo sed -i -e "s/#    key-password\: \(.*\)/    key-password\: \"$KEY_PWD\"/g" ${A4C_CONFIG}
 fi
 
 # get the ES address list
