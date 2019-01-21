@@ -26,7 +26,7 @@ if [ "$SERVER_PROTOCOL" == "https" ]; then
   SERVER_KEYSTORE_PWD="changeit"
   KEY_PWD="${SERVER_KEYSTORE_PWD}"
 
-  TMP_SSL_DIR=$( generateKeyAndStore "alient4cloud.org" "server" "${SERVER_KEYSTORE_PWD}" "${ALIEN_IP}" )
+  TMP_SSL_DIR=$( generateKeyAndStore "alient4cloud.org" "server" "${SERVER_KEYSTORE_PWD}" "${ALIEN_IP}" "${ALIEN_PUBLIC_ADDRESS}")
 
   AC4_SSL_DIR=/etc/alien4cloud/ssl
   sudo mkdir -p $AC4_SSL_DIR

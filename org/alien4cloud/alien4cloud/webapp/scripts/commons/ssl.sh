@@ -7,12 +7,15 @@ echo "Loading ssl utils"
 # Need envs to be set :
 # - $ssl: ssl dir (including ca key and certificat) location.
 # - $CA_PASSPHRASE
+# - $CA_PEM: content of certificate authority
+# - $CA_KEY_FILE: content of certificate authority key
 #
 # ARGS:
 # - $1 cn
 # - $2 name
 # - $3 KEYSTORE_PWD
-# - $4 single IP to be put in subjectAltName
+# - $4 private IP to be put in subjectAltName
+# - $5 public IP to be put in subjectAltName
 #
 # Returns a temp folder containing.
 # - ${name}-key.pem
@@ -26,7 +29,8 @@ generateKeyAndStore() {
 	CN=$1
 	NAME=$2
 	KEYSTORE_PWD=$3
-	IP=$4
+	PRIVATE_IP=$4
+	PUBLIC_IP=$5
 
 	TEMP_DIR=`mktemp -d`
 
@@ -53,8 +57,20 @@ generateKeyAndStore() {
 	# Sign the key with the CA and create a certificate
 	echo "[ ssl_client ]" > ${TEMP_DIR}/extfile.cnf
 	echo "extendedKeyUsage=serverAuth,clientAuth" >> ${TEMP_DIR}/extfile.cnf
-	if [ "${IP}" ]; then
-  	sudo echo "subjectAltName = IP:${IP}" >> ${TEMP_DIR}/extfile.cnf
+	
+	if [ "${PRIVATE_IP}" ]; then
+	   ALT_NAMES = "IP:${PRIVATE_IP}"
+	fi
+	if [ "${PUBLIC_IP}" ]; then
+	    if [ "${ALT_NAMES}" ]; then
+		     ALT_NAMES = "${ALT_NAMES},IP:${PUBLIC_IP}"
+		else
+		    ALT_NAMES = "IP:${PUBLIC_IP}"
+		fi
+	fi
+
+	if [ "${ALT_NAMES}" ]; then
+  	    sudo echo "subjectAltName = ${ALT_NAMES}" >> ${TEMP_DIR}/extfile.cnf
 	fi
 	openssl x509 -req -days 365 -sha256 \
 	        -in ${TEMP_DIR}/${NAME}.csr -CA ${CA_PEM_FILE} -CAkey ${CA_KEY_FILE} \
