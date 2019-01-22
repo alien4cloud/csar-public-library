@@ -58,20 +58,21 @@ generateKeyAndStore() {
 	echo "[ ssl_client ]" > ${TEMP_DIR}/extfile.cnf
 	echo "extendedKeyUsage=serverAuth,clientAuth" >> ${TEMP_DIR}/extfile.cnf
 	
-	if [ "${PRIVATE_IP}" ]; then
-	   ALT_NAMES = "IP:${PRIVATE_IP}"
+	if [ ! -z "${PRIVATE_IP}" ]; then
+	   ALT_NAMES="IP:${PRIVATE_IP}"
 	fi
-	if [ "${PUBLIC_IP}" ]; then
-	    if [ "${ALT_NAMES}" ]; then
-		     ALT_NAMES = "${ALT_NAMES},IP:${PUBLIC_IP}"
+	if [ ! -z "${PUBLIC_IP}" ]; then
+	    if [ ! -z "${ALT_NAMES}" ]; then
+		     ALT_NAMES="${ALT_NAMES},IP:${PUBLIC_IP}"
 		else
-		    ALT_NAMES = "IP:${PUBLIC_IP}"
+		    ALT_NAMES="IP:${PUBLIC_IP}"
 		fi
 	fi
 
-	if [ "${ALT_NAMES}" ]; then
+	if [ ! -z "${ALT_NAMES}" ]; then
   	    sudo echo "subjectAltName = ${ALT_NAMES}" >> ${TEMP_DIR}/extfile.cnf
 	fi
+
 	openssl x509 -req -days 365 -sha256 \
 	        -in ${TEMP_DIR}/${NAME}.csr -CA ${CA_PEM_FILE} -CAkey ${CA_KEY_FILE} \
 	        -CAcreateserial -out ${TEMP_DIR}/${NAME}-cert.pem \
