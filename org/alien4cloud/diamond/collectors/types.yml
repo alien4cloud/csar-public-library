@@ -7,7 +7,7 @@ metadata:
 
 imports:
   - tosca-normative-types:1.0.0-ALIEN20
-  - alien-base-types:2.1.0
+  - alien-base-types:2.1.1
   - org.alien4cloud.monitoring.pub:2.2.0-SNAPSHOT
   - org.alien4cloud.elasticsearch.pub:2.2.0-SNAPSHOT
   - org.alien4cloud.diamond.pub:2.2.0-SNAPSHOT

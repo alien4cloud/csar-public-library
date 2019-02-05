@@ -9,7 +9,7 @@ description: MySQL RDBMS installation  with Puppet, tested with ami-ed82e39e (t2
 
 imports:
   - tosca-normative-types:1.0.0-ALIEN20
-  - alien-base-types:2.1.0
+  - alien-base-types:2.1.1
   - org.alien4cloud.agentpuppet:2.2.0-SNAPSHOT
   - org.alien4cloud.mysql.pub:2.2.0-SNAPSHOT
 
