@@ -73,13 +73,19 @@ if [ -d "/tmp/a4c/work/${NODE}/ConnectToConsulAgent" ]; then
   AGENT_IP=$(</tmp/a4c/work/${NODE}/ConnectToConsulAgent/agentIp)
 
   echo "A4C is connected to Consul ${AGENT_IP}:${AGENT_API_PORT}, activate HA"
-  sudo sed -i -e "s/ha_enabled\: \(.*\)/ha_enabled\: true/g" ${A4C_CONFIG}
-  sudo sed -i -e "s/consulAgentIp\: \(.*\)/consulAgentIp\: ${AGENT_IP}/g" ${A4C_CONFIG}
-  sudo sed -i -e "s/consulAgentPort\: \(.*\)/consulAgentPort\: ${AGENT_API_PORT}/g" ${A4C_CONFIG}
-  sudo sed -i -e "s/#\(.*\)consulAgentIp\: \(.*\)/consulAgentIp\: ${AGENT_IP}/g" ${A4C_CONFIG}
-  sudo sed -i -e "s/#\(.*\)consulAgentPort\: \(.*\)/consulAgentPort\: ${AGENT_API_PORT}/g" ${A4C_CONFIG}
+  sudo sed -i -e "\$aha:" ${A4C_CONFIG}
+  sudo sed -i -e "\$a\ \ ha_enabled: true" ${A4C_CONFIG}
+  sudo sed -i -e "\$a\ \ consulAgentIp: ${AGENT_IP}" ${A4C_CONFIG}
+  sudo sed -i -e "\$a\ \ consulAgentPort: ${AGENT_API_PORT}" ${A4C_CONFIG}
   # set the alien IP for consul checks
-  sudo sed -i -e "s/instanceIp\: \(.*\)/instanceIp\: $ALIEN_IP/g" ${A4C_CONFIG}
+  sudo sed -i -e "\$a\ \ instanceIp: ${ALIEN_IP}" ${A4C_CONFIG}
+  # sudo sed -i -e "s/ha_enabled\: \(.*\)/ha_enabled\: true/g" ${A4C_CONFIG}
+  # sudo sed -i -e "s/consulAgentIp\: \(.*\)/consulAgentIp\: ${AGENT_IP}/g" ${A4C_CONFIG}
+  # sudo sed -i -e "s/consulAgentPort\: \(.*\)/consulAgentPort\: ${AGENT_API_PORT}/g" ${A4C_CONFIG}
+  # sudo sed -i -e "s/#\(.*\)consulAgentIp\: \(.*\)/consulAgentIp\: ${AGENT_IP}/g" ${A4C_CONFIG}
+  # sudo sed -i -e "s/#\(.*\)consulAgentPort\: \(.*\)/consulAgentPort\: ${AGENT_API_PORT}/g" ${A4C_CONFIG}
+  # set the alien IP for consul checks
+  # sudo sed -i -e "s/instanceIp\: \(.*\)/instanceIp\: $ALIEN_IP/g" ${A4C_CONFIG}
 
   TLS_ENABLED=$(</tmp/a4c/work/${NODE}/ConnectToConsulAgent/TLSEnabled)
   if [ "$TLS_ENABLED" == "true" ]; then
@@ -106,12 +112,20 @@ if [ -d "/tmp/a4c/work/${NODE}/ConnectToConsulAgent" ]; then
 
       # FIXME: for the moment the securised client agent only listen on 127.0.0.1
       sudo sed -i -e "s/consulAgentIp\: \(.*\)/consulAgentIp\: 127.0.0.1/g" ${A4C_CONFIG}
-      sudo sed -i -e "s/consul_tls_enabled\: \(.*\)/consul_tls_enabled\: true/g" ${A4C_CONFIG}
-      sudo sed -i -e "s@keyStorePath\: \(.*\)@keyStorePath\: $SSL_STORE_PATH/client-keystore.jks@g" ${A4C_CONFIG}
-      sudo sed -i -e "s@trustStorePath\: \(.*\)@trustStorePath\: $SSL_STORE_PATH/truststore.jks@g" ${A4C_CONFIG}
-      sudo sed -i -e "s/keyStoresPwd\: \(.*\)/keyStoresPwd\: changeit/g" ${A4C_CONFIG}
-      sudo sed -i -e "s/keyStorePwd\: \(.*\)/keyStorePwd\: changeit/g" ${A4C_CONFIG}
-      sudo sed -i -e "s/trustStorePwd\: \(.*\)/trustStorePwd\: changeit/g" ${A4C_CONFIG}
+
+      sudo sed -i -e "\$a\ \ consul_tls_enabled: true" ${A4C_CONFIG}
+      sudo sed -i -e "\$a\ \ keyStorePath: $SSL_STORE_PATH/client-keystore.jks" ${A4C_CONFIG}
+      sudo sed -i -e "\$a\ \ keyStorePwd: changeit" ${A4C_CONFIG}
+      sudo sed -i -e "\$a\ \ trustStorePath: $SSL_STORE_PATH/truststore.jks" ${A4C_CONFIG}
+      sudo sed -i -e "\$a\ \ trustStorePwd:  changeit" ${A4C_CONFIG}
+      sudo sed -i -e "\$a\ \ serverProtocol: https" ${A4C_CONFIG}
+
+      # sudo sed -i -e "s/consul_tls_enabled\: \(.*\)/consul_tls_enabled\: true/g" ${A4C_CONFIG}
+      # sudo sed -i -e "s@keyStorePath\: \(.*\)@keyStorePath\: $SSL_STORE_PATH/client-keystore.jks@g" ${A4C_CONFIG}
+      # sudo sed -i -e "s@trustStorePath\: \(.*\)@trustStorePath\: $SSL_STORE_PATH/truststore.jks@g" ${A4C_CONFIG}
+      # sudo sed -i -e "s/keyStoresPwd\: \(.*\)/keyStoresPwd\: changeit/g" ${A4C_CONFIG}
+      # sudo sed -i -e "s/keyStorePwd\: \(.*\)/keyStorePwd\: changeit/g" ${A4C_CONFIG}
+      # sudo sed -i -e "s/trustStorePwd\: \(.*\)/trustStorePwd\: changeit/g" ${A4C_CONFIG}
   else
       sudo sed -i -e "s/consul_tls_enabled\: \(.*\)/consul_tls_enabled\: false/g" ${A4C_CONFIG}
   fi

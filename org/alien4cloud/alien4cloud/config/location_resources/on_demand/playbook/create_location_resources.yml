@@ -1,7 +1,6 @@
 ---
 - hosts: all
   name: Add AWS on-demand resource on an orchestrator resource
-  become: true
 
   pre_tasks:
     - name: Debug vars
