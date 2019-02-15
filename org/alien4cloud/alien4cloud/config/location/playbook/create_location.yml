@@ -1,7 +1,6 @@
 ---
 - hosts: all
   name: Create an orchestrator location
-  become: true
 
   roles:
     - create_location

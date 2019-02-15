@@ -54,8 +54,16 @@ node_types:
       #   default: http
       #   constraints:
       #     - valid_values: ["http", "https"]
+      ca_pem:
+        description: "PEM-encoded certificate authority content, used to check the authenticity of client and server connections"
+        type: string
+        required: false
+      ca_key:
+        description: "Certificate authority private key content"
+        type: string
+        required: false
       ca_passphrase:
-        description: the provided CA cert passphrase
+        description: "Certificate authority private key passphrase"
         type: string
         required: false
     capabilities:
@@ -107,16 +115,19 @@ node_types:
         configure:
           inputs:
             ALIEN_IP: { get_attribute: [HOST, ip_address] }
+            ALIEN_PUBLIC_ADDRESS: { get_attribute: [HOST, public_address] }
             ALIEN_PORT: { get_property: [SELF, rest, port] }
             DATA_DIR: { get_property: [SELF, data_dir] }
-            TLS_ENABLED: { get_property: [SELF, consul, tls_enabled] }
             # Commented because not used & broken
+            # TLS_ENABLED: { get_property: [SELF, consul, tls_enabled] }
             # KEY_STORE_PATH: { get_property: [SELF, consul, key_store_path] }
             # TRUST_STORE_PATH: { get_property: [SELF, consul, trust_store_path] }
             # KEYSTORE_PWD: { get_property: [SELF, consul, keystore_pwd] }
             SERVER_PROTOCOL: { get_property: [SELF, rest, protocol] }
             ADMIN_USERNAME: { get_property: [SELF, rest, user] }
             ADMIN_PASSWORD: { get_property: [SELF, rest, password] }
+            CA_PEM: { get_property: [SELF, ca_pem] }
+            CA_KEY: { get_property: [SELF, ca_key] }
             CA_PASSPHRASE: { get_property: [SELF, ca_passphrase] }
           implementation: scripts/alien/config_alien.sh
         start:
@@ -161,10 +172,10 @@ relationship_types:
       Configure:
         pre_configure_source:
           inputs:
-            # the capabity name is required here, but in fact I can't guess it
-            # TOSCA limitation ?
-            TLS_ENABLED: { get_property: [SOURCE, consul, tls_enabled] }
-            CA_PASSPHRASE: { get_property: [SOURCE, consul, ca_passphrase] }
+            TLS_ENABLED: { get_property: [TARGET, tls_enabled] }
+            CA_PEM: { get_property: [SOURCE, ca_pem] }
+            CA_KEY: { get_property: [SOURCE, ca_key] }
+            CA_PASSPHRASE: { get_property: [SOURCE, ca_passphrase] }
             AGENT_IP: { get_attribute: [TARGET, ip_address] }
             AGENT_API_PORT: { get_property: [TARGET, consul_agent, port] }
           implementation: scripts/ConnectToConsulAgent/pre_configure_source.sh
