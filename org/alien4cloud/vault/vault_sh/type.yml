@@ -78,12 +78,6 @@ node_types:
       - commons:
           file: scripts/commons
           type: tosca.artifacts.File
-      - tls_cert_file:
-          file: { get_input_artifact: tls_cert_file }
-          type: tosca.artifacts.File
-      - tls_key_file:
-          file: { get_input_artifact: tls_key_file }
-          type: tosca.artifacts.File
       - ldap_config:
           file: configs/ldap_config_example.json
           type: tosca.artifacts.File

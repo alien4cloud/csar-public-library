@@ -31,15 +31,3 @@ sudo cp $ldap_config /etc/vault/ldap_config.json
 
 echo "Use the mlock syscall without running the process as root"
 sudo setcap cap_ipc_lock=+ep $(readlink -f $(which vault))
-
-if [ ! -z "${tls_cert_file}" ]; then
-  echo "Copying the tls certificates files $tls_cert_file and $tls_key_file"
-  sudo cp $tls_cert_file /etc/certs/vault.crt
-  sudo cp $tls_key_file /etc/certs/vault.key
-
-  echo "Update the certificate uploaded for vault"
-  sudo mkdir /usr/share/ca-certificates/vault
-  sudo cp /etc/certs/vault.crt /usr/share/ca-certificates/vault/vault-ca.crt
-  echo "vault/vault-ca.crt" | sudo tee /etc/ca-certificates.conf > /dev/null
-  sudo update-ca-certificates
-fi

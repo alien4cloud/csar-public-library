@@ -17,10 +17,6 @@ imports:
 topology_template:
 
   input_artifacts:
-    tls_cert_file:
-      type: tosca.artifacts.File
-    tls_key_file:
-      type: tosca.artifacts.File
     ldap_config:
       type: tosca.artifacts.File
   node_templates:

@@ -7,10 +7,7 @@ sudo sed -i -e "s/%AGENT_API_PORT%/${AGENT_API_PORT}/g" /etc/vault/vault_config.
 sudo sed -i -e "s/%VAULT_IP%/${VAULT_IP}/g" /etc/vault/vault_config.hcl
 sudo sed -i -e "s/%VAULT_PORT%/${VAULT_PORT}/g" /etc/vault/vault_config.hcl
 
-# Generate a certificate if not provided
-if [ ! -z "${tls_cert_file}" ]; then
-    exit 0
-fi
+# Generate a certificate
 
 TEMP_DIR=`mktemp -d`
 CA_PEM_FILE=${TEMP_DIR}/ca.pem
