@@ -73,7 +73,7 @@ generateKeyAndStore() {
   	    sudo echo "subjectAltName = ${ALT_NAMES}" >> ${TEMP_DIR}/extfile.cnf
 	fi
 
-	openssl x509 -req -days 365 -sha256 \
+	openssl x509 -req -days 3650 -sha256 \
 	        -in ${TEMP_DIR}/${NAME}.csr -CA ${CA_PEM_FILE} -CAkey ${CA_KEY_FILE} \
 	        -CAcreateserial -out ${TEMP_DIR}/${NAME}-cert.pem \
 	        -passin pass:$CA_PASSPHRASE \

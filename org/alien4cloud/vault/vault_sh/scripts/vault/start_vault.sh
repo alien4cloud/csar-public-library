@@ -21,7 +21,12 @@ if [ -f $PIDFILE ]; then
   fi
 else
   printf "%s\n" "Vault not running, we start vault server"
-  sudo bash -c "nohup vault server -log-level=debug -config=/etc/vault/vault_config.hcl > ${LOGFILE} 2>&1 & echo \$! > ${PIDFILE}"
+  if [ -z "${NO_PROXY}" ]; then
+      NO_PROXY_VAULT=$VAULT_IP
+  else
+      NO_PROXY_VAULT=$VAULT_IP:$NO_PROXY
+  fi
+  sudo bash -c "NO_PROXY=$NO_PROXY_VAULT nohup vault server -log-level=debug -config=/etc/vault/vault_config.hcl > ${LOGFILE} 2>&1 & echo \$! > ${PIDFILE}"
 fi
 
 echo "Export the environment variable VAULT_ADDR to $PROTOCOL://${VAULT_IP}:${VAULT_PORT}"
