@@ -32,7 +32,7 @@ node_types:
         description: The URL to download the vault archive.
         type: string
         required: true
-        default: https://releases.hashicorp.com/vault/0.8.3/vault_0.8.3_linux_amd64.zip
+        default: https://releases.hashicorp.com/vault/1.0.3/vault_1.0.3_linux_amd64.zip
       install_dir:
         description: The location on the FS where install Vault.
         type: string

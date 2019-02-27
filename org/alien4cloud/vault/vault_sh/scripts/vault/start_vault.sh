@@ -3,7 +3,7 @@ PIDFILE=/var/run/vault.pid
 LOGFILE=/var/log/vault/log.out
 source $commons/commons.sh
 require_envs "VAULT_IP VAULT_PORT AUTO_UNSEALED TLS_DISABLE LDAP_ENABLE"
-
+set -x
 echo "Update the vault_config file"
 sudo sed -i -e "s/%TLS_DISABLE%/${TLS_DISABLE}/g" /etc/vault/vault_config.hcl
 
@@ -32,12 +32,18 @@ fi
 echo "Export the environment variable VAULT_ADDR to $PROTOCOL://${VAULT_IP}:${VAULT_PORT}"
 export VAULT_ADDR=$PROTOCOL://$VAULT_IP:$VAULT_PORT
 
+# Exporting env. variables related to certificates, to use the CLI
+export VAULT_CA_CERT=/etc/certs/vault_ca.pem
+export VAULT_CLIENT_CERT=/etc/certs/vault.crt
+export VAULT_CLIENT_KEY=/etc/certs/vault.key
+
 sleep 10s
 
 if [[ $AUTO_UNSEALED == true ]]; then
   echo "Init the vault and save the unseal key"
   UNSEALED_KEYS_FILE=/etc/vault/unsealed_keys.txt
-  vault init -tls-skip-verify | sudo tee $UNSEALED_KEYS_FILE > /dev/null
+#  vault init -tls-skip-verify | sudo tee $UNSEALED_KEYS_FILE > /dev/null
+  vault operator init | sudo tee $UNSEALED_KEYS_FILE > /dev/null
 
   IFS=' ' read -r -a array <<< `sed "6q;d" $UNSEALED_KEYS_FILE`
   echo "Export the VAULT_TOKEN=${array[3]}"

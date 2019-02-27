@@ -33,15 +33,9 @@ echo "${CA_KEY}" > ${CA_KEY_FILE}
 sudo echo "[ ssl_client ]" > ${TEMP_DIR}/extfile.cnf
 sudo echo "extendedKeyUsage=serverAuth,clientAuth" >> ${TEMP_DIR}/extfile.cnf
 	
- if [ ! -z "${VAULT_IP}" ]; then
-    ALT_NAMES="IP:${VAULT_IP}"
- fi
+ALT_NAMES="IP:${VAULT_IP}"
  if [ ! -z "${PUBLIC_ADDRESS}" ]; then
-    if [ ! -z "${ALT_NAMES}" ]; then
-        ALT_NAMES="${ALT_NAMES},IP:${PUBLIC_ADDRESS}"
-    else
-        ALT_NAMES="IP:${PUBLIC_ADDRESS}"
-    fi
+    ALT_NAMES="${ALT_NAMES},IP:${PUBLIC_ADDRESS}"
 fi
 
 if [ ! -z "${ALT_NAMES}" ]; then
@@ -55,4 +49,4 @@ sudo openssl x509 -req -days 3650 -sha256 \
     -passin pass:$CA_PASSPHRASE \
     -extfile ${TEMP_DIR}/extfile.cnf -extensions ssl_client
 
-sudo rm -Rf ${TEMP_DIR}
+#sudo rm -Rf ${TEMP_DIR}
