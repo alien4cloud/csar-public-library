@@ -56,6 +56,7 @@ node_types:
     attributes:
       vault_addr: { get_operation_output: [ SELF, Standard, start, VAULT_ADDR ] }
       unsealed_keys_file: { get_operation_output: [ SELF, Standard, start, UNSEALED_KEYS_FILE ] }
+      vault_token_encrypted: { get_operation_output: [ SELF, Standard, start, VAULT_TOKEN_ENCRYPTED ] }
     interfaces:
       Standard:
         create:
@@ -67,6 +68,7 @@ node_types:
           inputs:
             VAULT_IP: { get_attribute: [SELF, ip_address] }
             VAULT_PORT: { get_property: [SELF, port] }
+            PASSPHRASE: { get_property: [SELF, ca_passphrase] }
             AUTO_UNSEALED: { get_property: [SELF, auto_unsealed] }
             TLS_DISABLE: { get_property: [SELF, tls_disable] }
             LDAP_ENABLE: { get_property: [SELF, ldap_enable] }

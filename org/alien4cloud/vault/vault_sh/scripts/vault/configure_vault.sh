@@ -7,7 +7,9 @@ if [ "$AGENT_TLS_ENABLED" != "true" ]; then
     AGENT_SCHEME="http"
 fi
 
-sudo sed -i -e "s/%AGENT_IP%/${AGENT_IP}/g" /etc/vault/vault_config.hcl
+# Workaround for a connection issue with consul agent private IP
+# using 127.0.0.1 instead of ${AGENT_IP}
+sudo sed -i -e "s/%AGENT_IP%/127.0.0.1/g" /etc/vault/vault_config.hcl
 sudo sed -i -e "s/%AGENT_API_PORT%/${AGENT_API_PORT}/g" /etc/vault/vault_config.hcl
 sudo sed -i -e "s/%AGENT_SCHEME%/${AGENT_SCHEME}/g" /etc/vault/vault_config.hcl
 sudo sed -i -e "s/%VAULT_IP%/${VAULT_IP}/g" /etc/vault/vault_config.hcl
