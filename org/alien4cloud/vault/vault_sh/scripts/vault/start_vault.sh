@@ -44,10 +44,9 @@ if [[ $AUTO_UNSEALED == true ]]; then
   echo "Init the vault and save the unseal key"
   UNSEALED_KEYS_FILE=/etc/vault/unsealed_keys.txt
 #  vault init -tls-skip-verify | sudo tee $UNSEALED_KEYS_FILE > /dev/null
-  umask 077
   vault operator init | sudo tee $UNSEALED_KEYS_FILE > /dev/null
 
-  IFS=' ' read -r -a array <<< `sed "6q;d" $UNSEALED_KEYS_FILE`
+  IFS=' ' read -r -a array <<< `sed "7q;d" $UNSEALED_KEYS_FILE`
   echo "Export the VAULT_TOKEN=${array[3]}"
   export VAULT_TOKEN="${array[3]}"
 
@@ -71,6 +70,7 @@ if [[ $AUTO_UNSEALED == true ]]; then
     fi
   done < "$UNSEALED_KEYS_FILE"
 fi
+sudo chmod 600 $UNSEALED_KEYS_FILE
 
 if [[ $LDAP_ENABLE == true ]]; then
   echo "Enable ldap !"
