@@ -66,7 +66,7 @@ node_types:
           implementation: scripts/vault/create_vault.sh
         start:
           inputs:
-            VAULT_IP: { get_attribute: [SELF, ip_address] }
+            VAULT_IP: { get_attribute: [SELF, private_address] }
             VAULT_PORT: { get_property: [SELF, port] }
             PASSPHRASE: { get_property: [SELF, ca_passphrase] }
             AUTO_UNSEALED: { get_property: [SELF, auto_unsealed] }
@@ -136,10 +136,10 @@ relationship_types:
       Configure:
         pre_configure_source:
           inputs:
-            AGENT_IP: { get_attribute: [TARGET, ip_address] }
+            AGENT_IP: { get_attribute: [TARGET, private_address] }
             AGENT_API_PORT: { get_property: [TARGET, consul_agent, port] }
             AGENT_TLS_ENABLED: { get_property: [TARGET, tls_enabled] }
-            VAULT_IP: { get_attribute: [SOURCE, ip_address] }
+            VAULT_IP: { get_attribute: [SOURCE, private_address] }
             VAULT_PORT: { get_property: [SOURCE, port] }
             PUBLIC_ADDRESS: { get_attribute: [SOURCE, public_address] }
             CA_PEM: { get_property: [SOURCE, ca_pem] }
