@@ -51,4 +51,5 @@ sudo openssl x509 -req -days 3650 -sha256 \
     -passin pass:$CA_PASSPHRASE \
     -extfile ${TEMP_DIR}/extfile.cnf -extensions ssl_client
 
-#sudo rm -Rf ${TEMP_DIR}
+sudo rm -Rf ${TEMP_DIR}
+sudo chmod 700 /etc/certs/vault*
