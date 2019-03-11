@@ -44,7 +44,7 @@ if [[ $AUTO_UNSEALED == true ]]; then
   echo "Init the vault and save the unseal key"
   UNSEALED_KEYS_FILE=/etc/vault/unsealed_keys.txt
 #  vault init -tls-skip-verify | sudo tee $UNSEALED_KEYS_FILE > /dev/null
-  vault operator init | sudo tee $UNSEALED_KEYS_FILE > /dev/null
+  sudo -E vault operator init | sudo tee $UNSEALED_KEYS_FILE > /dev/null
 
   IFS=' ' read -r -a array <<< `sed "7q;d" $UNSEALED_KEYS_FILE`
   echo "Export the VAULT_TOKEN=${array[3]}"
@@ -58,7 +58,7 @@ if [[ $AUTO_UNSEALED == true ]]; then
     KEY=${array[3]}
     echo "Unseal vault with the key $KEY"
     # #send the request
-    RESPONSE=`curl \
+    RESPONSE=`sudo -E curl \
       --noproxy $VAULT_IP --cacert $VAULT_CACERT --key $VAULT_CLIENT_KEY --cert $VAULT_CLIENT_CERT \
       --request PUT \
       --data '{"key": "'${KEY}'"}' \
@@ -74,8 +74,8 @@ sudo chmod 600 $UNSEALED_KEYS_FILE
 
 if [[ $LDAP_ENABLE == true ]]; then
   echo "Enable ldap !"
-  vault auth-enable -tls-skip-verify ldap
-  RESPONSE=`curl \
+  sudo -E vault auth-enable -tls-skip-verify ldap
+  RESPONSE=`sudo -E curl \
     --noproxy $VAULT_IP --cacert $VAULT_CACERT --key $VAULT_CLIENT_KEY --cert $VAULT_CLIENT_CERT \
     -k \
     --header "X-Vault-Token: $VAULT_TOKEN" \

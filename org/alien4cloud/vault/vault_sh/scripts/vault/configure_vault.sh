@@ -52,4 +52,4 @@ sudo openssl x509 -req -days 3650 -sha256 \
     -extfile ${TEMP_DIR}/extfile.cnf -extensions ssl_client
 
 sudo rm -Rf ${TEMP_DIR}
-sudo chmod 700 /etc/certs/vault*
+sudo chmod 600 /etc/certs/vault*
