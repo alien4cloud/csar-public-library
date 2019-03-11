@@ -9,19 +9,13 @@
   with_items:
     - gcc
     - python-devel
+    - lsof
   when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux' or ansible_distribution == 'RedHat'
 
 # Install system dependencies (Ubuntu)
 - name: Preprare apt cache
   apt:
     update_cache: yes
-  when: ansible_distribution == 'Ubuntu'
-
-- name: Install system dependencies (Ubuntu)
-  apt: name={{item}} state=installed
-  with_items:
-    - gcc
-    - python-dev
   when: ansible_distribution == 'Ubuntu'
 
 - name: Run the equivalent of "apt-get update" as a separate step
@@ -35,6 +29,7 @@
     - gcc
     - python-dev
     - systemd
+    - lsof
   when: ansible_distribution == 'Ubuntu'
 
 # Install pip

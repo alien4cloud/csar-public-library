@@ -1,0 +1,6 @@
+{
+  "telemetry": {
+    "disable_hostname": false,
+    "statsd_address": "%STATSD_IP_ADDRESS%:%STATSD_PORT%"
+  }
+}

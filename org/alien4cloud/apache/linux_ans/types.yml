@@ -9,7 +9,7 @@ description: This archive contains an Apache webserver node installed through an
 
 imports:
   - tosca-normative-types:1.0.0-ALIEN20
-  - alien-base-types:2.1.1
+  - alien-base-types:2.2.0-SNAPSHOT
   - org.alien4cloud.apache.pub:2.2.0-SNAPSHOT
 
 node_types:

@@ -1,0 +1,81 @@
+#
+# Copyright 2018 Bull S.A.S. Atos Technologies - Bull, Rue Jean Jaures, B.P.68, 78340, Les Clayes-sous-Bois, France.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
+# - name: Set connected user fact
+#   hosts: all
+#   strategy: free
+#   tasks:
+#     - set_fact:
+#         yorc_prov_user: "{{ ansible_user_id }}"
+
+- name: Install StatsD
+  hosts: all
+  strategy: free
+  become: true
+  become_method: sudo
+  tasks:
+    - name: create Yorc group
+      group: name=statsd
+    # - name: Add "{{ yorc_prov_user }}" to the statsd group
+    #   user:
+    #     name: "{{ yorc_prov_user }}"
+    #     append: yes
+    #     groups: statsd
+    - name: Add Node.js Yum Repository
+      shell:
+        cmd: curl -sL https://rpm.nodesource.com/setup_10.x | sudo -E bash -
+    - name: Install NodeJS
+      command: yum install -y nodejs
+    # - name: Add Node.js Yum Repository
+    #   command: curl -sL https://rpm.nodesource.com/setup_10.x | sudo -E bash -
+    - name: Install NodeJS
+      yum:
+        name: git
+        update_cache: yes
+        state: latest
+      become: true
+      when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
+    # To avoid "Peer reports incompatible or unsupported protocol version" :
+    - name: Force upgrade of curl & nss to avoid
+      command: yum -y update curl nss
+    - name: Create statd user
+      user:
+        name: statsd
+        system: true
+        group: statsd
+        home: "{{INSTALL_DIR}}"
+    - name: Checkout project from Git
+      git:
+        repo: https://github.com/etsy/statsd.git
+        dest: "{{ INSTALL_DIR }}/statsd"
+    - name: Setup permissions on install dir
+      file:
+        path: "{{ INSTALL_DIR }}/statsd"
+        state: directory
+        owner: statsd
+        group: statsd
+        mode: "u=rwx,g=rwx,o=rx"
+    - name: Install StatsD systemd unit
+      template:
+        src: statsd.service.j2
+        dest: "/etc/systemd/system/statsd.service"
+        mode: "u=rw,g=rw,o=r"
+    - name: Enable StatsD Systemd Service
+      systemd:
+        name: statsd
+        daemon_reload: yes
+        enabled: yes
+        state: stopped

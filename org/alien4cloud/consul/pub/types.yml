@@ -25,7 +25,7 @@ node_types:
         description: The URL to download the consul archive.
         type: string
         required: true
-        default: https://releases.hashicorp.com/consul/0.6.4/consul_0.6.4_linux_amd64.zip
+        default: https://releases.hashicorp.com/consul/1.0.6/consul_1.0.6_linux_amd64.zip
       data_dir:
         description: The location on the FS where consul will store data.
         type: string
@@ -61,6 +61,16 @@ node_types:
           - equal: server
         required: true
         default: server
+    capabilities:
+      consul_server:
+        type: org.alien4cloud.consul.pub.capabilities.ConsulServer
+        valid_source_types: [org.alien4cloud.consul.pub.capabilities.ConsulClient]
+
+  org.alien4cloud.consul.pub.nodes.ConsulService:
+    derived_from: tosca.nodes.Root
+    abstract: true
+    description: >
+      Consul discovery service.
     capabilities:
       consul_server:
         type: org.alien4cloud.consul.pub.capabilities.ConsulServer

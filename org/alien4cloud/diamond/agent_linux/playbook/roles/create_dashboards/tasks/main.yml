@@ -45,33 +45,33 @@
 #     msg: "Grafana slug is : {{ item['json']['slug'] }}"
 #   with_items: "{{result.results}}"
 #   when: result is defined
-- set_fact:
-    slugIds: []
-
-- set_fact:
-    # slugId: "{{ item['json']['slug'] }}"
-    slugIds: "{{ slugIds }}  + ['{{item['json']['slug']}}']"
-  with_items: "{{result.results}}"
-  # with_indexed_items: "{{result.results}}"
-  when: result is defined
-
-- debug:
-    var: slugIds
-  when: slugIds is defined
-
-- name: "Save the generated slugIds for deletion in <{{ dashboard_dir }}/slugIds.registry>"
-  copy:
-    content: "{{ slugIds }}"
-    dest: "{{dashboard_dir}}/slugIds.registry"
-  when: slugIds is defined
-
-- set_fact:
-    grafana_dashboads_urls: []
-- set_fact:
-    grafana_dashboads_urls: "{{grafana_dashboads_urls}}  + ['{{grafana_url}}/dashboard/db/{{item}}']"
-  with_items: "{{slugIds}}"
-  when: slugIds is defined
-
-- debug:
-    var: grafana_dashboads_urls
-  when: grafana_dashboads_urls is defined
+# - set_fact:
+#     slugIds: []
+#
+# - set_fact:
+#     # slugId: "{{ item['json']['slug'] }}"
+#     slugIds: "{{ slugIds }}  + ['{{item['json']['slug']}}']"
+#   with_items: "{{result.results}}"
+#   # with_indexed_items: "{{result.results}}"
+#   when: result is defined
+#
+# - debug:
+#     var: slugIds
+#   when: slugIds is defined
+#
+# - name: "Save the generated slugIds for deletion in <{{ dashboard_dir }}/slugIds.registry>"
+#   copy:
+#     content: "{{ slugIds }}"
+#     dest: "{{dashboard_dir}}/slugIds.registry"
+#   when: slugIds is defined
+#
+# - set_fact:
+#     grafana_dashboads_urls: []
+# - set_fact:
+#     grafana_dashboads_urls: "{{grafana_dashboads_urls}}  + ['{{grafana_url}}/dashboard/db/{{item}}']"
+#   with_items: "{{slugIds}}"
+#   when: slugIds is defined
+#
+# - debug:
+#     var: grafana_dashboads_urls
+#   when: grafana_dashboads_urls is defined

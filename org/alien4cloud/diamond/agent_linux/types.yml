@@ -7,7 +7,7 @@ metadata:
 
 imports:
   - tosca-normative-types:1.0.0-ALIEN20
-  - alien-base-types:2.1.1
+  - alien-base-types:2.2.0-SNAPSHOT
   - org.alien4cloud.graphite.pub:2.2.0-SNAPSHOT
   - org.alien4cloud.grafana.pub:2.2.0-SNAPSHOT
   - org.alien4cloud.diamond.pub:2.2.0-SNAPSHOT
@@ -38,12 +38,16 @@ node_types:
         description: The path where the collector configuration are (read only).
         required: true
         default: /etc/ansible_diamond/collectors
+      filestat_user_include:
+        type: string
+        description: This is list of users to collect data for the FilestatCollector.
+        required: false
     attributes:
       dashboard_dir: { get_operation_output: [ SELF, Standard, create, dashboard_dir ] }
       grafana_url: { get_operation_output: [ SELF, Standard, configure, grafana_url ] }
       grafana_user: { get_operation_output: [ SELF, Standard, configure, grafana_user ] }
       grafana_password: { get_operation_output: [ SELF, Standard, configure, grafana_password ] }
-      grafana_dashboads_urls: { get_operation_output: [ SELF, Standard, start, grafana_dashboads_urls ] }
+      # grafana_dashboads_urls: { get_operation_output: [ SELF, Standard, start, grafana_dashboads_urls ] }
     requirements:
       - data_endpoint:
           capability: org.alien4cloud.graphite.pub.capabilities.GraphiteDataEndpoint
@@ -78,6 +82,7 @@ node_types:
             ANSIBLE_VERBOSE: false
             PLAYBOOK_ENTRY: configure.yml
             datasource_name: { get_property: [SELF, datasource_name] }
+            filestat_user_include: { get_property: [SELF, filestat_user_include] }
           implementation: playbook/playbook.ansible
         start:
           inputs:

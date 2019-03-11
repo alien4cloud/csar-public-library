@@ -1,0 +1,13 @@
+---
+
+- set_fact:
+    file_dir: "/tmp/a4cPlaybookRegistry/{{ SOURCE_NODE }}/{{ SOURCE_INSTANCE }}/connect_yorc/inputs"
+
+- name: "Ensure <{{ file_dir }}> exists"
+  file:
+    path: "{{ file_dir }}"
+    state: directory
+
+- name: "Echo <{{ yorc_url }}> in file <{{ file_dir }}/yorc_url>"
+  shell: "echo '{{ yorc_url }}' > {{ file_dir }}/yorc_url"
+  when: yorc_url is defined

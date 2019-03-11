@@ -7,31 +7,20 @@ metadata:
 
 description: |
   A Grafana front end behind a Graphite backend for monitoring.
-  Tested on a Centos ami-4c4b003b (t2.small).
+  Tested on a Centos ec2-user@ami-4c4b003b (t2.small).
 
 imports:
-  - org.alien4cloud.monitoring.pub:2.2.0-SNAPSHOT
-  - org.alien4cloud.graphite.pub:2.2.0-SNAPSHOT
-  - org.alien4cloud.grafana.pub:2.2.0-SNAPSHOT
-  - org.alien4cloud.cloudify.manager.pub:2.2.0-SNAPSHOT
   - tosca-normative-types:1.0.0-ALIEN20
   - org.alien4cloud.grafana.linux_ans:2.2.0-SNAPSHOT
-  - org.alien4cloud.diamond.agent_linux:2.2.0-SNAPSHOT
-  - alien-base-types:2.1.1
-  - org.alien4cloud.java.pub:2.2.0-SNAPSHOT
-  - org.alien4cloud.java.jmx.jolokia:2.2.0-SNAPSHOT
-  - org.alien4cloud.diamond.pub:2.2.0-SNAPSHOT
-  - org.alien4cloud.elasticsearch.pub:2.2.0-SNAPSHOT
-  - org.alien4cloud.alien4cloud.pub:2.2.0-SNAPSHOT
-  - org.alien4cloud.postgresql.pub:2.2.0-SNAPSHOT
-  - org.alien4cloud.rabbitmq.pub:2.2.0-SNAPSHOT
+  - org.alien4cloud.monitoring.pub:2.2.0-SNAPSHOT
   - org.alien4cloud.graphite.linux_ans:2.2.0-SNAPSHOT
+  - org.alien4cloud.graphite.pub:2.2.0-SNAPSHOT
+  - org.alien4cloud.diamond.pub:2.2.0-SNAPSHOT
+  - org.alien4cloud.grafana.pub:2.2.0-SNAPSHOT
+  - alien-base-types:2.2.0-SNAPSHOT
+  - org.alien4cloud.diamond.agent_linux:2.2.0-SNAPSHOT
 
 topology_template:
-  description: |
-    A Grafana front end behind a Graphite backend for monitoring.
-    Tested on a Centos ami-4c4b003b (t2.small).
-
   substitution_mappings:
     node_type: org.alien4cloud.graphite.pub.nodes.GraphiteService
     capabilities:
@@ -130,7 +119,183 @@ topology_template:
             capability: org.alien4cloud.grafana.pub.capabilities.GrafanaHttpEndpoint
             relationship: org.alien4cloud.diamond.agent_linux.relationships.DiamondLinuxAgentConnectsToGrafana
   outputs:
-    Grafana_grafana_url:
-      value: { get_attribute: [ Grafana, grafana_url ] }
     Graphite_graphite_url:
       value: { get_attribute: [ Graphite, graphite_url ] }
+    Grafana_grafana_url:
+      value: { get_attribute: [ Grafana, grafana_url ] }
+  workflows:
+    install:
+      steps:
+        Grafana_creating:
+          target: Grafana
+          activities:
+            - set_state: creating
+          on_success:
+            - Grafana_create
+        dmdMonitoring_configured:
+          target: dmdMonitoring
+          activities:
+            - set_state: configured
+          on_success:
+            - dmdMonitoring_starting
+        Grafana_created:
+          target: Grafana
+          activities:
+            - set_state: created
+          on_success:
+            - Grafana_starting
+        dmdMonitoring_data_endpoint_pre_configure_source:
+          target: dmdMonitoring
+          target_relationship: data_endpoint
+          operation_host: SOURCE
+          activities:
+            - call_operation: Configure.pre_configure_source
+          on_success:
+            - dmdMonitoring_grafana_pre_configure_source
+        Grafana_initial:
+          target: Grafana
+          activities:
+            - set_state: initial
+          on_success:
+            - Grafana_creating
+        Grafana_starting:
+          target: Grafana
+          activities:
+            - set_state: starting
+          on_success:
+            - Grafana_start
+        _MonitoringCompute_install:
+          target: _MonitoringCompute
+          activities:
+            - delegate: install
+          on_success:
+            - Graphite_initial
+        Grafana_started:
+          target: Grafana
+          activities:
+            - set_state: started
+          on_success:
+            - Grafana_graphite_add_target
+            - dmdMonitoring_initial
+        dmdMonitoring_create:
+          target: dmdMonitoring
+          activities:
+            - call_operation: Standard.create
+          on_success:
+            - dmdMonitoring_created
+        dmdMonitoring_configure:
+          target: dmdMonitoring
+          activities:
+            - call_operation: Standard.configure
+          on_success:
+            - dmdMonitoring_configured
+        Grafana_create:
+          target: Grafana
+          activities:
+            - call_operation: Standard.create
+          on_success:
+            - Grafana_created
+        Grafana_graphite_add_target:
+          target: Grafana
+          target_relationship: graphite
+          operation_host: SOURCE
+          activities:
+            - call_operation: Configure.add_target
+          on_success:
+            - dmdMonitoring_initial
+        Graphite_starting:
+          target: Graphite
+          activities:
+            - set_state: starting
+          on_success:
+            - Graphite_start
+        Graphite_start:
+          target: Graphite
+          activities:
+            - call_operation: Standard.start
+          on_success:
+            - Graphite_started
+        Graphite_started:
+          target: Graphite
+          activities:
+            - set_state: started
+          on_success:
+            - Grafana_initial
+        Grafana_start:
+          target: Grafana
+          activities:
+            - call_operation: Standard.start
+          on_success:
+            - Grafana_started
+        Graphite_creating:
+          target: Graphite
+          activities:
+            - set_state: creating
+          on_success:
+            - Graphite_create
+        dmdMonitoring_starting:
+          target: dmdMonitoring
+          activities:
+            - set_state: starting
+          on_success:
+            - dmdMonitoring_start
+        dmdMonitoring_creating:
+          target: dmdMonitoring
+          activities:
+            - set_state: creating
+          on_success:
+            - dmdMonitoring_create
+        dmdMonitoring_initial:
+          target: dmdMonitoring
+          activities:
+            - set_state: initial
+          on_success:
+            - dmdMonitoring_creating
+        dmdMonitoring_configuring:
+          target: dmdMonitoring
+          activities:
+            - set_state: configuring
+          on_success:
+            - dmdMonitoring_data_endpoint_pre_configure_source
+        Graphite_initial:
+          target: Graphite
+          activities:
+            - set_state: initial
+          on_success:
+            - Graphite_creating
+        dmdMonitoring_start:
+          target: dmdMonitoring
+          activities:
+            - call_operation: Standard.start
+          on_success:
+            - dmdMonitoring_started
+        dmdMonitoring_started:
+          target: dmdMonitoring
+          activities:
+            - set_state: started
+        dmdMonitoring_created:
+          target: dmdMonitoring
+          activities:
+            - set_state: created
+          on_success:
+            - dmdMonitoring_configuring
+        Graphite_create:
+          target: Graphite
+          activities:
+            - call_operation: Standard.create
+          on_success:
+            - Graphite_created
+        dmdMonitoring_grafana_pre_configure_source:
+          target: dmdMonitoring
+          target_relationship: grafana
+          operation_host: SOURCE
+          activities:
+            - call_operation: Configure.pre_configure_source
+          on_success:
+            - dmdMonitoring_configure
+        Graphite_created:
+          target: Graphite
+          activities:
+            - set_state: created
+          on_success:
+            - Graphite_starting

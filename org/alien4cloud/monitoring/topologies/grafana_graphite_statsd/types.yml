@@ -1,0 +1,162 @@
+tosca_definitions_version: alien_dsl_2_0_0
+
+metadata:
+  template_name: org.alien4cloud.monitoring.topologies.grafana_graphite_statsd
+  template_version: 0.1.0-SNAPSHOT
+  template_author: admin
+
+description: ""
+
+imports:
+  - tosca-normative-types:1.0.0-ALIEN20
+  - org.alien4cloud.statsd.pub:2.2.0-SNAPSHOT
+  - org.alien4cloud.graphite.linux_ans:2.2.0-SNAPSHOT
+  - org.alien4cloud.rabbitmq.pub:2.2.0-SNAPSHOT
+  - alien-base-types:2.2.0-SNAPSHOT
+  - org.alien4cloud.diamond.collectors:2.2.0-SNAPSHOT
+  - org.ystia.terraform.pub:2.2.0-SNAPSHOT
+  - org.alien4cloud.cloudify.manager.pub:2.2.0-SNAPSHOT
+  - org.ystia.ansible.pub:2.2.0-SNAPSHOT
+  - org.alien4cloud.postgresql.pub:2.2.0-SNAPSHOT
+  - org.alien4cloud.diamond.pub:2.2.0-SNAPSHOT
+  - org.alien4cloud.diamond.agent_linux:2.2.0-SNAPSHOT
+  - org.alien4cloud.statsd.linux.ansible:2.2.0-SNAPSHOT
+  - yorc-types:1.0.0
+  - org.alien4cloud.monitoring.pub:2.2.0-SNAPSHOT
+  - org.alien4cloud.cloudify.hostpool.pub:2.2.0-SNAPSHOT
+  - org.alien4cloud.elasticsearch.pub:2.2.0-SNAPSHOT
+  - org.alien4cloud.grafana.linux_ans:2.2.0-SNAPSHOT
+  - org.alien4cloud.consul.pub:2.2.0-SNAPSHOT
+  - org.alien4cloud.graphite.pub:2.2.0-SNAPSHOT
+  - org.alien4cloud.grafana.pub:2.2.0-SNAPSHOT
+  - org.alien4cloud.java.jmx.jolokia:2.2.0-SNAPSHOT
+  - org.ystia.yorc.experimental.consul.pub:2.2.0-SNAPSHOT
+  - org.alien4cloud.java.pub:2.2.0-SNAPSHOT
+  - org.ystia.yorc.pub:2.2.0-SNAPSHOT
+
+topology_template:
+  substitution_mappings:
+    node_type: org.alien4cloud.graphite.pub.nodes.GraphiteService
+    capabilities:
+      http_endpoint: [ Grafana, http_endpoint ]
+      data_endpoint: [ Graphite, data_endpoint ]
+  node_templates:
+    Grafana:
+      type: org.alien4cloud.grafana.linux_ans.nodes.Grafana
+      properties:
+        component_version: "4.1.2"
+      requirements:
+        - graphite:
+            node: Graphite
+            capability: org.alien4cloud.graphite.pub.capabilities.GraphiteHttpEndpoint
+            relationship: org.alien4cloud.grafana.linux_ans.relationships.GrafanaConnectToGraphite
+            properties:
+              datasource_name: "Graphite_DS"
+        - host:
+            node: MonitoringCompute
+            capability: tosca.capabilities.Container
+            relationship: tosca.relationships.HostedOn
+      capabilities:
+        http_endpoint:
+          properties:
+            user: admin
+            password: admin
+            protocol: http
+            port: 3000
+            secure: false
+            network_name: PRIVATE
+            initiator: source
+    Graphite:
+      type: org.alien4cloud.graphite.linux_ans.nodes.Graphite
+      properties:
+        component_version: "1.0.0"
+      requirements:
+        - host:
+            node: MonitoringCompute
+            capability: tosca.capabilities.Container
+            relationship: tosca.relationships.HostedOn
+      capabilities:
+        data_endpoint:
+          properties:
+            protocol: http
+            port: 2003
+            secure: false
+            network_name: PRIVATE
+            initiator: source
+        http_endpoint:
+          properties:
+            protocol: http
+            port: 8080
+            secure: false
+            network_name: PRIVATE
+            initiator: source
+    DmdMonitoringCompute:
+      type: org.alien4cloud.diamond.agent_linux.nodes.DiamondLinuxAgent
+      properties:
+        datasource_name: "Graphite_DS"
+        collectors_path: "/opt/ansible_diamond/env/share/diamond/collectors"
+        collectors_conf_path: "/etc/ansible_diamond/collectors"
+      requirements:
+        - data_endpoint:
+            node: Graphite
+            capability: org.alien4cloud.graphite.pub.capabilities.GraphiteDataEndpoint
+            relationship: org.alien4cloud.diamond.agent_linux.relationships.DiamondLinuxAgentConnectsToGraphite
+        - host:
+            node: MonitoringCompute
+            capability: tosca.capabilities.Container
+            relationship: tosca.relationships.HostedOn
+        - grafana:
+            node: Grafana
+            capability: org.alien4cloud.grafana.pub.capabilities.GrafanaHttpEndpoint
+            relationship: org.alien4cloud.diamond.agent_linux.relationships.DiamondLinuxAgentConnectsToGrafana
+    Statsd:
+      type: org.alien4cloud.statsd.linux.ansible.nodes.Statsd
+      properties:
+        install_dir: "/opt/statsd"
+      requirements:
+        - hostedOnMonitoringComputeHost:
+            type_requirement: host
+            node: MonitoringCompute
+            capability: tosca.capabilities.Container
+            relationship: tosca.relationships.HostedOn
+        - statsdConnectsToGraphiteGraphiteData_endpoint:
+            type_requirement: graphite
+            node: Graphite
+            capability: org.alien4cloud.graphite.pub.capabilities.GraphiteDataEndpoint
+            relationship: org.alien4cloud.statsd.linux.ansible.relationships.StatsdConnectsToGraphite
+      capabilities:
+        statsd_endpoint:
+          properties:
+            port: 8125
+            protocol: udp
+            secure: false
+            network_name: PRIVATE
+            initiator: source
+    MonitoringCompute:
+      type: tosca.nodes.Compute
+      capabilities:
+        host:
+          properties:
+            num_cpus: 1
+            mem_size: "2 GIB"
+        os:
+          properties:
+            architecture: "x86_64"
+            type: linux
+            distribution: centos
+        scalable:
+          properties:
+            min_instances: 1
+            max_instances: 1
+            default_instances: 1
+        endpoint:
+          properties:
+            secure: true
+            protocol: tcp
+            network_name: PRIVATE
+            initiator: source
+  outputs:
+    Graphite_graphite_url:
+      value: { get_attribute: [ Graphite, graphite_url ] }
+    Grafana_grafana_url:
+      value: { get_attribute: [ Grafana, grafana_url ] }

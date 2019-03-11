@@ -1,0 +1,7 @@
+---
+
+- name: "Create grafana dashboard for Yorc in {{ dashboard_dir }}/{{ TARGET_INSTANCE }}-Yorc.dashboard"
+  template:
+    src: dashboard.json.j2
+    dest: "{{ dashboard_dir }}/{{ TARGET_INSTANCE }}-Yorc.dashboard"
+    force: yes

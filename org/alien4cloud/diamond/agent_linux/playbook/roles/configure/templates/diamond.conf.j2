@@ -67,7 +67,7 @@ days = 7
 host = {{ graphite_server_host }}
 
 # Port to send metrics to
-port = {{ graphite_server_port }} 
+port = {{ graphite_server_port }}
 
 # Socket timeout (seconds)
 timeout = 15
@@ -148,7 +148,7 @@ batch = 100
 
 # Uncomment and set to hardcode a hostname for the collector path
 # Keep in mind, periods are seperators in graphite
-hostname = {{ INSTANCE }} 
+hostname = {{ INSTANCE }}
 
 # If you prefer to just use a different way of calculating the hostname
 # Uncomment and set this to one of these values:
@@ -209,6 +209,14 @@ enabled = True
 [[VMStatCollector]]
 enabled = True
 
+[[FilestatCollector]]
+enabled = True
+collect_user_data = True
+{% if filestat_user_include|length %}
+user_include={{filestat_user_include}}
+{% endif %}
+type_include=REG,DIR,IPv4
+
 ################################################################################
 ### Options for logging
 # for more information on file format syntax:
@@ -258,4 +266,3 @@ datefmt =
 #
 # [[NetworkCollector]]
 # enabled = True
-

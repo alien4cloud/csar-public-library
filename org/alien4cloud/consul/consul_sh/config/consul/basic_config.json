@@ -1,5 +1,5 @@
 {
-  "datacenter": "a4c",
+  "datacenter": "DC1",
   "data_dir": "%CONSUL_DATA_DIR%",
   "log_level": "trace",
   "node_name": "%INSTANCE%",

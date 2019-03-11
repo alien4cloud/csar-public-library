@@ -35,6 +35,7 @@
   environment:
     PYTHONPATH: "/opt/graphite/lib/:/opt/graphite/webapp/"
   with_items:
+    - cairocffi==0.9.0
     - https://github.com/graphite-project/whisper/archive/1.0.0.tar.gz
     - https://github.com/graphite-project/carbon/archive/1.0.0.tar.gz
     - https://github.com/graphite-project/graphite-web/archive/1.0.0.tar.gz
@@ -68,3 +69,10 @@
 
 - name: replace httpd.conf by the template modified
   template: src=httpd.conf.j2 dest=/etc/httpd/conf/httpd.conf force=yes
+
+- name: Create graphite startup script
+  template:
+    src: graphite-server.sh.j2
+    dest: /opt/graphite/graphite-server.sh
+    force: yes
+    mode: 700

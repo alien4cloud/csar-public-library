@@ -7,7 +7,10 @@ metadata:
 
 imports:
   - tosca-normative-types:1.0.0-ALIEN20
+  - alien-base-types:2.2.0-SNAPSHOT
   - org.alien4cloud.consul.pub:2.2.0-SNAPSHOT
+  - org.alien4cloud.statsd.pub:2.2.0-SNAPSHOT
+  - org.alien4cloud.grafana.pub:2.2.0-SNAPSHOT
 
 node_types:
   org.alien4cloud.consul.consul_sh.nodes.ConsulAgent:
@@ -17,16 +20,12 @@ node_types:
       Base Consul discovery service installation.
     tags:
       icon: /images/consul.png
-    capabilities:
-      consul_agent:
-        type: org.alien4cloud.consul.pub.capabilities.ConsulAgent
-        valid_source_types: [org.alien4cloud.consul.pub.capabilities.ConsulClient]
     properties:
       download_url:
         description: The URL to download the consul archive.
         type: string
         required: true
-        default: https://releases.hashicorp.com/consul/0.6.4/consul_0.6.4_linux_amd64.zip
+        default: https://releases.hashicorp.com/consul/1.0.6/consul_1.0.6_linux_amd64.zip
       data_dir:
         description: The location on the FS where consul will store data.
         type: string
@@ -45,13 +44,30 @@ node_types:
         description: The key to encrypt gossip exchanges into consul cluster.
         type: string
         required: false
+      config_dir:
+        type: string
+        required: false
+    capabilities:
+      consul_agent:
+        type: org.alien4cloud.consul.pub.capabilities.ConsulAgent
+        valid_source_types: [org.alien4cloud.consul.pub.capabilities.ConsulClient]
+    requirements:
+      - statsd:
+          capability: org.alien4cloud.statsd.pub.capabilities.StatsdEndpoint
+          relationship: org.alien4cloud.consul.consul_sh.relationships.ConnectsToStatsd
+          occurrences: [ 0, 1 ]
+      - grafana:
+          capability: org.alien4cloud.grafana.pub.capabilities.GrafanaHttpEndpoint
+          relationship: org.alien4cloud.consul.consul_sh.relationships.ConsulConnectsToGrafana
+          occurrences: [0, 1]
+
     # attributes:
     #   consul_client_address: { get_operation_output: [ SELF, Standard, start, CONSUL_CLIENT_ADDRESS ] }
     #   consul_server_address: { get_operation_output: [ SELF, Standard, start, CONSUL_SERVER_ADDRESS ] }
     #   api_port: { get_operation_output: [ SELF, Standard, start, API_PORT ] }
 
   org.alien4cloud.consul.consul_sh.nodes.ConsulServer:
-    derived_from: org.alien4cloud.consul.pub.nodes.ConsulAgent
+    derived_from: org.alien4cloud.consul.consul_sh.nodes.ConsulAgent
     description: >
       Consul discovery service installation (server node).
     properties:
@@ -77,7 +93,7 @@ node_types:
           inputs:
             CONSUL_AGENT_MODE: { get_property: [SELF, agent_mode] }
             CONSUL_DATA_DIR: { get_property: [SELF, data_dir] }
-            CONSUL_BIND_ADDRESS: { get_attribute: [HOST, ip_address] }
+            CONSUL_BIND_ADDRESS: { get_attribute: [HOST, private_address] }
             CONSUL_API_PORT: { get_property: [SELF, consul_agent, port] }
             TLS_ENABLED: { get_property: [SELF, tls_enabled] }
             CA_PASSPHRASE: { get_property: [SELF, ca_passphrase] }
@@ -85,7 +101,7 @@ node_types:
           implementation: scripts/consul/start_consul_agent.sh
         start:
           inputs:
-            CONSUL_ADDRESS: { get_attribute: [HOST, ip_address] }
+            CONSUL_ADDRESS: { get_attribute: [HOST, private_address] }
           implementation: scripts/consul/join_consul_servers.sh
     artifacts:
       - configs:
@@ -99,7 +115,7 @@ node_types:
           type: tosca.artifacts.File
 
   org.alien4cloud.consul.consul_sh.nodes.ConsulClient:
-    derived_from: org.alien4cloud.consul.pub.nodes.ConsulAgent
+    derived_from: org.alien4cloud.consul.consul_sh.nodes.ConsulAgent
     description: >
       Consul discovery service installation (client node).
     properties:
@@ -124,7 +140,7 @@ node_types:
           inputs:
             CONSUL_AGENT_MODE: { get_property: [SELF, agent_mode] }
             CONSUL_DATA_DIR: { get_property: [SELF, data_dir] }
-            CONSUL_BIND_ADDRESS: { get_attribute: [HOST, ip_address] }
+            CONSUL_BIND_ADDRESS: { get_attribute: [HOST, private_address] }
             CONSUL_API_PORT: { get_property: [SELF, consul_agent, port] }
             TLS_ENABLED: { get_property: [SELF, tls_enabled] }
             CA_PASSPHRASE: { get_property: [SELF, ca_passphrase] }
@@ -158,3 +174,48 @@ relationship_types:
       - commons:
           file: scripts/commons
           type: tosca.artifacts.File
+
+  org.alien4cloud.consul.consul_sh.relationships.ConnectsToStatsd:
+    derived_from: tosca.relationships.ConnectsTo
+    description: >
+      When consul is connected to statsd, it sends it's telemetry data to it.
+    valid_target_types: [org.alien4cloud.statsd.pub.capabilities.StatsdEndpoint]
+    interfaces:
+      Configure:
+        pre_configure_source:
+          inputs:
+            STATSD_IP_ADDRESS: { get_attribute: [TARGET, statsd_endpoint, ip_address] }
+            STATSD_PORT: { get_attribute: [TARGET, statsd_endpoint, port] }
+          implementation: scripts/consul/connects_to_statsd.sh
+    artifacts:
+      - commons:
+          file: scripts/commons
+          type: tosca.artifacts.File
+      - configs:
+          file: config/consul
+          type: tosca.artifacts.File
+
+  org.alien4cloud.consul.consul_sh.relationships.ConsulConnectsToGrafana:
+    derived_from: tosca.relationships.ConnectsTo
+    description: >
+      When consul is connected to grafana, it publish a dashboard onto it.
+    valid_target_types: [org.alien4cloud.grafana.pub.capabilities.GrafanaHttpEndpoint]
+    properties:
+      datasource_name:
+        type: string
+        description: |
+          The datasource that connects grafana to graphite.
+          We need it to prepare grafana dashboards.
+        required: true
+        default: Graphite_DS
+    interfaces:
+      Configure:
+        pre_configure_source:
+          inputs:
+            ANSIBLE_VERBOSE: false
+            PLAYBOOK_ENTRY: connects_to_grafana.yml
+            grafana_url: { concat: [ get_attribute: [TARGET, http_endpoint, protocol], "://", get_attribute: [TARGET, http_endpoint, ip_address], ":", get_attribute: [TARGET, http_endpoint, port]] }
+            grafana_user: { get_attribute: [TARGET, http_endpoint, user] }
+            grafana_password: { get_attribute: [TARGET, http_endpoint, password] }
+            datasource_name: { get_property: [SELF, datasource_name] }
+          implementation: playbook/playbook.ansible

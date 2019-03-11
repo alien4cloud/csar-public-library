@@ -1,0 +1,15 @@
+[Unit]
+Description=Consul Server
+Requires=network-online.target
+After=network-online.target
+
+[Service]
+User=root
+Restart=on-failure
+ExecStart=/bin/bash -c '/usr/bin/consul agent -ui -config-dir /etc/consul >> /var/log/consul/consul.log 2>&1'
+ExecReload=/bin/kill -HUP $MAINPID
+KillSignal=SIGTERM
+LimitNOFILE=65536
+
+[Install]
+WantedBy=multi-user.target

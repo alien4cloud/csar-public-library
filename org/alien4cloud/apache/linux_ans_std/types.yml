@@ -1,0 +1,56 @@
+tosca_definitions_version: alien_dsl_2_0_0
+
+metadata:
+  template_name: org.alien4cloud.apache.linux_ans_std
+  template_version: 2.0.0-SNAPSHOT
+  template_author: alien4cloud
+
+description: This archive contains an Apache webserver node installed through ansible scripts.
+
+imports:
+  - tosca-normative-types:1.0.0-ALIEN20
+  # - alien-base-types:2.2.0-SNAPSHOT
+  - yorc-types:1.0.0
+  - org.alien4cloud.apache.pub:2.0.0-SNAPSHOT
+
+node_types:
+  org.alien4cloud.apache.linux_ans_std.nodes.Apache:
+    derived_from: org.alien4cloud.apache.pub.nodes.Apache
+    description: >
+      The TOSCA Apache Node Type represents an apache component
+      that can be managed and run by a TOSCA Compute Node Type.
+      This version is installed by using Ansible.
+    properties:
+      document_root:
+          type: string
+          default: "/var/www/html"
+    requirements:
+      - host: # Overrides the parent host requirement to add a specific node_filter and add OS constraints as Impl is based on apt and so restricted to debian.
+          capability: tosca.capabilities.Container
+          node: tosca.nodes.Compute
+          relationship: tosca.relationships.HostedOn
+          occurrences: [1, 1]
+          node_filter:
+            capabilities:
+              - tosca.capabilities.OperatingSystem:
+                  properties:
+                    - type: { equal: linux }
+                    - architecture: { equal: x86_64 }
+                    - distribution: { valid_values: [ "red hat", "centos", "rhel", "debian", "ubuntu" ] }
+    interfaces:
+      Standard:
+        create:
+          implementation: playbook/create.yml
+        configure:
+          inputs:
+            port: { get_property: [SELF, data_endpoint, port] }
+          implementation: playbook/configure.yml
+        start:
+          implementation: playbook/start.yml
+        stop:
+          implementation: playbook/stop.yml
+        delete:
+          inputs:
+            port: { get_property: [SELF, data_endpoint, port] }
+            document_root: { get_property: [SELF, document_root] }
+          implementation: playbook/delete.yml

@@ -1,0 +1,63 @@
+tosca_definitions_version: alien_dsl_2_0_0
+
+metadata:
+  template_name: org.alien4cloud.alien4cloud.config.orchestrator.yorc
+  template_version: 2.2.0-SNAPSHOT
+  template_author: alien4cloud
+
+imports:
+  - alien-base-types:2.2.0-SNAPSHOT
+  - org.alien4cloud.alien4cloud.config.pub:2.2.0-SNAPSHOT
+  - tosca-normative-types:1.0.0-ALIEN20
+  - org.ystia.yorc.pub:2.2.0-SNAPSHOT
+
+node_types:
+
+  org.alien4cloud.alien4cloud.config.orchestrator.yorc.nodes.YorcOrchestratorConfigurator:
+    description: |
+      Configure a Yorc orchestrator for A4C
+    derived_from: org.alien4cloud.alien4cloud.config.pub.nodes.OrchestratorConfigurator
+    properties:
+      pluginId:
+        type: string
+        required: true
+        default: alien4cloud-yorc-provider
+      pluginBean:
+        type: string
+        required: true
+        default: yorc-orchestrator-factory
+    requirements:
+      - yorc:
+          capability: org.ystia.yorc.pub.capabilities.YorcRestAPI
+          relationship: org.alien4cloud.alien4cloud.config.orchestrator.yorc.relationships.ConnectsToYorc
+          occurrences: [1, 1]
+    attributes:
+      orchestratorId: { get_operation_output: [ SELF, Standard, start, orchestratorId ] }
+    interfaces:
+      Standard:
+        start:
+          inputs:
+            ANSIBLE_VERBOSE: false
+            PLAYBOOK_ENTRY: create_orchestrator.yml
+            name: { get_property: [SELF, name] }
+            pluginId: { get_property: [SELF, pluginId] }
+            pluginBean: { get_property: [SELF, pluginBean] }
+            alien_user: { get_property: [HOST, rest, user] }
+            alien_password: { get_property: [HOST, rest, password] }
+            alien_url: { get_attribute: [HOST, alien_url] }
+            discriminator: { get_property: [SELF, discriminator] }
+          implementation: playbook/playbook.ansible
+
+relationship_types:
+
+  org.alien4cloud.alien4cloud.config.orchestrator.yorc.relationships.ConnectsToYorc:
+    derived_from: tosca.relationships.ConnectsTo
+    valid_target_types: [ org.ystia.yorc.pub.capabilities.YorcRestAPI ]
+    interfaces:
+      Configure:
+        pre_configure_source:
+          inputs:
+            ANSIBLE_VERBOSE: false
+            PLAYBOOK_ENTRY: connect_yorc.yml
+            yorc_url: { concat: [get_attribute: [TARGET, rest, protocol], "://", get_attribute: [TARGET, rest, ip_address], ":", get_attribute: [TARGET, rest, port]] }
+          implementation: playbook/playbook.ansible

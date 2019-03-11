@@ -6,7 +6,7 @@ metadata:
   template_author: alien4cloud
 
 imports:
-  - alien-base-types:2.1.1
+  - alien-base-types:2.2.0-SNAPSHOT
   - org.alien4cloud.alien4cloud.pub:2.2.0-SNAPSHOT
   - org.alien4cloud.alien4cloud.config.pub:2.2.0-SNAPSHOT
   - tosca-normative-types:1.0.0-ALIEN20
@@ -26,9 +26,10 @@ node_types:
       type:
         type: string
         required: true
-        default: byon
-        constraints:
-          - valid_values: [ "amazon", "byon", "azure" ]
+        description: The location type depends on the orchestrator plugin.
+        # default: byon
+        # constraints:
+        #   - valid_values: [ "amazon", "byon", "azure" ]
     attributes:
       locationId: { get_operation_output: [ SELF, Standard, create, locationId ] }
     # requirements:

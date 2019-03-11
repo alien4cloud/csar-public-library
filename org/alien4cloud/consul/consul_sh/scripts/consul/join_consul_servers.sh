@@ -1,6 +1,7 @@
 #!/bin/bash -e
 
 number_of_instances=$(echo ${INSTANCES} | tr ',' ' ' | wc -w)
+echo "${number_of_instances} instances found"
 if [ "${number_of_instances}" -gt "1" ]; then
 	IFS=',';
 	CONSUL_SERVER_ADDRESSES=""

@@ -1,0 +1,42 @@
+---
+
+- name: create temporary dashboard file
+  tempfile:
+    state: directory
+    suffix: dashboard
+  register: dashboard
+
+- name: "Create dashboard in {{ dashboard.path }}"
+  template:
+    src: dashboard.json.j2
+    dest: "{{ dashboard.path }}/consul.dashboard"
+    force: yes
+
+- name: "Get files in {{ dashboard_dir }}"
+  shell: "ls {{ dashboard.path }}/*.dashboard"
+  register: dashboards
+  when: grafana_url is defined
+
+- name: Slurp dashboard files
+  slurp:
+    src: "{{item}}"
+  with_items: "{{ dashboards.stdout_lines }}"
+  register: dashboards_slurped
+  when: grafana_url is defined
+
+- name: "Upload dashboards to Grafana using url {{ grafana_url }}/api/dashboards/db"
+  uri:
+    url: "{{ grafana_url }}/api/dashboards/db"
+    method: POST
+    HEADER_Content-Type: application/json
+    force_basic_auth: yes
+    user: "{{ grafana_user }}"
+    password: "{{ grafana_password }}"
+    body: "{\"dashboard\": {{ item['content'] | b64decode | from_json}}, \"overwrite\": true}"
+    body_format: json
+    return_content: yes
+    status_code: 200
+  ignore_errors: yes
+  register: result
+  with_items: "{{dashboards_slurped.results}}"
+  when: grafana_url is defined

@@ -7,7 +7,7 @@ metadata:
 
 imports:
   - tosca-normative-types:1.0.0-ALIEN20
-  - alien-base-types:2.1.1
+  - alien-base-types:2.2.0-SNAPSHOT
   - org.alien4cloud.monitoring.pub:2.2.0-SNAPSHOT
   - org.alien4cloud.elasticsearch.pub:2.2.0-SNAPSHOT
   - org.alien4cloud.diamond.pub:2.2.0-SNAPSHOT
@@ -17,6 +17,7 @@ imports:
   - org.alien4cloud.rabbitmq.pub:2.2.0-SNAPSHOT
   - org.alien4cloud.postgresql.pub:2.2.0-SNAPSHOT
   - org.alien4cloud.cloudify.manager.pub:2.2.0-SNAPSHOT
+  - org.ystia.yorc.pub:2.2.0-SNAPSHOT
 
 node_types:
   org.alien4cloud.diamond.collectors.nodes.ElasticSearchCollector:
@@ -26,6 +27,26 @@ node_types:
       - collec_elasticsearch:
           capability: org.alien4cloud.elasticsearch.pub.capabilities.ElasticSearchRestAPI
           relationship: org.alien4cloud.diamond.collectors.relationships.DiamondCollectElasticSearch
+          occurrences: [0, 1]
+      - diamond:
+          capability: org.alien4cloud.diamond.pub.capabilities.DiamondCollectorContainer
+          relationship: org.alien4cloud.diamond.agent_linux.relationships.DiamondCollectorHostedOnAgent
+          occurrences: [1, 1]
+  # org.alien4cloud.diamond.collectors.nodes.FileStatCollector:
+  #   derived_from: org.alien4cloud.diamond.pub.nodes.DiamondCollector
+  #   description: Collect filestats health metrics.
+  #   requirements:
+  #     - diamond:
+  #         capability: org.alien4cloud.diamond.pub.capabilities.DiamondCollectorContainer
+  #         relationship: org.alien4cloud.diamond.agent_linux.relationships.DiamondCollectorHostedOnAgent
+  #         occurrences: [1, 1]
+  org.alien4cloud.diamond.collectors.nodes.YorcCollector:
+    derived_from: org.alien4cloud.diamond.pub.nodes.DiamondCollector
+    description: Collect Yorc metrics.
+    requirements:
+      - collec_yorc:
+          capability: org.ystia.yorc.pub.capabilities.YorcRestAPI
+          relationship: org.alien4cloud.diamond.collectors.relationships.DiamondCollectYorc
           occurrences: [0, 1]
       - diamond:
           capability: org.alien4cloud.diamond.pub.capabilities.DiamondCollectorContainer
@@ -101,6 +122,18 @@ node_types:
           occurrences: [1, 1]
 
 relationship_types:
+  org.alien4cloud.diamond.collectors.relationships.DiamondCollectYorc:
+    derived_from: tosca.relationships.ConnectsTo
+    valid_target_types: [ org.ystia.yorc.pub.capabilities.YorcRestAPI ]
+    interfaces:
+      Configure:
+        pre_configure_source:
+          inputs:
+            ANSIBLE_VERBOSE: false
+            PLAYBOOK_ENTRY: collect_yorc.yml
+            datasource_name: { get_attribute: [SOURCE, datasource_name] }
+            dashboard_dir: { get_attribute: [SOURCE, dashboard_dir] }
+          implementation: playbook/playbook.ansible
   org.alien4cloud.diamond.collectors.relationships.DiamondCollectElasticSearch:
     derived_from: tosca.relationships.ConnectsTo
     valid_target_types: [ org.alien4cloud.elasticsearch.pub.capabilities.ElasticSearchRestAPI ]

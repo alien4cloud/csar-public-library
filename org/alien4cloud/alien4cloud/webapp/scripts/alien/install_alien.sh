@@ -42,8 +42,14 @@ if [ ! -d $DATA_DIR ]; then
 fi
 
 # download files
-#download "Alien4Cloud" "${APPLICATION_URL}" /tmp/alien4cloud/alien4cloud-premium-dist.tar.gz
-sudo tar -xzf $alien_dist -C /opt/alien4cloud
+#download "Alien4Cloud" "${DOWNLOAD_URL}" /tmp/alien4cloud/alien4cloud-premium-dist.tar.gz
+if [ -z "$DOWNLOAD_URL" ]; then
+  sudo tar -xzf $alien_dist -C /opt/alien4cloud
+else
+  download "Alien4Cloud" "${DOWNLOAD_URL}" /tmp/alien4cloud/alien4cloud-premium-dist.tar.gz
+  sudo tar -xzf /tmp/alien4cloud/alien4cloud-premium-dist.tar.gz -C /opt/alien4cloud
+fi
+
 # we want premium version to have the same dir name
 if [ -d /opt/alien4cloud/alien4cloud-premium ]; then
 	sudo mv -f /opt/alien4cloud/alien4cloud-premium /opt/alien4cloud/alien4cloud

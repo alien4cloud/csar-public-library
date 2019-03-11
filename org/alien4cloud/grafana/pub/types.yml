@@ -15,7 +15,7 @@ node_types:
     derived_from: tosca.nodes.SoftwareComponent
     abstract: true
     metadata:
-      icon: /images/grafana.png
+      icon: statsd-install.png
     capabilities:
       http_endpoint:
         type: org.alien4cloud.grafana.pub.capabilities.GrafanaHttpEndpoint

@@ -21,6 +21,10 @@ node_types:
     tags:
       icon: /images/alien4cloud-logo.png
     properties:
+      download_url:
+        description: when set, use this url to download an A4C dist.
+        type: string
+        required: false
       context_root:
         type: string
         default: "/"
@@ -108,7 +112,7 @@ node_types:
         create:
           inputs:
             # Commented because not used & broken
-            # APPLICATION_URL: { get_property: [SELF, alien_url] }
+            DOWNLOAD_URL: { get_property: [SELF, download_url] }
             ALIEN_VERSION: { get_property: [SELF, component_version] }
             DATA_DIR: { get_property: [SELF, data_dir] }
           implementation: scripts/alien/install_alien.sh
@@ -159,6 +163,7 @@ node_types:
       - alien_dist:
           # file: alien4cloud:alien4cloud-premium-dist:1.4.0:dist@tar.gz
           # repository: fastconnect_nexus_private_snapshot
+          file: scripts/commons
           type: tosca.artifacts.File
     attributes:
       alien_url: { concat: [get_property: [SELF, rest, protocol], "://", get_attribute: [HOST, public_ip_address], ":", get_property: [SELF, rest, port]] }

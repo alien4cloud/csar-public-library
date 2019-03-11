@@ -27,14 +27,6 @@
   command: /opt/graphite/bin/carbon-cache.py stop
   when: (carbon_cmd.stat.exists) and (carbon.stdout.find('pid') != -1)
 
-- name: Check Graphite
-  stat: path=/var/run/graphite.pid
-  register: graphite
-
 - name: Stop Graphite server
-  shell: kill -9 $(ps -ef | grep `cat /var/run/graphite.pid` | awk '{print "kill -9 "$2}' | sh)
-  when: graphite.stat.exists
+  shell: pids=$(ps -ef |grep run-graphite-devel-server |grep -v grep | awk '{print  $2 }'); for l in $pids; do kill -9 $l; done
   failed_when: False
-
-- file: path=/var/run/graphite.pid state=absent
-

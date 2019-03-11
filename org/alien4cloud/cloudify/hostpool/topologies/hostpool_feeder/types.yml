@@ -15,7 +15,7 @@ imports:
   - org.alien4cloud.cloudify.hostpool.service:2.2.0-SNAPSHOT
   - tosca-normative-types:1.0.0-ALIEN20
   - org.alien4cloud.cloudify.hostpool.pub:2.2.0-SNAPSHOT
-  - alien-base-types:2.1.1
+  - alien-base-types:2.2.0-SNAPSHOT
 
 topology_template:
   description: >

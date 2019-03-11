@@ -9,3 +9,9 @@
 - copy:
     content: "export JAVA_EXT_OPTIONS=\"$JAVA_EXT_OPTIONS -javaagent:/opt/alien4cloud/alien4cloud/jolokia-jvm-1.3.6-agent.jar=host=localhost,port={{ jolokia_port }}\""
     dest: "/etc/alien4cloud/env/jolokia.sh"
+
+- name: "Create A4C Yorc dashboard in {{ dashboard_dir }}/{{ TARGET_INSTANCE }}-Yorc.dashboard"
+  template:
+    src: dashboard.json.j2
+    dest: "{{ dashboard_dir }}/{{ TARGET_INSTANCE }}-Yorc.dashboard"
+    force: yes
