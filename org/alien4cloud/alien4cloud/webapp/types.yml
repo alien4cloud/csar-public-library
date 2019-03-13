@@ -152,6 +152,9 @@ node_types:
       - commons:
           file: scripts/commons
           type: tosca.artifacts.File
+      - configs:
+          file: config
+          type: tosca.artifacts.File
       # - maven_artifact:
       #     file: alien4cloud:alien4cloud-dist:1.4.0@tar.gz
       #     repository: fastconnect_nexus_snapshot

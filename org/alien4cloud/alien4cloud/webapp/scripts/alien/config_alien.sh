@@ -122,11 +122,17 @@ else
 fi
 ################## a4c service ###############################
 
-sudo bash -c "sed -e 's/\\\${APP_ARGS}/${APP_ARGS}/' $bin/alien.sh > /etc/init.d/alien"
-sudo chmod +x /etc/init.d/alien
+sudo mkdir -p /opt/alien4cloud/alien4cloud/logs
+sudo chown alien4cloud:alien4cloud /opt/alien4cloud/alien4cloud/logs
 
-if [[ "$(which yum)" != "" ]]; then
-  sudo chkconfig --add alien
-elif [[ "$(which apt-get)" != "" ]]; then
-  sudo update-rc.d alien defaults 95 10
-fi
+sudo cp $configs/a4c/a4c.service /etc/systemd/system/a4c.service
+sudo systemctl enable a4c
+
+# sudo bash -c "sed -e 's/\\\${APP_ARGS}/${APP_ARGS}/' $bin/alien.sh > /etc/init.d/alien"
+# sudo chmod +x /etc/init.d/alien
+#
+# if [[ "$(which yum)" != "" ]]; then
+#   sudo chkconfig --add alien
+# elif [[ "$(which apt-get)" != "" ]]; then
+#   sudo update-rc.d alien defaults 95 10
+# fi

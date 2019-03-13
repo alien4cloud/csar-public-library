@@ -1,0 +1,15 @@
+[Unit]
+Description=Alien4Cloud Webapp
+Requires=network-online.target
+After=network-online.target
+
+[Service]
+User=alien4cloud
+Restart=on-failure
+WorkingDirectory=/opt/alien4cloud/alien4cloud
+ExecStart=/bin/bash -c 'for f in `ls /etc/alien4cloud/env`; do source /etc/alien4cloud/env/$f; done && /opt/alien4cloud/alien4cloud/alien4cloud.sh >> logs/vm.out 2>&1'
+ExecReload=/bin/kill -HUP $MAINPID
+KillSignal=SIGTERM
+
+[Install]
+WantedBy=multi-user.target

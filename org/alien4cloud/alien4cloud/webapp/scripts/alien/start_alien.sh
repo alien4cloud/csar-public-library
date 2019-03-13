@@ -56,14 +56,6 @@ wait_for_server() {
   fi
 }
 
-cd /opt/alien4cloud/alien4cloud
-# sudo mkdir -p WEB-INF/lib
-# sudo mv lib/* WEB-INF/lib/
-# WAR_FILE=$(ls alien4cloud-ui-*.war)
-# sudo jar -uf0 $WAR_FILE WEB-INF/lib/*
-# sudo rm -rf WEB-INF
-sudo mkdir -p logs
-sudo chmod 777 logs
-nohup sudo bash -c "for f in `ls /etc/alien4cloud/env`; do source /etc/alien4cloud/env/\$f; done && /opt/alien4cloud/alien4cloud/alien4cloud.sh ${APP_ARGS} >> logs/vm.out 2>&1 &" >> logs/start.out 2>&1 &
+sudo systemctl start a4c
 
 wait_for_server $ALIEN_URL 'alien4cloud'
