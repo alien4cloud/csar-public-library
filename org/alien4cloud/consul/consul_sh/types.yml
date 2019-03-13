@@ -47,6 +47,8 @@ node_types:
       config_dir:
         type: string
         required: false
+    attributes:
+      consul_ui_url: { concat: ["http://", get_attribute: [ HOST, public_ip_address ], ":", get_property: [ SELF, consul_agent, port ]]}
     capabilities:
       consul_agent:
         type: org.alien4cloud.consul.pub.capabilities.ConsulAgent
