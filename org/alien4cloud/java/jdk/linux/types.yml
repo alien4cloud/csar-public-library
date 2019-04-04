@@ -21,14 +21,14 @@ node_types:
       java_url:
         type: string
         required: true
-        default: "https://edelivery.oracle.com/otn-pub/java/jdk/8u131-b11/d54c1d3a095b4ff2b6607d096fa80163/jdk-8u131-linux-x64.tar.gz"
+        default: "https://download.oracle.com/otn-pub/java/jdk/8u202-b08/1961070e4c9b4e26a04e7f5a083f551e/jdk-8u202-linux-x64.tar.gz"
       java_home:
         type: string
         required: true
         default: "/opt/java"
       component_version:
         type: version
-        default: 1.8.0-131-b11
+        default: 1.8.0-202-b08
     attributes:
       java_version: { get_operation_output: [ SELF, Standard, create, JAVA_VERSION ] }
       java_message: { concat: ["Java help: ", get_operation_output: [ SELF, Standard, create, JAVA_HELP ]] }
