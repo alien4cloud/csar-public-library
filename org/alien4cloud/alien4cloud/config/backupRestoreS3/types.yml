@@ -92,7 +92,7 @@ node_types:
             REGION: { get_property: [SELF, region] }
             S3_URL: { get_property: [SELF, s3_url] }
             DATA_DIR: { get_property: [HOST, data_dir] }
-          implementation: scripts/restore.shtosca_definitions_version: alien_dsl_2_0_0
+          implementation: scripts/restore.sh
 
 metadata:
   template_name: org.alien4cloud.alien4cloud.config.BackupRestoreS3

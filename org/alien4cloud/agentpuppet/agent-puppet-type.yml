@@ -35,10 +35,10 @@ node_types:
     interfaces:
       Standard:
         create:
-          inputs:
+#          inputs:
           implementation: scripts/create.sh
         delete:
-          inputs:
+#          inputs:
           implementation: scripts/delete.sh
 
 capability_types:

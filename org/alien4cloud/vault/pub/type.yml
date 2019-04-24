@@ -47,7 +47,7 @@ node_types:
 
 capability_types:
   org.alien4cloud.vault.pub.capabilities.VaultServer:
-    derived_from: tosca.capabilities.Root
+    derived_from: tosca.capabilities.Container
     description: >
       Exposed by a vault server agent.
   org.alien4cloud.vault.pub.capabilities.VaultClient:

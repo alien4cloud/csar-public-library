@@ -99,7 +99,7 @@ node_types:
       instance_id: { get_operation_output: [ SELF, Standard, start, INSTANCE_ID ] }
       instance_name: { get_operation_output: [ SELF, Standard, start, INSTANCE_NAME ] }
     capabilities:
-      - secgroup:
+      secgroup:
           type: org.alien4cloud.terraform.openstack.capabilities.SecurityGroup
           occurrences: [ 0, 1 ]
     requirements:

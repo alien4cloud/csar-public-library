@@ -71,7 +71,7 @@ node_types:
                                   get_attribute: [ HOST, public_ip_address ],
                                   ":30000" ]}
     capabilities:
-      - kube_master:
+      kube_master:
           type: org.alien4cloud.kubernetes.kubeadm.capabilities.MasterCluster
     interfaces:
       Standard:
@@ -93,7 +93,7 @@ node_types:
 
 capability_types:
   org.alien4cloud.kubernetes.kubeadm.capabilities.DockerHost:
-    derived_from: tosca.capabilities.Root
+    derived_from: tosca.capabilities.Container
 
   org.alien4cloud.kubernetes.kubeadm.capabilities.MasterCluster:
     derived_from: tosca.capabilities.Node
@@ -115,4 +115,3 @@ relationship_types:
             MASTER_IP: { get_attribute: [TARGET, ip_address] }
             KUBE_TOKEN: { get_attribute: [TARGET, kube_token] }
             KUBE_SHA256: { get_attribute: [TARGET, kube_sha256] }
-
