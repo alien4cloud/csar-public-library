@@ -73,6 +73,8 @@ node_types:
             TLS_DISABLE: { get_property: [SELF, tls_disable] }
             LDAP_ENABLE: { get_property: [SELF, ldap_enable] }
           implementation: scripts/vault/start_vault.sh
+        stop: scripts/vault/stop_vault.sh
+        delete: scripts/vault/cleanup_vault.sh
     artifacts:
       - configs:
           file: configs
