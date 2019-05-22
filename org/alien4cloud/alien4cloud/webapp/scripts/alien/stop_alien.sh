@@ -1,2 +1,2 @@
 #!/bin/bash -e
-sudo /etc/init.d/$service stop
+sudo /etc/init.d/alien stop

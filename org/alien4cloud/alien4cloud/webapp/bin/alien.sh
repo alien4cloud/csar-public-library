@@ -13,7 +13,7 @@
 
 APP_NAME=alien4cloud
 #PIDFILE=/var/run/${APP_NAME}.pid
-PROC=`ps -ef | grep -e alien4cloud* | grep -v grep | awk -F " " '{ print $2 }'`
+PROC=`ps -ef | grep java | grep $APP_NAME | grep -v grep | awk -F " " '{ print $2 }'`
 
 JAVA_OPTIONS="-server -showversion -XX:+AggressiveOpts -Xmx1400m -Xms1400m -XX:MaxPermSize=512m -XX:+UseParNewGC -XX:+UseConcMarkSweepGC -XX:+HeapDumpOnOutOfMemoryError -XX:+PrintGCDetails -XX:+PrintGCDateStamps -XX:+PrintGCApplicationStoppedTime -Xloggc:/var/log/alien4cloud/gc.log"
 

@@ -15,3 +15,6 @@ fi
 echo "Cleaning up $DATA_DIR directory"
 sudo /bin/rm -Rf $DATA_DIR
 
+echo "Cleaning up Alien4Cloud installation directory"
+sudo /bin/rm -Rf /opt/alien4cloud
+
