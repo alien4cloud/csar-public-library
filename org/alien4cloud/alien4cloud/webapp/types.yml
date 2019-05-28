@@ -138,6 +138,12 @@ node_types:
             ALIEN_PORT: { get_property: [SELF, rest, port] }
             SERVER_PROTOCOL: { get_property: [SELF, rest, protocol] }
           implementation: scripts/alien/start_alien.sh
+        stop: scripts/alien/stop_alien.sh
+        delete:
+          inputs:
+            SERVER_PROTOCOL: { get_property: [SELF, rest, protocol] }
+            DATA_DIR: { get_property: [SELF, data_dir] }
+          implementation: scripts/alien/cleanup_alien.sh
     artifacts:
       - bin:
           file: bin
