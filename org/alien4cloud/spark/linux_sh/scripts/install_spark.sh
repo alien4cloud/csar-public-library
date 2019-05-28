@@ -45,7 +45,7 @@ download() {
   ensure_success "Downloading using command: $DOWNLOADER $Q_FLAG $O_FLAG $3 $LINK_FLAG $2"
 }
 
-if [ -d "${SPARK_INSTALL_DIR}/spark-2.2.2-bin-hadoop2.7" ]; then
+if [ -f "${SPARK_INSTALL_DIR}/spark.tgz" ]; then
   exit 0
 fi
 

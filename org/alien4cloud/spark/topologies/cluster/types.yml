@@ -19,13 +19,13 @@ topology_template:
     SparkMaster:
       type: org.alien4cloud.spark.linux_sh.nodes.SparkMaster
       properties:
-        component_version: "2.2.2"
-        download_url: "http://mirror.ibcp.fr/pub/apache/spark/spark-2.2.2/spark-2.2.2-bin-hadoop2.7.tgz"
+        component_version: "2.4.3"
+        download_url: "http://mirror.ibcp.fr/pub/apache/spark/spark-2.4.3/spark-2.4.3-bin-hadoop2.7.tgz"
         install_dir: "/opt/spark"
       requirements:
         - javaSoftwareHostedOnJdkOracleJdkJdk:
             type_requirement: java
-            node: OracleJDKMaster
+            node: JDKMaster
             capability: org.alien4cloud.java.pub.capabilities.JDK
             relationship: org.alien4cloud.java.pub.relationships.JavaSoftwareHostedOnJDK
       capabilities:
@@ -46,8 +46,8 @@ topology_template:
     SparkSlave:
       type: org.alien4cloud.spark.linux_sh.nodes.SparkSlave
       properties:
-        component_version: "2.2.2"
-        download_url: "http://mirror.ibcp.fr/pub/apache/spark/spark-2.2.2/spark-2.2.2-bin-hadoop2.7.tgz"
+        component_version: "2.4.3"
+        download_url: "http://mirror.ibcp.fr/pub/apache/spark/spark-2.4.3/spark-2.4.3-bin-hadoop2.7.tgz"
         install_dir: "/opt/spark"
       requirements:
         - joinSparkClusterSparkMasterSpark_master:
@@ -57,7 +57,7 @@ topology_template:
             relationship: org.alien4cloud.spark.linux_sh.relationships.JoinSparkCluster
         - javaSoftwareHostedOnJdkOracleJdk2Jdk:
             type_requirement: java
-            node: OracleJDKSlave
+            node: JDKSlave
             capability: org.alien4cloud.java.pub.capabilities.JDK
             relationship: org.alien4cloud.java.pub.relationships.JavaSoftwareHostedOnJDK
       capabilities:
@@ -105,8 +105,8 @@ topology_template:
     SparkMasterSlave:
       type: org.alien4cloud.spark.linux_sh.nodes.SparkSlave
       properties:
-        component_version: "2.2.2"
-        download_url: "http://mirror.ibcp.fr/pub/apache/spark/spark-2.2.2/spark-2.2.2-bin-hadoop2.7.tgz"
+        component_version: "2.4.3"
+        download_url: "http://mirror.ibcp.fr/pub/apache/spark/spark-2.4.3/spark-2.4.3-bin-hadoop2.7.tgz"
         install_dir: "/opt/spark"
       requirements:
         - joinSparkClusterSparkMasterSpark_master:
@@ -116,7 +116,7 @@ topology_template:
             relationship: org.alien4cloud.spark.linux_sh.relationships.JoinSparkCluster
         - javaSoftwareHostedOnJdkOracleJdkJdk:
             type_requirement: java
-            node: OracleJDKMaster
+            node: JDKMaster
             capability: org.alien4cloud.java.pub.capabilities.JDK
             relationship: org.alien4cloud.java.pub.relationships.JavaSoftwareHostedOnJDK
       capabilities:
@@ -127,24 +127,24 @@ topology_template:
             secure: false
             network_name: PRIVATE
             initiator: source
-    OracleJDKMaster:
+    JDKMaster:
       type: org.alien4cloud.java.jdk.linux.nodes.OracleJDK
       properties:
-        java_url: "https://edelivery.oracle.com/otn-pub/java/jdk/8u131-b11/d54c1d3a095b4ff2b6607d096fa80163/jdk-8u131-linux-x64.tar.gz"
+        java_url: "https://api.adoptopenjdk.net/v2/binary/releases/openjdk8?openjdk_impl=hotspot&os=linux&arch=x64&release=jdk8u212-b03&type=jdk"
         java_home: "/opt/java"
-        component_version: "1.8.0-131-b11"
+        component_version: "1.8.0-212-b03"
       requirements:
         - hostedOnComputeHost:
             type_requirement: host
             node: SparkMasterHost
             capability: tosca.capabilities.Container
             relationship: tosca.relationships.HostedOn
-    OracleJDKSlave:
+    JDKSlave:
       type: org.alien4cloud.java.jdk.linux.nodes.OracleJDK
       properties:
-        java_url: "https://edelivery.oracle.com/otn-pub/java/jdk/8u131-b11/d54c1d3a095b4ff2b6607d096fa80163/jdk-8u131-linux-x64.tar.gz"
+        java_url: "https://api.adoptopenjdk.net/v2/binary/releases/openjdk8?openjdk_impl=hotspot&os=linux&arch=x64&release=jdk8u212-b03&type=jdk"
         java_home: "/opt/java"
-        component_version: "1.8.0-131-b11"
+        component_version: "1.8.0-212-b03"
       requirements:
         - hostedOnXdeSparkSlaveHost:
             type_requirement: host
