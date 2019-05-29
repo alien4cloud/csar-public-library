@@ -43,3 +43,7 @@ node_types:
             JAVA_URL: { get_property: [SELF, java_url] }
             JAVA_HOME: { get_property: [SELF, java_home] }
           implementation: scripts/install_jdk.sh
+        start:
+          # For Alien4Cloud UI to not show the component deployment status as
+          # being in progress
+          implementation: scripts/start_noop.sh

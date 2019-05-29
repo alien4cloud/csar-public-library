@@ -39,6 +39,10 @@ node_types:
             SPARK_DOWNLOAD_URL: { get_property: [SELF, download_url] }
             SPARK_INSTALL_DIR: { get_property: [SELF, install_dir] }
           implementation: scripts/install_spark.sh
+        start:
+          # For Alien4Cloud UI to not show the component deployment status as
+          # being in progress
+          implementation: scripts/start_noop.sh
 
   org.alien4cloud.spark.linux_sh.nodes.SparkMaster:
     derived_from: org.alien4cloud.spark.linux_sh.nodes.SparkNode
@@ -63,7 +67,7 @@ node_types:
             SPARK_MASTER_REST_PORT: {get_property: [ SELF, spark_rest, port ]}
           implementation: scripts/start_master.sh
 
-  org.alien4cloud.spark.linux_sh.nodes.SparkSlave:
+  org.alien4cloud.spark.linux_sh.nodes.SparkWorker:
     derived_from: org.alien4cloud.spark.linux_sh.nodes.SparkNode
     capabilities:
       spark_master:
@@ -84,6 +88,6 @@ relationship_types:
           inputs:
             SPARK_INSTALL_DIR: { get_property: [SOURCE, install_dir] }
             SPARK_MASTER_ADDRESS: { get_attribute: [TARGET, ip_address] }
-            SPARK_SLAVE_ADDRESS: { get_attribute: [SOURCE, ip_address] }
+            SPARK_WORKER_ADDRESS: { get_attribute: [SOURCE, ip_address] }
             SPARK_MASTER_PORT: { get_attribute: [TARGET, spark_master, port] }
           implementation: scripts/join_spark_cluster.sh
