@@ -15,6 +15,12 @@ imports:
   - org.alien4cloud.spark.linux_sh:2.2.0-SNAPSHOT
 
 topology_template:
+  # Other applications can reference the following Abstract Node Type
+  # to connect to this Spark cluster
+  substitution_mappings:
+    node_type: org.alien4cloud.spark.pub.nodes.SparkMaster
+    capabilities:
+      spark_rest: [ SparkMaster, spark_rest ]
   node_templates:
     SparkMaster:
       type: org.alien4cloud.spark.linux_sh.nodes.SparkMaster

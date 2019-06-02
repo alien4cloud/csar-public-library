@@ -2,6 +2,8 @@
 
 set -e
 
+echo "Getting status for job ${TOSCA_JOB_ID}"
+
 if [[ -z "${TOSCA_JOB_ID}" ]] ; then
     >&2 echo "Missing TOSCA_JOB_ID"
     exit 1

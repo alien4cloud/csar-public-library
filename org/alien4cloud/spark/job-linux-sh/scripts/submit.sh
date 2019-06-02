@@ -13,22 +13,22 @@ if [[ -z "$(which jq)" ]] ; then
 fi
 
 sub=$(echo ${SUBMIT_PROPS} | \
+    jq 'with_entries( select( .value != "" ))' | \
     jq 'with_entries( if .key | contains("_") then .key |= sub("_";".") else . end | .key |= "spark." + .)' | \
     jq ". + {\"spark.submit.deployMode\": \"cluster\", \"spark.master\": \"spark://${SPARK_IP}:${SPARK_REST_PORT}\"}" | \
-    jq "{\"mainClass\": \"${MAIN_CLASS}\", \"clientSparkVersion\": \"2.0.1\",  \"environmentVariables\": {\"SPARK_ENV_LOADED\": \"1\"}, \"action\": \"CreateSubmissionRequest\", \"sparkProperties\" : .}")
+    jq "{\"mainClass\": \"${MAIN_CLASS}\", \"clientSparkVersion\": \"2.4.3\",  \"environmentVariables\": {\"SPARK_ENV_LOADED\": \"1\"}, \"action\": \"CreateSubmissionRequest\", \"sparkProperties\" : .}")
 
 if [[ -n "${APP_ARGS}" ]] ; then
     sub=$(echo ${sub} | jq ". + {\"appArgs\": ${APP_ARGS} }")
 fi
 
 
-if [[ -n "${JAR_DOWNLOAD}" ]] ; then
+if [[ -n "${JAR_URL}" ]] ; then
     if [[ -z "${JAR_INSTALL_PATH}" ]] ; then
-        >&2 echo "JAR_DOWNLOAD is set but not JAR_INSTALL_PATH"
-        exit 1
+        JAR_INSTALL_PATH=${JAR_URL}
+    else
+        curl -f --show-error -s "${JAR_DOWNLOAD}" --output "${JAR_INSTALL_PATH}"
     fi
-
-    curl -f --show-error -s "${JAR_DOWNLOAD}" --output "${JAR_INSTALL_PATH}"
 
     sub=$(echo ${sub} | jq ". + {\"appResource\": \"${JAR_INSTALL_PATH}\" } ")
     jars=$(echo ${sub} | jq -r '."sparkProperties"."spark.jars"')

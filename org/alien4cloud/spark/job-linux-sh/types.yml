@@ -69,14 +69,14 @@ node_types:
     properties:
       submission:
         type: org.alien4cloud.spark.jobs-linux-sh.datatypes.Submission
-      jar_download:
+      jar_url:
         type: string
-        required: false
+        required: true
       jar_install_path:
         type: string
         required: false
     requirements:
-      - spark_rest_api: 
+      - spark_rest: 
           capability: org.alien4cloud.spark.pub.capabilities.SparkREST
           relationship: tosca.relationships.ConnectsTo
       - host:
@@ -87,14 +87,16 @@ node_types:
     interfaces:
       tosca.interfaces.node.lifecycle.Runnable:
         inputs: 
-          SPARK_IP: {get_attribute: [REQ_TARGET, spark_rest_api, ip_address]}
-          SPARK_REST_PORT: {get_attribute: [REQ_TARGET, spark_rest_api, spark_rest_port]}
+          SPARK_IP: {get_attribute: [REQ_TARGET, spark_rest, spark_rest_ip_address]}
+          # SPARK_IP: {get_attribute: [SELF, master_ip_address]}
+          # SPARK_REST_PORT: {get_property: [REQ_TARGET, spark_rest, port]}
+          SPARK_REST_PORT: {get_attribute: [REQ_TARGET, spark_rest, spark_rest_port]}
         submit:
           inputs: 
             SUBMIT_PROPS: {get_property: [SELF, submission, submit_props]}
             MAIN_CLASS: {get_property: [SELF, submission, main_class]}
             APP_ARGS: {get_property: [SELF, submission, app_args]}
-            JAR_DOWNLOAD: {get_property: [SELF, jar_download]}
+            JAR_URL: {get_property: [SELF, jar_url]}
             JAR_INSTALL_PATH: {get_property: [SELF, jar_install_path]}
           implementation: scripts/submit.sh
         run: scripts/run.sh

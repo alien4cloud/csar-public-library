@@ -6,7 +6,7 @@ metadata:
   template_author: alien4cloud
 
 description: |
-  Install Spark cluster.
+  Spark cluster linux concrete types.
 
 imports:
   - tosca-normative-types:1.0.0-ALIEN20
@@ -15,23 +15,36 @@ imports:
 
 node_types:
 
-  org.alien4cloud.spark.linux_sh.nodes.SparkNode:
-    abstract: true
-    derived_from: org.alien4cloud.java.pub.nodes.JavaSoftware
-    properties:
-      component_version:
-        type: version
-        default: 2.4.3
-        constraints:
-          - greater_or_equal: 2.4.3
-      download_url:
-        type: string
-        default: http://mirror.ibcp.fr/pub/apache/spark/spark-2.4.3/spark-2.4.3-bin-hadoop2.7.tgz
-        constraints:
-          - pattern: "^(http|https|ftp)://.+/.*$"
-      install_dir:
-        type: string
-        default: /opt/spark
+  org.alien4cloud.spark.linux_sh.nodes.SparkMaster:
+    derived_from: org.alien4cloud.spark.pub.nodes.SparkMaster
+    interfaces:
+      Standard:
+        create:
+          inputs:
+            SPARK_DOWNLOAD_URL: { get_property: [SELF, download_url] }
+            SPARK_INSTALL_DIR: { get_property: [SELF, install_dir] }
+          implementation: scripts/install_spark.sh
+        configure:
+          inputs:
+            SPARK_INSTALL_DIR: { get_property: [SELF, install_dir] }
+            SPARK_MASTER_REST_PORT: {get_property: [ SELF, spark_rest, port ]}
+          implementation: scripts/configure_master.sh
+        start:
+          inputs:
+            SPARK_INSTALL_DIR: { get_property: [SELF, install_dir] }
+            SPARK_MASTER_ADDRESS: { get_attribute: [HOST, ip_address] }
+            SPARK_UI_PORT: {get_property: [ SELF, spark_ui, port ]}
+            SPARK_MASTER_PORT: {get_property: [ SELF, spark_master, port ]}
+          implementation: scripts/start_master.sh
+        stop:
+          implementation: scripts/stop_master.sh
+        delete:
+          inputs:
+            SPARK_INSTALL_DIR: { get_property: [SELF, install_dir] }
+          implementation: scripts/uninstall_spark.sh
+
+  org.alien4cloud.spark.linux_sh.nodes.SparkWorker:
+    derived_from: org.alien4cloud.spark.pub.nodes.SparkWorker
     interfaces:
       Standard:
         create:
@@ -43,44 +56,17 @@ node_types:
           # For Alien4Cloud UI to not show the component deployment status as
           # being in progress
           implementation: scripts/start_noop.sh
-
-  org.alien4cloud.spark.linux_sh.nodes.SparkMaster:
-    derived_from: org.alien4cloud.spark.linux_sh.nodes.SparkNode
-    capabilities:
-      spark_master:
-        type: org.alien4cloud.spark.pub.capabilities.SparkMaster
-      spark_rest:
-        type: org.alien4cloud.spark.pub.capabilities.SparkREST
-      spark_ui:
-        type: org.alien4cloud.spark.pub.capabilities.SparkMasterUI
-    attributes:
-      spark_ui: { concat: [get_attribute: [ SELF, spark_ui, protocol ], "://", get_attribute: [ SELF, public_ip_address ], ":", get_attribute: [ SELF, spark_ui, port ]] }
-      spark_rest_port: { get_attribute: [ SELF, spark_rest, port ] }
-    interfaces:
-      Standard:
-        start:
+        stop:
+          implementation: scripts/stop_worker.sh
+        delete:
           inputs:
             SPARK_INSTALL_DIR: { get_property: [SELF, install_dir] }
-            SPARK_MASTER_ADDRESS: { get_attribute: [HOST, ip_address] }
-            SPARK_UI_PORT: {get_property: [ SELF, spark_ui, port ]}
-            SPARK_MASTER_PORT: {get_property: [ SELF, spark_master, port ]}
-            SPARK_MASTER_REST_PORT: {get_property: [ SELF, spark_rest, port ]}
-          implementation: scripts/start_master.sh
-
-  org.alien4cloud.spark.linux_sh.nodes.SparkWorker:
-    derived_from: org.alien4cloud.spark.linux_sh.nodes.SparkNode
-    capabilities:
-      spark_master:
-        type: org.alien4cloud.spark.pub.capabilities.SparkMaster
-    requirements:
-      - spark_master:
-          capability: org.alien4cloud.spark.pub.capabilities.SparkMaster
-          relationship: org.alien4cloud.spark.linux_sh.relationships.JoinSparkCluster
+          implementation: scripts/uninstall_spark.sh
 
 relationship_types:
 
   org.alien4cloud.spark.linux_sh.relationships.JoinSparkCluster:
-    derived_from: tosca.relationships.ConnectsTo
+    derived_from: org.alien4cloud.spark.pub.relationships.JoinSparkCluster
     valid_target_types: [org.alien4cloud.spark.linux_sh.nodes.SparkMaster]
     interfaces:
       Configure:

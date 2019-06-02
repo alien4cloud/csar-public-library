@@ -49,6 +49,7 @@ if [ -f "${SPARK_INSTALL_DIR}/spark.tgz" ]; then
   exit 0
 fi
 
-sudo mkdir "${SPARK_INSTALL_DIR}"
+sudo mkdir -p "${SPARK_INSTALL_DIR}"
+sudo mkdir /tmp/spark-events
 download "Spark" "${SPARK_DOWNLOAD_URL}" "${SPARK_INSTALL_DIR}/spark.tgz"
 sudo tar -xzf "${SPARK_INSTALL_DIR}/spark.tgz" -C "${SPARK_INSTALL_DIR}/"
