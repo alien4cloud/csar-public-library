@@ -88,8 +88,6 @@ node_types:
       tosca.interfaces.node.lifecycle.Runnable:
         inputs: 
           SPARK_IP: {get_attribute: [REQ_TARGET, spark_rest, spark_rest_ip_address]}
-          # SPARK_IP: {get_attribute: [SELF, master_ip_address]}
-          # SPARK_REST_PORT: {get_property: [REQ_TARGET, spark_rest, port]}
           SPARK_REST_PORT: {get_attribute: [REQ_TARGET, spark_rest, spark_rest_port]}
         submit:
           inputs: 
