@@ -6,5 +6,5 @@ PROC=`ps -ef | grep java | grep org.apache.spark.deploy.worker.Worker | grep -v 
 
 if [[ $PROC ]]; then
     sudo kill $PROC
-    echo "Spark master stopped"
+    echo "Spark worker stopped"
 fi
