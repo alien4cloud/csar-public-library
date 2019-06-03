@@ -161,3 +161,6 @@ topology_template:
     url:
       description: Spark UI URL
       value: { get_attribute: [ SparkMaster, spark_ui_url ] }
+    spark_rest_ip_address:
+      description: IP address to use for Spark REST API
+      value: { get_attribute: [ SparkMaster, spark_rest_ip_address ] }
