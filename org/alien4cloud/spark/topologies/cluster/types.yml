@@ -157,3 +157,7 @@ topology_template:
             node: SparkWorkerHost
             capability: tosca.capabilities.Container
             relationship: tosca.relationships.HostedOn
+  outputs:
+    url:
+      description: Spark UI URL
+      value: { get_attribute: [ SparkMaster, spark_ui_url ] }

@@ -81,7 +81,7 @@ node_types:
       spark_ui:
         type: org.alien4cloud.spark.pub.capabilities.SparkMasterUI
     attributes:
-      spark_ui: { concat: [get_attribute: [ SELF, spark_ui, protocol ], "://", get_attribute: [ SELF, public_address ], ":", get_attribute: [ SELF, spark_ui, port ]] }
+      spark_ui_url: { concat: [get_attribute: [ SELF, spark_ui, protocol ], "://", get_attribute: [ HOST, public_address ], ":", get_attribute: [ SELF, spark_ui, port ]] }
       spark_rest_ip_address: { get_attribute: [ SELF, spark_rest, ip_address ] }
       spark_rest_port: { get_attribute: [ SELF, spark_rest, port ] }
   org.alien4cloud.spark.pub.nodes.SparkWorker:
