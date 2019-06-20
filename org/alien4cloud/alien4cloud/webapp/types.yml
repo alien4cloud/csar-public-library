@@ -66,6 +66,10 @@ node_types:
         description: "Certificate authority private key passphrase"
         type: string
         required: false
+      extra_env:
+        description: "Extra environment sourced before startup. This will be written as it in a file sourced in the bash process before running Alien"
+        type: string
+        required: false
     capabilities:
       consul:
         type: org.alien4cloud.consul.pub.capabilities.ConsulClient
@@ -129,6 +133,7 @@ node_types:
             CA_PEM: { get_property: [SELF, ca_pem] }
             CA_KEY: { get_property: [SELF, ca_key] }
             CA_PASSPHRASE: { get_property: [SELF, ca_passphrase] }
+            EXTRA_ENV: { get_property: [SELF, extra_env] }
           implementation: scripts/alien/config_alien.sh
         start:
           inputs:

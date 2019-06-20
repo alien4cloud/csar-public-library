@@ -21,7 +21,7 @@ case "$1" in
 start)
   printf "%-50s\n" "Starting $APP_NAME ..."
   cd /opt/alien4cloud/alien4cloud/
-  sudo bash -c "/opt/alien4cloud/alien4cloud/alien4cloud.sh ${APP_ARGS} >> /opt/alien4cloud/alien4cloud/logs/vm.out 2>&1 & echo \$!"
+  sudo bash -c "for f in `ls /etc/alien4cloud/env`; do source /etc/alien4cloud/env/\$f; done && /opt/alien4cloud/alien4cloud/alien4cloud.sh ${APP_ARGS} >> /opt/alien4cloud/alien4cloud/logs/vm.out 2>&1 & echo \$!"
 ;;
 status)
   if [[ $PROC ]]; then
