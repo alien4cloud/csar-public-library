@@ -131,3 +131,7 @@ if [[ "$(which yum)" != "" ]]; then
 elif [[ "$(which apt-get)" != "" ]]; then
   sudo update-rc.d alien defaults 95 10
 fi
+
+if [[ -n "${EXTRA_ENV}" ]] ; then
+  echo "${EXTRA_ENV}" | sudo tee /etc/alien4cloud/env/1_extra_env.sh
+fi
