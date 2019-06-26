@@ -1,0 +1,335 @@
+tosca_definitions_version: alien_dsl_2_0_0
+
+metadata:
+  template_name: a4c_multi_es
+  template_version: 0.1.0-SNAPSHOT
+  template_author: slt
+
+description: "A4C stack with extern ES Cluster"
+
+imports:
+  - org.ystia.ansible.linux.ansible:2.2.0-SNAPSHOT
+  - tosca-normative-types:1.0.0-ALIEN20
+  - org.alien4cloud.statsd.pub:2.2.0-SNAPSHOT
+  - org.ystia.terraform.linux.terraform:2.2.0-SNAPSHOT
+  - alien-base-types:2.2.0-SNAPSHOT
+  - org.ystia.terraform.pub:2.2.0-SNAPSHOT
+  - org.ystia.ansible.pub:2.2.0-SNAPSHOT
+  - org.alien4cloud.elasticsearch.centos:2.2.0-SNAPSHOT
+  - org.alien4cloud.alien4cloud.webapp:2.2.0-SNAPSHOT
+  - yorc-types:1.0.0
+  - org.ystia.yorc.experimental.consul.linux.ansible:2.2.0-SNAPSHOT
+  - org.alien4cloud.monitoring.pub:2.2.0-SNAPSHOT
+  - org.alien4cloud.java.jdk.linux:2.2.0-SNAPSHOT
+  - org.alien4cloud.alien4cloud.config.pub:2.2.0-SNAPSHOT
+  - org.alien4cloud.alien4cloud.pub:2.2.0-SNAPSHOT
+  - org.alien4cloud.elasticsearch.pub:2.2.0-SNAPSHOT
+  - org.ystia.yorc.linux.ansible:2.2.0-SNAPSHOT
+  - org.alien4cloud.consul.pub:2.2.0-SNAPSHOT
+  - org.alien4cloud.grafana.pub:2.2.0-SNAPSHOT
+  - org.alien4cloud.java.jmx.jolokia:2.2.0-SNAPSHOT
+  - org.alien4cloud.alien4cloud.config.orchestrator.yorc:2.2.0-SNAPSHOT
+  - org.ystia.yorc.experimental.consul.pub:2.2.0-SNAPSHOT
+  - org.alien4cloud.java.pub:2.2.0-SNAPSHOT
+  - org.ystia.yorc.pub:2.2.0-SNAPSHOT
+  - org.alien4cloud.alien4cloud.config.location:2.2.0-SNAPSHOT
+
+topology_template:
+  inputs:
+    secret_key:
+      type: string
+      required: true
+      description: "AWS secret key credentials"
+    access_key:
+      type: string
+      required: true
+      description: "AWS access key credentials"
+    region:
+      type: string
+      required: true
+      description: "AWS region"
+  node_templates:
+    A4C_Compute:
+      metadata:
+        a4c_edit_x: "-276"
+        a4c_edit_y: "-207"
+      type: tosca.nodes.Compute
+      capabilities:
+        scalable:
+          properties:
+            min_instances: 1
+            max_instances: 1
+            default_instances: 1
+        endpoint:
+          properties:
+            secure: true
+            protocol: tcp
+            network_name: PRIVATE
+            initiator: source
+    ES_Compute:
+      metadata:
+        a4c_edit_x: 203
+        a4c_edit_y: "-206"
+      type: tosca.nodes.Compute
+      capabilities:
+        scalable:
+          properties:
+            min_instances: 1
+            max_instances: 3
+            default_instances: 2
+        endpoint:
+          properties:
+            secure: true
+            protocol: tcp
+            network_name: PRIVATE
+            initiator: source
+    A4C_JDK:
+      type: org.alien4cloud.java.jdk.linux.nodes.OracleJDK
+      properties:
+        java_url: "https://edelivery.oracle.com/otn-pub/java/jdk/8u131-b11/d54c1d3a095b4ff2b6607d096fa80163/jdk-8u131-linux-x64.tar.gz"
+        java_home: "/opt/java"
+        component_version: "1.8.0-131-b11"
+      requirements:
+        - hostedOnA4CComputeHost:
+            type_requirement: host
+            node: A4C_Compute
+            capability: tosca.capabilities.Container
+            relationship: tosca.relationships.HostedOn
+    ES_JDK:
+      type: org.alien4cloud.java.jdk.linux.nodes.OracleJDK
+      properties:
+        java_url: "https://edelivery.oracle.com/otn-pub/java/jdk/8u131-b11/d54c1d3a095b4ff2b6607d096fa80163/jdk-8u131-linux-x64.tar.gz"
+        java_home: "/opt/java"
+        component_version: "1.8.0-131-b11"
+      requirements:
+        - hostedOnEsComputeHost:
+            type_requirement: host
+            node: ES_Compute
+            capability: tosca.capabilities.Container
+            relationship: tosca.relationships.HostedOn
+    Alien4Cloud:
+      type: org.alien4cloud.alien4cloud.webapp.nodes.Alien4Cloud
+      properties:
+        download_url: "http://54.246.249.105/dist/alien4cloud/alien4cloud-premium-dist/2.2.0-SM7/alien4cloud-premium-dist-2.2.0-SM7-dist.tar.gz"
+        context_root: "/"
+        app_args: ""
+        jvm_args: ""
+        component_version: "2.2.0-SNAPSHOT"
+        data_dir: "/opt/alien4cloud/data"
+      requirements:
+        - javaSoftwareHostedOnJdkA4CJdkJdk:
+            type_requirement: java
+            node: A4C_JDK
+            capability: org.alien4cloud.java.pub.capabilities.JDK
+            relationship: org.alien4cloud.java.pub.relationships.JavaSoftwareHostedOnJDK
+        - alienConnectToElasticSearchElasticSearchElasticsearch:
+            type_requirement: elasticsearch
+            node: ElasticSearch
+            capability: org.alien4cloud.elasticsearch.pub.capabilities.ElasticSearchTransportAPI
+            relationship: org.alien4cloud.alien4cloud.webapp.relationships.AlienConnectToElasticSearch
+      capabilities:
+        consul:
+          properties:
+            tls_enabled: false
+            protocol: tcp
+            secure: false
+            network_name: PRIVATE
+            initiator: source
+        jolokia:
+          properties:
+            port: 8778
+        http:
+          properties:
+            port: 9200
+            protocol: http
+            secure: false
+            network_name: PRIVATE
+            initiator: source
+        rest:
+          properties:
+            user: admin
+            password: admin
+            port: 8080
+            protocol: http
+            secure: false
+            network_name: PRIVATE
+            initiator: source
+    ElasticSearch:
+      type: org.alien4cloud.elasticsearch.centos.nodes.ElasticSearch
+      properties:
+        component_version: "1.7.0"
+        elasticsearch_url: "https://download.elastic.co/elasticsearch/elasticsearch/elasticsearch-1.7.0.noarch.rpm"
+        cluster_name: escluster
+      requirements:
+        - javaSoftwareHostedOnJdkEsJdkJdk:
+            type_requirement: java
+            node: ES_JDK
+            capability: org.alien4cloud.java.pub.capabilities.JDK
+            relationship: org.alien4cloud.java.pub.relationships.JavaSoftwareHostedOnJDK
+      capabilities:
+        elasticsearch:
+          properties:
+            port: 9300
+            protocol: tcp
+            secure: false
+            network_name: PRIVATE
+            initiator: source
+        http:
+          properties:
+            port: 9200
+            protocol: http
+            secure: false
+            network_name: PRIVATE
+            initiator: source
+    YorcOrchestratorConfigurator:
+      type: org.alien4cloud.alien4cloud.config.orchestrator.yorc.nodes.YorcOrchestratorConfigurator
+      properties:
+        pluginId: "alien4cloud-yorc-provider"
+        pluginBean: "yorc-orchestrator-factory"
+        name: MyOrchestrator
+        discriminator: YourInitials
+      requirements:
+        - connectsToYorcYorcServerRest:
+            type_requirement: yorc
+            node: YorcServer
+            capability: org.ystia.yorc.pub.capabilities.YorcRestAPI
+            relationship: org.alien4cloud.alien4cloud.config.orchestrator.yorc.relationships.ConnectsToYorc
+        - alienConfiguratorHostedOnAlienAlien4CloudConfig:
+            type_requirement: host
+            node: Alien4Cloud
+            capability: org.alien4cloud.alien4cloud.pub.capabilities.AlienConfigContainer
+            relationship: org.alien4cloud.alien4cloud.pub.relationships.AlienConfiguratorHostedOnAlien
+    SimpleLocationConfigurator:
+      type: org.alien4cloud.alien4cloud.config.location.nodes.SimpleLocationConfigurator
+      properties:
+        name: MyLocation
+        type: AWS
+      requirements:
+        - locationHostedOnOrchestratorYorcOrchestratorConfiguratorLocation_config:
+            type_requirement: orchestrator
+            node: YorcOrchestratorConfigurator
+            capability: org.alien4cloud.alien4cloud.config.pub.capabilities.OrchestratorConfigurator
+            relationship: org.alien4cloud.alien4cloud.config.pub.relationships.LocationHostedOnOrchestrator
+    YorcServer:
+      type: org.ystia.yorc.linux.ansible.nodes.YorcServer
+      properties:
+        log_dir: "/var/log/yorc"
+        ansible_use_openssh: true
+        ansible_connection_retries: 3
+        ansible_hosted_operations_unsandboxed_operations_allowed: false
+        resources_prefix: "yorc-"
+        download_url: "https://dl.bintray.com/ystia/yorc-engine/releases/yorc-3.1.0.tgz"
+        install_dir: "/usr/local/bin"
+        config_dir: "/etc/yorc"
+        data_dir: "/var/yorc"
+        workers_number: 30
+        private_key_content: "-----BEGIN RSA PRIVATE KEY----- MIIEowIBAAKCAQEArDirPzn0tvhDghk5os+ZCBiU8hb5P/91hC36kXJYnDsaBpYL1tuVeWy2WCJZ LIci/kJSz9q+4OU9RC0hNpKHxisw5/FHkpx+8aj/fZKdx4daUHPfytuvZM2rfGQ0LiUCxENAspmJ SN/RV+MmHFYwSKqiyzfUpSxMP5LTThIJUdrzibalbu6WPrXYTGpPkiRmamxgj6tHWaunWQ+aM2S+ rftHhSjgeZDGxpFA0iCL7BJO4gOJmSLzJZgDppce0TDdbbTCMfMkIrpqXhUtsW3IxGSSmVRbxadZ qsNE7EjxSGYhAGREEoPlDEvsZP8MKzVFOeOpg8P/Y46sUsuR3vNqyQIDAQABAoIBAHhOOeo3/SfX s6jtICMIrBlIuruGquU2+gu05sW1wAqbCqoxJOIZkIg7FgHpNKvzVtGQ2TKT1yVZXfwDHqF1qN0Z DNfp55qWMeN0r80zn35jogZze5DE9/gN6E5D3WOivRUG+eoJcSp0F1QyvEutNZt9f61AOg6MLFN4 qJ1v4gzIIiNahPR12yFG8VBbaAP5P3pvtMA5rwMSnd6xx+KxmLrS1m0XxOPev30lckiX/Ob2lg0F BvHVqKnAM/H8vwNSUQA7hAyYR0ZHx0rAEBgDTIyqAahN+w4g0YE4WpQAGCsm9RPiq+q7aFeO2ptl 1asyn3lmcRSG3j9bLq3Rq3xpq4ECgYEA+MpfPlTwsnV0vbSE+GHAeOlrWx52CXFkHOKtYE++meed gL27PJHTeZ90+Xdgladhizhpk0hkJeWsPtnlQyjKmom69LRx07RtWlFyqx1beyQ+bYCra5G8WKQC OCXbOoZO84P/Jj4d0uIIQgGaEiuNzt0p83Yt5XWPf4eaXtGcPlECgYEAsTZGsryjFhE1rpog6fkB 3eHQgWK+u46tirwVE+9OJ1hCg85SaecxiAY1XH88LpKkwjA/M4Nl/rZ62rw9XP23yG0aASiB4TNR aPIJvH4fD4dF/RcviZYbFa6zQBhUF1VcsyG69Tx7wAbZoGk3+okIZ4Eq/Om8wkmbAKhGWJb0bvkC gYEA73DFjZXuObL1cgak2vApb7Umz4FXlOr+sRYwSrs086aIXXk9FKQ8ZZdj2xxbZmy7YmQep9NK H3cV+T94eNRveaAIwK5RxrCldgFhXPJaMv/E3VqyoEqYfK8MO8GjZoYQwilNjR7HUUidLfmgsNAe IPOWBmy861PjkZeOqKcPuqECgYA1pxssjlRKIBfCr0N70zovdWjtY3ofywjb0ioHiRJ+cwhgY50s FyU167tIL/WGnDtp17Wq4QOGZLU5eHiTqPV1pyKSazM3fZQOVAmCmiTJTMlx4Q0xeNLmc6gtpbAA CIYybenuycslzm0hVfnuzoJO5BqhzBqsMCDPyCLUO4/x8QKBgGc9GzuSk//jbdCZn4Mfcs3fWLCJ ktcoOkKvYmKG8m/aN2Fcy+gWa036jk9UDPfVIP+OUEX8r/EabLPDoVR1p/mkz1E3tWNYYnaGHDxt ZOJQlwF9rrs1KE9B681Ly26bU98z8WHGIhGiMqriq62wTuaFBMvtehaeZDnF4JnPT8z/ -----END RSA PRIVATE KEY-----"
+      requirements:
+        - dependsOnAnsibleRuntimeAnsibleRuntimeFeature:
+            type_requirement: ansible
+            node: AnsibleRuntime
+            capability: tosca.capabilities.Node
+            relationship: org.ystia.ansible.pub.relationships.DependsOnAnsibleRuntime
+        - hostedOnA4CComputeHost:
+            type_requirement: host
+            node: A4C_Compute
+            capability: tosca.capabilities.Container
+            relationship: tosca.relationships.HostedOn
+        - dependsOnTerraformRuntimeTerraformRuntimeFeature:
+            type_requirement: terraform
+            node: TerraformRuntime
+            capability: tosca.capabilities.Node
+            relationship: org.ystia.yorc.linux.ansible.relationships.DependsOnTerraformRuntime
+        - joinConsulAgentConsulServerConsul_server:
+            type_requirement: consul
+            node: ConsulServer
+            capability: org.ystia.yorc.experimental.consul.pub.capabilities.ConsulServer
+            relationship: org.ystia.yorc.linux.ansible.relationships.JoinConsulAgent
+      capabilities:
+        rest:
+          properties:
+            port: 8800
+            protocol: http
+            secure: false
+            network_name: PRIVATE
+            initiator: source
+    AWSConfig:
+      type: org.ystia.yorc.infrastructure.AWSConfig
+      properties:
+        access_key: { get_input: access_key }
+        secret_key: { get_input: secret_key }
+        region: { get_input: region }
+      requirements:
+        - yorcConfigAwsHostedOnYorcYorcServerConfig:
+            type_requirement: host
+            node: YorcServer
+            capability: org.ystia.yorc.pub.capabilities.YorcConfigContainer
+            relationship: org.ystia.yorc.linux.ansible.relationships.YorcConfigAWSHostedOnYorc
+    ConsulServer:
+      type: org.ystia.yorc.experimental.consul.linux.ansible.nodes.ConsulServer
+      properties:
+        install_dnsmasq: true
+        mode: server
+        tls_enabled: false
+        tls_for_checks_enabled: false
+        download_url: "https://releases.hashicorp.com/consul/1.2.3/consul_1.2.3_linux_amd64.zip"
+        install_dir: "/usr/local/bin"
+        config_dir: "/etc/consul.d"
+        datacenter: dc1
+        domain: consul
+        web_ui: false
+        data_dir: "/var/consul"
+      requirements:
+        - hostedOnA4CComputeHost:
+            type_requirement: host
+            node: A4C_Compute
+            capability: tosca.capabilities.Container
+            relationship: tosca.relationships.HostedOn
+      capabilities:
+        consul_server:
+          properties:
+            port: 8500
+            protocol: tcp
+            secure: false
+            network_name: PRIVATE
+            initiator: source
+        consul_agent:
+          properties:
+            port: 8500
+            protocol: tcp
+            secure: false
+            network_name: PRIVATE
+            initiator: source
+    TerraformRuntime:
+      type: org.ystia.terraform.linux.terraform.nodes.TerraformRuntime
+      properties:
+        download_url: "https://releases.hashicorp.com/terraform/0.11.8/terraform_0.11.8_linux_amd64.zip"
+        install_dir: "/usr/local/bin"
+        plugins_dir: "/var/terraform/plugins"
+        plugins_download_urls: 
+          - "https://releases.hashicorp.com/terraform-provider-null/1.0.0/terraform-provider-null_1.0.0_linux_amd64.zip"
+          - "https://releases.hashicorp.com/terraform-provider-consul/2.1.0/terraform-provider-consul_2.1.0_linux_amd64.zip"
+          - "https://releases.hashicorp.com/terraform-provider-openstack/1.9.0/terraform-provider-openstack_1.9.0_linux_amd64.zip"
+          - "https://releases.hashicorp.com/terraform-provider-aws/1.36.0/terraform-provider-aws_1.36.0_linux_amd64.zip"
+          - "https://releases.hashicorp.com/terraform-provider-google/1.18.0/terraform-provider-google_1.18.0_linux_amd64.zip"
+      requirements:
+        - hostedOnA4CComputeHost:
+            type_requirement: host
+            node: A4C_Compute
+            capability: tosca.capabilities.Container
+            relationship: tosca.relationships.HostedOn
+    AnsibleRuntime:
+      type: org.ystia.ansible.linux.ansible.nodes.AnsibleRuntime
+      properties:
+        component_version: "2.7.2"
+      requirements:
+        - hostedOnA4CComputeHost:
+            type_requirement: host
+            node: A4C_Compute
+            capability: tosca.capabilities.Container
+            relationship: tosca.relationships.HostedOn
+  outputs:
+    Alien4Cloud_alien_url:
+      value: { get_attribute: [ Alien4Cloud, alien_url ] }
+    ES_Compute_public_ip_address:
+      value: { get_attribute: [ ES_Compute, public_ip_address ] }
