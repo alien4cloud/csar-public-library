@@ -3,9 +3,9 @@ tosca_definitions_version: alien_dsl_2_0_0
 metadata:
   template_name: a4c_multi_es
   template_version: 0.1.0-SNAPSHOT
-  template_author: slt
+  template_author: admin
 
-description: "A4C stack with extern ES Cluster"
+description: "This archive has been created with alien4cloud."
 
 imports:
   - org.ystia.ansible.linux.ansible:2.2.0-SNAPSHOT
@@ -26,6 +26,7 @@ imports:
   - org.alien4cloud.elasticsearch.pub:2.2.0-SNAPSHOT
   - org.ystia.yorc.linux.ansible:2.2.0-SNAPSHOT
   - org.alien4cloud.consul.pub:2.2.0-SNAPSHOT
+  - org.alien4cloud.alien4cloud.config.csar:2.2.0-SNAPSHOT
   - org.alien4cloud.grafana.pub:2.2.0-SNAPSHOT
   - org.alien4cloud.java.jmx.jolokia:2.2.0-SNAPSHOT
   - org.alien4cloud.alien4cloud.config.orchestrator.yorc:2.2.0-SNAPSHOT
@@ -127,6 +128,11 @@ topology_template:
             node: ElasticSearch
             capability: org.alien4cloud.elasticsearch.pub.capabilities.ElasticSearchTransportAPI
             relationship: org.alien4cloud.alien4cloud.webapp.relationships.AlienConnectToElasticSearch
+        - dependsOnYorcServerFeature:
+            type_requirement: dependency
+            node: YorcServer
+            capability: tosca.capabilities.Node
+            relationship: tosca.relationships.DependsOn
       capabilities:
         consul:
           properties:
@@ -218,7 +224,7 @@ topology_template:
         ansible_connection_retries: 3
         ansible_hosted_operations_unsandboxed_operations_allowed: false
         resources_prefix: "yorc-"
-        download_url: "https://dl.bintray.com/ystia/yorc-engine/releases/yorc-3.1.0.tgz"
+        download_url: "https://bintray.com/ystia/yorc-engine/download_file?file_path=3.2.0%2Fyorc-3.2.0.tgz"
         install_dir: "/usr/local/bin"
         config_dir: "/etc/yorc"
         data_dir: "/var/yorc"
@@ -328,6 +334,18 @@ topology_template:
             node: A4C_Compute
             capability: tosca.capabilities.Container
             relationship: tosca.relationships.HostedOn
+    AddCsarFromGit:
+      type: org.alien4cloud.alien4cloud.config.csar.nodes.AddCsarFromGit
+      properties:
+        repositoryUrl: "https://github.com/alien4cloud/samples.git"
+        branchId: develop
+        subPath: "org/alien4cloud/mock"
+      requirements:
+        - alienConfiguratorHostedOnAlienAlien4CloudConfig:
+            type_requirement: host
+            node: Alien4Cloud
+            capability: org.alien4cloud.alien4cloud.pub.capabilities.AlienConfigContainer
+            relationship: org.alien4cloud.alien4cloud.pub.relationships.AlienConfiguratorHostedOnAlien
   outputs:
     Alien4Cloud_alien_url:
       value: { get_attribute: [ Alien4Cloud, alien_url ] }
