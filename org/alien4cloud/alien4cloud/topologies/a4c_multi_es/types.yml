@@ -96,6 +96,11 @@ topology_template:
             node: A4C_Compute
             capability: tosca.capabilities.Container
             relationship: tosca.relationships.HostedOn
+        - dependsOnYorcServerFeature:
+            type_requirement: dependency
+            node: YorcServer
+            capability: tosca.capabilities.Node
+            relationship: tosca.relationships.DependsOn
     ES_JDK:
       type: org.alien4cloud.java.jdk.linux.nodes.OracleJDK
       properties:
@@ -291,6 +296,11 @@ topology_template:
             node: A4C_Compute
             capability: tosca.capabilities.Container
             relationship: tosca.relationships.HostedOn
+        - dependsOnTerraformRuntimeFeature:
+            type_requirement: dependency
+            node: TerraformRuntime
+            capability: tosca.capabilities.Node
+            relationship: tosca.relationships.DependsOn
       capabilities:
         consul_server:
           properties:
@@ -334,6 +344,11 @@ topology_template:
             node: A4C_Compute
             capability: tosca.capabilities.Container
             relationship: tosca.relationships.HostedOn
+        - dependsOnTerraformRuntimeFeature:
+            type_requirement: dependency
+            node: TerraformRuntime
+            capability: tosca.capabilities.Node
+            relationship: tosca.relationships.DependsOn
     AddCsarFromGit:
       type: org.alien4cloud.alien4cloud.config.csar.nodes.AddCsarFromGit
       properties:
@@ -346,6 +361,11 @@ topology_template:
             node: Alien4Cloud
             capability: org.alien4cloud.alien4cloud.pub.capabilities.AlienConfigContainer
             relationship: org.alien4cloud.alien4cloud.pub.relationships.AlienConfiguratorHostedOnAlien
+        - dependsOnSimpleLocationConfiguratorFeature:
+            type_requirement: dependency
+            node: SimpleLocationConfigurator
+            capability: tosca.capabilities.Node
+            relationship: tosca.relationships.DependsOn
   outputs:
     Alien4Cloud_alien_url:
       value: { get_attribute: [ Alien4Cloud, alien_url ] }
