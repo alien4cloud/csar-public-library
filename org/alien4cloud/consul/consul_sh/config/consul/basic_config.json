@@ -1,7 +1,7 @@
 {
   "datacenter": "DC1",
   "data_dir": "%CONSUL_DATA_DIR%",
-  "log_level": "trace",
+  "log_level": "info",
   "node_name": "%INSTANCE%",
   "client_addr": "0.0.0.0",
   "bind_addr": "%CONSUL_BIND_ADDRESS%",
