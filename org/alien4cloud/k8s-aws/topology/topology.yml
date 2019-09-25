@@ -1,0 +1,166 @@
+tosca_definitions_version: alien_dsl_2_0_0
+
+metadata:
+  template_name: KubeCluster
+  template_version: 0.1.0-SNAPSHOT
+  template_author: admin
+
+description: ""
+
+imports:
+  - tosca-normative-types:1.0.0-ALIEN20
+  - org.alien4cloud.aws-cli.linux_bash:2.2.0-SNAPSHOT
+  - org.alien4cloud.aws-cli.pub:2.2.0-SNAPSHOT
+  - org.alien4cloud.k8s-aws:2.2.0-SNAPSHOT
+
+topology_template:
+  inputs:
+    secret_key:
+      type: string
+      required: false
+    access_key:
+      type: string
+      required: false
+    region:
+      type: string
+      required: true
+      default: "eu-west-1"
+  node_templates:
+    MasterCompute:
+      metadata:
+        a4c_edit_x: 110
+        a4c_edit_y: "-44"
+      type: tosca.nodes.Compute
+      capabilities:
+        os:
+          properties:
+            architecture: "x86_64"
+            type: linux
+            distribution: centos
+        scalable:
+          properties:
+            min_instances: 1
+            max_instances: 1
+            default_instances: 1
+        endpoint:
+          properties:
+            secure: true
+            protocol: tcp
+            network_name: PRIVATE
+            initiator: source
+    WorkerCompute:
+      metadata:
+        a4c_edit_x: 389
+        a4c_edit_y: "-44"
+      type: tosca.nodes.Compute
+      capabilities:
+        os:
+          properties:
+            architecture: "x86_64"
+            type: linux
+            distribution: centos
+        scalable:
+          properties:
+            min_instances: 1
+            max_instances: 5
+            default_instances: 2
+        endpoint:
+          properties:
+            secure: true
+            protocol: tcp
+            network_name: PRIVATE
+            initiator: source
+    MasterDocker:
+      type: org.alien4cloud.k8s-aws.nodes.DockerEngine
+      properties:
+        component_version: "18.06.2.ce"
+      requirements:
+        - hostedOnMasterComputeHost:
+            type_requirement: host
+            node: MasterCompute
+            capability: tosca.capabilities.Container
+            relationship: tosca.relationships.HostedOn
+    WorkerDocker:
+      type: org.alien4cloud.k8s-aws.nodes.DockerEngine
+      properties:
+        component_version: "18.06.2.ce"
+      requirements:
+        - hostedOnWorkerComputeHost:
+            type_requirement: host
+            node: WorkerCompute
+            capability: tosca.capabilities.Container
+            relationship: tosca.relationships.HostedOn
+    MasterAwsCli:
+      type: org.alien4cloud.aws-cli.linux_bash.nodes.AwsCli
+      properties:
+        access_key: { get_input: access_key }
+        secret_key: { get_input: secret_key }
+        region: { get_input: region }
+      requirements:
+        - hostedOnMasterComputeHost:
+            type_requirement: host
+            node: MasterCompute
+            capability: tosca.capabilities.Container
+            relationship: tosca.relationships.HostedOn
+    WorkerAwsCli:
+      type: org.alien4cloud.aws-cli.linux_bash.nodes.AwsCli
+      properties:
+        access_key: { get_input: access_key }
+        secret_key: { get_input: secret_key }
+        region: { get_input: region }
+      requirements:
+        - hostedOnWorkerComputeHost:
+            type_requirement: host
+            node: WorkerCompute
+            capability: tosca.capabilities.Container
+            relationship: tosca.relationships.HostedOn
+    KubeMaster:
+      metadata:
+        a4c_edit_x: 202
+        a4c_edit_y: 187
+      type: org.alien4cloud.k8s-aws.nodes.KubeMaster
+      properties:
+        iam_role: "Kubernetes-Master"
+        component_version: "1.2.1"
+        cluster_name: A4C
+      requirements:
+        - componentConnectToAwsCliMasterAwsCliAws_cli:
+            type_requirement: awscli
+            node: MasterAwsCli
+            capability: org.alien4cloud.aws-cli.pub.capabilities.AwsCli
+            relationship: org.alien4cloud.aws-cli.pub.relationships.ComponentConnectToAwsCli
+        - hostedOnDockerMasterDockerDocker_host:
+            type_requirement: host
+            node: MasterDocker
+            capability: org.alien4cloud.k8s-aws.capabilities.DockerHost
+            relationship: org.alien4cloud.k8s-aws.relationships.HostedOnDocker
+    KubeWorker:
+      metadata:
+        a4c_edit_x: 483
+        a4c_edit_y: 183
+      type: org.alien4cloud.k8s-aws.nodes.KubeWorker
+      properties:
+        iam_role: "Kubernetes-Worker"
+        component_version: "1.2.1"
+        cluster_name: A4C
+      requirements:
+        - componentConnectToAwsCliWorkerAwsCliAws_cli:
+            type_requirement: awscli
+            node: WorkerAwsCli
+            capability: org.alien4cloud.aws-cli.pub.capabilities.AwsCli
+            relationship: org.alien4cloud.aws-cli.pub.relationships.ComponentConnectToAwsCli
+        - hostedOnDockerWorkerDockerDocker_host:
+            type_requirement: host
+            node: WorkerDocker
+            capability: org.alien4cloud.k8s-aws.capabilities.DockerHost
+            relationship: org.alien4cloud.k8s-aws.relationships.HostedOnDocker
+        - joinMasterKubeMasterKube_master:
+            type_requirement: join_master
+            node: KubeMaster
+            capability: org.alien4cloud.k8s-aws.capabilities.MasterCluster
+            relationship: org.alien4cloud.k8s-aws.relationships.JoinMaster
+  outputs:
+    MasterCompute_public_ip_address:
+      value: { get_attribute: [ MasterCompute, public_ip_address ] }
+    MasterCompute_ip_address:
+      value: { get_attribute: [ MasterCompute, ip_address ] }

@@ -1,11 +1,10 @@
 #!/bin/bash -ex
 
 # Install aws cli
-if [ ! -f ~/.apt-get.updated ] ; then
-    sudo apt-get -y update || (sleep 20; sudo apt-get update || exit ${1})
-    date > ~/.apt-get.updated
-  fi
-  sudo apt-get -y install awscli || (sleep 20; sudo apt-get -y install awscli || exit ${1})
+sudo yum install -y python3-pip
+
+# Install AWS CLI
+pip3 install awscli --upgrade --user
 
 # Init aws credentials
 if [ ! -d ~/.aws ]  ; then
@@ -13,10 +12,10 @@ if [ ! -d ~/.aws ]  ; then
 fi
 
 if [ ! -f ~/.aws/config ] ; then
-  cat << EOF >> ~/.aws/config
+  cat << EOF | envsubst >> ~/.aws/config
 [default]
-region=
-aws_access_key_id=
-aws_secret_access_key=
+region=${AWS_REGION}
+aws_access_key_id=${AWS_ACCESS_KEY_ID}
+aws_secret_access_key=${AWS_SECRET_ACCESS_KEY}
 EOF
 fi

@@ -8,6 +8,12 @@ metadata:
 imports:
   - tosca-normative-types:1.0.0-ALIEN20
 
+relationship_types:
+
+  org.alien4cloud.aws-cli.pub.relationships.ComponentConnectToAwsCli:
+    derived_from: tosca.relationships.ConnectsTo
+    valid_target_types: [ tosca.nodes.SoftwareComponent ]
+
 capability_types:
   org.alien4cloud.aws-cli.pub.capabilities.AwsCli:
     derived_from: tosca.capabilities.Root

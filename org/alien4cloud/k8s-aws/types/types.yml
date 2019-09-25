@@ -1,0 +1,157 @@
+tosca_definitions_version: alien_dsl_2_0_0
+
+metadata:
+  template_name: org.alien4cloud.k8s-aws
+  template_version: 2.2.0-SNAPSHOT
+  template_author: alien4cloud
+
+description: Contains all types required to deploy a Kubernetes Cluster using kubeadm on aws.
+
+imports:
+  - tosca-normative-types:1.0.0-ALIEN20
+  - org.alien4cloud.aws-cli.linux_bash:2.2.0-SNAPSHOT
+
+node_types:
+
+  org.alien4cloud.k8s-aws.nodes.DockerEngine:
+    derived_from: tosca.nodes.SoftwareComponent
+    description: >
+      The Docker Engine.
+    metadata:
+      icon: /images/icon.png
+    properties:
+      component_version:
+        type: version
+        default: "18.06.2.ce"
+    capabilities:
+      docker_host: org.alien4cloud.k8s-aws.capabilities.DockerHost
+    requirements:
+      - host:
+          capability: tosca.capabilities.Container
+          node: tosca.nodes.Compute
+          relationship: tosca.relationships.HostedOn
+          occurrences: [1,1]
+          node_filter:
+            capabilities:
+              - tosca.capabilities.OperatingSystem:
+                  properties:
+                    - type: { equal: linux }
+                    - architecture: { equal: x86_64 }
+                    - distribution: { valid_values: [ centos ] }
+    interfaces:
+      Standard:
+        create:
+          inputs:
+            component_version: { get_property: [ SELF, component_version ] }        
+          implementation: scripts/docker/create-docker.sh 
+        configure: scripts/docker/configure-docker.sh 
+        start: scripts/docker/start-docker.sh
+
+  org.alien4cloud.k8s-aws.nodes.Kube:
+    abstract: true
+    derived_from: tosca.nodes.SoftwareComponent
+    metadata:
+      icon: images/hyperkube.png
+    attributes:
+      aws_id: { get_operation_output: [ SELF, Standard, create, AWS_ID ] }
+    properties:
+      component_version:
+        type: version
+        default: 1.2.1
+      cluster_name:
+        type: string
+        default: A4C
+    requirements:
+      - host:
+          capability: org.alien4cloud.k8s-aws.capabilities.DockerHost
+          node: org.alien4cloud.k8s-aws.nodes.DockerEngine
+          relationship: org.alien4cloud.k8s-aws.relationships.HostedOnDocker
+          occurrences: [1, 1]
+      - awscli:
+          capability: org.alien4cloud.aws-cli.pub.capabilities.AwsCli
+          relationship: org.alien4cloud.aws-cli.pub.relationships.ComponentConnectToAwsCli
+          occurrences: [1, 1]
+    interfaces:
+      Standard:
+        create: 
+          inputs:
+            AWS_IP: { get_attribute: [HOST, private_address] }
+            CLUSTER_NAME: { get_property: [ SELF, cluster_name ] }
+          implementation: scripts/kubernetes/create-kubelet.sh
+
+  org.alien4cloud.k8s-aws.nodes.KubeMaster:
+    description: >
+      Installs kubernetes master components.
+    derived_from: org.alien4cloud.k8s-aws.nodes.Kube
+    metadata:
+      icon: images/kube_master.png
+    properties:
+      iam_role:
+        type: string
+        default: Kubernetes-Master      
+    attributes:
+      kube_token:  { get_operation_output: [ SELF, Standard, start, KUBE_TOKEN ]}
+      kube_sha256: { get_operation_output: [ SELF, Standard, start, KUBE_SHA256 ]}
+      api_endpoint: { concat:  [  "https://",
+                                  get_attribute: [ HOST, public_ip_address ],
+                                  ":30000" ]}
+    capabilities:
+      - kube_master:
+          type: org.alien4cloud.k8s-aws.capabilities.MasterCluster
+    interfaces:
+      Standard:
+        start:
+          inputs:
+            IAM_ROLE : { get_property: [ SELF, iam_role ] }
+            AWS_ID : { get_attribute: [SELF, aws_id] }
+          implementation: scripts/kubernetes/start-master.sh
+
+  org.alien4cloud.k8s-aws.nodes.KubeWorker:
+    description: >
+      Installs the Hyperkube process and a proxy on the node host.
+    derived_from: org.alien4cloud.k8s-aws.nodes.Kube
+    metadata:
+      icon: images/kube.png
+    properties:
+      iam_role:
+        type: string
+        default: Kubernetes-Worker  
+    interfaces:
+      Standard:
+        configure:
+          inputs:
+            IAM_ROLE : { get_property: [ SELF, iam_role ] }
+            AWS_ID : { get_attribute: [SELF, aws_id] }
+          implementation: scripts/kubernetes/configure-worker.sh
+    requirements:
+      - join_master:
+          capability: org.alien4cloud.k8s-aws.capabilities.MasterCluster
+          relationship: org.alien4cloud.k8s-aws.relationships.JoinMaster
+          node: org.alien4cloud.k8s-aws.nodes.KubeMaster
+          occurrences: [1, 1]
+
+capability_types:
+  org.alien4cloud.k8s-aws.capabilities.DockerHost:
+    derived_from: tosca.capabilities.Root
+
+  org.alien4cloud.k8s-aws.capabilities.MasterCluster:
+    derived_from: tosca.capabilities.Node
+
+relationship_types:
+
+  org.alien4cloud.k8s-aws.relationships.HostedOnDocker:
+    derived_from: tosca.relationships.HostedOn
+    valid_target_types: [ org.alien4cloud.k8s-aws.capabilities.DockerHost ]
+
+  org.alien4cloud.k8s-aws.relationships.JoinMaster:
+    derived_from: tosca.relationships.ConnectsTo
+    valid_target_types: [ org.alien4cloud.k8s-aws.capabilities.MasterCluster ]
+    interfaces:
+      configure:
+        post_configure_source:
+          implementation: scripts/kubernetes/join-master.sh
+          inputs:
+            PRIVATE_ADDRESS: { get_attribute: [TARGET, private_address] }
+            KUBE_TOKEN: { get_attribute: [TARGET, kube_token] }
+            KUBE_SHA256: { get_attribute: [TARGET, kube_sha256] }
+
