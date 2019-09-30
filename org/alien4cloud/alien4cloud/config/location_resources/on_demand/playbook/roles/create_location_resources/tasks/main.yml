@@ -37,6 +37,7 @@
     msg: "{{item}}"
   with_items: "{{resources}}"
 
+
 - name: "Login onto A4C using {{ alien_url }}/login?username={{ alien_user }}&password={{ alien_password }}&submit=Login"
   uri:
     url: "{{ alien_url }}/login?username={{ alien_user }}&password={{ alien_password }}&submit=Login"
@@ -51,6 +52,27 @@
 - set_fact:
     session_id: "{{ login.set_cookie.split(';')[0] }}"
 
+- name: Get location dependencies
+  uri:
+    url: "{{ alien_url }}/rest/latest/orchestrators/{{ orchestratorId }}/locations/{{ locationId }}"
+    method: GET
+    return_content: yes
+    validate_certs: no
+    HEADER_cookie: "{{ session_id }}"
+    status_code: 200
+  register: locationDTO
+
+- set_fact:
+    location_data_yaml: "{{locationDTO.content | from_yaml }}"
+
+- name: Get archives versions
+  set_fact:
+    archive_version: "{{ archive_version|default([]) | combine({item.name: item.version}) }}"
+  with_items: "{{ location_data_yaml.data.location.dependencies }}"
+
+- debug:
+    msg: "{{archive_version}}"
+
 - name: "Create on-demand location resource using {{ alien_url }}/rest/latest/orchestrators/{{ orchestratorId }}/locations/{{ locationId }}/resources"
   uri:
     url: "{{ alien_url }}/rest/latest/orchestrators/{{ orchestratorId }}/locations/{{ locationId }}/resources"
@@ -62,7 +84,7 @@
       resourceType: "{{ item['resourceType'] }}"
       resourceName: "{{ item['resourceName'] }}"
       archiveName: "{{ item['archiveName'] }}"
-      archiveVersion: "{{ item['archiveVersion'] }}"
+      archiveVersion: "{{ archive_version[item['archiveName']] }}"
       id: "{{ item['id'] }}"
     body_format: json
     status_code: 200
