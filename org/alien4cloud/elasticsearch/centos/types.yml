@@ -2,7 +2,7 @@ tosca_definitions_version: alien_dsl_2_0_0
 
 metadata:
   template_name: org.alien4cloud.elasticsearch.centos
-  template_version: 2.2.0-SNAPSHOT
+  template_version: 3.0.0-SNAPSHOT
   template_author: alien4cloud
 
 imports:
@@ -20,13 +20,13 @@ node_types:
       component_version:
         description: The version of Elasticsearch
         type: version
-        default: 1.7.0
+        default: 6.6.2
         constraints:
-          - valid_values: [ "1.7.0" ]
+          - valid_values: [ "6.6.2" ]
       elasticsearch_url:
         type: string
         required: true
-        default: "https://download.elastic.co/elasticsearch/elasticsearch/elasticsearch-1.7.0.noarch.rpm"
+        default: "https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-6.6.2.rpm"
       cluster_name:
         description: The name of the ElasticSearch cluster.
         type: string

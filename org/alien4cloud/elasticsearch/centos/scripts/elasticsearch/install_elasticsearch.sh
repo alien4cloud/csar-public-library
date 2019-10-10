@@ -5,13 +5,7 @@ source $commons/commons.sh
 DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 
 # OS configuration
-sudo bash -c "echo 'vm.overcommit_memory=0' >> /etc/sysctl.conf"
-sudo sysctl -p
-
-openLimit=65535
-sudo bash -c "echo 'elasticsearch         hard    nofile      $openLimit
-elasticsearch         soft    nofile      $openLimit
-' >> /etc/security/limits.conf"
+sudo sysctl -w vm.max_map_count=262144
 
 # Download the application and install elasticsearch
 download "ElasticSearch" "${APPLICATION_URL}" "elasticsearch.rpm"
