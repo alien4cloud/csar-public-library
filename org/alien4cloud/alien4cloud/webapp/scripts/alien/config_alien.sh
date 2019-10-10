@@ -57,8 +57,8 @@ else
   sudo sed -i -e "s/client\: \(.*\)/client\: true/g" ${A4C_CONFIG}
   sudo sed -i -e "s/# transportClient\: \(.*\)/transportClient\: true/g" ${A4C_CONFIG}
   # set the elsaticsearch hosts
-  sudo sed -i -e "s/  hosts\: \(.*\)/hosts\: $es_list/g" ${A4C_CONFIG}
-  sudo sed -i -e "s/# hosts\: \(.*\)/hosts\: $es_list/g" ${A4C_CONFIG}
+  sudo sed -i -e "s/  hosts\: \(.*\)/  hosts\: $es_list/g" ${A4C_CONFIG}
+  sudo sed -i -e "s/# hosts\: \(.*\)/  hosts\: $es_list/g" ${A4C_CONFIG}
 
   # get the cluster name
   cluster_name=$(</tmp/a4c/work/${NODE}/cluster_name)
