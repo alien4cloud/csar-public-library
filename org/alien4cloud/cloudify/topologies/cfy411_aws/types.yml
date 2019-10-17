@@ -24,7 +24,7 @@ imports:
   - org.alien4cloud.cloudify.hostpool.pub:2.2.0-SNAPSHOT
   - org.alien4cloud.postgresql.pub:2.2.0-SNAPSHOT
   - org.alien4cloud.rabbitmq.pub:2.2.0-SNAPSHOT
-  - alien-base-types:2.2.0-SM6
+  - alien-base-types:2.2.0-SM9
 
 topology_template:
   inputs:
