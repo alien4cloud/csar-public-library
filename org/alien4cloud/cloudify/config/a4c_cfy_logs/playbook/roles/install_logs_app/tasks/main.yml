@@ -27,7 +27,7 @@
 
 - name: Unarchive the logs application
   unarchive:
-    src: "{{ A4C_LOG_DIR }}/alien4cloud-cfy-logs-2.2.0-SNAPSHOT.zip"
+    src: "{{ A4C_LOG_DIR }}/alien4cloud-cfy-logs-3.0.0-SNAPSHOT.zip"
     dest: "{{ A4C_LOG_DIR }}"
     remote_src: yes
     copy: no

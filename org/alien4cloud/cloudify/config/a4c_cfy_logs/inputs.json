@@ -1,6 +1,6 @@
 {
 
-"APP_ARCHIVE_URL": "https://fastconnect.org/maven/content/repositories/opensource/alien4cloud/alien4cloud-cfy-logs/2.2.0-SNAPSHOT/alien4cloud-cfy-logs-2.2.0-SNAPSHOT.zip",
+"APP_ARCHIVE_URL": "https://fastconnect.org/maven/content/repositories/opensource/alien4cloud/alien4cloud-cfy-logs/3.0.0-SNAPSHOT/alien4cloud-cfy-logs-3.0.0-SNAPSHOT.zip",
 "A4C_LOG_DIR": "/opt/alien4cloud-cfy-logs",
 "LOGSTASH_CONFIG_FILE": "/etc/logstash/conf.d/logstash.conf",
 "SERVER_PORT": "8670",

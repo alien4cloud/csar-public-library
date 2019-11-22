@@ -2,16 +2,16 @@ tosca_definitions_version: alien_dsl_2_0_0
 
 metadata:
   template_name: org.alien4cloud.mysql.linux_pup
-  template_version: 2.2.0-SNAPSHOT
+  template_version: 3.0.0-SNAPSHOT
   template_author: alien4cloud
 
 description: MySQL RDBMS installation  with Puppet, tested with ami-ed82e39e (t2.medium)
 
 imports:
   - tosca-normative-types:1.0.0-ALIEN20
-  - alien-base-types:2.2.0-SM6
-  - org.alien4cloud.agentpuppet:2.2.0-SNAPSHOT
-  - org.alien4cloud.mysql.pub:2.2.0-SNAPSHOT
+  - alien-base-types:3.0.0-SNAPSHOT
+  - org.alien4cloud.agentpuppet:3.0.0-SNAPSHOT
+  - org.alien4cloud.mysql.pub:3.0.0-SNAPSHOT
 
 node_types:
   org.alien4cloud.mysql.linux_pup.nodes.Mysql:
@@ -47,7 +47,7 @@ node_types:
       puppet_home:
         type: string
         default: /etc/puppet/mysql
-        description: home to move your puppet environment 
+        description: home to move your puppet environment
     artifacts:
       - puppet_file:
           file: PuppetFiles/recipe.puppet

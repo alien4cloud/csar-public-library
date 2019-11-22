@@ -2,15 +2,15 @@ tosca_definitions_version: alien_dsl_2_0_0
 
 metadata:
   template_name: org.alien4cloud.alien4cloud.tests.loadtest.jmeter
-  template_version: 2.2.0-SNAPSHOT
+  template_version: 3.0.0-SNAPSHOT
   template_author: alien4cloud
 
 imports:
   - tosca-normative-types:1.0.0-ALIEN20
-  - alien-base-types:2.2.0-SM6
-  - org.alien4cloud.mock.pub:2.2.0-SNAPSHOT
-  - org.alien4cloud.java.pub:2.2.0-SNAPSHOT
-  - org.alien4cloud.alien4cloud.pub:2.2.0-SNAPSHOT
+  - alien-base-types:3.0.0-SNAPSHOT
+  - org.alien4cloud.mock.pub:3.0.0-SNAPSHOT
+  - org.alien4cloud.java.pub:3.0.0-SNAPSHOT
+  - org.alien4cloud.alien4cloud.pub:3.0.0-SNAPSHOT
 
 description: >
   Mock types for A4C load tests.
