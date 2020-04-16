@@ -2,7 +2,7 @@ tosca_definitions_version: alien_dsl_2_0_0
 
 metadata:
   template_name: org.alien4cloud.cloudify.hostpool.topologies.hostpool_feeder
-  template_version: 2.2.0-SNAPSHOT
+  template_version: 2.2.0
   template_author: alien4cloud
 
 description: >
@@ -11,11 +11,11 @@ description: >
 
 
 imports:
-  - org.alien4cloud.cloudify.hostpool.awsfeeder:2.2.0-SNAPSHOT
-  - org.alien4cloud.cloudify.hostpool.service:2.2.0-SNAPSHOT
+  - org.alien4cloud.cloudify.hostpool.awsfeeder:2.2.0
+  - org.alien4cloud.cloudify.hostpool.service:2.2.0
   - tosca-normative-types:1.0.0-ALIEN20
-  - org.alien4cloud.cloudify.hostpool.pub:2.2.0-SNAPSHOT
-  - alien-base-types:2.2.0-SM6
+  - org.alien4cloud.cloudify.hostpool.pub:2.2.0
+  - alien-base-types:2.2.0
 
 topology_template:
   description: >
