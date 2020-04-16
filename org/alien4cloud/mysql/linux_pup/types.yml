@@ -24,8 +24,6 @@ node_types:
           capability: org.alien4cloud.agentpuppet.capabilities.PuppetAgentContainer
           node: org.alien4cloud.agentpuppet.nodes.Agent
           relationship: org.alien4cloud.mysql.linux_pup.relationships.MysqlHostedOnAgentPuppet
-    metadata:
-      icon: /images/mysql.png
     properties:
       port:
         type: integer

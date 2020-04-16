@@ -24,8 +24,6 @@ node_types:
           capability: tosca.capabilities.Container
           node: tosca.nodes.Compute
           relationship: tosca.relationships.HostedOn
-    metadata:
-      icon: /images/mysql.png
     properties:
       port:
         type: integer
