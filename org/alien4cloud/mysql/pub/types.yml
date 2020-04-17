@@ -2,7 +2,7 @@ tosca_definitions_version: alien_dsl_2_0_0
 
 metadata:
   template_name: org.alien4cloud.mysql.pub
-  template_version: 2.2.0-SNAPSHOT
+  template_version: 2.2.0
   template_author: alien4cloud
 
 description: MySQL RDBMS installation , tested with ami-ed82e39e (t2.medium)
@@ -24,8 +24,6 @@ node_types:
           capability: tosca.capabilities.Container
           node: tosca.nodes.Compute
           relationship: tosca.relationships.HostedOn
-    metadata:
-      icon: /images/mysql.png
     properties:
       port:
         type: integer
