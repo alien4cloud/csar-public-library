@@ -31,7 +31,7 @@ imports:
   - org.alien4cloud.alien4cloud.config.orchestrator.cfy:3.0.0-SNAPSHOT
   - org.alien4cloud.diamond.pub:3.0.0-SNAPSHOT
   - tosca-normative-types:1.0.0-ALIEN20
-  - alien-base-types:3.0.0-SNAPSHOT
+  - alien-base-types:3.0.0
   - org.alien4cloud.diamond.collectors:3.0.0-SNAPSHOT
   - org.alien4cloud.java.jmx.jolokia:3.0.0-SNAPSHOT
   - org.alien4cloud.alien4cloud.webapp:3.0.0-SNAPSHOT

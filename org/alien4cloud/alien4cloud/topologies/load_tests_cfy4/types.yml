@@ -23,7 +23,7 @@ imports:
   - tosca-normative-types:1.0.0-ALIEN20
   - org.alien4cloud.cloudify.patches.amqp_client:3.0.0-SNAPSHOT
   - org.alien4cloud.cloudify.patches.change_max_mgmtworker:3.0.0-SNAPSHOT
-  - alien-base-types:3.0.0-SNAPSHOT
+  - alien-base-types:3.0.0
   - org.alien4cloud.java.pub:3.0.0-SNAPSHOT
   - org.alien4cloud.diamond.collectors:3.0.0-SNAPSHOT
   - org.alien4cloud.java.jmx.jolokia:3.0.0-SNAPSHOT

@@ -20,7 +20,7 @@ imports:
   - tosca-normative-types:1.0.0-ALIEN20
   - org.alien4cloud.alien4cloud.config.location_resources.on_demand:3.0.0-SNAPSHOT
   - org.alien4cloud.alien4cloud.config.csar:3.0.0-SNAPSHOT
-  - alien-base-types:3.0.0-SNAPSHOT
+  - alien-base-types:3.0.0
   - org.alien4cloud.java.pub:3.0.0-SNAPSHOT
   - org.alien4cloud.diamond.collectors:3.0.0-SNAPSHOT
   - org.alien4cloud.java.jmx.jolokia:3.0.0-SNAPSHOT
