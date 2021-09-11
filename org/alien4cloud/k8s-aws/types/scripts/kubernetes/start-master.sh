@@ -8,7 +8,7 @@ sudo mkdir -p /etc/kubernetes
 
 cat <<EOF | envsubst | sudo tee /etc/kubernetes/aws.yml
 ---
-apiVersion: kubeadm.k8s.io/v1beta1
+apiVersion: kubeadm.k8s.io/v1beta2
 kind: InitConfiguration
 nodeRegistration:
   name: ${HOSTNAME}
@@ -38,7 +38,8 @@ sudo chown $(id -u):$(id -g) $HOME/.kube/config
 
 # Flannel: For flannel to work correctly, --pod-network-cidr=10.244.0.0/16 has to be passed to kubeadm init.
 #kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
-kubectl apply -f https://raw.githubusercontent.com/mgoltzsche/flannel/add-cni-version/Documentation/kube-flannel.yml
+#kubectl apply -f https://raw.githubusercontent.com/mgoltzsche/flannel/add-cni-version/Documentation/kube-flannel.yml
+kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml 
 
 # Master Isolation - Optional (not recommanded)
 # By default, your cluster will not schedule pods on the master for security reasons.

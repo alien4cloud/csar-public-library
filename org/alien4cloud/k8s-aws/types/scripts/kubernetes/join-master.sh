@@ -20,7 +20,7 @@ sudo mkdir -p /etc/kubernetes
 
 cat <<EOF | envsubst | sudo tee /etc/kubernetes/aws.yml
 ---
-apiVersion: kubeadm.k8s.io/v1beta1
+apiVersion: kubeadm.k8s.io/v1beta2
 kind: JoinConfiguration
 discovery:
   bootstrapToken:
